@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import GameShell from '../components/game-ui/GameShell'
 import { OAUTH_MESSAGE_TYPE } from '../constants/oauth'
 import { useAuthStore } from '../stores/auth.store'
 
@@ -14,7 +15,11 @@ export default function OAuthCompletePage() {
 
     if (window.opener && !window.opener.closed) {
       window.opener.postMessage(
-        { type: OAUTH_MESSAGE_TYPE, accessToken: accessToken ?? undefined, error: error ?? undefined },
+        {
+          type: OAUTH_MESSAGE_TYPE,
+          accessToken: accessToken ?? undefined,
+          error: error ?? undefined,
+        },
         window.location.origin,
       )
       window.close()
@@ -31,8 +36,10 @@ export default function OAuthCompletePage() {
   }, [searchParams, setToken, navigate])
 
   return (
-    <div className="flex min-h-screen items-center justify-center text-pastel-700">
-      Вход...
-    </div>
+    <GameShell>
+      <div className="flex min-h-dvh items-center justify-center">
+        <p className="font-mono text-sm tracking-widest text-emerald-400/80">Вход...</p>
+      </div>
+    </GameShell>
   )
 }

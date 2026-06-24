@@ -46,7 +46,6 @@ export class GamesService {
               profession: character.profession,
               balance: character.balance,
               salary: character.salary,
-              savings: character.savings,
               isNpc: false,
               dreamItemRefs: character.dreams,
               inventoryItems: {

@@ -12,6 +12,7 @@ export interface CharacterDream {
 export interface CharacterItem {
   itemRef: string
   name: string
+  basePrice: number
   monthlyPayment: number
   installmentsTotal: number
   installmentsPaid: number
@@ -22,7 +23,6 @@ export interface CharacterRosterItem {
   name: string
   salary: number
   balance: number
-  savings: number
   items: CharacterItem[]
   dreams: CharacterDream[]
 }

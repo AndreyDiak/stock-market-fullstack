@@ -5,6 +5,7 @@ interface MoneyAmountProps {
   suffix?: string
   size?: 'sm' | 'md' | 'lg'
   className?: string
+  theme?: 'light' | 'night'
 }
 
 const sizeClasses = {
@@ -18,20 +19,30 @@ export default function MoneyAmount({
   suffix,
   size = 'md',
   className = '',
+  theme = 'light',
 }: MoneyAmountProps) {
   const sizes = sizeClasses[size]
+  const isNight = theme === 'night'
 
   return (
-    <span className={`inline-flex items-center gap-1.5 font-semibold text-pastel-900 ${className}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 font-semibold ${
+        isNight ? 'text-emerald-100' : 'text-pastel-900'
+      } ${className}`}
+    >
       <img
         src={moneyIcon}
         alt=""
         aria-hidden
-        className={`${sizes.icon} shrink-0 object-contain`}
+        className={`${sizes.icon} shrink-0 object-contain ${isNight ? 'drop-shadow-[0_0_6px_rgba(77,196,141,0.5)]' : ''}`}
       />
       <span className={sizes.text}>
         {amount.toLocaleString()}
-        {suffix && <span className="font-medium text-pastel-600">{suffix}</span>}
+        {suffix && (
+          <span className={`font-medium ${isNight ? 'text-emerald-400/80' : 'text-pastel-600'}`}>
+            {suffix}
+          </span>
+        )}
       </span>
     </span>
   )

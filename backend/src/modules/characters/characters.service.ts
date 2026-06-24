@@ -9,12 +9,12 @@ export class CharactersService {
       name: npc.name,
       salary: npc.salary,
       balance: npc.balance,
-      savings: npc.savings,
       items: npc.items.map((item) => {
         const template = REAL_ESTATE.find((r) => r.id === item.itemRef)!;
         return {
           itemRef: item.itemRef,
           name: template.name,
+          basePrice: template.basePrice,
           monthlyPayment: template.monthlyPayment,
           installmentsTotal: template.installmentMonths,
           installmentsPaid: item.installmentsPaid,

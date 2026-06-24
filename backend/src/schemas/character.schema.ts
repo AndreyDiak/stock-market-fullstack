@@ -6,7 +6,6 @@ export const characterSchema = z.object({
   gameId: z.string().uuid().nullable(),
   name: z.string(),
   balance: z.number(),
-  savings: z.number(),
   profession: z.nativeEnum(Profession),
   professionLevel: z.number().int(),
   salary: z.number(),

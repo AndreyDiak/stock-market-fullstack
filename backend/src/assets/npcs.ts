@@ -11,7 +11,6 @@ export interface NpcSeed {
   professionLevel: number;
   salary: number;
   balance: number;
-  savings: number;
   items: NpcItemSeed[];
   dreams: string[];
 }
@@ -22,8 +21,7 @@ export const NPCS: NpcSeed[] = [
     profession: Profession.STREET_CLEANER,
     professionLevel: 2,
     salary: 1600,
-    balance: 4800,
-    savings: 1200,
+    balance: 6000,
     items: [{ itemRef: 'old_garage', installmentsPaid: 5 }],
     dreams: ['car', 'garage'],
   },
@@ -32,8 +30,7 @@ export const NPCS: NpcSeed[] = [
     profession: Profession.FARMER,
     professionLevel: 2,
     salary: 2400,
-    balance: 7500,
-    savings: 3000,
+    balance: 10500,
     items: [{ itemRef: 'garage', installmentsPaid: 6 }],
     dreams: ['tractor', 'country_house'],
   },
@@ -42,8 +39,7 @@ export const NPCS: NpcSeed[] = [
     profession: Profession.ENGINEER,
     professionLevel: 2,
     salary: 4000,
-    balance: 12000,
-    savings: 5000,
+    balance: 17000,
     items: [
       { itemRef: 'garage', installmentsPaid: 6 },
       { itemRef: 'parking_spot', installmentsPaid: 8 },
@@ -55,8 +51,7 @@ export const NPCS: NpcSeed[] = [
     profession: Profession.DEVELOPER,
     professionLevel: 3,
     salary: 9000,
-    balance: 35000,
-    savings: 15000,
+    balance: 50000,
     items: [{ itemRef: 'apartment', installmentsPaid: 15 }],
     dreams: ['penthouse', 'sport_car'],
   },
@@ -65,8 +60,7 @@ export const NPCS: NpcSeed[] = [
     profession: Profession.FINANCIER,
     professionLevel: 3,
     salary: 10500,
-    balance: 45000,
-    savings: 20000,
+    balance: 65000,
     items: [
       { itemRef: 'apartment', installmentsPaid: 15 },
       { itemRef: 'parking_spot', installmentsPaid: 8 },
@@ -78,8 +72,7 @@ export const NPCS: NpcSeed[] = [
     profession: Profession.DOCTOR,
     professionLevel: 3,
     salary: 12000,
-    balance: 50000,
-    savings: 25000,
+    balance: 75000,
     items: [{ itemRef: 'apartment', installmentsPaid: 15 }],
     dreams: ['trip', 'sport_car'],
   },

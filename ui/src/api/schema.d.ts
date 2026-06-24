@@ -4,6 +4,72 @@
  */
 
 export interface paths {
+    "/auth/yandex": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/yandex/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/google/callback": {
         parameters: {
             query?: never;
@@ -146,6 +212,86 @@ export interface paths {
                 };
             };
         };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/characters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CharacterRoster"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -721,7 +867,6 @@ export interface components {
             gameId: string | null;
             name: string;
             balance: number;
-            savings: number;
             /** @enum {string} */
             profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
             professionLevel: number;
@@ -729,6 +874,7 @@ export interface components {
             reputation: number;
             tradingLevel: number;
             isNpc: boolean;
+            dreamItemRefs: string[];
             totalEarned: number;
             totalSpent: number;
             totalTrades: number;
@@ -738,6 +884,27 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
         };
+        CharacterRoster: {
+            /** @enum {string} */
+            profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
+            name: string;
+            salary: number;
+            balance: number;
+            items: {
+                itemRef: string;
+                name: string;
+                basePrice: number;
+                monthlyPayment: number;
+                installmentsTotal: number;
+                installmentsPaid: number;
+            }[];
+            dreams: {
+                itemRef: string;
+                name: string;
+                description: string;
+                basePrice: number;
+            }[];
+        }[];
         Game: {
             /** Format: uuid */
             id: string;
@@ -761,7 +928,6 @@ export interface components {
                 gameId: string | null;
                 name: string;
                 balance: number;
-                savings: number;
                 /** @enum {string} */
                 profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
                 professionLevel: number;
@@ -769,6 +935,7 @@ export interface components {
                 reputation: number;
                 tradingLevel: number;
                 isNpc: boolean;
+                dreamItemRefs: string[];
                 totalEarned: number;
                 totalSpent: number;
                 totalTrades: number;
@@ -802,7 +969,6 @@ export interface components {
                 gameId: string | null;
                 name: string;
                 balance: number;
-                savings: number;
                 /** @enum {string} */
                 profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
                 professionLevel: number;
@@ -810,6 +976,7 @@ export interface components {
                 reputation: number;
                 tradingLevel: number;
                 isNpc: boolean;
+                dreamItemRefs: string[];
                 totalEarned: number;
                 totalSpent: number;
                 totalTrades: number;
@@ -830,8 +997,6 @@ export interface components {
             name?: string;
             /** @enum {string} */
             status?: "ACTIVE" | "INACTIVE" | "PAUSED" | "COMPLETED";
-            /** @enum {string} */
-            difficulty?: "easy" | "normal" | "hard";
         };
         DeleteGameResponse: {
             success: boolean;

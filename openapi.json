@@ -63,9 +63,6 @@
           "balance": {
             "type": "number"
           },
-          "savings": {
-            "type": "number"
-          },
           "profession": {
             "type": "string",
             "enum": [
@@ -91,6 +88,12 @@
           },
           "isNpc": {
             "type": "boolean"
+          },
+          "dreamItemRefs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "totalEarned": {
             "type": "number"
@@ -118,13 +121,13 @@
           "gameId",
           "name",
           "balance",
-          "savings",
           "profession",
           "professionLevel",
           "salary",
           "reputation",
           "tradingLevel",
           "isNpc",
+          "dreamItemRefs",
           "totalEarned",
           "totalSpent",
           "totalTrades",
@@ -133,6 +136,105 @@
           "updatedAt"
         ],
         "additionalProperties": false
+      },
+      "CharacterRoster": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "profession": {
+              "type": "string",
+              "enum": [
+                "DOCTOR",
+                "DEVELOPER",
+                "FINANCIER",
+                "FARMER",
+                "ENGINEER",
+                "STREET_CLEANER"
+              ]
+            },
+            "name": {
+              "type": "string"
+            },
+            "salary": {
+              "type": "number"
+            },
+            "balance": {
+              "type": "number"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "itemRef": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "basePrice": {
+                    "type": "number"
+                  },
+                  "monthlyPayment": {
+                    "type": "number"
+                  },
+                  "installmentsTotal": {
+                    "type": "number"
+                  },
+                  "installmentsPaid": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "itemRef",
+                  "name",
+                  "basePrice",
+                  "monthlyPayment",
+                  "installmentsTotal",
+                  "installmentsPaid"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "dreams": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "itemRef": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "basePrice": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "itemRef",
+                  "name",
+                  "description",
+                  "basePrice"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "profession",
+            "name",
+            "salary",
+            "balance",
+            "items",
+            "dreams"
+          ],
+          "additionalProperties": false
+        }
       },
       "Game": {
         "type": "object",
@@ -222,9 +324,6 @@
                   "balance": {
                     "type": "number"
                   },
-                  "savings": {
-                    "type": "number"
-                  },
                   "profession": {
                     "type": "string",
                     "enum": [
@@ -250,6 +349,12 @@
                   },
                   "isNpc": {
                     "type": "boolean"
+                  },
+                  "dreamItemRefs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
                   },
                   "totalEarned": {
                     "type": "number"
@@ -277,13 +382,13 @@
                   "gameId",
                   "name",
                   "balance",
-                  "savings",
                   "profession",
                   "professionLevel",
                   "salary",
                   "reputation",
                   "tradingLevel",
                   "isNpc",
+                  "dreamItemRefs",
                   "totalEarned",
                   "totalSpent",
                   "totalTrades",
@@ -405,9 +510,6 @@
                     "balance": {
                       "type": "number"
                     },
-                    "savings": {
-                      "type": "number"
-                    },
                     "profession": {
                       "type": "string",
                       "enum": [
@@ -433,6 +535,12 @@
                     },
                     "isNpc": {
                       "type": "boolean"
+                    },
+                    "dreamItemRefs": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
                     },
                     "totalEarned": {
                       "type": "number"
@@ -460,13 +568,13 @@
                     "gameId",
                     "name",
                     "balance",
-                    "savings",
                     "profession",
                     "professionLevel",
                     "salary",
                     "reputation",
                     "tradingLevel",
                     "isNpc",
+                    "dreamItemRefs",
                     "totalEarned",
                     "totalSpent",
                     "totalTrades",
@@ -546,14 +654,6 @@
               "INACTIVE",
               "PAUSED",
               "COMPLETED"
-            ]
-          },
-          "difficulty": {
-            "type": "string",
-            "enum": [
-              "easy",
-              "normal",
-              "hard"
             ]
           }
         },
@@ -669,6 +769,24 @@
     }
   },
   "paths": {
+    "/auth/yandex": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/auth/yandex/callback": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
     "/auth/google/callback": {
       "get": {
         "responses": {
@@ -759,6 +877,75 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LogoutResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/characters": {
+      "get": {
+        "tags": [
+          "characters"
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterRoster"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1377,6 +1564,10 @@
     {
       "name": "auth",
       "description": "Authentication"
+    },
+    {
+      "name": "characters",
+      "description": "Playable character roster"
     },
     {
       "name": "users",

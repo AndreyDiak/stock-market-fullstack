@@ -4,6 +4,7 @@ import { z } from 'zod';
 export const characterItemSchema = z.object({
   itemRef: z.string(),
   name: z.string(),
+  basePrice: z.number(),
   monthlyPayment: z.number(),
   installmentsTotal: z.number(),
   installmentsPaid: z.number(),
@@ -21,7 +22,6 @@ export const characterRosterItemSchema = z.object({
   name: z.string(),
   salary: z.number(),
   balance: z.number(),
-  savings: z.number(),
   items: z.array(characterItemSchema),
   dreams: z.array(characterDreamSchema),
 });

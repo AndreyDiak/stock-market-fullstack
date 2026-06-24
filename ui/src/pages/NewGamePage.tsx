@@ -1,20 +1,12 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import bg from "../assets/backgrounds/new_game.png";
-import imgDeveloper from "../assets/professions/developer.png";
-import imgDoctor from "../assets/professions/doctor.png";
-import imgEngineer from "../assets/professions/engineer.png";
-import imgFarmer from "../assets/professions/farmer.png";
-import imgFinancier from "../assets/professions/financier.png";
-import imgStreetCleaner from "../assets/professions/streen_cleaner.png";
 import CharacterCard from "../components/CharacterCard";
-import DreamCard from "../components/DreamCard";
-import InstallmentProgress from "../components/InstallmentProgress";
-import MoneyAmount from "../components/MoneyAmount";
-import PropertyThumb from "../components/PropertyThumb";
-import type { CreateGameBody } from "../api/types";
+import CharacterSidebar from "../components/character-sidebar/CharacterSidebar";
+import GameShell from "../components/game-ui/GameShell";
+import PageHeader from "../components/game-ui/PageHeader";
 import { PROFESSION_LABELS } from "../constants/professions";
+import { PROFESSION_IMAGES } from "../constants/professionImages";
 import { getRealEstateImage } from "../constants/realEstateImages";
 import {
   useCharactersStore,
@@ -22,15 +14,6 @@ import {
   type CharacterRosterItem,
 } from "../stores/characters.store";
 import { useGamesStore } from "../stores/games.store";
-
-const PROFESSION_IMAGES: Record<CreateGameBody["profession"], string> = {
-  STREET_CLEANER: imgStreetCleaner,
-  FARMER: imgFarmer,
-  ENGINEER: imgEngineer,
-  DEVELOPER: imgDeveloper,
-  FINANCIER: imgFinancier,
-  DOCTOR: imgDoctor,
-};
 
 const characterGridVariants = {
   hidden: { opacity: 0 },
@@ -44,6 +27,12 @@ const characterGridVariants = {
 };
 
 const INSTALLMENT_SLOT_COUNT = 2;
+
+const LOCKED_PLACEHOLDERS = [
+  { name: '???', professionLabel: 'Скоро' },
+  { name: '???', professionLabel: 'Скоро' },
+  { name: '???', professionLabel: 'Скоро' },
+] as const;
 
 function calcActiveInstallmentTotal(items: CharacterItem[]): number {
   return items
@@ -87,209 +76,90 @@ export default function NewGamePage() {
 
   if (loading && characters.length === 0) {
     return (
-      <div
-        className="flex min-h-screen items-center justify-center bg-cover bg-center p-4"
-        style={{ backgroundImage: `url(${bg})` }}
-      >
-        <p className="rounded-xl bg-white/80 px-6 py-4 text-pastel-700 shadow-sm">
-          Загрузка персонажей...
-        </p>
-      </div>
+      <GameShell fixedHeight>
+        <div className="flex h-full items-center justify-center p-4">
+          <p className="rounded-xl border border-emerald-400/20 bg-slate-800/80 px-6 py-4 text-emerald-200/90 shadow-[0_0_24px_rgba(77,196,141,0.15)] backdrop-blur-md">
+            Загрузка персонажей...
+          </p>
+        </div>
+      </GameShell>
     );
   }
 
   if (error || !selected) {
     return (
-      <div
-        className="flex min-h-screen items-center justify-center bg-cover bg-center p-4"
-        style={{ backgroundImage: `url(${bg})` }}
-      >
-        <div className="rounded-xl bg-white/90 px-6 py-4 text-center shadow-sm">
-          <p className="text-pastel-700">{error ?? "Персонажи не найдены"}</p>
-          <button
-            type="button"
-            onClick={() => navigate("/slots")}
-            className="mt-3 text-sm font-medium text-pastel-600 underline"
-          >
-            Назад
-          </button>
+      <GameShell fixedHeight>
+        <div className="flex h-full items-center justify-center p-4">
+          <div className="rounded-xl border border-emerald-400/20 bg-slate-800/80 px-6 py-4 text-center backdrop-blur-md">
+            <p className="text-emerald-100/90">{error ?? "Персонажи не найдены"}</p>
+            <button
+              type="button"
+              onClick={() => navigate("/slots")}
+              className="mt-3 text-sm font-medium text-emerald-400 underline underline-offset-2"
+            >
+              Назад
+            </button>
+          </div>
         </div>
-      </div>
+      </GameShell>
     );
   }
 
   return (
-    <div
-      className="flex min-h-screen flex-col justify-center bg-cover bg-center p-4 md:p-6"
-      style={{ backgroundImage: `url(${bg})` }}
-    >
-      <div className="mx-auto w-full max-w-7xl">
-        <h1 className="mb-4 text-2xl font-bold text-pastel-800 md:mb-5">
-          Выбор персонажа
-        </h1>
+    <GameShell fixedHeight>
+      <div className="flex h-full flex-col overflow-hidden p-3 md:p-4">
+        <div className="mx-auto flex h-full min-h-0 w-full max-w-[88rem] flex-col">
+          <PageHeader
+            eyebrow="Night Session"
+            title="Выбор персонажа"
+            aside={`SLOT ${slot} / 3`}
+          />
 
-        <div className="grid items-stretch gap-4 lg:grid-cols-[1fr_minmax(28rem,42rem)] lg:gap-6">
-          <motion.div
-            className="grid auto-rows-fr grid-cols-2 gap-3 sm:grid-cols-3 sm:grid-rows-2 sm:gap-4"
-            variants={characterGridVariants}
-            initial="hidden"
-            animate="show"
-          >
-            {characters.map((char) => (
-              <CharacterCard
-                key={char.profession}
-                name={char.name}
-                professionLabel={PROFESSION_LABELS[char.profession]}
-                image={getCharacterImage(char)}
-                selected={selected.profession === char.profession}
-                onClick={() => setSelected(char)}
-              />
-            ))}
-          </motion.div>
+          <div className="grid min-h-0 flex-1 items-stretch gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(28rem,38rem)] lg:gap-5">
+            <motion.div
+              className="grid h-full min-h-0 auto-rows-fr grid-cols-3 grid-rows-3 gap-1.5 sm:gap-2.5"
+              variants={characterGridVariants}
+              initial="hidden"
+              animate="show"
+            >
+              {characters.map((char) => (
+                <CharacterCard
+                  key={char.profession}
+                  name={char.name}
+                  professionLabel={PROFESSION_LABELS[char.profession]}
+                  image={getCharacterImage(char)}
+                  selected={selected.profession === char.profession}
+                  onClick={() => setSelected(char)}
+                />
+              ))}
+              {LOCKED_PLACEHOLDERS.map((slot, index) => (
+                <CharacterCard
+                  key={`locked-${index}`}
+                  name={slot.name}
+                  professionLabel={slot.professionLabel}
+                  locked
+                />
+              ))}
+            </motion.div>
 
-          <aside className="flex min-h-0 flex-col">
-            <div className="flex h-full flex-col rounded-2xl border-2 border-pastel-200/70 bg-pastel-100/90 p-4 shadow-md backdrop-blur-md md:p-5">
-              <div className="mb-4 grid min-h-0 flex-1 grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="flex min-h-0 flex-col">
-                  <div className="mb-4 flex shrink-0 gap-3 overflow-hidden rounded-xl border border-pastel-200/60 bg-white/50 p-3">
-                    <div className="flex h-36 shrink-0 items-end justify-center rounded-lg bg-pastel-100/80 sm:h-44">
-                      <img
-                        src={getCharacterImage(selected)}
-                        alt={PROFESSION_LABELS[selected.profession]}
-                        className="h-full w-full rounded-lg object-contain object-bottom"
-                      />
-                    </div>
-                    <div className="flex min-w-0 flex-1 flex-col justify-start pt-1">
-                      <h2 className="text-xl font-bold leading-tight text-pastel-900 sm:text-2xl">
-                        {selected.name}
-                      </h2>
-                      <p className="mt-1.5 text-sm font-medium text-pastel-700 sm:text-base">
-                        {PROFESSION_LABELS[selected.profession]}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mb-4 shrink-0 space-y-2 rounded-xl bg-white/40 px-3 py-3">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm font-medium text-pastel-700">
-                        Зарплата
-                      </span>
-                      <MoneyAmount
-                        amount={selected.salary}
-                        suffix="/мес"
-                        size="md"
-                      />
-                    </div>
-                    <div className="flex items-center justify-between gap-2 border-t border-pastel-200/60 pt-2">
-                      <span className="text-sm font-medium text-pastel-700">
-                        После выплат
-                      </span>
-                      <MoneyAmount
-                        amount={netMonthlyIncome}
-                        suffix="/мес"
-                        size="md"
-                        className={
-                          netMonthlyIncome < 0 ? "text-red-600" : undefined
-                        }
-                      />
-                    </div>
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm font-medium text-pastel-700">
-                        Баланс
-                      </span>
-                      <MoneyAmount amount={selected.balance} size="md" />
-                    </div>
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm font-medium text-pastel-700">
-                        Сбережения
-                      </span>
-                      <MoneyAmount amount={selected.savings} size="md" />
-                    </div>
-                  </div>
-
-                  <div className="min-h-0 flex-1">
-                    <h3 className="mb-2.5 text-xs font-semibold uppercase tracking-wide text-pastel-600">
-                      Имущество
-                    </h3>
-
-                    <div className="mb-3 grid grid-cols-2 gap-2">
-                      {installmentSlots.map((item, index) =>
-                        item ? (
-                          <PropertyThumb
-                            key={item.itemRef}
-                            name={item.name}
-                            image={getRealEstateImage(item.itemRef)}
-                          />
-                        ) : (
-                          <PropertyThumb key={`empty-thumb-${index}`} empty />
-                        ),
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      {selected.items.map((item) => (
-                        <InstallmentProgress
-                          key={item.itemRef}
-                          name={item.name}
-                          monthlyPayment={item.monthlyPayment}
-                          installmentsPaid={item.installmentsPaid}
-                          installmentsTotal={item.installmentsTotal}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex min-h-0 flex-col">
-                  <h3 className="mb-2.5 text-xs font-semibold uppercase tracking-wide text-pastel-600">
-                    Мечты
-                  </h3>
-                  <p className="mb-3 text-xs text-pastel-600">
-                    Купите всё, чтобы победить
-                  </p>
-                  <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:grid-cols-1">
-                    {selected.dreams.map((dream) => (
-                      <DreamCard
-                        key={dream.itemRef}
-                        name={dream.name}
-                        itemRef={dream.itemRef}
-                        basePrice={dream.basePrice}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-auto shrink-0 grid grid-cols-1 gap-2 pt-2 sm:grid-cols-2">
-                <button
-                  type="button"
-                  onClick={() => navigate("/slots")}
-                  className="w-full rounded-xl border border-pastel-200 bg-white px-4 py-3 text-sm font-semibold text-pastel-700 shadow-sm transition hover:bg-pastel-50 active:scale-[0.98]"
-                >
-                  Назад
-                </button>
-                <button
-                  type="button"
-                  disabled={creating}
-                  onClick={async () => {
-                    setCreating(true);
-                    await createGame(
-                      slot,
-                      selected.name,
-                      selected.profession,
-                    );
-                    setCreating(false);
-                    navigate("/slots");
-                  }}
-                  className="w-full rounded-xl bg-pastel-500/90 px-4 py-3 font-semibold text-white shadow-sm transition hover:bg-pastel-600 active:scale-[0.98] disabled:opacity-60"
-                >
-                  {creating ? "Создание..." : "Начать игру"}
-                </button>
-              </div>
-            </div>
-          </aside>
+            <CharacterSidebar
+              character={selected}
+              professionLabel={PROFESSION_LABELS[selected.profession]}
+              netMonthlyIncome={netMonthlyIncome}
+              installmentSlots={installmentSlots}
+              getItemImage={getRealEstateImage}
+              creating={creating}
+              onBack={() => navigate("/slots")}
+              onStart={async () => {
+                setCreating(true);
+                await createGame(slot, selected.name, selected.profession);
+                setCreating(false);
+                navigate("/slots");
+              }}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </GameShell>
   );
 }
