@@ -12,20 +12,46 @@
   --color-pastel-800: #1d613e;
   --color-pastel-900: #1a5034;
   --color-pastel-950: #0c2c1d;
+
+  --font-sans: "Exo 2", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
 body {
   margin: 0;
   background: #061018;
   color: #e2e8f0;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 button:hover {
   cursor: pointer;
+}
+
+.auth-input:-webkit-autofill,
+.auth-input:-webkit-autofill:hover,
+.auth-input:-webkit-autofill:focus,
+.auth-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #0a1218 inset !important;
+  box-shadow: 0 0 0 1000px #0a1218 inset !important;
+  -webkit-text-fill-color: #e2e8f0 !important;
+  caret-color: #e2e8f0;
+  transition: background-color 9999s ease-out 0s;
+}
+
+.auth-input:autofill {
+  box-shadow: 0 0 0 1000px #0a1218 inset !important;
+  -webkit-text-fill-color: #e2e8f0 !important;
 }
 
 @keyframes new-game-ticker-scroll {

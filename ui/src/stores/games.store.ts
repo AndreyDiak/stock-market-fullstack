@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { http } from '../lib/http'
-import type { CreateGameBody, GetGamesResponse } from '../api/types'
+import type { CreateGameBody, CreateGameResponse, GetGamesResponse } from '../api/types'
 
 interface SlotInfo {
   slot: number
@@ -18,7 +18,8 @@ interface GamesState {
   loading: boolean
   error: string | null
   loadSlots: () => Promise<void>
-  createGame: (slot: number, name: string, profession: CreateGameBody['profession']) => Promise<void>
+  createGame: (slot: number, name: string, profession: CreateGameBody['profession']) => Promise<string | null>
+  deleteGame: (gameId: string) => Promise<boolean>
 }
 
 export const useGamesStore = create<GamesState>((set, get) => ({
@@ -58,10 +59,24 @@ export const useGamesStore = create<GamesState>((set, get) => ({
     set({ loading: true, error: null })
     try {
       const body: CreateGameBody = { slot, name, profession }
-      await http.post('games', { json: body }).json()
+      const game: CreateGameResponse = await http.post('games', { json: body }).json()
       await get().loadSlots()
+      return game.id
     } catch {
       set({ loading: false, error: 'Failed to create game' })
+      return null
+    }
+  },
+
+  deleteGame: async (gameId) => {
+    set({ loading: true, error: null })
+    try {
+      await http.delete(`games/${gameId}`).json()
+      await get().loadSlots()
+      return true
+    } catch {
+      set({ loading: false, error: 'Не удалось удалить сохранение' })
+      return false
     }
   },
 }))
