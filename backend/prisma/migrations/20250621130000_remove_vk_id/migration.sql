@@ -1,0 +1,2 @@
+DROP INDEX IF EXISTS "users_vkId_key";
+ALTER TABLE "users" DROP COLUMN IF EXISTS "vkId";

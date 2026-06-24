@@ -1,0 +1,39 @@
+enum Profession {
+  DOCTOR
+  DEVELOPER
+  FINANCIER
+  FARMER
+  ENGINEER
+  STREET_CLEANER
+}
+
+model Character {
+  id      String  @id @default(uuid())
+  gameId  String? @unique
+  game    Game?   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  name    String
+  balance Float   @default(10000)
+  savings Float   @default(0)
+
+  profession      Profession
+  professionLevel Int        @default(1)
+  salary          Float      @default(0)
+
+  reputation   Float @default(0)
+  tradingLevel Int   @default(0)
+  isNpc        Boolean @default(false)
+
+  dreamItemRefs String[] @default([])
+
+  totalEarned      Float @default(0)
+  totalSpent       Float @default(0)
+  totalTrades      Int   @default(0)
+  successfulTrades Int   @default(0)
+
+  inventoryItems InventoryItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("characters")
+}

@@ -1,0 +1,18 @@
+model News {
+  id          String       @id @default(uuid())
+  title       String
+  body        String?
+  impact      Float
+  sentiment   Sentiment    @default(NEUTRAL)
+  sector      MarketSector?
+  companyId   String?
+  publishedAt DateTime     @default(now())
+  expiresAt   DateTime
+
+  company Company? @relation(fields: [companyId], references: [id], onDelete: SetNull)
+
+  @@map("news")
+  @@index([companyId])
+  @@index([sector])
+  @@index([expiresAt])
+}

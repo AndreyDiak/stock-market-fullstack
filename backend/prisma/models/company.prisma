@@ -1,0 +1,17 @@
+model Company {
+  id           String       @id @default(uuid())
+  ticker       String       @unique
+  name         String
+  description  String?
+  sector       MarketSector
+  currentPrice Float        @default(0)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  stocks       Stock[]
+  news         News[]
+  priceHistory PriceHistory[]
+
+  @@map("companies")
+  @@index([sector])
+}

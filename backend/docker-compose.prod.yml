@@ -1,0 +1,7 @@
+services:
+  api:
+    build:
+      target: runner
+    volumes: !reset []
+    environment:
+      NODE_ENV: production

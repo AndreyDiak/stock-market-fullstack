@@ -1,0 +1,13 @@
+{
+  "name": "stock-market",
+  "private": true,
+  "scripts": {
+    "openapi:export": "npm run openapi:export --workspace=backend",
+    "codegen": "npm run codegen --workspace=ui",
+    "openapi": "npm run openapi:export && npm run codegen"
+  },
+  "workspaces": [
+    "backend",
+    "ui"
+  ]
+}

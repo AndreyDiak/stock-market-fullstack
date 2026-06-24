@@ -1,0 +1,29 @@
+enum GameStatus {
+  ACTIVE
+  INACTIVE
+  PAUSED
+  COMPLETED
+}
+
+model Game {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name String @default("Новая игра")
+  slot Int    @db.SmallInt
+
+  status GameStatus @default(ACTIVE)
+  step   Int        @default(1)
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  startedAt     DateTime?
+  completedAt   DateTime?
+  totalPlayTime Int       @default(0)
+
+  character Character?
+
+  @@unique([userId, slot])
+  @@map("games")
+}
