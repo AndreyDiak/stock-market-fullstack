@@ -13,7 +13,6 @@ model Character {
   game    Game?   @relation(fields: [gameId], references: [id], onDelete: Cascade)
   name    String
   balance Float   @default(10000)
-  savings Float   @default(0)
 
   profession      Profession
   professionLevel Int        @default(1)

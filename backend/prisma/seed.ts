@@ -57,7 +57,6 @@ async function main() {
         professionLevel: npc.professionLevel,
         salary: npc.salary,
         balance: npc.balance,
-        savings: npc.savings,
         isNpc: true,
         inventoryItems: {
           create: npc.items.map((item) => {
