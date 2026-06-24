@@ -1,27 +1,38 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { GamePanel } from '../../components/game_ui/game_panel'
+import { getApiErrorMessage, loginWithPassword, registerWithPassword } from '../../api/auth'
 import { GameShell } from '../../components/game_ui/game_shell'
 import { isOAuthMessage } from '../../constants/oauth'
 import { useAuthStore } from '../../stores/auth.store'
+import { AuthCard } from './_auth_card'
+import { AuthFormsPanel } from './_auth_forms_panel'
+import { AuthModeTabs } from './_auth_mode_tabs'
+import { YandexAuthButton } from './_yandex_auth_button'
 import { ERROR_MESSAGES, POPUP_FEATURES, YANDEX_AUTH_URL } from './model/constants'
+import type { AuthMode } from './model/types'
 
 export function AuthPage() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const setToken = useAuthStore((s) => s.setToken)
-  const [isWaiting, setIsWaiting] = useState(false)
+  const [mode, setMode] = useState<AuthMode>('login')
+  const [tabDirection, setTabDirection] = useState(0)
+  const [isWaitingOAuth, setIsWaitingOAuth] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [formError, setFormError] = useState<string | null>(null)
   const inIframe = typeof window !== 'undefined' && window.self !== window.top
 
-  const error = searchParams.get('error')
-  const errorMessage = error ? (ERROR_MESSAGES[error] ?? 'Произошла ошибка при авторизации.') : null
+  const oauthError = searchParams.get('error')
+  const oauthErrorMessage = oauthError
+    ? (ERROR_MESSAGES[oauthError] ?? 'Произошла ошибка при авторизации.')
+    : null
 
   useEffect(() => {
     function onMessage(event: MessageEvent) {
       if (event.origin !== window.location.origin) return
       if (!isOAuthMessage(event.data)) return
 
-      setIsWaiting(false)
+      setIsWaitingOAuth(false)
 
       if (event.data.accessToken) {
         setToken(event.data.accessToken)
@@ -50,40 +61,83 @@ export function AuthPage() {
       return
     }
 
-    setIsWaiting(true)
+    setIsWaitingOAuth(true)
   }
+
+  async function handleLogin(login: string, password: string) {
+    setFormError(null)
+    setIsSubmitting(true)
+    try {
+      const { accessToken } = await loginWithPassword(login, password)
+      setToken(accessToken)
+      navigate('/menu')
+    } catch (error) {
+      setFormError(await getApiErrorMessage(error, 'Не удалось войти'))
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  async function handleRegister(username: string, email: string, password: string) {
+    setFormError(null)
+    setIsSubmitting(true)
+    try {
+      const { accessToken } = await registerWithPassword(username, email, password)
+      setToken(accessToken)
+      navigate('/menu')
+    } catch (error) {
+      setFormError(await getApiErrorMessage(error, 'Не удалось зарегистрироваться'))
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const activeError = formError ?? oauthErrorMessage
 
   return (
     <GameShell>
       <div className="flex min-h-dvh items-center justify-center p-4 md:p-6">
-        <GamePanel className="w-full max-w-md">
-          <div className="mb-8 text-center">
+        <AuthCard>
+          <div className="mb-6 text-center">
             <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-emerald-500/70">
               Night Session
             </p>
-            <h1 className="mt-2 text-3xl font-bold text-white">Stock Market</h1>
-            <p className="mt-2 text-sm text-slate-400">Симулятор фондового рынка</p>
+            <h1 className="mt-2 text-2xl font-bold text-emerald-50 md:text-3xl">Stock Market</h1>
+            <p className="mt-1.5 text-sm text-slate-400">Симулятор фондового рынка</p>
           </div>
 
-          {errorMessage && (
-            <p className="mb-4 rounded-2xl border border-red-400/20 bg-red-950/40 px-4 py-3 text-sm text-red-300">
-              {errorMessage}
-              <button
-                type="button"
-                onClick={() => {
-                  const next = new URLSearchParams(searchParams)
-                  next.delete('error')
-                  setSearchParams(next, { replace: true })
-                }}
-                className="ml-2 underline"
-              >
-                Закрыть
-              </button>
+          <AuthModeTabs
+            mode={mode}
+            onChange={(next) => {
+              if (next !== mode) {
+                setTabDirection(next === 'register' ? 1 : -1)
+              }
+              setMode(next)
+              setFormError(null)
+            }}
+          />
+
+          {activeError && (
+            <p className="mb-4 rounded-xl border border-red-400/20 bg-red-950/40 px-3.5 py-2.5 text-sm text-red-300">
+              {activeError}
+              {oauthErrorMessage && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const next = new URLSearchParams(searchParams)
+                    next.delete('error')
+                    setSearchParams(next, { replace: true })
+                  }}
+                  className="ml-2 underline"
+                >
+                  Закрыть
+                </button>
+              )}
             </p>
           )}
 
           {inIframe && (
-            <p className="mb-4 rounded-2xl border border-amber-400/20 bg-amber-950/30 px-4 py-3 text-xs text-amber-200">
+            <p className="mb-4 rounded-xl border border-amber-400/20 bg-amber-950/30 px-3.5 py-2.5 text-xs text-amber-200">
               Встроенный браузер блокирует OAuth. Откройте{' '}
               <a
                 href="http://localhost:5173"
@@ -97,18 +151,28 @@ export function AuthPage() {
             </p>
           )}
 
-          <button
-            type="button"
-            onClick={startYandexAuth}
-            disabled={isWaiting}
-            className="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-[#21212B] px-5 py-3.5 text-[15px] font-medium text-white shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition hover:bg-[#2c2c36] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
-          >
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#FC3F1D] text-sm font-bold leading-none text-white">
-              Я
+          <AuthFormsPanel
+            mode={mode}
+            direction={tabDirection}
+            loading={isSubmitting}
+            onLogin={handleLogin}
+            onRegister={handleRegister}
+          />
+
+          <div className="my-5 flex items-center gap-3">
+            <div className="h-px flex-1 bg-white/10" />
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+              или
             </span>
-            <span>{isWaiting ? 'Ожидание входа...' : 'Войти с Яндекс ID'}</span>
-          </button>
-        </GamePanel>
+            <div className="h-px flex-1 bg-white/10" />
+          </div>
+
+          <YandexAuthButton
+            loading={isWaitingOAuth}
+            disabled={isSubmitting}
+            onClick={startYandexAuth}
+          />
+        </AuthCard>
       </div>
     </GameShell>
   )
