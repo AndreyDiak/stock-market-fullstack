@@ -1,23 +1,24 @@
 import ky from 'ky';
 import { API_URL } from '../config';
 import { useAuthStore } from '../stores/auth.store';
+import { runHttpUnauthorizedMiddleware } from './http-middleware';
 
 export const http = ky.create({
   prefix: API_URL,
   credentials: 'include',
   hooks: {
     beforeRequest: [
-      (state) => {
-        const token = useAuthStore.getState().accessToken
-        if (token) {
-          state.request.headers.set('Authorization', `Bearer ${token}`)
+      ({ request }) => {
+        const { accessToken } = useAuthStore.getState()
+        if (accessToken) {
+          request.headers.set('Authorization', `Bearer ${accessToken}`)
         }
       },
     ],
     afterResponse: [
-      (state) => {
-        if (state.response.status === 401) {
-          useAuthStore.getState().logout()
+      ({ response }) => {
+        if (response.status === 401) {
+          runHttpUnauthorizedMiddleware()
         }
       },
     ],
