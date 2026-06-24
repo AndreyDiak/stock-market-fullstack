@@ -1,4 +1,4 @@
-import type { GameColorTheme } from '../../stores/gameSettings.store'
+import type { GameColorTheme } from '../../stores/game_settings.store';
 
 export interface GameDashboardThemeTokens {
   isLight: boolean

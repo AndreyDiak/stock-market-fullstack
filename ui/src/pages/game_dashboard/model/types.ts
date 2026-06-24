@@ -1,12 +1,12 @@
-import type { ReactNode } from 'react'
-import type { GeneratedNewsItem } from '../../../api/gameTurn'
-import type { CharacterProfile, CharacterUpgrade } from '../../../components/game_dashboard/character_profile_panel'
-import type { ActiveLoan, BankSummary } from '../../../components/game_dashboard/bank_view'
-import type { GameDashboardThemeTokens } from '../../../components/game_dashboard/game_dashboard_theme'
-import type { PropertySlot } from '../../../components/game_dashboard/property_inventory_block'
-import type { buildNextTurnForecast } from '../../../components/game_dashboard/next_turn_forecast'
-import type { CreateGameBody } from '../../../api/types'
-import type { GameColorTheme } from '../../../stores/gameSettings.store'
+import type { ReactNode } from 'react';
+import type { GeneratedNewsItem } from '../../../api/gameTurn';
+import type { CreateGameBody } from '../../../api/types';
+import type { ActiveLoan, BankSummary } from '../../../components/game_dashboard/bank_view';
+import type { CharacterProfile, CharacterUpgrade } from '../../../components/game_dashboard/character_profile_panel';
+import type { GameDashboardThemeTokens } from '../../../components/game_dashboard/game_dashboard_theme';
+import type { buildNextTurnForecast } from '../../../components/game_dashboard/next_turn_forecast';
+import type { PropertySlot } from '../../../components/game_dashboard/property_inventory_block';
+import type { GameColorTheme } from '../../../stores/game_settings.store';
 
 export type dashboard_tab =
   | 'character'

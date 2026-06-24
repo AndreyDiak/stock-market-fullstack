@@ -1,40 +1,40 @@
-import { motion } from 'framer-motion'
-import type { ReactNode } from 'react'
+import { motion } from "framer-motion";
+import type { ReactNode } from "react";
+import type { GameColorTheme } from "../../stores/game_settings.store";
 import {
   sessionStaggerContainerVariants,
   sessionStaggerItemVariants,
-} from '../game_ui/session_animations'
-import type { GameColorTheme } from '../../stores/gameSettings.store'
-import type { GameDashboardThemeTokens } from './game_dashboard_theme'
+} from "../game_ui/session_animations";
+import type { GameDashboardThemeTokens } from "./game_dashboard_theme";
 
 interface GameSettingsPanelProps {
-  theme: GameDashboardThemeTokens
-  dynamicBackground: boolean
-  colorTheme: GameColorTheme
-  onDynamicBackgroundChange: (value: boolean) => void
-  onColorThemeChange: (value: GameColorTheme) => void
-  animated?: boolean
-  footer?: ReactNode
+  theme: GameDashboardThemeTokens;
+  dynamicBackground: boolean;
+  colorTheme: GameColorTheme;
+  onDynamicBackgroundChange: (value: boolean) => void;
+  onColorThemeChange: (value: GameColorTheme) => void;
+  animated?: boolean;
+  footer?: ReactNode;
 }
 
 function SettingsSection({
   animated,
-  className = '',
+  className = "",
   children,
 }: {
-  animated?: boolean
-  className?: string
-  children: ReactNode
+  animated?: boolean;
+  className?: string;
+  children: ReactNode;
 }) {
   if (animated) {
     return (
       <motion.div variants={sessionStaggerItemVariants} className={className}>
         {children}
       </motion.div>
-    )
+    );
   }
 
-  return <div className={className}>{children}</div>
+  return <div className={className}>{children}</div>;
 }
 
 function SettingsToggle({
@@ -44,25 +44,27 @@ function SettingsToggle({
   onChange,
   theme,
 }: {
-  label: string
-  description: string
-  checked: boolean
-  onChange: (value: boolean) => void
-  theme: GameDashboardThemeTokens
+  label: string;
+  description: string;
+  checked: boolean;
+  onChange: (value: boolean) => void;
+  theme: GameDashboardThemeTokens;
 }) {
   return (
     <label
       className={`flex cursor-pointer items-start justify-between gap-4 rounded-2xl border px-4 py-3 transition ${
         checked
-          ? 'border-emerald-400/35 bg-emerald-500/10'
+          ? "border-emerald-400/35 bg-emerald-500/10"
           : theme.isLight
-            ? 'border-slate-200 bg-slate-50/80'
-            : 'border-slate-700/40 bg-slate-800/40'
+            ? "border-slate-200 bg-slate-50/80"
+            : "border-slate-700/40 bg-slate-800/40"
       }`}
     >
       <div className="min-w-0">
         <p className={`text-sm font-bold ${theme.primaryText}`}>{label}</p>
-        <p className={`mt-1 text-xs leading-relaxed ${theme.secondaryText}`}>{description}</p>
+        <p className={`mt-1 text-xs leading-relaxed ${theme.secondaryText}`}>
+          {description}
+        </p>
       </div>
       <button
         type="button"
@@ -70,17 +72,17 @@ function SettingsToggle({
         aria-checked={checked}
         onClick={() => onChange(!checked)}
         className={`relative mt-0.5 h-7 w-12 shrink-0 rounded-full transition ${
-          checked ? 'bg-emerald-500' : 'bg-slate-500/50'
+          checked ? "bg-emerald-500" : "bg-slate-500/50"
         }`}
       >
         <span
           className={`absolute top-0.5 h-6 w-6 rounded-full bg-white shadow transition ${
-            checked ? 'left-5' : 'left-0.5'
+            checked ? "left-5" : "left-0.5"
           }`}
         />
       </button>
     </label>
-  )
+  );
 }
 
 function ThemeOption({
@@ -90,11 +92,11 @@ function ThemeOption({
   theme,
   previewClass,
 }: {
-  label: string
-  active: boolean
-  onSelect: () => void
-  theme: GameDashboardThemeTokens
-  previewClass: string
+  label: string;
+  active: boolean;
+  onSelect: () => void;
+  theme: GameDashboardThemeTokens;
+  previewClass: string;
 }) {
   return (
     <button
@@ -102,18 +104,22 @@ function ThemeOption({
       onClick={onSelect}
       className={`flex flex-1 flex-col gap-2 rounded-2xl border p-3 text-left transition ${
         active
-          ? 'border-emerald-400/45 bg-emerald-500/10 ring-1 ring-emerald-400/25'
+          ? "border-emerald-400/45 bg-emerald-500/10 ring-1 ring-emerald-400/25"
           : theme.isLight
-            ? 'border-slate-200 bg-white hover:border-emerald-300/40'
-            : 'border-slate-700/40 bg-slate-800/40 hover:border-emerald-400/25'
+            ? "border-slate-200 bg-white hover:border-emerald-300/40"
+            : "border-slate-700/40 bg-slate-800/40 hover:border-emerald-400/25"
       }`}
     >
-      <div className={`h-14 rounded-xl border border-black/10 ${previewClass}`} />
-      <span className={`text-sm font-bold ${active ? 'text-emerald-500' : theme.primaryText}`}>
+      <div
+        className={`h-14 rounded-xl border border-black/10 ${previewClass}`}
+      />
+      <span
+        className={`text-sm font-bold ${active ? "text-emerald-500" : theme.primaryText}`}
+      >
         {label}
       </span>
     </button>
-  )
+  );
 }
 
 export function GameSettingsPanel({
@@ -125,11 +131,13 @@ export function GameSettingsPanel({
   animated = false,
   footer,
 }: GameSettingsPanelProps) {
-  const rootClassName = 'flex min-h-0 flex-1 flex-col'
+  const rootClassName = "flex min-h-0 flex-1 flex-col";
   const content = (
     <>
       <SettingsSection animated={animated} className="mb-5">
-        <h2 className={`text-xl font-bold tracking-wider ${theme.primaryText}`}>Настройки</h2>
+        <h2 className={`text-xl font-bold tracking-wider ${theme.primaryText}`}>
+          Настройки
+        </h2>
         <p className={`mt-1 text-sm ${theme.secondaryText}`}>
           Параметры отображения игрового интерфейса
         </p>
@@ -148,20 +156,22 @@ export function GameSettingsPanel({
 
         <SettingsSection animated={animated}>
           <section>
-            <p className={`mb-2 text-sm font-bold ${theme.primaryText}`}>Цветовая тема</p>
+            <p className={`mb-2 text-sm font-bold ${theme.primaryText}`}>
+              Цветовая тема
+            </p>
             <div className="flex gap-3">
               <ThemeOption
                 theme={theme}
                 label="Тёмная"
-                active={colorTheme === 'dark'}
-                onSelect={() => onColorThemeChange('dark')}
+                active={colorTheme === "dark"}
+                onSelect={() => onColorThemeChange("dark")}
                 previewClass="bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950"
               />
               <ThemeOption
                 theme={theme}
                 label="Светлая"
-                active={colorTheme === 'light'}
-                onSelect={() => onColorThemeChange('light')}
+                active={colorTheme === "light"}
+                onSelect={() => onColorThemeChange("light")}
                 previewClass="bg-gradient-to-br from-slate-100 via-white to-emerald-50"
               />
             </div>
@@ -170,12 +180,15 @@ export function GameSettingsPanel({
       </div>
 
       {footer ? (
-        <SettingsSection animated={animated} className="mt-8 border-t border-white/10 pt-5">
+        <SettingsSection
+          animated={animated}
+          className="mt-8 border-t border-white/10 pt-5"
+        >
           {footer}
         </SettingsSection>
       ) : null}
     </>
-  )
+  );
 
   if (animated) {
     return (
@@ -187,8 +200,8 @@ export function GameSettingsPanel({
       >
         {content}
       </motion.div>
-    )
+    );
   }
 
-  return <div className={rootClassName}>{content}</div>
+  return <div className={rootClassName}>{content}</div>;
 }
