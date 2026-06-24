@@ -46,7 +46,7 @@ export function AuthFormsPanel({ mode, direction, loading, onLogin, onRegister }
 
   return (
     <motion.div
-      className="overflow-hidden"
+      className="-mx-3 overflow-hidden px-3 pb-1"
       animate={{ height }}
       initial={false}
       transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}

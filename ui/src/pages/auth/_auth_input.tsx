@@ -14,7 +14,7 @@ export function AuthInput({ label, className = '', id, ...props }: AuthInputProp
       </span>
       <input
         id={inputId}
-        className={`w-full rounded-xl border border-white/10 bg-[#0a1218]/80 px-3.5 py-2.5 text-sm text-slate-100 shadow-[inset_0_2px_6px_rgba(0,0,0,0.35)] outline-none ring-1 ring-inset ring-white/5 transition placeholder:text-slate-500 focus:border-emerald-400/35 focus:ring-emerald-400/20 ${className}`}
+        className={`auth-input w-full rounded-xl border border-white/10 bg-[#0a1218]/80 px-3.5 py-2.5 text-sm text-slate-100 shadow-[inset_0_2px_6px_rgba(0,0,0,0.35)] outline-none ring-1 ring-inset ring-white/5 transition placeholder:text-slate-500 focus:border-emerald-400/35 focus:ring-emerald-400/20 ${className}`}
         {...props}
       />
     </label>

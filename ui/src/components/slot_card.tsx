@@ -34,6 +34,7 @@ interface SlotCardProps {
   day?: number
   onLoad?: () => void
   onNewGame?: () => void
+  onDelete?: () => void
 }
 
 function SlotChrome({ slot, active = true }: { slot: number; active?: boolean }) {
@@ -72,6 +73,7 @@ export function SlotCard({
   day,
   onLoad,
   onNewGame,
+  onDelete,
 }: SlotCardProps) {
   const professionKey = profession as CreateGameBody['profession'] | undefined
   const professionLabel = professionKey ? PROFESSION_LABELS[professionKey] : undefined
@@ -182,9 +184,12 @@ export function SlotCard({
         </div>
       </div>
 
-      <div className="px-2.5 pb-2.5">
+      <div className="flex flex-col gap-2 px-2.5 pb-2.5">
         <GameButton fullWidth onClick={onLoad}>
           Загрузить
+        </GameButton>
+        <GameButton fullWidth variant="ghost" className="!text-red-400 hover:!text-red-300" onClick={onDelete}>
+          Удалить
         </GameButton>
       </div>
     </motion.div>

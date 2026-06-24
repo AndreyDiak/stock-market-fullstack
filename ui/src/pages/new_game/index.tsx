@@ -121,9 +121,11 @@ export function NewGamePage() {
               onBack={() => navigate('/slots')}
               onStart={async () => {
                 setCreating(true)
-                await createGame(slot, selected.name, selected.profession)
+                const gameId = await createGame(slot, selected.name, selected.profession)
                 setCreating(false)
-                navigate('/slots')
+                if (gameId) {
+                  navigate(`/game?id=${gameId}`)
+                }
               }}
             />
           </div>

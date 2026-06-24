@@ -1,22 +1,43 @@
 import { motion } from 'framer-motion'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { GameButton } from '../../components/game_ui/game_button'
 import { GameShell } from '../../components/game_ui/game_shell'
 import { PageHeader } from '../../components/game_ui/page_header'
 import { SlotCard } from '../../components/slot_card'
 import { useGamesStore } from '../../stores/games.store'
+import { DeleteSlotModal } from './_delete_slot_modal'
 import { slotsGridVariants } from './model/animation'
+
+interface DeleteTarget {
+  id: string
+  slot: number
+  characterName?: string
+}
 
 export function SlotsPage() {
   const navigate = useNavigate()
-  const { slots, loading, error, loadSlots } = useGamesStore()
+  const { slots, loading, error, loadSlots, deleteGame } = useGamesStore()
+  const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     void loadSlots()
   }, [loadSlots])
 
   const slot = (n: number) => slots.find((s) => s.slot === n)
+
+  async function handleConfirmDelete() {
+    if (!deleteTarget) return
+
+    setDeleting(true)
+    const ok = await deleteGame(deleteTarget.id)
+    setDeleting(false)
+
+    if (ok) {
+      setDeleteTarget(null)
+    }
+  }
 
   return (
     <GameShell>
@@ -57,6 +78,15 @@ export function SlotsPage() {
                   else navigate('/game')
                 }}
                 onNewGame={() => navigate(`/new-game?slot=${n}`)}
+                onDelete={() => {
+                  if (data?.id) {
+                    setDeleteTarget({
+                      id: data.id,
+                      slot: n,
+                      characterName: data.characterName,
+                    })
+                  }
+                }}
               />
             )
           })}
@@ -68,6 +98,15 @@ export function SlotsPage() {
           </GameButton>
         </div>
       </div>
+
+      <DeleteSlotModal
+        open={deleteTarget != null}
+        slot={deleteTarget?.slot ?? 0}
+        characterName={deleteTarget?.characterName}
+        deleting={deleting}
+        onCancel={() => setDeleteTarget(null)}
+        onConfirm={() => void handleConfirmDelete()}
+      />
     </GameShell>
   )
 }

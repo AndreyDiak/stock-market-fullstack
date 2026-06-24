@@ -25,10 +25,12 @@ export function SessionCard({ children, badge = 'SESSION', className = '' }: Ses
           </span>
         </div>
 
-        <div className="relative overflow-hidden rounded-xl border border-white/5 bg-gradient-to-b from-[#0c1824] via-[#0a1f1a] to-[#071510] p-5 md:p-6">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(77,196,141,0.12),transparent_55%)]" />
-          <div className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:linear-gradient(rgba(255,255,255,0.5)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.5)_1px,transparent_1px)] [background-size:16px_16px]" />
-          <div className="relative z-10">{children}</div>
+        <div className="relative rounded-xl border border-white/5 bg-gradient-to-b from-[#0c1824] via-[#0a1f1a] to-[#071510]">
+          <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-xl">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(77,196,141,0.12),transparent_55%)]" />
+            <div className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:linear-gradient(rgba(255,255,255,0.5)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.5)_1px,transparent_1px)] [background-size:16px_16px]" />
+          </div>
+          <div className="relative z-10 p-5 md:p-6">{children}</div>
         </div>
 
         <div className="mx-1 mt-2 h-1 rounded-full bg-black/40">
