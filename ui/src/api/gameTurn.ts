@@ -1,8 +1,10 @@
 import { http } from '../lib/http';
+import type { NextTurnForecast } from '../pages/game_dashboard/_components/next_turn_forecast';
+import type { Game } from './types';
 
 export interface GeneratedNewsItem {
   id: string;
-  kind: 'MARKET' | 'INSIDER' | 'RUMOR' | 'OTC_DEAL' | 'PROPERTY_OFFER';
+  kind: 'WELCOME' | 'MARKET' | 'INSIDER' | 'RUMOR' | 'OTC_DEAL' | 'PROPERTY_OFFER';
   title: string;
   body: string;
   excerpt: string;
@@ -28,8 +30,11 @@ export interface OtcDealPayload {
 export interface EndTurnResponse {
   step: number;
   balance: number;
+  character: NonNullable<Game['character']>;
+  nextTurnForecast: NextTurnForecast;
   passiveIncome: {
     salary: number;
+    livingExpense: number;
     installmentTotal: number;
     passiveIncome: number;
     itemsPaidOff: string[];
@@ -42,12 +47,45 @@ export interface EndTurnResponse {
   propertyOffer?: unknown;
 }
 
-export async function endGameTurn(gameId: string) {
-  return http.post(`games/${gameId}/end-turn`).json<EndTurnResponse>();
+export interface GameDashboardResponse {
+  game: NonNullable<Game>;
+  news: GeneratedNewsItem[];
+  nextTurnForecast: NextTurnForecast;
+}
+
+export async function fetchGameDashboard(gameId: string) {
+  return http.get(`saves/${gameId}/dashboard`).json<GameDashboardResponse>();
+}
+
+const inflightEndTurns = new Map<string, Promise<EndTurnResponse>>();
+
+export function endGameTurn(gameId: string, expectedStep: number) {
+  const inflight = inflightEndTurns.get(gameId);
+  if (inflight) return inflight;
+
+  const request = http
+    .post(`saves/${gameId}/end-turn`, { json: { expectedStep } })
+    .json<EndTurnResponse>()
+    .finally(() => {
+      if (inflightEndTurns.get(gameId) === request) {
+        inflightEndTurns.delete(gameId);
+      }
+    });
+
+  inflightEndTurns.set(gameId, request);
+  return request;
 }
 
 export async function fetchGameNews(gameId: string) {
-  return http.get(`games/${gameId}/news`).json<{ news: GeneratedNewsItem[] }>();
+  return http.get(`saves/${gameId}/news`).json<{ news: GeneratedNewsItem[] }>();
+}
+
+export async function fetchNextTurnForecast(gameId: string) {
+  return http.get(`saves/${gameId}/next-turn-forecast`).json<NextTurnForecast>();
+}
+
+export async function fetchGame(gameId: string) {
+  return http.get(`saves/${gameId}`).json<Game>();
 }
 
 export function mapApiNewsToFeedItem(item: GeneratedNewsItem, index: number) {

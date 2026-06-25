@@ -11,6 +11,8 @@ model Company {
   stocks       Stock[]
   news         News[]
   priceHistory PriceHistory[]
+  scheduledPriceImpacts ScheduledPriceImpact[]
+  gameCompanyQuotes     GameCompanyQuote[]
 
   @@map("companies")
   @@index([sector])

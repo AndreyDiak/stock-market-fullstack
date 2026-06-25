@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom'
 import { GameButton } from '../../components/game_ui/game_button'
 import { GameShell } from '../../components/game_ui/game_shell'
 import { PageHeader } from '../../components/game_ui/page_header'
-import { SlotCard } from '../../components/slot_card'
-import { useGamesStore } from '../../stores/games.store'
-import { DeleteSlotModal } from './_delete_slot_modal'
-import { slotsGridVariants } from './model/animation'
+import { SlotCard } from '../../components/card/slot_card'
+import { useSavesStore } from '../../stores/saves.store'
+import { DeleteSlotModal } from './_components/_delete_slot_modal'
+import { slotsGridVariants } from './_model/animation'
 
 interface DeleteTarget {
   id: string
@@ -17,7 +17,7 @@ interface DeleteTarget {
 
 export function SlotsPage() {
   const navigate = useNavigate()
-  const { slots, loading, error, loadSlots, deleteGame } = useGamesStore()
+  const { slots, loading, error, loadSlots, deleteGame } = useSavesStore()
   const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null)
   const [deleting, setDeleting] = useState(false)
 
@@ -75,7 +75,6 @@ export function SlotsPage() {
                 day={data?.day}
                 onLoad={() => {
                   if (data?.id) navigate(`/game?id=${data.id}`)
-                  else navigate('/game')
                 }}
                 onNewGame={() => navigate(`/new-game?slot=${n}`)}
                 onDelete={() => {

@@ -1,6 +1,6 @@
 import { NPCS } from '@/assets/npcs.js';
-import { REAL_ESTATE } from '@/assets/realEstate.js';
-import type { CharacterRosterItem } from '../../schemas/character-roster.schema.js';
+import { REAL_ESTATE } from '@/assets/real_estate.js';
+import type { CharacterRosterItem } from '../../schemas/character_roster.schema.js';
 
 export class CharactersService {
   listRoster(): CharacterRosterItem[] {
@@ -9,7 +9,7 @@ export class CharactersService {
       name: npc.name,
       salary: npc.salary,
       balance: npc.balance,
-      items: npc.items.map((item) => {
+      items: npc.items.slice(0, 1).map((item) => {
         const template = REAL_ESTATE.find((r) => r.id === item.itemRef)!;
         return {
           itemRef: item.itemRef,

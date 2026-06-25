@@ -18,8 +18,8 @@ model Character {
   professionLevel Int        @default(1)
   salary          Float      @default(0)
 
-  reputation   Float @default(0)
-  tradingLevel Int   @default(0)
+  reputation   Float   @default(0)
+  tradingLevel Int     @default(0)
   isNpc        Boolean @default(false)
 
   dreamItemRefs String[] @default([])

@@ -40,10 +40,7 @@ export const NPCS: NpcSeed[] = [
     professionLevel: 2,
     salary: 4000,
     balance: 17000,
-    items: [
-      { itemRef: 'garage', installmentsPaid: 6 },
-      { itemRef: 'parking_spot', installmentsPaid: 8 },
-    ],
+    items: [{ itemRef: 'garage', installmentsPaid: 6 }],
     dreams: ['sport_car', 'country_house'],
   },
   {
@@ -61,10 +58,7 @@ export const NPCS: NpcSeed[] = [
     professionLevel: 3,
     salary: 10500,
     balance: 65000,
-    items: [
-      { itemRef: 'apartment', installmentsPaid: 15 },
-      { itemRef: 'parking_spot', installmentsPaid: 8 },
-    ],
+    items: [{ itemRef: 'apartment', installmentsPaid: 15 }],
     dreams: ['yacht', 'penthouse', 'sport_car'],
   },
   {

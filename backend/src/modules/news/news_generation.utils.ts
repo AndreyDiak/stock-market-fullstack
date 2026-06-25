@@ -1,0 +1,92 @@
+import type { PriceDirection, Sentiment } from '@prisma/client';
+import type { CompanyData } from '../../assets/companies.js';
+import type { StaticNewsTemplate } from '../../assets/news.js';
+import type { PersistedNewsItem } from './types.js';
+
+export function excerptFromBody(body: string, max = 120) {
+  const normalized = body.replace(/\s+/g, ' ').trim();
+  return normalized.length <= max ? normalized : `${normalized.slice(0, max - 1)}…`;
+}
+
+type NewsRow = {
+  id: string;
+  kind: string;
+  title: string;
+  body: string | null;
+  sentiment: Sentiment;
+  impact: number;
+  sector: PersistedNewsItem['sector'];
+  companyId: string | null;
+  publishedAt: Date;
+  company?: { ticker: string } | null;
+  payload?: unknown;
+};
+
+export function toPersistedNewsItem(
+  row: NewsRow,
+  overrides?: Partial<Pick<PersistedNewsItem, 'kind' | 'hot' | 'ticker' | 'payload'>>,
+): PersistedNewsItem {
+  const kind = (overrides?.kind ?? row.kind) as PersistedNewsItem['kind'];
+
+  return {
+    id: row.id,
+    kind,
+    title: row.title,
+    body: row.body ?? '',
+    excerpt: excerptFromBody(row.body ?? ''),
+    sentiment: row.sentiment,
+    impact: row.impact,
+    sector: row.sector,
+    companyId: row.companyId,
+    ticker: overrides?.ticker ?? row.company?.ticker ?? undefined,
+    hot: overrides?.hot ?? kind === 'INSIDER',
+    publishedAt: row.publishedAt.toISOString(),
+    payload: overrides?.payload ?? row.payload ?? undefined,
+  };
+}
+
+export function templatePayload(template: StaticNewsTemplate) {
+  return {
+    templateId: template.id,
+    sentimentScore: template.sentimentScore,
+  };
+}
+
+export function insiderDirection(expectedMovePercent: number): PriceDirection {
+  return expectedMovePercent < 0 ? 'DOWN' : 'UP';
+}
+
+export function insiderMovePercent(expectedMovePercent: number) {
+  return Math.max(3, Math.min(25, Math.round(Math.abs(expectedMovePercent) || 8)));
+}
+
+export function formatInsiderLead(
+  company: CompanyData,
+  turnsUntilImpact: number,
+  direction: PriceDirection,
+  movePercent: number,
+) {
+  const movement =
+    direction === 'UP'
+      ? `выровут примерно на ${movePercent}%`
+      : `упадут примерно на ${movePercent}%`;
+
+  return `Инсайд: через ${turnsUntilImpact} ход(ов) акции ${company.name} (${company.ticker}) ${movement}.`;
+}
+
+export function resolveInsiderParams(
+  template: StaticNewsTemplate,
+  gameId: string,
+  gameStep: number,
+  pickTurnsUntilImpact: (gameId: string, gameStep: number, salt: string) => number,
+) {
+  const expectedMovePercent =
+    template.expectedMovePercent ?? (Math.random() > 0.5 ? 9 : -8);
+  const turnsUntilImpact =
+    template.turnsUntilImpact ??
+    pickTurnsUntilImpact(gameId, gameStep, 'insider-turns');
+  const direction = insiderDirection(expectedMovePercent);
+  const movePercent = insiderMovePercent(expectedMovePercent);
+
+  return { expectedMovePercent, turnsUntilImpact, direction, movePercent };
+}

@@ -103,6 +103,174 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RegisterBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AuthTokenResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["LoginBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AuthTokenResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/refresh": {
         parameters: {
             query?: never;
@@ -446,7 +614,7 @@ export interface paths {
         };
         trace?: never;
     };
-    "/games": {
+    "/saves": {
         parameters: {
             query?: never;
             header?: never;
@@ -594,7 +762,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/games/{id}": {
+    "/saves/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -812,6 +980,338 @@ export interface paths {
         };
         trace?: never;
     };
+    "/saves/{id}/end-turn": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["EndTurnBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["EndTurnResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GameDashboardResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/news": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GameNewsResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/next-turn-forecast": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["NextTurnForecastResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -883,6 +1383,23 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+            inventoryItems?: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                characterId: string;
+                itemRef: string;
+                name: string;
+                purchasePrice: number;
+                isInstallment: boolean;
+                monthlyPayment: number | null;
+                installmentsTotal: number | null;
+                installmentsPaid: number;
+                special: string | null;
+                isPaidOff: boolean;
+                /** Format: date-time */
+                purchasedAt: string;
+            }[];
         };
         CharacterRoster: {
             /** @enum {string} */
@@ -944,6 +1461,23 @@ export interface components {
                 createdAt: string;
                 /** Format: date-time */
                 updatedAt: string;
+                inventoryItems?: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    characterId: string;
+                    itemRef: string;
+                    name: string;
+                    purchasePrice: number;
+                    isInstallment: boolean;
+                    monthlyPayment: number | null;
+                    installmentsTotal: number | null;
+                    installmentsPaid: number;
+                    special: string | null;
+                    isPaidOff: boolean;
+                    /** Format: date-time */
+                    purchasedAt: string;
+                }[];
             } | null;
         };
         GameList: {
@@ -985,6 +1519,23 @@ export interface components {
                 createdAt: string;
                 /** Format: date-time */
                 updatedAt: string;
+                inventoryItems?: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    characterId: string;
+                    itemRef: string;
+                    name: string;
+                    purchasePrice: number;
+                    isInstallment: boolean;
+                    monthlyPayment: number | null;
+                    installmentsTotal: number | null;
+                    installmentsPaid: number;
+                    special: string | null;
+                    isPaidOff: boolean;
+                    /** Format: date-time */
+                    purchasedAt: string;
+                }[];
             } | null;
         }[];
         CreateGameBody: {
@@ -1000,6 +1551,244 @@ export interface components {
         };
         DeleteGameResponse: {
             success: boolean;
+        };
+        EndTurnResponse: {
+            step: number;
+            balance: number;
+            character: {
+                /** Format: uuid */
+                id: string;
+                gameId: string | null;
+                name: string;
+                balance: number;
+                /** @enum {string} */
+                profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
+                professionLevel: number;
+                salary: number;
+                reputation: number;
+                tradingLevel: number;
+                isNpc: boolean;
+                dreamItemRefs: string[];
+                totalEarned: number;
+                totalSpent: number;
+                totalTrades: number;
+                successfulTrades: number;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date-time */
+                updatedAt: string;
+                inventoryItems?: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    characterId: string;
+                    itemRef: string;
+                    name: string;
+                    purchasePrice: number;
+                    isInstallment: boolean;
+                    monthlyPayment: number | null;
+                    installmentsTotal: number | null;
+                    installmentsPaid: number;
+                    special: string | null;
+                    isPaidOff: boolean;
+                    /** Format: date-time */
+                    purchasedAt: string;
+                }[];
+            };
+            nextTurnForecast: {
+                lines: {
+                    id: string;
+                    label: string;
+                    amount: number;
+                }[];
+                incomeTotal: number;
+                expenseTotal: number;
+                netChange: number;
+            };
+            passiveIncome: {
+                salary: number;
+                livingExpense: number;
+                installmentTotal: number;
+                passiveIncome: number;
+                itemsPaidOff: string[];
+                netChange: number;
+            };
+            insiderChancePercent: number;
+            insiderRolled: boolean;
+            news: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER";
+                title: string;
+                body: string;
+                excerpt: string;
+                /** @enum {string} */
+                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+                impact: number;
+                sector?: string | null;
+                companyId?: string | null;
+                ticker?: string;
+                hot?: boolean;
+                /** Format: date-time */
+                publishedAt: string;
+                payload?: unknown;
+            }[];
+            otcDeal?: {
+                botName: string;
+                ticker: string;
+                companyName: string;
+                /** @enum {string} */
+                side: "buy" | "sell";
+                qty: number;
+                price: number;
+                turnsLeft: number;
+                flavorText: string;
+            };
+            propertyOffer?: {
+                botName: string;
+                itemRef: string;
+                itemName: string;
+                /** @enum {string} */
+                side: "buy" | "sell";
+                price: number;
+                turnsLeft: number;
+                flavorText: string;
+            };
+            appliedPriceImpacts?: {
+                /** Format: uuid */
+                impactId: string;
+                ticker: string;
+                /** @enum {string} */
+                direction: "UP" | "DOWN";
+                movePercent: number;
+                previousPrice: number;
+                newPrice: number;
+                triggerAtStep: number;
+            }[];
+        };
+        EndTurnBody: {
+            expectedStep: number;
+        };
+        GameNewsResponse: {
+            news: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER";
+                title: string;
+                body: string;
+                excerpt: string;
+                /** @enum {string} */
+                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+                impact: number;
+                sector?: string | null;
+                companyId?: string | null;
+                ticker?: string;
+                hot?: boolean;
+                /** Format: date-time */
+                publishedAt: string;
+                payload?: unknown;
+            }[];
+        };
+        NextTurnForecastResponse: {
+            lines: {
+                id: string;
+                label: string;
+                amount: number;
+            }[];
+            incomeTotal: number;
+            expenseTotal: number;
+            netChange: number;
+        };
+        GameDashboardResponse: {
+            game: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                userId: string;
+                name: string;
+                slot: number;
+                /** @enum {string} */
+                status: "ACTIVE" | "INACTIVE" | "PAUSED" | "COMPLETED";
+                step: number;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date-time */
+                updatedAt: string;
+                startedAt: string | null;
+                completedAt: string | null;
+                totalPlayTime: number;
+                character: {
+                    /** Format: uuid */
+                    id: string;
+                    gameId: string | null;
+                    name: string;
+                    balance: number;
+                    /** @enum {string} */
+                    profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
+                    professionLevel: number;
+                    salary: number;
+                    reputation: number;
+                    tradingLevel: number;
+                    isNpc: boolean;
+                    dreamItemRefs: string[];
+                    totalEarned: number;
+                    totalSpent: number;
+                    totalTrades: number;
+                    successfulTrades: number;
+                    /** Format: date-time */
+                    createdAt: string;
+                    /** Format: date-time */
+                    updatedAt: string;
+                    inventoryItems?: {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        characterId: string;
+                        itemRef: string;
+                        name: string;
+                        purchasePrice: number;
+                        isInstallment: boolean;
+                        monthlyPayment: number | null;
+                        installmentsTotal: number | null;
+                        installmentsPaid: number;
+                        special: string | null;
+                        isPaidOff: boolean;
+                        /** Format: date-time */
+                        purchasedAt: string;
+                    }[];
+                } | null;
+            };
+            news: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER";
+                title: string;
+                body: string;
+                excerpt: string;
+                /** @enum {string} */
+                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+                impact: number;
+                sector?: string | null;
+                companyId?: string | null;
+                ticker?: string;
+                hot?: boolean;
+                /** Format: date-time */
+                publishedAt: string;
+                payload?: unknown;
+            }[];
+            nextTurnForecast: {
+                lines: {
+                    id: string;
+                    label: string;
+                    amount: number;
+                }[];
+                incomeTotal: number;
+                expenseTotal: number;
+                netChange: number;
+            };
         };
         User: {
             /** Format: uuid */
@@ -1024,6 +1813,19 @@ export interface components {
         };
         LogoutResponse: {
             success: boolean;
+        };
+        AuthTokenResponse: {
+            accessToken: string;
+        };
+        RegisterBody: {
+            username: string;
+            /** Format: email */
+            email: string;
+            password: string;
+        };
+        LoginBody: {
+            login: string;
+            password: string;
         };
     };
     responses: never;

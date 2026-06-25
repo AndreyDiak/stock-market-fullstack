@@ -1,4 +1,4 @@
-/** Sync with backend/src/assets/realEstate.ts */
+/** Sync with backend/src/assets/real_estate.ts */
 export interface RealEstateItem {
   id: string
   name: string

@@ -114,6 +114,81 @@
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "inventoryItems": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "characterId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "itemRef": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "purchasePrice": {
+                  "type": "number"
+                },
+                "isInstallment": {
+                  "type": "boolean"
+                },
+                "monthlyPayment": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "installmentsTotal": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "installmentsPaid": {
+                  "type": "integer"
+                },
+                "special": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "isPaidOff": {
+                  "type": "boolean"
+                },
+                "purchasedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "id",
+                "characterId",
+                "itemRef",
+                "name",
+                "purchasePrice",
+                "isInstallment",
+                "monthlyPayment",
+                "installmentsTotal",
+                "installmentsPaid",
+                "special",
+                "isPaidOff",
+                "purchasedAt"
+              ],
+              "additionalProperties": false
+            }
           }
         },
         "required": [
@@ -375,6 +450,81 @@
                   "updatedAt": {
                     "type": "string",
                     "format": "date-time"
+                  },
+                  "inventoryItems": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "characterId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "itemRef": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "purchasePrice": {
+                          "type": "number"
+                        },
+                        "isInstallment": {
+                          "type": "boolean"
+                        },
+                        "monthlyPayment": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "installmentsTotal": {
+                          "anyOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "installmentsPaid": {
+                          "type": "integer"
+                        },
+                        "special": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "isPaidOff": {
+                          "type": "boolean"
+                        },
+                        "purchasedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "characterId",
+                        "itemRef",
+                        "name",
+                        "purchasePrice",
+                        "isInstallment",
+                        "monthlyPayment",
+                        "installmentsTotal",
+                        "installmentsPaid",
+                        "special",
+                        "isPaidOff",
+                        "purchasedAt"
+                      ],
+                      "additionalProperties": false
+                    }
                   }
                 },
                 "required": [
@@ -561,6 +711,81 @@
                     "updatedAt": {
                       "type": "string",
                       "format": "date-time"
+                    },
+                    "inventoryItems": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "characterId": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "itemRef": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "purchasePrice": {
+                            "type": "number"
+                          },
+                          "isInstallment": {
+                            "type": "boolean"
+                          },
+                          "monthlyPayment": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "installmentsTotal": {
+                            "anyOf": [
+                              {
+                                "type": "integer"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "installmentsPaid": {
+                            "type": "integer"
+                          },
+                          "special": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "isPaidOff": {
+                            "type": "boolean"
+                          },
+                          "purchasedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "characterId",
+                          "itemRef",
+                          "name",
+                          "purchasePrice",
+                          "isInstallment",
+                          "monthlyPayment",
+                          "installmentsTotal",
+                          "installmentsPaid",
+                          "special",
+                          "isPaidOff",
+                          "purchasedAt"
+                        ],
+                        "additionalProperties": false
+                      }
                     }
                   },
                   "required": [
@@ -671,6 +896,1040 @@
         ],
         "additionalProperties": false
       },
+      "EndTurnResponse": {
+        "type": "object",
+        "properties": {
+          "step": {
+            "type": "integer"
+          },
+          "balance": {
+            "type": "number"
+          },
+          "character": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "gameId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "name": {
+                "type": "string"
+              },
+              "balance": {
+                "type": "number"
+              },
+              "profession": {
+                "type": "string",
+                "enum": [
+                  "DOCTOR",
+                  "DEVELOPER",
+                  "FINANCIER",
+                  "FARMER",
+                  "ENGINEER",
+                  "STREET_CLEANER"
+                ]
+              },
+              "professionLevel": {
+                "type": "integer"
+              },
+              "salary": {
+                "type": "number"
+              },
+              "reputation": {
+                "type": "number"
+              },
+              "tradingLevel": {
+                "type": "integer"
+              },
+              "isNpc": {
+                "type": "boolean"
+              },
+              "dreamItemRefs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "totalEarned": {
+                "type": "number"
+              },
+              "totalSpent": {
+                "type": "number"
+              },
+              "totalTrades": {
+                "type": "integer"
+              },
+              "successfulTrades": {
+                "type": "integer"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "inventoryItems": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "characterId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "itemRef": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "purchasePrice": {
+                      "type": "number"
+                    },
+                    "isInstallment": {
+                      "type": "boolean"
+                    },
+                    "monthlyPayment": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "installmentsTotal": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "installmentsPaid": {
+                      "type": "integer"
+                    },
+                    "special": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "isPaidOff": {
+                      "type": "boolean"
+                    },
+                    "purchasedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "characterId",
+                    "itemRef",
+                    "name",
+                    "purchasePrice",
+                    "isInstallment",
+                    "monthlyPayment",
+                    "installmentsTotal",
+                    "installmentsPaid",
+                    "special",
+                    "isPaidOff",
+                    "purchasedAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id",
+              "gameId",
+              "name",
+              "balance",
+              "profession",
+              "professionLevel",
+              "salary",
+              "reputation",
+              "tradingLevel",
+              "isNpc",
+              "dreamItemRefs",
+              "totalEarned",
+              "totalSpent",
+              "totalTrades",
+              "successfulTrades",
+              "createdAt",
+              "updatedAt"
+            ],
+            "additionalProperties": false
+          },
+          "nextTurnForecast": {
+            "type": "object",
+            "properties": {
+              "lines": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "amount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "label",
+                    "amount"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "incomeTotal": {
+                "type": "number"
+              },
+              "expenseTotal": {
+                "type": "number"
+              },
+              "netChange": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "lines",
+              "incomeTotal",
+              "expenseTotal",
+              "netChange"
+            ],
+            "additionalProperties": false
+          },
+          "passiveIncome": {
+            "type": "object",
+            "properties": {
+              "salary": {
+                "type": "number"
+              },
+              "livingExpense": {
+                "type": "number"
+              },
+              "installmentTotal": {
+                "type": "number"
+              },
+              "passiveIncome": {
+                "type": "number"
+              },
+              "itemsPaidOff": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "netChange": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "salary",
+              "livingExpense",
+              "installmentTotal",
+              "passiveIncome",
+              "itemsPaidOff",
+              "netChange"
+            ],
+            "additionalProperties": false
+          },
+          "insiderChancePercent": {
+            "type": "number"
+          },
+          "insiderRolled": {
+            "type": "boolean"
+          },
+          "news": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "WELCOME",
+                    "MARKET",
+                    "INSIDER",
+                    "RUMOR",
+                    "OTC_DEAL",
+                    "PROPERTY_OFFER"
+                  ]
+                },
+                "title": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                },
+                "excerpt": {
+                  "type": "string"
+                },
+                "sentiment": {
+                  "type": "string",
+                  "enum": [
+                    "POSITIVE",
+                    "NEGATIVE",
+                    "NEUTRAL"
+                  ]
+                },
+                "impact": {
+                  "type": "number"
+                },
+                "sector": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "companyId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "ticker": {
+                  "type": "string"
+                },
+                "hot": {
+                  "type": "boolean"
+                },
+                "publishedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "payload": {}
+              },
+              "required": [
+                "id",
+                "kind",
+                "title",
+                "body",
+                "excerpt",
+                "sentiment",
+                "impact",
+                "publishedAt"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "otcDeal": {
+            "type": "object",
+            "properties": {
+              "botName": {
+                "type": "string"
+              },
+              "ticker": {
+                "type": "string"
+              },
+              "companyName": {
+                "type": "string"
+              },
+              "side": {
+                "type": "string",
+                "enum": [
+                  "buy",
+                  "sell"
+                ]
+              },
+              "qty": {
+                "type": "integer"
+              },
+              "price": {
+                "type": "number"
+              },
+              "turnsLeft": {
+                "type": "integer"
+              },
+              "flavorText": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "botName",
+              "ticker",
+              "companyName",
+              "side",
+              "qty",
+              "price",
+              "turnsLeft",
+              "flavorText"
+            ],
+            "additionalProperties": false
+          },
+          "propertyOffer": {
+            "type": "object",
+            "properties": {
+              "botName": {
+                "type": "string"
+              },
+              "itemRef": {
+                "type": "string"
+              },
+              "itemName": {
+                "type": "string"
+              },
+              "side": {
+                "type": "string",
+                "enum": [
+                  "buy",
+                  "sell"
+                ]
+              },
+              "price": {
+                "type": "number"
+              },
+              "turnsLeft": {
+                "type": "integer"
+              },
+              "flavorText": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "botName",
+              "itemRef",
+              "itemName",
+              "side",
+              "price",
+              "turnsLeft",
+              "flavorText"
+            ],
+            "additionalProperties": false
+          },
+          "appliedPriceImpacts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "impactId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "ticker": {
+                  "type": "string"
+                },
+                "direction": {
+                  "type": "string",
+                  "enum": [
+                    "UP",
+                    "DOWN"
+                  ]
+                },
+                "movePercent": {
+                  "type": "number"
+                },
+                "previousPrice": {
+                  "type": "number"
+                },
+                "newPrice": {
+                  "type": "number"
+                },
+                "triggerAtStep": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "impactId",
+                "ticker",
+                "direction",
+                "movePercent",
+                "previousPrice",
+                "newPrice",
+                "triggerAtStep"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "step",
+          "balance",
+          "character",
+          "nextTurnForecast",
+          "passiveIncome",
+          "insiderChancePercent",
+          "insiderRolled",
+          "news"
+        ],
+        "additionalProperties": false
+      },
+      "EndTurnBody": {
+        "type": "object",
+        "properties": {
+          "expectedStep": {
+            "type": "integer",
+            "exclusiveMinimum": 0
+          }
+        },
+        "required": [
+          "expectedStep"
+        ],
+        "additionalProperties": false
+      },
+      "GameNewsResponse": {
+        "type": "object",
+        "properties": {
+          "news": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "WELCOME",
+                    "MARKET",
+                    "INSIDER",
+                    "RUMOR",
+                    "OTC_DEAL",
+                    "PROPERTY_OFFER"
+                  ]
+                },
+                "title": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                },
+                "excerpt": {
+                  "type": "string"
+                },
+                "sentiment": {
+                  "type": "string",
+                  "enum": [
+                    "POSITIVE",
+                    "NEGATIVE",
+                    "NEUTRAL"
+                  ]
+                },
+                "impact": {
+                  "type": "number"
+                },
+                "sector": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "companyId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "ticker": {
+                  "type": "string"
+                },
+                "hot": {
+                  "type": "boolean"
+                },
+                "publishedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "payload": {}
+              },
+              "required": [
+                "id",
+                "kind",
+                "title",
+                "body",
+                "excerpt",
+                "sentiment",
+                "impact",
+                "publishedAt"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "news"
+        ],
+        "additionalProperties": false
+      },
+      "NextTurnForecastResponse": {
+        "type": "object",
+        "properties": {
+          "lines": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "amount": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "label",
+                "amount"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "incomeTotal": {
+            "type": "number"
+          },
+          "expenseTotal": {
+            "type": "number"
+          },
+          "netChange": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "lines",
+          "incomeTotal",
+          "expenseTotal",
+          "netChange"
+        ],
+        "additionalProperties": false
+      },
+      "GameDashboardResponse": {
+        "type": "object",
+        "properties": {
+          "game": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "userId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string"
+              },
+              "slot": {
+                "type": "integer"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "ACTIVE",
+                  "INACTIVE",
+                  "PAUSED",
+                  "COMPLETED"
+                ]
+              },
+              "step": {
+                "type": "integer"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "startedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "completedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "totalPlayTime": {
+                "type": "integer"
+              },
+              "character": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "gameId": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "balance": {
+                        "type": "number"
+                      },
+                      "profession": {
+                        "type": "string",
+                        "enum": [
+                          "DOCTOR",
+                          "DEVELOPER",
+                          "FINANCIER",
+                          "FARMER",
+                          "ENGINEER",
+                          "STREET_CLEANER"
+                        ]
+                      },
+                      "professionLevel": {
+                        "type": "integer"
+                      },
+                      "salary": {
+                        "type": "number"
+                      },
+                      "reputation": {
+                        "type": "number"
+                      },
+                      "tradingLevel": {
+                        "type": "integer"
+                      },
+                      "isNpc": {
+                        "type": "boolean"
+                      },
+                      "dreamItemRefs": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "totalEarned": {
+                        "type": "number"
+                      },
+                      "totalSpent": {
+                        "type": "number"
+                      },
+                      "totalTrades": {
+                        "type": "integer"
+                      },
+                      "successfulTrades": {
+                        "type": "integer"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "inventoryItems": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "characterId": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "itemRef": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "purchasePrice": {
+                              "type": "number"
+                            },
+                            "isInstallment": {
+                              "type": "boolean"
+                            },
+                            "monthlyPayment": {
+                              "type": [
+                                "number",
+                                "null"
+                              ]
+                            },
+                            "installmentsTotal": {
+                              "anyOf": [
+                                {
+                                  "type": "integer"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "installmentsPaid": {
+                              "type": "integer"
+                            },
+                            "special": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "isPaidOff": {
+                              "type": "boolean"
+                            },
+                            "purchasedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "characterId",
+                            "itemRef",
+                            "name",
+                            "purchasePrice",
+                            "isInstallment",
+                            "monthlyPayment",
+                            "installmentsTotal",
+                            "installmentsPaid",
+                            "special",
+                            "isPaidOff",
+                            "purchasedAt"
+                          ],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "gameId",
+                      "name",
+                      "balance",
+                      "profession",
+                      "professionLevel",
+                      "salary",
+                      "reputation",
+                      "tradingLevel",
+                      "isNpc",
+                      "dreamItemRefs",
+                      "totalEarned",
+                      "totalSpent",
+                      "totalTrades",
+                      "successfulTrades",
+                      "createdAt",
+                      "updatedAt"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "userId",
+              "name",
+              "slot",
+              "status",
+              "step",
+              "createdAt",
+              "updatedAt",
+              "startedAt",
+              "completedAt",
+              "totalPlayTime",
+              "character"
+            ],
+            "additionalProperties": false
+          },
+          "news": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "WELCOME",
+                    "MARKET",
+                    "INSIDER",
+                    "RUMOR",
+                    "OTC_DEAL",
+                    "PROPERTY_OFFER"
+                  ]
+                },
+                "title": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                },
+                "excerpt": {
+                  "type": "string"
+                },
+                "sentiment": {
+                  "type": "string",
+                  "enum": [
+                    "POSITIVE",
+                    "NEGATIVE",
+                    "NEUTRAL"
+                  ]
+                },
+                "impact": {
+                  "type": "number"
+                },
+                "sector": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "companyId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "ticker": {
+                  "type": "string"
+                },
+                "hot": {
+                  "type": "boolean"
+                },
+                "publishedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "payload": {}
+              },
+              "required": [
+                "id",
+                "kind",
+                "title",
+                "body",
+                "excerpt",
+                "sentiment",
+                "impact",
+                "publishedAt"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "nextTurnForecast": {
+            "type": "object",
+            "properties": {
+              "lines": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "amount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "label",
+                    "amount"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "incomeTotal": {
+                "type": "number"
+              },
+              "expenseTotal": {
+                "type": "number"
+              },
+              "netChange": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "lines",
+              "incomeTotal",
+              "expenseTotal",
+              "netChange"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "game",
+          "news",
+          "nextTurnForecast"
+        ],
+        "additionalProperties": false
+      },
       "User": {
         "type": "object",
         "properties": {
@@ -765,6 +2024,60 @@
           "success"
         ],
         "additionalProperties": false
+      },
+      "AuthTokenResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accessToken"
+        ],
+        "additionalProperties": false
+      },
+      "RegisterBody": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 32
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8
+          }
+        },
+        "required": [
+          "username",
+          "email",
+          "password"
+        ],
+        "additionalProperties": false
+      },
+      "LoginBody": {
+        "type": "object",
+        "properties": {
+          "login": {
+            "type": "string",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "login",
+          "password"
+        ],
+        "additionalProperties": false
       }
     }
   },
@@ -792,6 +2105,162 @@
         "responses": {
           "200": {
             "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthTokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthTokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -1108,10 +2577,10 @@
         }
       }
     },
-    "/games": {
+    "/saves": {
       "get": {
         "tags": [
-          "games"
+          "saves"
         ],
         "security": [
           {
@@ -1183,7 +2652,7 @@
       },
       "post": {
         "tags": [
-          "games"
+          "saves"
         ],
         "requestBody": {
           "content": {
@@ -1263,10 +2732,10 @@
         }
       }
     },
-    "/games/{id}": {
+    "/saves/{id}": {
       "get": {
         "tags": [
-          "games"
+          "saves"
         ],
         "parameters": [
           {
@@ -1349,7 +2818,7 @@
       },
       "patch": {
         "tags": [
-          "games"
+          "saves"
         ],
         "requestBody": {
           "content": {
@@ -1441,7 +2910,7 @@
       },
       "delete": {
         "tags": [
-          "games"
+          "saves"
         ],
         "parameters": [
           {
@@ -1466,6 +2935,355 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DeleteGameResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/end-turn": {
+      "post": {
+        "tags": [
+          "game"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EndTurnBody"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EndTurnResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/dashboard": {
+      "get": {
+        "tags": [
+          "game"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameDashboardResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/news": {
+      "get": {
+        "tags": [
+          "game"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameNewsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/next-turn-forecast": {
+      "get": {
+        "tags": [
+          "game"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NextTurnForecastResponse"
                 }
               }
             }

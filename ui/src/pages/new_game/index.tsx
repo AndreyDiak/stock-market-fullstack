@@ -1,21 +1,20 @@
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { CharacterCard } from '../../components/character_card'
-import { CharacterSidebar } from '../../components/character_sidebar/character_sidebar'
+import { CharacterCard } from '../../components/card/character_card'
+import { CharacterSidebar } from './_components/character_sidebar'
 import { GameShell } from '../../components/game_ui/game_shell'
 import { PageHeader } from '../../components/game_ui/page_header'
 import { PROFESSION_LABELS } from '../../constants/professions'
 import { getRealEstateImage } from '../../constants/realEstateImages'
 import { useCharactersStore, type CharacterRosterItem } from '../../stores/characters.store'
-import { useGamesStore } from '../../stores/games.store'
+import { useSavesStore } from '../../stores/saves.store'
 import {
-  INSTALLMENT_SLOT_COUNT,
   LOCKED_PLACEHOLDERS,
   calcNetMonthlyIncome,
   characterGridVariants,
   getCharacterImage,
-} from './model/utils'
+} from './_model/utils'
 
 export function NewGamePage() {
   const navigate = useNavigate()
@@ -24,7 +23,7 @@ export function NewGamePage() {
   const { characters, loading, error, loadCharacters } = useCharactersStore()
   const [selected, setSelected] = useState<CharacterRosterItem | null>(null)
   const [creating, setCreating] = useState(false)
-  const createGame = useGamesStore((s) => s.createGame)
+  const createGame = useSavesStore((s) => s.createGame)
 
   useEffect(() => {
     void loadCharacters()
@@ -35,11 +34,6 @@ export function NewGamePage() {
       setSelected(characters[0])
     }
   }, [characters, selected])
-
-  const installmentSlots = Array.from(
-    { length: INSTALLMENT_SLOT_COUNT },
-    (_, i) => selected?.items[i] ?? null,
-  )
 
   const netMonthlyIncome = selected ? calcNetMonthlyIncome(selected) : 0
 
@@ -115,16 +109,15 @@ export function NewGamePage() {
               character={selected}
               professionLabel={PROFESSION_LABELS[selected.profession]}
               netMonthlyIncome={netMonthlyIncome}
-              installmentSlots={installmentSlots}
               getItemImage={getRealEstateImage}
               creating={creating}
               onBack={() => navigate('/slots')}
               onStart={async () => {
                 setCreating(true)
-                const gameId = await createGame(slot, selected.name, selected.profession)
+                const game = await createGame(slot, selected.name, selected.profession)
                 setCreating(false)
-                if (gameId) {
-                  navigate(`/game?id=${gameId}`)
+                if (game?.id) {
+                  navigate(`/game?id=${game.id}`, { state: { initialGame: game } })
                 }
               }}
             />

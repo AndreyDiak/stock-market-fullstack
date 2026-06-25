@@ -1,12 +1,15 @@
 model PriceHistory {
   id        String   @id @default(uuid())
   companyId String
+  gameId    String?
   price     Float
   timestamp DateTime @default(now())
 
   company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  game    Game?   @relation(fields: [gameId], references: [id], onDelete: Cascade)
 
   @@map("price_history")
   @@index([companyId])
   @@index([companyId, timestamp])
+  @@index([gameId])
 }

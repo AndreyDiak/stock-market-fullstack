@@ -3,17 +3,18 @@ import type { PrismaClient } from '@prisma/client';
 import type { Redis } from 'ioredis';
 import { env } from './config/env.js';
 import { logger } from './utils/logger.js';
-import errorHandlerPlugin from './plugins/error-handler.js';
+import errorHandlerPlugin from './plugins/error_handler.js';
 import corsPlugin from './plugins/cors.js';
 import prismaPlugin from './plugins/prisma.js';
 import redisPlugin from './plugins/redis.js';
 import authPlugin from './plugins/auth.js';
-import rateLimitPlugin from './plugins/rate-limit.js';
+import rateLimitPlugin from './plugins/rate_limit.js';
 import swaggerPlugin from './plugins/swagger.js';
 import { authRoutes } from './modules/auth/auth.routes.js';
 import { charactersRoutes } from './modules/characters/characters.routes.js';
 import { usersRoutes } from './modules/users/users.routes.js';
-import { gamesRoutes } from './modules/games/games.routes.js';
+import { savesRoutes } from './modules/saves/saves.routes.js';
+import { gameRoutes } from './modules/game/routes.js';
 
 export interface BuildAppOptions {
   openapiExport?: boolean;
@@ -54,7 +55,8 @@ export async function buildApp(options: BuildAppOptions = {}) {
   await fastify.register(authRoutes);
   await fastify.register(charactersRoutes);
   await fastify.register(usersRoutes);
-  await fastify.register(gamesRoutes);
+  await fastify.register(savesRoutes);
+  await fastify.register(gameRoutes);
 
   fastify.get('/health', {
     schema: {

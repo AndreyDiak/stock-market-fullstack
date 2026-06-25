@@ -4,7 +4,7 @@ import { errorResponseSchema } from './error.schema.js';
 import { characterSchema } from './character.schema.js';
 import {
   characterRosterSchema,
-} from './character-roster.schema.js';
+} from './character_roster.schema.js';
 import {
   createGameBodySchema,
   deleteGameResponseSchema,
@@ -12,8 +12,10 @@ import {
   gameSchema,
   updateGameBodySchema,
 } from './game.schema.js';
+import { endTurnBodySchema, endTurnResponseSchema, gameNewsResponseSchema, nextTurnForecastResponseSchema } from './turn.schema.js';
+import { gameDashboardResponseSchema } from './dashboard.schema.js';
 import { updateUserBodySchema, userSchema } from './user.schema.js';
-import { logoutResponseSchema, refreshTokenResponseSchema } from './auth.schema.js';
+import { logoutResponseSchema, refreshTokenResponseSchema, authTokenResponseSchema, registerBodySchema, loginBodySchema } from './auth.schema.js';
 
 const schemaEntries = {
   ErrorResponse: errorResponseSchema,
@@ -24,10 +26,18 @@ const schemaEntries = {
   CreateGameBody: createGameBodySchema,
   UpdateGameBody: updateGameBodySchema,
   DeleteGameResponse: deleteGameResponseSchema,
+  EndTurnResponse: endTurnResponseSchema,
+  EndTurnBody: endTurnBodySchema,
+  GameNewsResponse: gameNewsResponseSchema,
+  NextTurnForecastResponse: nextTurnForecastResponseSchema,
+  GameDashboardResponse: gameDashboardResponseSchema,
   User: userSchema,
   UpdateUserBody: updateUserBodySchema,
   RefreshTokenResponse: refreshTokenResponseSchema,
   LogoutResponse: logoutResponseSchema,
+  AuthTokenResponse: authTokenResponseSchema,
+  RegisterBody: registerBodySchema,
+  LoginBody: loginBodySchema,
 } as const;
 
 export const fastifyDefMap = Object.fromEntries(

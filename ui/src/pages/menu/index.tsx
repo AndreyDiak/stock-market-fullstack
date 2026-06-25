@@ -7,8 +7,8 @@ import { SessionCard } from '../../components/game_ui/session_card'
 import { http } from '../../lib/http'
 import { useAuthStore } from '../../stores/auth.store'
 import { useUsersStore } from '../../stores/users.store'
-import { ProfilePanel } from './_profile_panel'
-import { menuContainerVariants, menuItemVariants, titleVariants } from './model/animation'
+import { ProfilePanel } from './_components/_profile_panel'
+import { menuContainerVariants, menuItemVariants, titleVariants } from './_model/animation'
 
 export function MenuPage() {
   const navigate = useNavigate()

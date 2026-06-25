@@ -43,7 +43,13 @@ export const useCharactersStore = create<CharactersState>((set) => ({
     set({ loading: true, error: null })
     try {
       const characters: CharacterRosterItem[] = await http.get('characters').json()
-      set({ characters, loading: false })
+      set({
+        characters: characters.map((character) => ({
+          ...character,
+          items: character.items.slice(0, 1),
+        })),
+        loading: false,
+      })
     } catch {
       set({ loading: false, error: 'Не удалось загрузить персонажей' })
     }

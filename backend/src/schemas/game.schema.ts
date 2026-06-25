@@ -40,3 +40,4 @@ export const deleteGameResponseSchema = z.object({
 
 export type CreateGameBody = z.infer<typeof createGameBodySchema>;
 export type UpdateGameBody = z.infer<typeof updateGameBodySchema>;
+export type Game = z.infer<typeof gameSchema>;

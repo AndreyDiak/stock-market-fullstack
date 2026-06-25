@@ -23,6 +23,11 @@ model Game {
   totalPlayTime Int       @default(0)
 
   character Character?
+  news      News[]
+
+  scheduledPriceImpacts ScheduledPriceImpact[]
+  gameCompanyQuotes     GameCompanyQuote[]
+  priceHistory          PriceHistory[]
 
   @@unique([userId, slot])
   @@map("games")

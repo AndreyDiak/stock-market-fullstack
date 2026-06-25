@@ -3,10 +3,14 @@ import { AppError } from '../../utils/errors.js';
 import type { UpdateUserInput } from './users.schema.js';
 
 export class UsersService {
-  constructor(private prisma: PrismaClient) {}
+  readonly #prisma: PrismaClient;
+
+  constructor(prisma: PrismaClient) {
+    this.#prisma = prisma;
+  }
 
   async getMe(userId: string) {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.#prisma.user.findUnique({
       where: { id: userId },
       select: {
         id: true,
@@ -27,7 +31,7 @@ export class UsersService {
   }
 
   async updateMe(userId: string, data: UpdateUserInput) {
-    const user = await this.prisma.user.update({
+    const user = await this.#prisma.user.update({
       where: { id: userId },
       data: {
         ...(data.displayName !== undefined && { displayName: data.displayName }),

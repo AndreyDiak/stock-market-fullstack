@@ -184,17 +184,27 @@ Use `localhost` in `DATABASE_URL` and `REDIS_URL` in `.env` (see `.env.example`)
 
 
 
-### Games
+### Saves
 
-- `GET /games` — List user's games
+- `GET /saves` — List user's saves
 
-- `POST /games` — Create game with character
+- `POST /saves` — Create save with character
 
-- `GET /games/:id` — Get game details
+- `GET /saves/:id` — Get save details
 
-- `PATCH /games/:id` — Update game
+- `PATCH /saves/:id` — Update save
 
-- `DELETE /games/:id` — Delete game
+- `DELETE /saves/:id` — Delete save
+
+### Game (turn)
+
+- `POST /saves/:id/end-turn` — End current turn
+
+- `GET /saves/:id/dashboard` — Dashboard data (game, news, forecast)
+
+- `GET /saves/:id/news` — News feed
+
+- `GET /saves/:id/next-turn-forecast` — Next turn forecast
 
 
 
