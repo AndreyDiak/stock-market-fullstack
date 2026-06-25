@@ -20,7 +20,13 @@ export function WorkBlock({
         </span>
       }
     >
-      <div className={`rounded-xl p-3 ${theme.sidebarInset}`}>
+      <div
+        className={`overflow-hidden rounded-xl border p-3 ${
+          theme.isLight
+            ? theme.sidebarInset
+            : 'border-slate-600/30 bg-slate-800/50'
+        }`}
+      >
         <div className="mb-3 flex items-center gap-2">
           <BriefcaseIcon className="h-4 w-4 shrink-0 text-emerald-400" />
           <p className={`text-[11px] font-medium uppercase tracking-wider ${theme.secondaryText}`}>
