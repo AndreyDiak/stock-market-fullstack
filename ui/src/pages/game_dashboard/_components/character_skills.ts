@@ -19,7 +19,7 @@ export const CHARACTER_SKILLS: CharacterSkill[] = [
     description: 'Курсы и аттестация по специальности. Растёт доход и внимание рынка к вашим контактам.',
     effectLabel: '+10% к зарплате и +2% к шансу инсайда за уровень',
     basePrice: 3500,
-    level: 0,
+    level: 1,
     maxLevel: 10,
   },
   {
@@ -61,19 +61,27 @@ export type CharacterUpgrade = CharacterSkill
 
 export const TRADING_GRADES = ['F', 'E', 'D', 'C', 'B', 'A'] as const
 
+function getSkillUpgradeTier(skill: CharacterSkill) {
+  return skill.id === 'qualification' ? Math.max(0, skill.level - 1) : skill.level
+}
+
 export function calcSkillPrice(skill: CharacterSkill) {
-  return Math.round(skill.basePrice * (1 + skill.level * 0.35))
+  return Math.round(skill.basePrice * (1 + getSkillUpgradeTier(skill) * 0.35))
 }
 
 /** @deprecated use calcSkillPrice */
 export const calcUpgradePrice = calcSkillPrice
 
 export function calcEffectiveSalary(baseSalary: number, qualificationLevel: number) {
-  return Math.round(baseSalary * (1 + 0.1 * qualificationLevel))
+  return Math.round(baseSalary * (1 + 0.1 * Math.max(0, qualificationLevel - 1)))
+}
+
+export function calcSalaryBonus(baseSalary: number, qualificationLevel: number) {
+  return calcEffectiveSalary(baseSalary, qualificationLevel) - baseSalary
 }
 
 export function calcWorkLevel(qualificationLevel: number) {
-  return qualificationLevel + 1
+  return Math.max(1, qualificationLevel)
 }
 
 export function calcInsiderChance(qualificationLevel: number) {
@@ -89,7 +97,9 @@ export function getTradingGrade(tradingSkillLevel: number) {
 }
 
 export function getSkillLevel(skills: CharacterSkill[], skillId: string) {
-  return skills.find((skill) => skill.id === skillId)?.level ?? 0
+  const level = skills.find((skill) => skill.id === skillId)?.level
+  if (level !== undefined) return level
+  return skillId === 'qualification' ? 1 : 0
 }
 
 export function getSkillSegmentDisplay(
@@ -246,5 +256,112 @@ export function buildSkillUpgradePreview(
     maxLevel: skill.maxLevel,
     price,
     benefits,
+  }
+}
+
+export interface SkillInfographicChip {
+  id: string
+  label: string
+  value?: string
+  moneyAmount?: number
+  tone?: 'emerald' | 'amber'
+}
+
+export function buildSkillCurrentInfographic(
+  skill: CharacterSkill,
+  context: { baseSalary: number },
+): SkillInfographicChip[] {
+  switch (skill.id) {
+    case 'qualification': {
+      const bonus = calcSalaryBonus(context.baseSalary, skill.level)
+      return [
+        {
+          id: 'salary-bonus',
+          label: 'Зарплатный бонус',
+          moneyAmount: bonus,
+          tone: bonus > 0 ? 'emerald' : undefined,
+        },
+        {
+          id: 'insider',
+          label: 'Шанс на инсайд',
+          value: `${calcInsiderChance(skill.level)}%`,
+          tone: 'emerald',
+        },
+      ]
+    }
+    case 'banking':
+      return [
+        {
+          id: 'rate',
+          label: 'Ставка по кредиту',
+          value: `${calcBankBaseRate(skill.level)}%`,
+          tone: 'emerald',
+        },
+      ]
+    case 'trading':
+      return [
+        {
+          id: 'stocks',
+          label: 'Доступные акции',
+          value: getTradingGrade(skill.level),
+          tone: 'amber',
+        },
+      ]
+    default:
+      return []
+  }
+}
+
+export interface SkillLevelTooltip {
+  title: string
+  lines: string[]
+}
+
+export function getSkillLevelTooltip(
+  skillId: string,
+  levelAtCell: number,
+  context: { baseSalary: number },
+): SkillLevelTooltip {
+  switch (skillId) {
+    case 'banking':
+      return {
+        title: `Уровень ${levelAtCell}`,
+        lines: [`Ставка по кредиту: ${calcBankBaseRate(levelAtCell)}%`],
+      }
+    case 'trading': {
+      const grade = getTradingGrade(levelAtCell)
+      return {
+        title: `Грейд ${grade}`,
+        lines: [`Доступные акции: ${grade}`, 'Выше шанс успешной сделки'],
+      }
+    }
+    case 'qualification': {
+      const bonus = calcSalaryBonus(context.baseSalary, levelAtCell)
+      return {
+        title: `Уровень ${levelAtCell}`,
+        lines: [
+          `Зарплатный бонус: +${formatMoney(bonus)} ₽`,
+          `Шанс на инсайд: ${calcInsiderChance(levelAtCell)}%`,
+        ],
+      }
+    }
+    case 'property_slots': {
+      if (levelAtCell <= 1) {
+        return {
+          title: 'Слот 1',
+          lines: ['Базовый слот имущества'],
+        }
+      }
+
+      return {
+        title: `Слот ${levelAtCell}`,
+        lines: [
+          `Активных слотов: ${levelAtCell}`,
+          `Требуется ${levelAtCell - 1} улучшение навыка`,
+        ],
+      }
+    }
+    default:
+      return { title: '', lines: [] }
   }
 }

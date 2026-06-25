@@ -99,7 +99,7 @@ export function ProfileInfoCard({  profile,
         </div>
       </div>
 
-      <div className="mt-5 grid grid-cols-3 gap-2 overflow-visible sm:gap-2.5">
+      <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-2.5">
         {stats.map((stat) => (
           <ProfileStatTile key={stat.label} {...stat} />
         ))}

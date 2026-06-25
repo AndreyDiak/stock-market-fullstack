@@ -70,7 +70,7 @@ export function CharacterProfilePanel({
         </p>
       </header>
 
-      <div className="min-h-0 flex-1 space-y-6 overflow-auto px-3 pb-3 pr-1">
+      <div className="min-h-0 flex-1 space-y-6 overflow-x-hidden overflow-y-auto px-3 pb-3 pr-1">
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]">
           <ProfileInfoCard
             profile={profile}
@@ -98,6 +98,7 @@ export function CharacterProfilePanel({
               <SkillCard
                 key={skill.id}
                 skill={skill}
+                baseSalary={profile.salary}
                 balance={balance}
                 onRequestUpgrade={setPendingSkillId}
               />

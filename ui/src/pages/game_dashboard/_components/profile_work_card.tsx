@@ -13,7 +13,7 @@ export function ProfileWorkCard({
 }: ProfileWorkCardProps) {
   const workLevel = calcWorkLevel(qualificationLevel)
   const effectiveSalary = calcEffectiveSalary(baseSalary, qualificationLevel)
-  const hasBonus = qualificationLevel > 0
+  const hasBonus = qualificationLevel > 1
 
   return (
     <section className="rounded-2xl border border-white/10 bg-slate-800/40 p-5">
@@ -41,7 +41,7 @@ export function ProfileWorkCard({
             <MoneyValue amount={baseSalary} size="xs" color="muted" className="inline-flex" />
             <span className="text-emerald-400">
               {' '}
-              +{qualificationLevel * 10}% от квалификации
+              +{(qualificationLevel - 1) * 10}% от квалификации
             </span>
           </p>
         )}

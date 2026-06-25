@@ -146,6 +146,11 @@ export const useGameStore = create<GameState>((set, get) => {
       balance: snapshot.balance,
       characterProfile: snapshot.profile,
       propertySlots: snapshot.propertySlots,
+      characterSkills: get().characterSkills.map((skill) =>
+        skill.id === 'qualification'
+          ? { ...skill, level: character.professionLevel }
+          : skill,
+      ),
       portfolio: [],
       otcDeals: [],
       bankLoans: [],
