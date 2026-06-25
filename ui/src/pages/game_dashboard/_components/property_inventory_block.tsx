@@ -1,6 +1,26 @@
+import { AnimatePresence, motion } from 'framer-motion'
+import { useState } from 'react'
 import { MoneyValue } from '../../../components/money/money_value'
 import { LockIcon } from '../../../shared/icons'
 import { getRealEstateImage } from '../../../constants/realEstateImages'
+import type { GameDashboardThemeTokens } from './game_dashboard_theme'
+
+function AccordionChevron({ open, theme }: { open: boolean; theme: GameDashboardThemeTokens }) {
+  return (
+    <span
+      aria-hidden
+      className={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border transition-transform duration-200 ${
+        theme.isLight
+          ? 'border-slate-200 bg-slate-50 text-slate-500'
+          : 'border-slate-600/40 bg-slate-800/60 text-slate-400'
+      } ${open ? 'rotate-180' : ''}`}
+    >
+      <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M4 6l4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </span>
+  )
+}
 
 export interface PropertyItem {
   itemRef: string
@@ -50,24 +70,52 @@ function countOccupiedSlots(slots: PropertySlot[]) {
   return slots.filter((slot) => !slot.isLocked && slot.item).length
 }
 
-function LockedPropertySlot() {
+function LockedPropertySlot({ theme }: { theme: GameDashboardThemeTokens }) {
   return (
-    <article className="relative aspect-square overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-800/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] ring-1 ring-black/20">
-      <div className="absolute inset-0 bg-slate-900/55 backdrop-blur-[1px]" />
+    <article
+      className={`relative aspect-square overflow-hidden rounded-xl border ${
+        theme.isLight
+          ? 'border-slate-300/70 bg-slate-100/80'
+          : 'border-slate-700/50 bg-slate-800/60'
+      }`}
+    >
+      <div
+        className={`absolute inset-0 backdrop-blur-[1px] ${
+          theme.isLight ? 'bg-slate-200/40' : 'bg-slate-900/55'
+        }`}
+      />
 
       <div className="relative flex h-full flex-col items-center justify-center gap-2 p-3 text-center">
-        <LockIcon className="h-12 w-12 drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] text-slate-500/80" />
-        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Заблокировано</p>
+        <LockIcon
+          className={`h-10 w-10 drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] ${
+            theme.isLight ? 'text-slate-400' : 'text-slate-500/80'
+          }`}
+        />
+        <p className={`text-[10px] font-bold uppercase tracking-wider ${theme.secondaryText}`}>
+          Заблокировано
+        </p>
       </div>
     </article>
   )
 }
 
-function OccupiedPropertySlot({ item }: { item: PropertyItem }) {
+function OccupiedPropertySlot({
+  item,
+  theme,
+}: {
+  item: PropertyItem
+  theme: GameDashboardThemeTokens
+}) {
   const image = getRealEstateImage(item.itemRef)
 
   return (
-    <article className="group relative aspect-square overflow-hidden rounded-2xl border border-slate-700/40 bg-slate-800/60 shadow-[0_8px_24px_rgba(0,0,0,0.35)] ring-1 ring-emerald-400/10 transition hover:border-emerald-400/25 hover:ring-emerald-400/20">
+    <article
+      className={`group relative aspect-square overflow-hidden rounded-xl border transition hover:border-emerald-400/25 ${
+        theme.isLight
+          ? 'border-slate-300/70 bg-slate-100'
+          : 'border-slate-700/40 bg-slate-800/60'
+      }`}
+    >
       {image ? (
         <img src={image} alt={item.name} className="absolute inset-0 h-full w-full object-cover" />
       ) : (
@@ -94,9 +142,15 @@ function OccupiedPropertySlot({ item }: { item: PropertyItem }) {
   )
 }
 
-function EmptyPropertySlot() {
+function EmptyPropertySlot({ theme }: { theme: GameDashboardThemeTokens }) {
   return (
-    <article className="relative flex aspect-square items-center justify-center overflow-hidden rounded-2xl border border-dashed border-emerald-400/25 bg-slate-800/40 ring-1 ring-emerald-400/10">
+    <article
+      className={`relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border border-dashed ${
+        theme.isLight
+          ? 'border-emerald-500/30 bg-emerald-50/50'
+          : 'border-emerald-400/25 bg-slate-800/40'
+      }`}
+    >
       <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-400/60">Пустой слот</p>
     </article>
   )
@@ -104,32 +158,52 @@ function EmptyPropertySlot() {
 
 interface PropertyInventoryBlockProps {
   slots: PropertySlot[]
+  theme: GameDashboardThemeTokens
 }
 
-export function PropertyInventoryBlock({ slots }: PropertyInventoryBlockProps) {
+export function PropertyInventoryBlock({ slots, theme }: PropertyInventoryBlockProps) {
+  const [open, setOpen] = useState(true)
   const occupied = countOccupiedSlots(slots)
   const total = slots.length
 
   return (
-    <section className="py-1">
-      <h3 className="mb-2 text-sm font-bold uppercase tracking-wider text-white">
-        Имущество{' '}
-        <span className="font-bold text-emerald-400/90">
-          ({occupied}/{total})
-        </span>
-      </h3>
+    <section className={theme.sidebarSection}>
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+        className={`flex w-full items-center justify-between gap-2 text-left ${open ? 'mb-2.5' : ''}`}
+      >
+        <h3 className={theme.sidebarSectionTitle}>
+          Имущество ({occupied}/{total})
+        </h3>
+        <AccordionChevron open={open} theme={theme} />
+      </button>
 
-      <div className="grid grid-cols-2 gap-3">
-        {slots.map((slot) => {
-          if (slot.isLocked) {
-            return <LockedPropertySlot key={slot.id} />
-          }
-          if (slot.item) {
-            return <OccupiedPropertySlot key={slot.id} item={slot.item} />
-          }
-          return <EmptyPropertySlot key={slot.id} />
-        })}
-      </div>
+      <AnimatePresence initial={false}>
+        {open ? (
+          <motion.div
+            key="property-grid"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+            className="overflow-hidden"
+          >
+            <div className="grid grid-cols-2 gap-2">
+              {slots.map((slot) => {
+                if (slot.isLocked) {
+                  return <LockedPropertySlot key={slot.id} theme={theme} />
+                }
+                if (slot.item) {
+                  return <OccupiedPropertySlot key={slot.id} item={slot.item} theme={theme} />
+                }
+                return <EmptyPropertySlot key={slot.id} theme={theme} />
+              })}
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </section>
   )
 }

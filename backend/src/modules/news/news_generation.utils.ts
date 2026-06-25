@@ -28,6 +28,12 @@ export function toPersistedNewsItem(
 ): PersistedNewsItem {
   const kind = (overrides?.kind ?? row.kind) as PersistedNewsItem['kind'];
 
+  const payload = overrides?.payload ?? row.payload ?? undefined;
+  const publishedStep =
+    typeof (payload as { publishedStep?: number } | undefined)?.publishedStep === 'number'
+      ? (payload as { publishedStep: number }).publishedStep
+      : undefined;
+
   return {
     id: row.id,
     kind,
@@ -41,7 +47,8 @@ export function toPersistedNewsItem(
     ticker: overrides?.ticker ?? row.company?.ticker ?? undefined,
     hot: overrides?.hot ?? kind === 'INSIDER',
     publishedAt: row.publishedAt.toISOString(),
-    payload: overrides?.payload ?? row.payload ?? undefined,
+    publishedStep,
+    payload,
   };
 }
 

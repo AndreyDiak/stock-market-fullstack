@@ -59,6 +59,21 @@ export function appendLoanToForecast(
   return summarizeForecast(lines)
 }
 
+export function patchForecastSalary(
+  forecast: NextTurnForecast,
+  salary: number,
+): NextTurnForecast {
+  if (!forecast.lines.some((line) => line.id === 'salary')) {
+    return forecast
+  }
+
+  const lines = forecast.lines.map((line) =>
+    line.id === 'salary' ? { ...line, amount: salary } : line,
+  )
+
+  return summarizeForecast(lines)
+}
+
 export function buildNextTurnForecast(input: {
   step: number
   salary: number

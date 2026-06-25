@@ -90,32 +90,19 @@ export class NewsGenerationService {
     const baseCtx = {
       gameId: input.gameId,
       gameStep: input.gameStep,
+      company: pickRandom(COMPANIES),
     };
 
-    const news: PersistedNewsItem[] = [
-      await this.#generateStaticNews(
-        { ...baseCtx, company: pickRandom(COMPANIES) },
-        this.#marketNewsConfig(),
-      ),
-    ];
-
+    let item: PersistedNewsItem;
     if (insiderRolled) {
-      news.push(
-        await this.#generateStaticNews(
-          { ...baseCtx, company: pickRandom(COMPANIES) },
-          this.#insiderNewsConfig(),
-        ),
-      );
+      item = await this.#generateStaticNews(baseCtx, this.#insiderNewsConfig());
     } else if (Math.random() < 0.35) {
-      news.push(
-        await this.#generateStaticNews(
-          { ...baseCtx, company: pickRandom(COMPANIES) },
-          this.#rumorNewsConfig(),
-        ),
-      );
+      item = await this.#generateStaticNews(baseCtx, this.#rumorNewsConfig());
+    } else {
+      item = await this.#generateStaticNews(baseCtx, this.#marketNewsConfig());
     }
 
-    return { news, insiderRolled, insiderChancePercent };
+    return { news: [item], insiderRolled, insiderChancePercent };
   }
 
   async createWelcomeNews(gameId: string, characterName: string, tradingLevel = 1) {
@@ -267,6 +254,11 @@ export class NewsGenerationService {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
 
+    const payload = {
+      ...((input.payload as Record<string, unknown> | undefined) ?? {}),
+      publishedStep: input.gameStep,
+    };
+
     const row = await this.#prisma.news.create({
       data: {
         gameId: input.gameId,
@@ -278,7 +270,7 @@ export class NewsGenerationService {
         sector: input.sector ?? undefined,
         companyId: companyId ?? undefined,
         expiresAt,
-        payload: input.payload as object | undefined,
+        payload,
       },
       include: { company: true },
     });
@@ -287,7 +279,7 @@ export class NewsGenerationService {
       kind: input.kind,
       hot: input.hot,
       ticker: input.ticker,
-      payload: input.payload,
+      payload,
     });
   }
 }

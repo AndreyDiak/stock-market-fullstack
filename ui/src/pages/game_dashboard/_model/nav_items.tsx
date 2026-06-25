@@ -2,6 +2,7 @@ import {
   BankIcon,
   CharacterIcon,
   ExchangeIcon,
+  NewsIcon,
   OtcDealsIcon,
   RealEstateIcon,
 } from '../../../shared/icons'
@@ -30,6 +31,12 @@ export const NAV_ITEMS: sidebar_nav_item[] = [
     label: 'Биржа',
     shortLabel: 'Биржа',
     icon: <ExchangeIcon className={NAV_ICON_CLASS} />,
+  },
+  {
+    id: 'news',
+    label: 'Новости',
+    shortLabel: 'Новости',
+    icon: <NewsIcon className={NAV_ICON_CLASS} />,
   },
   {
     id: 'otc',

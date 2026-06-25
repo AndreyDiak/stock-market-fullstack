@@ -8,6 +8,7 @@ import { NewGamePage } from './pages/new_game'
 import { GameDashboardPage } from './pages/game_dashboard'
 import { SettingsPage } from './pages/settings'
 import { registerHttpUnauthorizedMiddleware } from './lib/http-middleware.ts'
+import { tryRefreshAccessToken, isAccessTokenExpired } from './lib/auth-refresh.ts'
 import { useAuthStore } from './stores/auth.store.ts'
 import { useUsersStore } from './stores/users.store.ts'
 
@@ -27,6 +28,16 @@ export function App() {
         navigate('/', { replace: true })
       }
     })
+
+    const { isAuthenticated, accessToken } = useAuthStore.getState()
+    if (isAuthenticated && accessToken && isAccessTokenExpired(accessToken)) {
+      void tryRefreshAccessToken().then((ok) => {
+        if (!ok) {
+          logout()
+          clearProfile()
+        }
+      })
+    }
 
     return () => registerHttpUnauthorizedMiddleware(null)
   }, [navigate, logout, clearProfile])

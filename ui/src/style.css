@@ -63,6 +63,114 @@ button:hover {
   }
 }
 
-.new-game-ticker {
-  animation: new-game-ticker-scroll linear infinite;
+@keyframes balance-coin-in {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -20%) scale(0.65);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -170%) scale(0.5);
+  }
+}
+
+@keyframes balance-coin-out {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -80%) scale(0.65);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 50%) scale(0.45);
+  }
+}
+
+.balance-coin-fx {
+  animation-duration: 620ms;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+.balance-coin-fx--in {
+  animation-name: balance-coin-in;
+}
+
+.balance-coin-fx--out {
+  animation-name: balance-coin-out;
+}
+
+/* Themed scrollbars for game dashboard panels */
+.game-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(16, 185, 129, 0.42) transparent;
+}
+
+.game-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.game-scrollbar::-webkit-scrollbar-track {
+  margin: 6px 0;
+  background: transparent;
+}
+
+.game-scrollbar::-webkit-scrollbar-thumb {
+  border: 1px solid rgba(16, 185, 129, 0.12);
+  border-radius: 9999px;
+  background: linear-gradient(
+    180deg,
+    rgba(16, 185, 129, 0.55) 0%,
+    rgba(6, 182, 212, 0.38) 100%
+  );
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.12);
+}
+
+.game-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(52, 211, 153, 0.78) 0%,
+    rgba(34, 211, 238, 0.58) 100%
+  );
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.28);
+}
+
+.game-scrollbar-light {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(5, 150, 105, 0.45) rgba(241, 245, 249, 0.6);
+}
+
+.game-scrollbar-light::-webkit-scrollbar {
+  width: 6px;
+}
+
+.game-scrollbar-light::-webkit-scrollbar-track {
+  margin: 6px 0;
+  background: rgba(241, 245, 249, 0.55);
+  border-radius: 9999px;
+}
+
+.game-scrollbar-light::-webkit-scrollbar-thumb {
+  border: 1px solid rgba(5, 150, 105, 0.15);
+  border-radius: 9999px;
+  background: linear-gradient(
+    180deg,
+    rgba(5, 150, 105, 0.5) 0%,
+    rgba(14, 165, 233, 0.35) 100%
+  );
+}
+
+.game-scrollbar-light::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(16, 185, 129, 0.65) 0%,
+    rgba(6, 182, 212, 0.5) 100%
+  );
 }

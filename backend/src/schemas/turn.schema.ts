@@ -17,6 +17,7 @@ export const generatedNewsItemSchema = z.object({
   ticker: z.string().optional(),
   hot: z.boolean().optional(),
   publishedAt: z.string().datetime(),
+  publishedStep: z.number().int().positive().optional(),
   payload: z.unknown().optional(),
 });
 

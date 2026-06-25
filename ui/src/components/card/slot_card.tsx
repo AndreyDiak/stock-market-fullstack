@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import type { KeyboardEvent } from 'react'
 import { GameButton } from '../game_ui/game_button'
 import { MoneyValue } from '../money/money_value'
 import { PlusIcon } from '../../shared/icons'
@@ -7,12 +8,22 @@ import { getProfessionImage } from '../../constants/professionImages'
 import type { CreateGameBody } from '../../api/types'
 
 export const slotCardVariants = {
-  hidden: { y: 40, opacity: 0, scale: 0.94 },
+  hidden: { y: 28, opacity: 0, scale: 0.97 },
   show: {
     y: 0,
     opacity: 1,
     scale: 1,
-    transition: { type: 'spring', stiffness: 280, damping: 24 },
+    transition: { type: 'spring', stiffness: 210, damping: 28, mass: 0.85 },
+  },
+}
+
+export const emptySlotCardVariants = {
+  hidden: { y: 28, opacity: 0, scale: 0.97 },
+  show: {
+    y: 0,
+    opacity: 0.8,
+    scale: 1,
+    transition: { type: 'spring', stiffness: 210, damping: 28, mass: 0.85 },
   },
 }
 
@@ -83,19 +94,28 @@ export function SlotCard({
   if (!filled) {
     return (
       <motion.div
-        variants={slotCardVariants}
-        className="flex h-full min-h-[22rem] flex-col opacity-80"
+        variants={emptySlotCardVariants}
+        role="button"
+        tabIndex={0}
+        onClick={onNewGame}
+        onKeyDown={(event: KeyboardEvent) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault()
+            onNewGame?.()
+          }
+        }}
+        className="group flex h-full min-h-[22rem] cursor-pointer flex-col transition-shadow duration-200 hover:shadow-[0_0_28px_rgba(16,185,129,0.14)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400/50"
         style={emptyFrameStyle}
       >
         <div className="flex flex-1 flex-col p-2.5">
           <SlotChrome slot={slot} active={false} />
 
-          <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-white/5 bg-gradient-to-b from-[#0a1218] to-[#060a0e]">
+          <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-white/5 bg-gradient-to-b from-[#0a1218] to-[#060a0e] transition-colors duration-200 group-hover:border-emerald-400/25">
             <div className="flex flex-1 flex-col items-center justify-center gap-3 p-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full border border-dashed border-emerald-400/30 bg-emerald-400/5">
-                <PlusIcon className="h-7 w-7 text-emerald-400/70" />
+              <div className="flex h-14 w-14 items-center justify-center rounded-full border border-dashed border-emerald-400/30 bg-emerald-400/5 transition-colors duration-200 group-hover:border-emerald-400/50 group-hover:bg-emerald-400/10">
+                <PlusIcon className="h-7 w-7 text-emerald-400/70 transition-colors duration-200 group-hover:text-emerald-300" />
               </div>
-              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500 transition-colors duration-200 group-hover:text-slate-400">
                 Пустой слот
               </span>
             </div>
@@ -105,15 +125,17 @@ export function SlotCard({
           </div>
 
           <div className="mt-2 shrink-0 px-1 text-center">
-            <div className="text-sm font-bold text-slate-500">Слот {slot}</div>
-            <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600">
+            <div className="text-sm font-bold text-slate-500 transition-colors duration-200 group-hover:text-slate-400">
+              Слот {slot}
+            </div>
+            <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600 transition-colors duration-200 group-hover:text-emerald-500/70">
               Свободен
             </div>
           </div>
         </div>
 
-        <div className="px-2.5 pb-2.5">
-          <GameButton fullWidth variant="muted" onClick={onNewGame}>
+        <div className="pointer-events-none px-2.5 pb-2.5">
+          <GameButton fullWidth variant="muted">
             Новая игра
           </GameButton>
         </div>
@@ -148,18 +170,18 @@ export function SlotCard({
             )}
           </div>
 
-          <div className="relative z-10 bg-gradient-to-t from-black/90 via-black/50 to-transparent px-3 pb-2 pt-6">
-            <div className="flex items-center justify-between gap-2 text-xs">
-              <span className="text-slate-400">Баланс</span>
+          <div className="relative z-10 bg-gradient-to-t from-black/95 via-black/60 to-transparent px-3 pb-2.5 pt-5">
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-sm font-semibold text-slate-300">Баланс</span>
               {balance != null ? (
-                <MoneyValue amount={balance} size="xs" />
+                <MoneyValue amount={balance} size="md" />
               ) : (
-                <span className="font-bold text-emerald-400">—</span>
+                <span className="text-base font-bold text-emerald-400">—</span>
               )}
             </div>
-            <div className="mt-1 flex items-center justify-between gap-2 text-xs">
-              <span className="text-slate-400">Ход</span>
-              <span className="font-bold text-emerald-400">{day ?? 1}</span>
+            <div className="mt-2 flex items-center justify-between gap-3">
+              <span className="text-sm font-semibold text-slate-300">Ход</span>
+              <span className="text-lg font-bold tabular-nums text-emerald-300">{day ?? 1}</span>
             </div>
           </div>
 
@@ -168,20 +190,28 @@ export function SlotCard({
           </div>
         </div>
 
-        <div className="mt-2 shrink-0 px-1 text-center">
-          <div className="text-sm font-bold text-slate-100">{characterName}</div>
-          <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-500/80">
-            {professionLabel ?? profession}
+        <div className="mt-2.5 flex items-start justify-between gap-3 px-0.5">
+          <div className="min-w-0 text-left">
+            <div className="truncate text-sm font-bold text-slate-100">{characterName}</div>
+            <div className="mt-0.5 truncate text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-500/80">
+              {professionLabel ?? profession}
+            </div>
           </div>
+          {onDelete ? (
+            <button
+              type="button"
+              onClick={onDelete}
+              className="shrink-0 pt-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-red-400/85 transition hover:text-red-300"
+            >
+              Удалить
+            </button>
+          ) : null}
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 px-2.5 pb-2.5">
+      <div className="px-2.5 pb-2.5">
         <GameButton fullWidth onClick={onLoad}>
           Загрузить
-        </GameButton>
-        <GameButton fullWidth variant="ghost" className="!text-red-400 hover:!text-red-300" onClick={onDelete}>
-          Удалить
         </GameButton>
       </div>
     </motion.div>

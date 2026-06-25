@@ -1,0 +1,24 @@
+---
+description: Плавающие UI-элементы (модалки, поповеры, тултипы)
+globs: ui/src/**/*.{tsx,ts}
+alwaysApply: false
+---
+
+# Floating UI
+
+Для всех плавающих элементов используй примитивы из `ui/src/components/game_ui/floating/`:
+
+- **Модалки** (центр экрана) → `GameModal`
+- **Поповеры** (привязка к якорю) → `GamePopover`
+
+Не создавай вручную `fixed inset-0`, `createPortal`, собственные focus trap и обработчики Esc — это уже внутри примитивов.
+
+```tsx
+// ✅ модалка
+import { GameModal } from '../components/game_ui/floating'
+
+// ✅ поповер у кнопки
+import { GamePopover } from '../components/game_ui/floating'
+```
+
+Новые модалки и выпадающие панели добавляй только через эти компоненты.

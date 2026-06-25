@@ -294,6 +294,54 @@ describe('Saves module', () => {
     expect(body.nextTurnForecast.lines.length).toBeGreaterThan(0);
   });
 
+  it('GET /saves/:id removes duplicate starter inventory on bootstrap', async () => {
+    const user = await createTestUser();
+
+    const createResponse = await app.inject({
+      method: 'POST',
+      url: '/saves',
+      headers: await authForUser(user.id, user.email),
+      payload: {
+        slot: 3,
+        profession: 'ENGINEER',
+        name: 'Dedup Game',
+      },
+    });
+
+    const created = createResponse.json() as {
+      id: string;
+      character: { id: string; inventoryItems?: Array<{ id: string; itemRef: string }> };
+    };
+
+    await prisma.inventoryItem.create({
+      data: {
+        characterId: created.character.id,
+        itemRef: 'parking_spot',
+        name: 'Парковочное место',
+        purchasePrice: 8000,
+        isInstallment: true,
+        monthlyPayment: 300,
+        installmentsTotal: 30,
+        installmentsPaid: 0,
+      },
+    });
+
+    const response = await app.inject({
+      method: 'GET',
+      url: `/saves/${created.id}`,
+      headers: await authForUser(user.id, user.email),
+    });
+
+    expect(response.statusCode).toBe(200);
+    const body = response.json() as {
+      character: { inventoryItems?: Array<{ itemRef: string; name: string }> };
+    };
+
+    expect(body.character.inventoryItems).toHaveLength(1);
+    expect(body.character.inventoryItems?.[0]?.itemRef).toBe('garage');
+    expect(body.character.inventoryItems?.[0]?.name).toBe('Гараж');
+  });
+
   it('GET /saves/:id/next-turn-forecast returns salary and installment lines', async () => {
     const user = await createTestUser();
 

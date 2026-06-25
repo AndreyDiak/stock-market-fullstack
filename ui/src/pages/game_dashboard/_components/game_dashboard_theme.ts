@@ -15,6 +15,11 @@ export interface GameDashboardThemeTokens {
   headerDivider: string
   modalPanel: string
   modalBackdrop: string
+  sidebarSection: string
+  sidebarSectionTitle: string
+  sidebarInset: string
+  sidebarLink: string
+  scrollArea: string
 }
 
 export function getGameDashboardTheme(theme: GameColorTheme): GameDashboardThemeTokens {
@@ -38,6 +43,13 @@ export function getGameDashboardTheme(theme: GameColorTheme): GameDashboardTheme
       headerDivider: 'bg-slate-200/80',
       modalPanel: 'border-slate-200 bg-white text-slate-900 shadow-2xl shadow-slate-300/50',
       modalBackdrop: 'bg-slate-900/35',
+      sidebarSection:
+        'overflow-hidden rounded-2xl border border-slate-200/80 bg-white/80 p-3',
+      sidebarSectionTitle: 'text-[11px] font-bold uppercase tracking-[0.2em] text-slate-600',
+      sidebarInset: 'overflow-hidden rounded-xl border border-slate-200/70 bg-slate-50',
+      sidebarLink:
+        'shrink-0 text-[10px] font-bold uppercase tracking-[0.14em] text-emerald-700 transition hover:text-emerald-900',
+      scrollArea: 'game-scrollbar-light',
     }
   }
 
@@ -60,5 +72,13 @@ export function getGameDashboardTheme(theme: GameColorTheme): GameDashboardTheme
     headerDivider: 'bg-slate-700/50',
     modalPanel: 'border-slate-600/50 bg-slate-900 text-white shadow-2xl shadow-black/60',
     modalBackdrop: 'bg-black/65',
+    sidebarSection:
+      'overflow-hidden rounded-2xl border border-slate-700/40 bg-slate-900/65 p-3',
+    sidebarSectionTitle: 'text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400',
+    sidebarInset:
+      'overflow-hidden rounded-xl border border-slate-600/30 bg-[#0c1218]/90',
+    sidebarLink:
+      'shrink-0 text-[10px] font-bold uppercase tracking-[0.14em] text-emerald-400 transition hover:text-emerald-300',
+    scrollArea: 'game-scrollbar',
   }
 }

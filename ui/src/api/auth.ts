@@ -24,6 +24,10 @@ export async function registerWithPassword(
   return http.post('auth/register', { json: { username, email, password } }).json<AuthTokenResponse>()
 }
 
+export async function refreshAccessToken(): Promise<AuthTokenResponse> {
+  return http.post('auth/refresh').json<AuthTokenResponse>()
+}
+
 export async function getApiErrorMessage(error: unknown, fallback = 'Произошла ошибка'): Promise<string> {
   if (error instanceof HTTPError) {
     try {

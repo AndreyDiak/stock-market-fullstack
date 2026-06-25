@@ -3,7 +3,7 @@ import type { GeneratedNewsItem } from '../../../api/gameTurn';
 import type { CreateGameBody } from '../../../api/types';
 import type { GameColorTheme } from '../../../stores/game_settings.store';
 import type { ActiveLoan, BankSummary } from '../_components/bank_view';
-import type { CharacterProfile, CharacterUpgrade } from '../_components/character_profile_panel';
+import type { CharacterProfile, CharacterSkill } from '../_components/character_profile_panel';
 import type { GameDashboardThemeTokens } from '../_components/game_dashboard_theme';
 import type { buildNextTurnForecast } from '../_components/next_turn_forecast';
 import type { PropertySlot } from '../_components/property_inventory_block';
@@ -14,6 +14,7 @@ export type dashboard_tab =
   | 'exchange'
   | 'otc'
   | 'real-estate'
+  | 'news'
   | 'settings'
 
 export interface portfolio_row {
@@ -27,11 +28,17 @@ export interface portfolio_row {
 export interface news_item {
   id: string
   title: string
+  body: string
   excerpt: string
   timeLabel: string
   kind?: GeneratedNewsItem['kind']
   hot?: boolean
   sentiment: 'positive' | 'negative' | 'neutral'
+  ticker?: string
+  publishedAt: string
+  publishedStep?: number
+  payload?: unknown
+  turnsLeft?: number
 }
 
 export type bot_deal_side = 'buy' | 'sell'
@@ -59,6 +66,8 @@ export interface sidebar_nav_item {
 export interface header_props {
   turn: number
   balance: number
+  balanceFx: { delta: number; id: number } | null
+  onBalanceFxComplete: () => void
   passiveIncome: number
   reputation: number
   tradingLevel: number
@@ -72,6 +81,7 @@ export interface left_sidebar_props {
   onTabChange: (tab: dashboard_tab) => void
   theme: GameDashboardThemeTokens
   onOpenExit: () => void
+  showNewsInsiderAlert: boolean
 }
 
 export interface center_panel_props {
@@ -81,14 +91,17 @@ export interface center_panel_props {
   onOtcDealAccept: (id: string) => void
   onOtcDealDecline: (id: string) => void
   characterProfile: CharacterProfile
-  characterUpgrades: CharacterUpgrade[]
+  characterSkills: CharacterSkill[]
   balance: number
   onBalanceChange: (next: number) => void
-  onPurchaseUpgrade: (upgradeId: string) => void
+  onPurchaseSkill: (skillId: string) => void
   bankSummary: BankSummary
   bankLoans: ActiveLoan[]
   onLoanPayOff: (loanId: string) => void
   creditRating: string
+  news: news_item[]
+  turn: number
+  onSelectNews: (item: news_item) => void
   theme: GameDashboardThemeTokens
   dynamicBackground: boolean
   colorTheme: GameColorTheme
@@ -98,10 +111,20 @@ export interface center_panel_props {
 
 export interface right_panel_props {
   news: news_item[]
+  turn: number
   nextTurnForecast: ReturnType<typeof buildNextTurnForecast>
   careerLevel: number
   salary: number
   turnsUntilSalary: number
   propertySlots: PropertySlot[]
   theme: GameDashboardThemeTokens
+  onOpenNews: () => void
+  onSelectNews: (item: news_item) => void
+}
+
+export interface news_panel_props {
+  news: news_item[]
+  turn: number
+  theme: GameDashboardThemeTokens
+  onSelectNews: (item: news_item) => void
 }

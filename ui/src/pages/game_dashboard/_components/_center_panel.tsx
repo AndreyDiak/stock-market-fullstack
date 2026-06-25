@@ -1,5 +1,6 @@
 import type { center_panel_props } from "../_model/types";
 import { ExchangeTable } from "./_exchange_table";
+import { NewsPanel } from "./_news_panel";
 import { OtcDealsPanel } from "./_otc_deals_panel";
 import { BankView } from "./bank_view";
 import { CharacterProfilePanel } from "./character_profile_panel";
@@ -13,14 +14,17 @@ export function CenterPanel({
   onOtcDealAccept,
   onOtcDealDecline,
   characterProfile,
-  characterUpgrades,
+  characterSkills,
   balance,
   onBalanceChange,
-  onPurchaseUpgrade,
+  onPurchaseSkill,
   bankSummary,
   bankLoans,
   onLoanPayOff,
   creditRating,
+  news,
+  turn,
+  onSelectNews,
   theme,
   dynamicBackground,
   colorTheme,
@@ -43,9 +47,9 @@ export function CenterPanel({
       {activeTab === "character" && (
         <CharacterProfilePanel
           profile={characterProfile}
-          upgrades={characterUpgrades}
+          skills={characterSkills}
           balance={balance}
-          onPurchaseUpgrade={onPurchaseUpgrade}
+          onPurchaseSkill={onPurchaseSkill}
         />
       )}
       {activeTab === "bank" && (
@@ -63,6 +67,9 @@ export function CenterPanel({
           availableCash={balance}
           theme={theme}
         />
+      )}
+      {activeTab === "news" && (
+        <NewsPanel news={news} turn={turn} theme={theme} onSelectNews={onSelectNews} />
       )}
       {activeTab === "otc" && (
         <OtcDealsPanel

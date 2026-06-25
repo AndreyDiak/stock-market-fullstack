@@ -158,7 +158,11 @@ export class GameService {
       where: { id: saveId, userId },
       include: {
         character: {
-          include: { inventoryItems: true },
+          include: {
+            inventoryItems: {
+              orderBy: { purchasedAt: 'asc' },
+            },
+          },
         },
       },
     });

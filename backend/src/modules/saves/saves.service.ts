@@ -8,7 +8,9 @@ import { serializeGame } from './game_serializer.js';
 import type { CreateSaveInput, UpdateSaveInput } from './saves.schema.js';
 
 const characterInclude = {
-  inventoryItems: true,
+  inventoryItems: {
+    orderBy: { purchasedAt: 'asc' as const },
+  },
 } as const;
 
 type GameWithCharacter = Game & {
@@ -74,16 +76,7 @@ export class SavesService {
               inventoryItems: {
                 create: starterItems.map((item) => {
                   const template = REAL_ESTATE.find((r) => r.id === item.itemRef)!;
-                  return {
-                    itemRef: item.itemRef,
-                    name: template.name,
-                    purchasePrice: template.basePrice,
-                    isInstallment: true,
-                    monthlyPayment: template.monthlyPayment,
-                    installmentsTotal: template.installmentMonths,
-                    installmentsPaid: item.installmentsPaid,
-                    special: template.special,
-                  };
+                  return this.#starterInventoryData(item, template);
                 }),
               },
             },
@@ -113,29 +106,9 @@ export class SavesService {
     const character = game.character;
     let needsReload = false;
 
-    if (character.inventoryItems.length === 0) {
-      const npc = NPCS.find((entry) => entry.profession === character.profession);
-      const starter = npc?.items[0];
-
-      if (starter) {
-        const template = REAL_ESTATE.find((entry) => entry.id === starter.itemRef);
-        if (template) {
-          await this.#prisma.inventoryItem.create({
-            data: {
-              characterId: character.id,
-              itemRef: starter.itemRef,
-              name: template.name,
-              purchasePrice: template.basePrice,
-              isInstallment: true,
-              monthlyPayment: template.monthlyPayment,
-              installmentsTotal: template.installmentMonths,
-              installmentsPaid: starter.installmentsPaid,
-              special: template.special,
-            },
-          });
-          needsReload = true;
-        }
-      }
+    const inventoryChanged = await this.#syncStarterInventory(character);
+    if (inventoryChanged) {
+      needsReload = true;
     }
 
     const welcomeCount = await this.#prisma.news.count({
@@ -192,5 +165,55 @@ export class SavesService {
     });
 
     return { success: true };
+  }
+
+  async #syncStarterInventory(character: Character & { inventoryItems: InventoryItem[] }) {
+    const starter = NPCS.find((entry) => entry.profession === character.profession)?.items[0];
+    if (!starter) return false;
+
+    const template = REAL_ESTATE.find((entry) => entry.id === starter.itemRef);
+    if (!template) return false;
+
+    if (character.inventoryItems.length === 0) {
+      await this.#prisma.inventoryItem.create({
+        data: this.#starterInventoryData(starter, template, character.id),
+      });
+      return true;
+    }
+
+    if (character.inventoryItems.length === 1) {
+      return false;
+    }
+
+    const keeper =
+      character.inventoryItems.find((item) => item.itemRef === starter.itemRef) ??
+      character.inventoryItems[0]!;
+
+    await this.#prisma.inventoryItem.deleteMany({
+      where: {
+        characterId: character.id,
+        id: { not: keeper.id },
+      },
+    });
+
+    return true;
+  }
+
+  #starterInventoryData(
+    starter: { itemRef: string; installmentsPaid: number },
+    template: (typeof REAL_ESTATE)[number],
+    characterId?: string,
+  ) {
+    return {
+      ...(characterId ? { characterId } : {}),
+      itemRef: starter.itemRef,
+      name: template.name,
+      purchasePrice: template.basePrice,
+      isInstallment: true,
+      monthlyPayment: template.monthlyPayment,
+      installmentsTotal: template.installmentMonths,
+      installmentsPaid: starter.installmentsPaid,
+      special: template.special,
+    };
   }
 }

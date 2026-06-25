@@ -5,7 +5,7 @@ export const EMPTY_CHARACTER_PROFILE: CharacterProfile = {
   profession: 'DEVELOPER',
   professionLevel: 1,
   salary: 0,
-  reputation: 0,
+  reputation: 3,
   tradingLevel: 1,
   dreams: [],
 }

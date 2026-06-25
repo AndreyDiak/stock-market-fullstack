@@ -1,5 +1,6 @@
 import { http } from '../lib/http';
 import type { NextTurnForecast } from '../pages/game_dashboard/_components/next_turn_forecast';
+import { format_news_age_label, resolve_published_step } from '../pages/game_dashboard/_model/utils';
 import type { Game } from './types';
 
 export interface GeneratedNewsItem {
@@ -13,6 +14,7 @@ export interface GeneratedNewsItem {
   ticker?: string;
   hot?: boolean;
   publishedAt: string;
+  publishedStep?: number;
   payload?: unknown;
 }
 
@@ -88,7 +90,23 @@ export async function fetchGame(gameId: string) {
   return http.get(`saves/${gameId}`).json<Game>();
 }
 
-export function mapApiNewsToFeedItem(item: GeneratedNewsItem, index: number) {
+export interface InsiderNewsPayload {
+  turnsUntilImpact?: number
+  expectedMovePercent?: number
+  scheduledImpact?: {
+    turnsUntilImpact: number
+    triggerAtStep: number
+    direction: 'UP' | 'DOWN'
+    movePercent: number
+    scheduledImpactId?: string
+  }
+}
+
+export function mapApiNewsToFeedItem(
+  item: GeneratedNewsItem,
+  _index: number,
+  currentStep?: number,
+) {
   const sentiment =
     item.sentiment === 'POSITIVE'
       ? 'positive'
@@ -96,15 +114,41 @@ export function mapApiNewsToFeedItem(item: GeneratedNewsItem, index: number) {
         ? 'negative'
         : 'neutral';
 
+  const payload = item.payload as InsiderNewsPayload | undefined
+  const publishedStep = resolve_published_step(item)
+  const triggerAtStep = payload?.scheduledImpact?.triggerAtStep
+  const turnsLeft =
+    triggerAtStep != null && currentStep != null
+      ? Math.max(0, triggerAtStep - currentStep)
+      : undefined
+
   return {
     id: item.id,
     title: item.title,
+    body: item.body,
     excerpt: item.excerpt || item.body,
-    timeLabel: index === 0 ? 'только что' : 'в этом ходу',
+    timeLabel:
+      currentStep != null
+        ? format_news_age_label(publishedStep, currentStep)
+        : '—',
     kind: item.kind,
     hot: item.hot ?? item.kind === 'INSIDER',
     sentiment: sentiment as 'positive' | 'negative' | 'neutral',
+    ticker: item.ticker,
+    publishedAt: item.publishedAt,
+    publishedStep,
+    payload: item.payload,
+    turnsLeft: turnsLeft && turnsLeft > 0 ? turnsLeft : undefined,
   };
+}
+
+export function mapApiNewsList(items: GeneratedNewsItem[], currentStep: number) {
+  return [...items]
+    .sort(
+      (a, b) =>
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
+    )
+    .map((item, index) => mapApiNewsToFeedItem(item, index, currentStep))
 }
 
 export function mapOtcDealToCard(deal: OtcDealPayload, id: string) {

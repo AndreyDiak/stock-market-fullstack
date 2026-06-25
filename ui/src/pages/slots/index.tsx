@@ -7,7 +7,12 @@ import { PageHeader } from '../../components/game_ui/page_header'
 import { SlotCard } from '../../components/card/slot_card'
 import { useSavesStore } from '../../stores/saves.store'
 import { DeleteSlotModal } from './_components/_delete_slot_modal'
-import { slotsGridVariants } from './_model/animation'
+import {
+  slotsFooterVariants,
+  slotsGridVariants,
+  slotsHeaderVariants,
+  slotsPageVariants,
+} from './_model/animation'
 
 interface DeleteTarget {
   id: string
@@ -20,10 +25,16 @@ export function SlotsPage() {
   const { slots, loading, error, loadSlots, deleteGame } = useSavesStore()
   const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null)
   const [deleting, setDeleting] = useState(false)
+  const [entranceReady, setEntranceReady] = useState(false)
 
   useEffect(() => {
     void loadSlots()
   }, [loadSlots])
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setEntranceReady(true))
+    return () => cancelAnimationFrame(frame)
+  }, [])
 
   const slot = (n: number) => slots.find((s) => s.slot === n)
 
@@ -41,12 +52,19 @@ export function SlotsPage() {
 
   return (
     <GameShell>
-      <div className="mx-auto flex min-h-dvh w-full max-w-6xl flex-col justify-center p-4 md:p-6">
-        <PageHeader
-          eyebrow="Night Session"
-          title="Выбор сейва"
-          subtitle="Выберите слот для загрузки или начните новую игру"
-        />
+      <motion.div
+        className="mx-auto flex min-h-dvh w-full max-w-6xl flex-col justify-center p-4 md:p-6"
+        variants={slotsPageVariants}
+        initial="hidden"
+        animate={entranceReady ? 'show' : 'hidden'}
+      >
+        <motion.div variants={slotsHeaderVariants}>
+          <PageHeader
+            eyebrow="Night Session"
+            title="Выбор сейва"
+            subtitle="Выберите слот для загрузки или начните новую игру"
+          />
+        </motion.div>
 
         {loading && (
           <p className="mb-4 text-center text-sm text-slate-400">Загрузка...</p>
@@ -58,8 +76,6 @@ export function SlotsPage() {
         <motion.div
           className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6"
           variants={slotsGridVariants}
-          initial="hidden"
-          animate="show"
         >
           {[1, 2, 3].map((n) => {
             const data = slot(n)
@@ -91,12 +107,12 @@ export function SlotsPage() {
           })}
         </motion.div>
 
-        <div className="mt-8 flex justify-center">
+        <motion.div className="mt-8 flex justify-center" variants={slotsFooterVariants}>
           <GameButton variant="ghost" fullWidth={false} onClick={() => navigate('/menu')}>
             Назад в меню
           </GameButton>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       <DeleteSlotModal
         open={deleteTarget != null}

@@ -1,6 +1,6 @@
-import { OAUTH_URL } from '../../../config'
+import { API_URL } from '../../../config'
 
-export const YANDEX_AUTH_URL = `${OAUTH_URL}/auth/yandex`
+export const YANDEX_AUTH_URL = `${API_URL}/auth/yandex`
 
 export const ERROR_MESSAGES: Record<string, string> = {
   authentication_failed: 'Не удалось войти. Попробуйте ещё раз.',

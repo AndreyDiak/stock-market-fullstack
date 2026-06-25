@@ -1,4 +1,5 @@
 import type { IconProps } from './types'
+import { BankIcon } from './bank_icon'
 import { BarChartIcon } from './bar_chart_icon'
 import { ChatBubbleIcon } from './chat_bubble_icon'
 import { GraduationCapIcon } from './graduation_cap_icon'
@@ -17,6 +18,8 @@ export function UpgradeIcon({ upgradeId, className, ...props }: UpgradeIconProps
       return <GraduationCapIcon className={iconClassName} {...props} />
     case 'trading':
       return <TradingChartIcon className={iconClassName} {...props} />
+    case 'banking':
+      return <BankIcon className={iconClassName} {...props} />
     case 'negotiation':
       return <ChatBubbleIcon className={iconClassName} {...props} />
     case 'property_slots':

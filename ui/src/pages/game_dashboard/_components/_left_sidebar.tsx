@@ -13,27 +13,35 @@ function SidebarNavButton({
   active,
   onSelect,
   theme,
+  notify,
 }: {
   item: sidebar_nav_item;
   active: boolean;
   onSelect: () => void;
   theme: GameDashboardThemeTokens;
+  notify?: boolean;
 }) {
   return (
     <button
       type="button"
       title={item.label}
       onClick={onSelect}
-      className={`group flex w-full items-center gap-3 rounded-[28px] border px-4 py-3 text-left backdrop-blur-md transition ${
+      className={`group relative flex w-full items-center gap-3 rounded-[28px] border px-4 py-3 text-left backdrop-blur-md transition ${
         active ? theme.navActive : theme.navIdle
       }`}
     >
       <div
-        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl transition ${
+        className={`relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl transition ${
           active ? theme.navIconActive : theme.navIconIdle
         }`}
       >
         {item.icon}
+        {notify ? (
+          <span
+            aria-hidden
+            className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)] ring-2 ring-slate-900"
+          />
+        ) : null}
       </div>
       <span className="text-sm font-bold leading-tight tracking-wide">
         {item.label}
@@ -97,6 +105,7 @@ export function LeftSidebar({
   onTabChange,
   theme,
   onOpenExit,
+  showNewsInsiderAlert,
 }: left_sidebar_props) {
   const go = (tab: dashboard_tab) => () => onTabChange(tab);
 
@@ -121,6 +130,7 @@ export function LeftSidebar({
           theme={theme}
           active={activeTab === item.id}
           onSelect={go(item.id)}
+          notify={item.id === 'news' && showNewsInsiderAlert && activeTab !== 'news'}
         />
       ))}
 

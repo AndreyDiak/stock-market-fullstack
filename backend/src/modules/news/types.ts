@@ -136,6 +136,7 @@ export interface PersistedNewsItem {
   ticker?: string;
   hot?: boolean;
   publishedAt: string;
+  publishedStep?: number;
   payload?: unknown;
 }
 
