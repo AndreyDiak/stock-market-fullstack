@@ -1,4 +1,5 @@
-import type { PrismaClient, Character, InventoryItem } from '@prisma/client';
+import type { Character, InventoryItem, PrismaClient } from '@prisma/client';
+import { calcEffectiveSalary } from '../character_skills/_calculations.js';
 import { REAL_ESTATE } from '../../assets/real_estate.js';
 import type { RealEstateData } from '../../assets/real_estate.js';
 import { isSalaryTurn } from './_economy_constants.js';
@@ -45,7 +46,8 @@ export class PassiveIncomeService {
     step: number,
     gameId: string,
   ): Promise<PassiveResult> {
-    const salary = isSalaryTurn(step) ? character.salary : 0;
+    const effectiveSalary = calcEffectiveSalary(character.salary, character.professionLevel);
+    const salary = isSalaryTurn(step) ? effectiveSalary : 0;
     const livingExpenseReceipts = generateLivingExpenses(gameId, step);
     const livingExpense = sumLivingExpenses(livingExpenseReceipts);
     const installmentResult = this.calcInstallments(character.inventoryItems);
@@ -133,17 +135,18 @@ export class PassiveIncomeService {
   }
 
   buildForecast(
-    character: Pick<Character, 'salary'> & { inventoryItems: InventoryItem[] },
+    character: Pick<Character, 'salary' | 'professionLevel'> & { inventoryItems: InventoryItem[] },
     step: number,
     gameId: string,
   ): TurnForecast {
     const lines: TurnCashflowLine[] = [];
+    const effectiveSalary = calcEffectiveSalary(character.salary, character.professionLevel);
 
-    if (isSalaryTurn(step) && character.salary > 0) {
+    if (isSalaryTurn(step) && effectiveSalary > 0) {
       lines.push({
         id: 'salary',
         label: 'Зарплата',
-        amount: character.salary,
+        amount: effectiveSalary,
       });
     }
 

@@ -1,6 +1,7 @@
 import type { PrismaClient } from '@prisma/client';
 import { NewsGenerationService } from '../news/news_generation.service.js';
 import { AppError } from '../../utils/errors.js';
+import { CharacterSkillsService } from '../character_skills/character_skills.service.js';
 import { serializeCharacter, serializeGame } from '../saves/game_serializer.js';
 import { SavesService } from '../saves/saves.service.js';
 import { PassiveIncomeService } from './_passive_income.service.js';
@@ -30,6 +31,7 @@ export class GameService {
   readonly #newsService: NewsGenerationService;
   readonly #passiveIncomeService: PassiveIncomeService;
   readonly #savesService: SavesService;
+  readonly #characterSkillsService: CharacterSkillsService;
   readonly #prisma: PrismaClient;
 
   constructor(prisma: PrismaClient) {
@@ -38,6 +40,7 @@ export class GameService {
     this.#newsService = new NewsGenerationService(prisma);
     this.#passiveIncomeService = new PassiveIncomeService(prisma);
     this.#savesService = new SavesService(prisma);
+    this.#characterSkillsService = new CharacterSkillsService(prisma);
   }
 
   async endTurn(userId: string, saveId: string, expectedStep: number): Promise<EndTurnResult> {
@@ -100,6 +103,7 @@ export class GameService {
       otcDeal: state.otcDeal,
       propertyOffer: state.propertyOffer,
       appliedPriceImpacts: state.appliedPriceImpacts,
+      characterSkills: this.#characterSkillsService.buildState(character),
     };
   }
 
@@ -122,6 +126,7 @@ export class GameService {
       insiderChancePercent: 0,
       insiderRolled: false,
       news,
+      characterSkills: this.#characterSkillsService.buildState(game.character),
     };
   }
 
@@ -149,6 +154,40 @@ export class GameService {
     return {
       game: serializeGame(bootstrapped),
       news,
+      nextTurnForecast,
+      characterSkills: this.#characterSkillsService.buildState(bootstrapped.character),
+    };
+  }
+
+  async upgradeSkill(userId: string, saveId: string, skillId: string) {
+    const { character, characterSkills } = await this.#characterSkillsService.upgradeSkill(
+      userId,
+      saveId,
+      skillId,
+    );
+
+    const game = await this.#prisma.game.findFirstOrThrow({
+      where: { id: saveId, userId },
+      include: {
+        character: {
+          include: {
+            inventoryItems: {
+              orderBy: { purchasedAt: 'asc' },
+            },
+          },
+        },
+      },
+    });
+
+    const nextTurnForecast = this.#passiveIncomeService.buildForecast(
+      character,
+      game.step,
+      saveId,
+    );
+
+    return {
+      game: serializeGame({ ...game, character }),
+      characterSkills,
       nextTurnForecast,
     };
   }

@@ -6,8 +6,8 @@ import { GameShell } from "../../components/game_ui/game_shell";
 import { sessionCardVariants } from "../../components/game_ui/session_animations";
 import { SessionCard } from "../../components/game_ui/session_card";
 import { useGameSettingsStore } from "../../stores/game_settings.store";
-import { getGameDashboardTheme } from "../game_dashboard/_components/game_dashboard_theme";
-import { GameSettingsPanel } from "../game_dashboard/_components/game_settings_panel";
+import { getGameDashboardTheme } from "../game_dashboard/_components/shared";
+import { GameSettingsPanel } from "../game_dashboard/_components/settings";
 
 export function SettingsPage() {
   const navigate = useNavigate();

@@ -4,6 +4,7 @@ import { errorResponses } from '../../schemas/register.js';
 import { saveIdParamSchema } from '../saves/saves.schema.js';
 import { endTurnBodySchema } from '../../schemas/turn.schema.js';
 import { GameService } from './_service.js';
+import { upgradeSkillParamsSchema } from '../../schemas/character_skills.schema.js';
 
 export async function gameRoutes(fastify: FastifyInstance) {
   const gameService = new GameService(fastify.prisma);
@@ -31,6 +32,39 @@ export async function gameRoutes(fastify: FastifyInstance) {
       const { id } = saveIdParamSchema.parse(request.params);
       const { expectedStep } = endTurnBodySchema.parse(request.body);
       return gameService.endTurn(request.user.sub, id, expectedStep);
+    },
+  );
+
+  fastify.post(
+    '/saves/:id/skills/:skillId/upgrade',
+    {
+      preHandler: authenticate,
+      schema: {
+        tags: ['game'],
+        security: [{ bearerAuth: [] }],
+        params: {
+          type: 'object',
+          required: ['id', 'skillId'],
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            skillId: {
+              type: 'string',
+              enum: ['qualification', 'banking', 'trading', 'property_slots'],
+            },
+          },
+        },
+        response: {
+          200: { $ref: 'UpgradeSkillResponse#' },
+          ...errorResponses,
+        },
+      },
+    },
+    async (request) => {
+      const { id, skillId } = upgradeSkillParamsSchema.parse({
+        id: (request.params as { id: string }).id,
+        skillId: (request.params as { skillId: string }).skillId,
+      });
+      return gameService.upgradeSkill(request.user.sub, id, skillId);
     },
   );
 

@@ -3,6 +3,10 @@ import { zodToOpenApiSchema } from './utils.js';
 import { errorResponseSchema } from './error.schema.js';
 import { characterSchema } from './character.schema.js';
 import {
+  characterSkillsStateSchema,
+  upgradeSkillResponseSchema,
+} from './character_skills.schema.js';
+import {
   characterRosterSchema,
 } from './character_roster.schema.js';
 import {
@@ -20,6 +24,8 @@ import { logoutResponseSchema, refreshTokenResponseSchema, authTokenResponseSche
 const schemaEntries = {
   ErrorResponse: errorResponseSchema,
   Character: characterSchema,
+  CharacterSkillsState: characterSkillsStateSchema,
+  UpgradeSkillResponse: upgradeSkillResponseSchema,
   CharacterRoster: characterRosterSchema,
   Game: gameSchema,
   GameList: gameListSchema,

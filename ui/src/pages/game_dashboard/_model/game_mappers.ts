@@ -1,8 +1,8 @@
 import type { Character, Game } from '../../../api/types'
 import { REAL_ESTATE_CATALOG } from '../../../constants/realEstate'
-import type { CharacterProfile } from '../_components/character_profile_panel'
-import type { PropertyItem, PropertySlot } from '../_components/property_inventory_block'
-import { createEmptyPropertySlots } from '../_components/property_inventory_block'
+import type { CharacterProfile } from '../_components/character'
+import type { PropertyItem, PropertySlot } from '../_components/property'
+import { createEmptyPropertySlots } from '../_components/property'
 
 export interface InventoryItemDto {
   id: string
@@ -45,8 +45,8 @@ function mapPropertyItem(item: InventoryItemDto): PropertyItem {
   }
 }
 
-export function countUnlockedPropertySlots(slotUpgradeLevel = 0) {
-  return Math.min(4, 1 + slotUpgradeLevel)
+export function countUnlockedPropertySlots(slotUpgradeLevel = 1) {
+  return Math.min(4, Math.max(1, slotUpgradeLevel))
 }
 
 export function mapInventoryToPropertySlots(

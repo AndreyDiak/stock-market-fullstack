@@ -1,5 +1,6 @@
 import { http } from '../lib/http';
-import type { NextTurnForecast } from '../pages/game_dashboard/_components/next_turn_forecast';
+import type { NextTurnForecast } from '../pages/game_dashboard/_components/sidebar/_next_turn_forecast';
+import type { CharacterSkillsState } from '../pages/game_dashboard/_components/character/_character_skills';
 import { format_news_age_label, resolve_published_step } from '../pages/game_dashboard/_model/utils';
 import type { Game } from './types';
 
@@ -47,12 +48,14 @@ export interface EndTurnResponse {
   news: GeneratedNewsItem[];
   otcDeal?: OtcDealPayload;
   propertyOffer?: unknown;
+  characterSkills: CharacterSkillsState;
 }
 
 export interface GameDashboardResponse {
   game: NonNullable<Game>;
   news: GeneratedNewsItem[];
   nextTurnForecast: NextTurnForecast;
+  characterSkills: CharacterSkillsState;
 }
 
 export async function fetchGameDashboard(gameId: string) {
@@ -88,6 +91,18 @@ export async function fetchNextTurnForecast(gameId: string) {
 
 export async function fetchGame(gameId: string) {
   return http.get(`saves/${gameId}`).json<Game>();
+}
+
+export interface UpgradeSkillResponse {
+  game: NonNullable<Game>;
+  characterSkills: CharacterSkillsState;
+  nextTurnForecast: NextTurnForecast;
+}
+
+export async function upgradeCharacterSkill(gameId: string, skillId: string) {
+  return http
+    .post(`saves/${gameId}/skills/${skillId}/upgrade`)
+    .json<UpgradeSkillResponse>();
 }
 
 export interface InsiderNewsPayload {

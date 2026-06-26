@@ -12,6 +12,8 @@ export const characterSchema = z.object({
   salary: z.number(),
   reputation: z.number(),
   tradingLevel: z.number().int(),
+  bankingLevel: z.number().int(),
+  propertySlotLevel: z.number().int(),
   isNpc: z.boolean(),
   dreamItemRefs: z.array(z.string()),
   totalEarned: z.number(),

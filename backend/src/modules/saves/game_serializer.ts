@@ -33,6 +33,8 @@ export function serializeCharacter(character: CharacterWithInventory): Character
     salary: character.salary,
     reputation: character.reputation,
     tradingLevel: character.tradingLevel,
+    bankingLevel: character.bankingLevel,
+    propertySlotLevel: character.propertySlotLevel,
     isNpc: character.isNpc,
     dreamItemRefs: character.dreamItemRefs,
     totalEarned: character.totalEarned,

@@ -1,5 +1,7 @@
 import { z } from 'zod';
 import { characterSchema } from './character.schema.js';
+import { characterSkillsStateSchema } from './character_skills.schema.js';
+import { nextTurnForecastResponseSchema } from './forecast.schema.js';
 
 const sentimentSchema = z.enum(['POSITIVE', 'NEGATIVE', 'NEUTRAL']);
 const newsKindSchema = z.enum(['WELCOME', 'MARKET', 'INSIDER', 'RUMOR', 'OTC_DEAL', 'PROPERTY_OFFER']);
@@ -65,19 +67,6 @@ export const appliedPriceImpactSchema = z.object({
   triggerAtStep: z.number().int(),
 });
 
-export const turnCashflowLineSchema = z.object({
-  id: z.string(),
-  label: z.string(),
-  amount: z.number(),
-});
-
-export const nextTurnForecastResponseSchema = z.object({
-  lines: z.array(turnCashflowLineSchema),
-  incomeTotal: z.number(),
-  expenseTotal: z.number(),
-  netChange: z.number(),
-});
-
 export const endTurnResponseSchema = z.object({
   step: z.number().int(),
   balance: z.number(),
@@ -90,12 +79,14 @@ export const endTurnResponseSchema = z.object({
   otcDeal: otcDealSchema.optional(),
   propertyOffer: propertyOfferSchema.optional(),
   appliedPriceImpacts: z.array(appliedPriceImpactSchema).optional(),
+  characterSkills: characterSkillsStateSchema,
 });
 
 export const gameNewsResponseSchema = z.object({
   news: z.array(generatedNewsItemSchema),
 });
 
-export type NextTurnForecastResponse = z.infer<typeof nextTurnForecastResponseSchema>;
+export type { NextTurnForecastResponse } from './forecast.schema.js';
+export { nextTurnForecastResponseSchema, turnCashflowLineSchema } from './forecast.schema.js';
 
 export type EndTurnResponse = z.infer<typeof endTurnResponseSchema>;

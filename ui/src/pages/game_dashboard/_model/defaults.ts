@@ -1,4 +1,4 @@
-import type { CharacterProfile } from '../_components/character_profile_panel'
+import type { CharacterProfile } from '../_components/character'
 
 export const EMPTY_CHARACTER_PROFILE: CharacterProfile = {
   name: '',

@@ -66,11 +66,13 @@ export class SavesService {
             create: {
               name: character.name,
               profession: character.profession,
-              professionLevel: character.professionLevel,
+              professionLevel: 1,
               balance: character.balance,
               salary: character.salary,
               reputation: 3,
               tradingLevel: 1,
+              bankingLevel: 1,
+              propertySlotLevel: 1,
               isNpc: false,
               dreamItemRefs: character.dreams,
               inventoryItems: {

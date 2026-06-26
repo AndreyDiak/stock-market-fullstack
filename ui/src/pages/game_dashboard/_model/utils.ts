@@ -1,4 +1,4 @@
-import { calcPropertyPassiveIncome, type PropertySlot } from '../_components/property_inventory_block'
+import { calcPropertyPassiveIncome, type PropertySlot } from '../_components/property'
 import type { bot_deal_side, news_item, portfolio_row } from './types'
 
 import { SALARY_CYCLE_TURNS } from './constants'

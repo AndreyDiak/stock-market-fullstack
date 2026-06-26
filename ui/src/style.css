@@ -111,6 +111,7 @@ button:hover {
 .game-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: rgba(16, 185, 129, 0.42) transparent;
+  scrollbar-gutter: stable;
 }
 
 .game-scrollbar::-webkit-scrollbar {
@@ -119,7 +120,8 @@ button:hover {
 
 .game-scrollbar::-webkit-scrollbar-track {
   margin: 6px 0;
-  background: transparent;
+  background: rgba(15, 23, 42, 0.35);
+  border-radius: 9999px;
 }
 
 .game-scrollbar::-webkit-scrollbar-thumb {
@@ -145,6 +147,7 @@ button:hover {
 .game-scrollbar-light {
   scrollbar-width: thin;
   scrollbar-color: rgba(5, 150, 105, 0.45) rgba(241, 245, 249, 0.6);
+  scrollbar-gutter: stable;
 }
 
 .game-scrollbar-light::-webkit-scrollbar {

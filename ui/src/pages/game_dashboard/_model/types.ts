@@ -1,12 +1,7 @@
 import type { ReactNode } from 'react';
 import type { GeneratedNewsItem } from '../../../api/gameTurn';
 import type { CreateGameBody } from '../../../api/types';
-import type { GameColorTheme } from '../../../stores/game_settings.store';
-import type { ActiveLoan, BankSummary } from '../_components/bank_view';
-import type { CharacterProfile, CharacterSkill } from '../_components/character_profile_panel';
-import type { GameDashboardThemeTokens } from '../_components/game_dashboard_theme';
-import type { buildNextTurnForecast } from '../_components/next_turn_forecast';
-import type { PropertySlot } from '../_components/property_inventory_block';
+import type { GameDashboardThemeTokens } from '../_components/shared';
 
 export type dashboard_tab =
   | 'character'
@@ -61,65 +56,6 @@ export interface sidebar_nav_item {
   label: string
   shortLabel: string
   icon: ReactNode
-}
-
-export interface header_props {
-  turn: number
-  balance: number
-  balanceFx: { delta: number; id: number } | null
-  onBalanceFxComplete: () => void
-  passiveIncome: number
-  reputation: number
-  tradingLevel: number
-  onEndTurn: () => void
-  endingTurn?: boolean
-  theme: GameDashboardThemeTokens
-}
-
-export interface left_sidebar_props {
-  activeTab: dashboard_tab
-  onTabChange: (tab: dashboard_tab) => void
-  theme: GameDashboardThemeTokens
-  onOpenExit: () => void
-  showNewsInsiderAlert: boolean
-}
-
-export interface center_panel_props {
-  activeTab: dashboard_tab
-  portfolio: portfolio_row[]
-  otcDeals: bot_deal[]
-  onOtcDealAccept: (id: string) => void
-  onOtcDealDecline: (id: string) => void
-  characterProfile: CharacterProfile
-  characterSkills: CharacterSkill[]
-  balance: number
-  onBalanceChange: (next: number) => void
-  onPurchaseSkill: (skillId: string) => void
-  bankSummary: BankSummary
-  bankLoans: ActiveLoan[]
-  onLoanPayOff: (loanId: string) => void
-  creditRating: string
-  news: news_item[]
-  turn: number
-  onSelectNews: (item: news_item) => void
-  theme: GameDashboardThemeTokens
-  dynamicBackground: boolean
-  colorTheme: GameColorTheme
-  onDynamicBackgroundChange: (value: boolean) => void
-  onColorThemeChange: (value: GameColorTheme) => void
-}
-
-export interface right_panel_props {
-  news: news_item[]
-  turn: number
-  nextTurnForecast: ReturnType<typeof buildNextTurnForecast>
-  careerLevel: number
-  salary: number
-  turnsUntilSalary: number
-  propertySlots: PropertySlot[]
-  theme: GameDashboardThemeTokens
-  onOpenNews: () => void
-  onSelectNews: (item: news_item) => void
 }
 
 export interface news_panel_props {

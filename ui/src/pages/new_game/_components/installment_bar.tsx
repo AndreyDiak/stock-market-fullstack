@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import {
   SegmentBar,
   ratioToPercent,
-} from '../../game_dashboard/_components/segment_bar';
+} from '../../game_dashboard/_components/shared';
 import { MoneyValue } from '../../../components/money/money_value';
 
 interface InstallmentBarProps {

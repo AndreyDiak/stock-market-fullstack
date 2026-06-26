@@ -19,7 +19,7 @@ export const NPCS: NpcSeed[] = [
   {
     name: 'Иваныч',
     profession: Profession.STREET_CLEANER,
-    professionLevel: 2,
+    professionLevel: 1,
     salary: 1600,
     balance: 6000,
     items: [{ itemRef: 'old_garage', installmentsPaid: 5 }],
@@ -28,7 +28,7 @@ export const NPCS: NpcSeed[] = [
   {
     name: 'Петрович',
     profession: Profession.FARMER,
-    professionLevel: 2,
+    professionLevel: 1,
     salary: 2400,
     balance: 10500,
     items: [{ itemRef: 'garage', installmentsPaid: 6 }],
@@ -37,7 +37,7 @@ export const NPCS: NpcSeed[] = [
   {
     name: 'Сергей',
     profession: Profession.ENGINEER,
-    professionLevel: 2,
+    professionLevel: 1,
     salary: 4000,
     balance: 17000,
     items: [{ itemRef: 'garage', installmentsPaid: 6 }],
@@ -55,7 +55,7 @@ export const NPCS: NpcSeed[] = [
   {
     name: 'Марк',
     profession: Profession.FINANCIER,
-    professionLevel: 3,
+    professionLevel: 1,
     salary: 10500,
     balance: 65000,
     items: [{ itemRef: 'apartment', installmentsPaid: 15 }],
@@ -64,7 +64,7 @@ export const NPCS: NpcSeed[] = [
   {
     name: 'Борис',
     profession: Profession.DOCTOR,
-    professionLevel: 3,
+    professionLevel: 1,
     salary: 12000,
     balance: 75000,
     items: [{ itemRef: 'apartment', installmentsPaid: 15 }],

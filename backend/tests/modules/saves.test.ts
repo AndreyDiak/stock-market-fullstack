@@ -251,7 +251,10 @@ describe('Saves module', () => {
     expect(body.character.inventoryItems).toHaveLength(1);
     expect(body.character.inventoryItems?.[0]?.itemRef).toBe('garage');
     expect(body.character.reputation).toBe(3);
+    expect(body.character.professionLevel).toBe(1);
     expect(body.character.tradingLevel).toBe(1);
+    expect(body.character.bankingLevel).toBe(1);
+    expect(body.character.propertySlotLevel).toBe(1);
 
     const news = await prisma.news.findMany({ where: { gameId: body.id } });
     expect(news).toHaveLength(1);

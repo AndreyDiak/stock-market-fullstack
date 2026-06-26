@@ -148,7 +148,7 @@ export interface TurnGenerationResult {
 }
 
 export function calcInsiderNewsChancePercent(professionLevel: number) {
-  return Math.min(20, Math.max(0, professionLevel * 2));
+  return Math.min(30, Math.max(0, professionLevel * 2));
 }
 
 export function sentimentFromScore(score: number): Sentiment {
