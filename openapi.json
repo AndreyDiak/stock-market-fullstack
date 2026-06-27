@@ -86,6 +86,12 @@
           "tradingLevel": {
             "type": "integer"
           },
+          "bankingLevel": {
+            "type": "integer"
+          },
+          "propertySlotLevel": {
+            "type": "integer"
+          },
           "isNpc": {
             "type": "boolean"
           },
@@ -201,6 +207,8 @@
           "salary",
           "reputation",
           "tradingLevel",
+          "bankingLevel",
+          "propertySlotLevel",
           "isNpc",
           "dreamItemRefs",
           "totalEarned",
@@ -209,6 +217,872 @@
           "successfulTrades",
           "createdAt",
           "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "CharacterSkillsState": {
+        "type": "object",
+        "properties": {
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "tag": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "effectLabel": {
+                  "type": "string"
+                },
+                "level": {
+                  "type": "integer"
+                },
+                "maxLevel": {
+                  "type": "integer"
+                },
+                "upgradePrice": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "canUpgrade": {
+                  "type": "boolean"
+                },
+                "infographic": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "label": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "moneyAmount": {
+                        "type": "number"
+                      },
+                      "tone": {
+                        "type": "string",
+                        "enum": [
+                          "emerald",
+                          "amber"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "label"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "upgradePreview": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "skillName": {
+                          "type": "string"
+                        },
+                        "tag": {
+                          "type": "string"
+                        },
+                        "currentLevel": {
+                          "type": "integer"
+                        },
+                        "nextLevel": {
+                          "type": "integer"
+                        },
+                        "maxLevel": {
+                          "type": "integer"
+                        },
+                        "price": {
+                          "type": "number"
+                        },
+                        "benefits": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "compare",
+                                  "text",
+                                  "bonus"
+                                ]
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "from": {
+                                "type": "string"
+                              },
+                              "to": {
+                                "type": "string"
+                              },
+                              "suffix": {
+                                "type": "string"
+                              },
+                              "fromTone": {
+                                "type": "string",
+                                "enum": [
+                                  "muted",
+                                  "emerald",
+                                  "amber"
+                                ]
+                              },
+                              "toTone": {
+                                "type": "string",
+                                "enum": [
+                                  "emerald",
+                                  "amber"
+                                ]
+                              },
+                              "text": {
+                                "type": "string"
+                              },
+                              "highlight": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "kind",
+                              "label"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "skillName",
+                        "tag",
+                        "currentLevel",
+                        "nextLevel",
+                        "maxLevel",
+                        "price",
+                        "benefits"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "segmentDisplay": {
+                  "type": "object",
+                  "properties": {
+                    "filled": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "filled",
+                    "total"
+                  ],
+                  "additionalProperties": false
+                },
+                "levelTooltips": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "type": "string"
+                      },
+                      "lines": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "required": [
+                      "title",
+                      "lines"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "tag",
+                "description",
+                "effectLabel",
+                "level",
+                "maxLevel",
+                "upgradePrice",
+                "canUpgrade",
+                "infographic",
+                "upgradePreview",
+                "segmentDisplay",
+                "levelTooltips"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "stats": {
+            "type": "object",
+            "properties": {
+              "effectiveSalary": {
+                "type": "number"
+              },
+              "workLevel": {
+                "type": "integer"
+              },
+              "insiderChancePercent": {
+                "type": "number"
+              },
+              "bankBaseRatePercent": {
+                "type": "number"
+              },
+              "tradingGrade": {
+                "type": "string"
+              },
+              "propertySlotsUnlocked": {
+                "type": "integer"
+              },
+              "salaryBonus": {
+                "type": "number"
+              },
+              "qualificationBonusPercent": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "effectiveSalary",
+              "workLevel",
+              "insiderChancePercent",
+              "bankBaseRatePercent",
+              "tradingGrade",
+              "propertySlotsUnlocked",
+              "salaryBonus",
+              "qualificationBonusPercent"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "skills",
+          "stats"
+        ],
+        "additionalProperties": false
+      },
+      "UpgradeSkillResponse": {
+        "type": "object",
+        "properties": {
+          "game": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "userId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string"
+              },
+              "slot": {
+                "type": "integer"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "ACTIVE",
+                  "INACTIVE",
+                  "PAUSED",
+                  "COMPLETED"
+                ]
+              },
+              "step": {
+                "type": "integer"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "startedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "completedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "totalPlayTime": {
+                "type": "integer"
+              },
+              "character": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "gameId": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "balance": {
+                        "type": "number"
+                      },
+                      "profession": {
+                        "type": "string",
+                        "enum": [
+                          "DOCTOR",
+                          "DEVELOPER",
+                          "FINANCIER",
+                          "FARMER",
+                          "ENGINEER",
+                          "STREET_CLEANER"
+                        ]
+                      },
+                      "professionLevel": {
+                        "type": "integer"
+                      },
+                      "salary": {
+                        "type": "number"
+                      },
+                      "reputation": {
+                        "type": "number"
+                      },
+                      "tradingLevel": {
+                        "type": "integer"
+                      },
+                      "bankingLevel": {
+                        "type": "integer"
+                      },
+                      "propertySlotLevel": {
+                        "type": "integer"
+                      },
+                      "isNpc": {
+                        "type": "boolean"
+                      },
+                      "dreamItemRefs": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "totalEarned": {
+                        "type": "number"
+                      },
+                      "totalSpent": {
+                        "type": "number"
+                      },
+                      "totalTrades": {
+                        "type": "integer"
+                      },
+                      "successfulTrades": {
+                        "type": "integer"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "inventoryItems": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "characterId": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "itemRef": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "purchasePrice": {
+                              "type": "number"
+                            },
+                            "isInstallment": {
+                              "type": "boolean"
+                            },
+                            "monthlyPayment": {
+                              "type": [
+                                "number",
+                                "null"
+                              ]
+                            },
+                            "installmentsTotal": {
+                              "anyOf": [
+                                {
+                                  "type": "integer"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "installmentsPaid": {
+                              "type": "integer"
+                            },
+                            "special": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "isPaidOff": {
+                              "type": "boolean"
+                            },
+                            "purchasedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "characterId",
+                            "itemRef",
+                            "name",
+                            "purchasePrice",
+                            "isInstallment",
+                            "monthlyPayment",
+                            "installmentsTotal",
+                            "installmentsPaid",
+                            "special",
+                            "isPaidOff",
+                            "purchasedAt"
+                          ],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "gameId",
+                      "name",
+                      "balance",
+                      "profession",
+                      "professionLevel",
+                      "salary",
+                      "reputation",
+                      "tradingLevel",
+                      "bankingLevel",
+                      "propertySlotLevel",
+                      "isNpc",
+                      "dreamItemRefs",
+                      "totalEarned",
+                      "totalSpent",
+                      "totalTrades",
+                      "successfulTrades",
+                      "createdAt",
+                      "updatedAt"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "userId",
+              "name",
+              "slot",
+              "status",
+              "step",
+              "createdAt",
+              "updatedAt",
+              "startedAt",
+              "completedAt",
+              "totalPlayTime",
+              "character"
+            ],
+            "additionalProperties": false
+          },
+          "characterSkills": {
+            "type": "object",
+            "properties": {
+              "skills": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "tag": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "effectLabel": {
+                      "type": "string"
+                    },
+                    "level": {
+                      "type": "integer"
+                    },
+                    "maxLevel": {
+                      "type": "integer"
+                    },
+                    "upgradePrice": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "canUpgrade": {
+                      "type": "boolean"
+                    },
+                    "infographic": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "string"
+                          },
+                          "moneyAmount": {
+                            "type": "number"
+                          },
+                          "tone": {
+                            "type": "string",
+                            "enum": [
+                              "emerald",
+                              "amber"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "label"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "upgradePreview": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "skillName": {
+                              "type": "string"
+                            },
+                            "tag": {
+                              "type": "string"
+                            },
+                            "currentLevel": {
+                              "type": "integer"
+                            },
+                            "nextLevel": {
+                              "type": "integer"
+                            },
+                            "maxLevel": {
+                              "type": "integer"
+                            },
+                            "price": {
+                              "type": "number"
+                            },
+                            "benefits": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "kind": {
+                                    "type": "string",
+                                    "enum": [
+                                      "compare",
+                                      "text",
+                                      "bonus"
+                                    ]
+                                  },
+                                  "label": {
+                                    "type": "string"
+                                  },
+                                  "from": {
+                                    "type": "string"
+                                  },
+                                  "to": {
+                                    "type": "string"
+                                  },
+                                  "suffix": {
+                                    "type": "string"
+                                  },
+                                  "fromTone": {
+                                    "type": "string",
+                                    "enum": [
+                                      "muted",
+                                      "emerald",
+                                      "amber"
+                                    ]
+                                  },
+                                  "toTone": {
+                                    "type": "string",
+                                    "enum": [
+                                      "emerald",
+                                      "amber"
+                                    ]
+                                  },
+                                  "text": {
+                                    "type": "string"
+                                  },
+                                  "highlight": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "kind",
+                                  "label"
+                                ],
+                                "additionalProperties": false
+                              }
+                            }
+                          },
+                          "required": [
+                            "skillName",
+                            "tag",
+                            "currentLevel",
+                            "nextLevel",
+                            "maxLevel",
+                            "price",
+                            "benefits"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "segmentDisplay": {
+                      "type": "object",
+                      "properties": {
+                        "filled": {
+                          "type": "integer"
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "filled",
+                        "total"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "levelTooltips": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string"
+                          },
+                          "lines": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "required": [
+                          "title",
+                          "lines"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "tag",
+                    "description",
+                    "effectLabel",
+                    "level",
+                    "maxLevel",
+                    "upgradePrice",
+                    "canUpgrade",
+                    "infographic",
+                    "upgradePreview",
+                    "segmentDisplay",
+                    "levelTooltips"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "stats": {
+                "type": "object",
+                "properties": {
+                  "effectiveSalary": {
+                    "type": "number"
+                  },
+                  "workLevel": {
+                    "type": "integer"
+                  },
+                  "insiderChancePercent": {
+                    "type": "number"
+                  },
+                  "bankBaseRatePercent": {
+                    "type": "number"
+                  },
+                  "tradingGrade": {
+                    "type": "string"
+                  },
+                  "propertySlotsUnlocked": {
+                    "type": "integer"
+                  },
+                  "salaryBonus": {
+                    "type": "number"
+                  },
+                  "qualificationBonusPercent": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "effectiveSalary",
+                  "workLevel",
+                  "insiderChancePercent",
+                  "bankBaseRatePercent",
+                  "tradingGrade",
+                  "propertySlotsUnlocked",
+                  "salaryBonus",
+                  "qualificationBonusPercent"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "skills",
+              "stats"
+            ],
+            "additionalProperties": false
+          },
+          "nextTurnForecast": {
+            "type": "object",
+            "properties": {
+              "lines": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "amount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "label",
+                    "amount"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "incomeTotal": {
+                "type": "number"
+              },
+              "expenseTotal": {
+                "type": "number"
+              },
+              "netChange": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "lines",
+              "incomeTotal",
+              "expenseTotal",
+              "netChange"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "game",
+          "characterSkills",
+          "nextTurnForecast"
         ],
         "additionalProperties": false
       },
@@ -422,6 +1296,12 @@
                   "tradingLevel": {
                     "type": "integer"
                   },
+                  "bankingLevel": {
+                    "type": "integer"
+                  },
+                  "propertySlotLevel": {
+                    "type": "integer"
+                  },
                   "isNpc": {
                     "type": "boolean"
                   },
@@ -537,6 +1417,8 @@
                   "salary",
                   "reputation",
                   "tradingLevel",
+                  "bankingLevel",
+                  "propertySlotLevel",
                   "isNpc",
                   "dreamItemRefs",
                   "totalEarned",
@@ -683,6 +1565,12 @@
                     "tradingLevel": {
                       "type": "integer"
                     },
+                    "bankingLevel": {
+                      "type": "integer"
+                    },
+                    "propertySlotLevel": {
+                      "type": "integer"
+                    },
                     "isNpc": {
                       "type": "boolean"
                     },
@@ -798,6 +1686,8 @@
                     "salary",
                     "reputation",
                     "tradingLevel",
+                    "bankingLevel",
+                    "propertySlotLevel",
                     "isNpc",
                     "dreamItemRefs",
                     "totalEarned",
@@ -952,6 +1842,12 @@
               "tradingLevel": {
                 "type": "integer"
               },
+              "bankingLevel": {
+                "type": "integer"
+              },
+              "propertySlotLevel": {
+                "type": "integer"
+              },
               "isNpc": {
                 "type": "boolean"
               },
@@ -1067,6 +1963,8 @@
               "salary",
               "reputation",
               "tradingLevel",
+              "bankingLevel",
+              "propertySlotLevel",
               "isNpc",
               "dreamItemRefs",
               "totalEarned",
@@ -1230,6 +2128,10 @@
                   "type": "string",
                   "format": "date-time"
                 },
+                "publishedStep": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
                 "payload": {}
               },
               "required": [
@@ -1289,45 +2191,93 @@
             ],
             "additionalProperties": false
           },
-          "propertyOffer": {
-            "type": "object",
-            "properties": {
-              "botName": {
-                "type": "string"
+          "propertyOffers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "assetId": {
+                  "type": "string"
+                },
+                "itemName": {
+                  "type": "string"
+                },
+                "inventoryItemId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "BUY",
+                    "SELL"
+                  ]
+                },
+                "offerPrice": {
+                  "type": "number"
+                },
+                "marketPrice": {
+                  "type": "number"
+                },
+                "profitPercent": {
+                  "type": "number"
+                },
+                "profitGrade": {
+                  "type": "string",
+                  "enum": [
+                    "F",
+                    "E",
+                    "D",
+                    "C",
+                    "B",
+                    "A"
+                  ]
+                },
+                "requiredBankingLevel": {
+                  "type": "integer"
+                },
+                "isHot": {
+                  "type": "boolean"
+                },
+                "expiresInTurns": {
+                  "type": "integer"
+                },
+                "isLocked": {
+                  "type": "boolean"
+                },
+                "downPaymentPercent": {
+                  "type": "number"
+                }
               },
-              "itemRef": {
-                "type": "string"
-              },
-              "itemName": {
-                "type": "string"
-              },
-              "side": {
-                "type": "string",
-                "enum": [
-                  "buy",
-                  "sell"
-                ]
-              },
-              "price": {
-                "type": "number"
-              },
-              "turnsLeft": {
-                "type": "integer"
-              },
-              "flavorText": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "botName",
-              "itemRef",
-              "itemName",
-              "side",
-              "price",
-              "turnsLeft",
-              "flavorText"
-            ],
-            "additionalProperties": false
+              "required": [
+                "id",
+                "assetId",
+                "itemName",
+                "inventoryItemId",
+                "type",
+                "offerPrice",
+                "marketPrice",
+                "profitPercent",
+                "profitGrade",
+                "requiredBankingLevel",
+                "isHot",
+                "expiresInTurns",
+                "isLocked",
+                "downPaymentPercent"
+              ],
+              "additionalProperties": false
+            }
           },
           "appliedPriceImpacts": {
             "type": "array",
@@ -1372,6 +2322,278 @@
               ],
               "additionalProperties": false
             }
+          },
+          "characterSkills": {
+            "type": "object",
+            "properties": {
+              "skills": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "tag": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "effectLabel": {
+                      "type": "string"
+                    },
+                    "level": {
+                      "type": "integer"
+                    },
+                    "maxLevel": {
+                      "type": "integer"
+                    },
+                    "upgradePrice": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "canUpgrade": {
+                      "type": "boolean"
+                    },
+                    "infographic": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "string"
+                          },
+                          "moneyAmount": {
+                            "type": "number"
+                          },
+                          "tone": {
+                            "type": "string",
+                            "enum": [
+                              "emerald",
+                              "amber"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "label"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "upgradePreview": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "skillName": {
+                              "type": "string"
+                            },
+                            "tag": {
+                              "type": "string"
+                            },
+                            "currentLevel": {
+                              "type": "integer"
+                            },
+                            "nextLevel": {
+                              "type": "integer"
+                            },
+                            "maxLevel": {
+                              "type": "integer"
+                            },
+                            "price": {
+                              "type": "number"
+                            },
+                            "benefits": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "kind": {
+                                    "type": "string",
+                                    "enum": [
+                                      "compare",
+                                      "text",
+                                      "bonus"
+                                    ]
+                                  },
+                                  "label": {
+                                    "type": "string"
+                                  },
+                                  "from": {
+                                    "type": "string"
+                                  },
+                                  "to": {
+                                    "type": "string"
+                                  },
+                                  "suffix": {
+                                    "type": "string"
+                                  },
+                                  "fromTone": {
+                                    "type": "string",
+                                    "enum": [
+                                      "muted",
+                                      "emerald",
+                                      "amber"
+                                    ]
+                                  },
+                                  "toTone": {
+                                    "type": "string",
+                                    "enum": [
+                                      "emerald",
+                                      "amber"
+                                    ]
+                                  },
+                                  "text": {
+                                    "type": "string"
+                                  },
+                                  "highlight": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "kind",
+                                  "label"
+                                ],
+                                "additionalProperties": false
+                              }
+                            }
+                          },
+                          "required": [
+                            "skillName",
+                            "tag",
+                            "currentLevel",
+                            "nextLevel",
+                            "maxLevel",
+                            "price",
+                            "benefits"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "segmentDisplay": {
+                      "type": "object",
+                      "properties": {
+                        "filled": {
+                          "type": "integer"
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "filled",
+                        "total"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "levelTooltips": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string"
+                          },
+                          "lines": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "required": [
+                          "title",
+                          "lines"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "tag",
+                    "description",
+                    "effectLabel",
+                    "level",
+                    "maxLevel",
+                    "upgradePrice",
+                    "canUpgrade",
+                    "infographic",
+                    "upgradePreview",
+                    "segmentDisplay",
+                    "levelTooltips"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "stats": {
+                "type": "object",
+                "properties": {
+                  "effectiveSalary": {
+                    "type": "number"
+                  },
+                  "workLevel": {
+                    "type": "integer"
+                  },
+                  "insiderChancePercent": {
+                    "type": "number"
+                  },
+                  "bankBaseRatePercent": {
+                    "type": "number"
+                  },
+                  "tradingGrade": {
+                    "type": "string"
+                  },
+                  "propertySlotsUnlocked": {
+                    "type": "integer"
+                  },
+                  "salaryBonus": {
+                    "type": "number"
+                  },
+                  "qualificationBonusPercent": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "effectiveSalary",
+                  "workLevel",
+                  "insiderChancePercent",
+                  "bankBaseRatePercent",
+                  "tradingGrade",
+                  "propertySlotsUnlocked",
+                  "salaryBonus",
+                  "qualificationBonusPercent"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "skills",
+              "stats"
+            ],
+            "additionalProperties": false
           }
         },
         "required": [
@@ -1382,7 +2604,9 @@
           "passiveIncome",
           "insiderChancePercent",
           "insiderRolled",
-          "news"
+          "news",
+          "propertyOffers",
+          "characterSkills"
         ],
         "additionalProperties": false
       },
@@ -1468,6 +2692,10 @@
                 "publishedAt": {
                   "type": "string",
                   "format": "date-time"
+                },
+                "publishedStep": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
                 },
                 "payload": {}
               },
@@ -1648,6 +2876,12 @@
                       "tradingLevel": {
                         "type": "integer"
                       },
+                      "bankingLevel": {
+                        "type": "integer"
+                      },
+                      "propertySlotLevel": {
+                        "type": "integer"
+                      },
                       "isNpc": {
                         "type": "boolean"
                       },
@@ -1763,6 +2997,8 @@
                       "salary",
                       "reputation",
                       "tradingLevel",
+                      "bankingLevel",
+                      "propertySlotLevel",
                       "isNpc",
                       "dreamItemRefs",
                       "totalEarned",
@@ -1863,6 +3099,10 @@
                   "type": "string",
                   "format": "date-time"
                 },
+                "publishedStep": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
                 "payload": {}
               },
               "required": [
@@ -1921,12 +3161,1118 @@
               "netChange"
             ],
             "additionalProperties": false
+          },
+          "characterSkills": {
+            "type": "object",
+            "properties": {
+              "skills": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "tag": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "effectLabel": {
+                      "type": "string"
+                    },
+                    "level": {
+                      "type": "integer"
+                    },
+                    "maxLevel": {
+                      "type": "integer"
+                    },
+                    "upgradePrice": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "canUpgrade": {
+                      "type": "boolean"
+                    },
+                    "infographic": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "string"
+                          },
+                          "moneyAmount": {
+                            "type": "number"
+                          },
+                          "tone": {
+                            "type": "string",
+                            "enum": [
+                              "emerald",
+                              "amber"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "label"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "upgradePreview": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "skillName": {
+                              "type": "string"
+                            },
+                            "tag": {
+                              "type": "string"
+                            },
+                            "currentLevel": {
+                              "type": "integer"
+                            },
+                            "nextLevel": {
+                              "type": "integer"
+                            },
+                            "maxLevel": {
+                              "type": "integer"
+                            },
+                            "price": {
+                              "type": "number"
+                            },
+                            "benefits": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "kind": {
+                                    "type": "string",
+                                    "enum": [
+                                      "compare",
+                                      "text",
+                                      "bonus"
+                                    ]
+                                  },
+                                  "label": {
+                                    "type": "string"
+                                  },
+                                  "from": {
+                                    "type": "string"
+                                  },
+                                  "to": {
+                                    "type": "string"
+                                  },
+                                  "suffix": {
+                                    "type": "string"
+                                  },
+                                  "fromTone": {
+                                    "type": "string",
+                                    "enum": [
+                                      "muted",
+                                      "emerald",
+                                      "amber"
+                                    ]
+                                  },
+                                  "toTone": {
+                                    "type": "string",
+                                    "enum": [
+                                      "emerald",
+                                      "amber"
+                                    ]
+                                  },
+                                  "text": {
+                                    "type": "string"
+                                  },
+                                  "highlight": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "kind",
+                                  "label"
+                                ],
+                                "additionalProperties": false
+                              }
+                            }
+                          },
+                          "required": [
+                            "skillName",
+                            "tag",
+                            "currentLevel",
+                            "nextLevel",
+                            "maxLevel",
+                            "price",
+                            "benefits"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "segmentDisplay": {
+                      "type": "object",
+                      "properties": {
+                        "filled": {
+                          "type": "integer"
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "filled",
+                        "total"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "levelTooltips": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string"
+                          },
+                          "lines": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "required": [
+                          "title",
+                          "lines"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "tag",
+                    "description",
+                    "effectLabel",
+                    "level",
+                    "maxLevel",
+                    "upgradePrice",
+                    "canUpgrade",
+                    "infographic",
+                    "upgradePreview",
+                    "segmentDisplay",
+                    "levelTooltips"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "stats": {
+                "type": "object",
+                "properties": {
+                  "effectiveSalary": {
+                    "type": "number"
+                  },
+                  "workLevel": {
+                    "type": "integer"
+                  },
+                  "insiderChancePercent": {
+                    "type": "number"
+                  },
+                  "bankBaseRatePercent": {
+                    "type": "number"
+                  },
+                  "tradingGrade": {
+                    "type": "string"
+                  },
+                  "propertySlotsUnlocked": {
+                    "type": "integer"
+                  },
+                  "salaryBonus": {
+                    "type": "number"
+                  },
+                  "qualificationBonusPercent": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "effectiveSalary",
+                  "workLevel",
+                  "insiderChancePercent",
+                  "bankBaseRatePercent",
+                  "tradingGrade",
+                  "propertySlotsUnlocked",
+                  "salaryBonus",
+                  "qualificationBonusPercent"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "skills",
+              "stats"
+            ],
+            "additionalProperties": false
+          },
+          "propertyOffers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "assetId": {
+                  "type": "string"
+                },
+                "itemName": {
+                  "type": "string"
+                },
+                "inventoryItemId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "BUY",
+                    "SELL"
+                  ]
+                },
+                "offerPrice": {
+                  "type": "number"
+                },
+                "marketPrice": {
+                  "type": "number"
+                },
+                "profitPercent": {
+                  "type": "number"
+                },
+                "profitGrade": {
+                  "type": "string",
+                  "enum": [
+                    "F",
+                    "E",
+                    "D",
+                    "C",
+                    "B",
+                    "A"
+                  ]
+                },
+                "requiredBankingLevel": {
+                  "type": "integer"
+                },
+                "isHot": {
+                  "type": "boolean"
+                },
+                "expiresInTurns": {
+                  "type": "integer"
+                },
+                "isLocked": {
+                  "type": "boolean"
+                },
+                "downPaymentPercent": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "assetId",
+                "itemName",
+                "inventoryItemId",
+                "type",
+                "offerPrice",
+                "marketPrice",
+                "profitPercent",
+                "profitGrade",
+                "requiredBankingLevel",
+                "isHot",
+                "expiresInTurns",
+                "isLocked",
+                "downPaymentPercent"
+              ],
+              "additionalProperties": false
+            }
           }
         },
         "required": [
           "game",
           "news",
-          "nextTurnForecast"
+          "nextTurnForecast",
+          "characterSkills",
+          "propertyOffers"
+        ],
+        "additionalProperties": false
+      },
+      "AcceptPropertyOfferResponse": {
+        "type": "object",
+        "properties": {
+          "balance": {
+            "type": "number"
+          },
+          "previousBalance": {
+            "type": "number"
+          },
+          "previousReputation": {
+            "type": "number"
+          },
+          "reputation": {
+            "type": "number"
+          },
+          "profitAmount": {
+            "type": "number"
+          },
+          "installmentBreakdown": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "paidTotal": {
+                    "type": "number"
+                  },
+                  "remainingTotal": {
+                    "type": "number"
+                  },
+                  "saleProceeds": {
+                    "type": "number"
+                  },
+                  "netProfit": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "paidTotal",
+                  "remainingTotal",
+                  "saleProceeds",
+                  "netProfit"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "deal": {
+            "type": "object",
+            "properties": {
+              "assetId": {
+                "type": "string"
+              },
+              "itemName": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "BUY",
+                  "SELL"
+                ]
+              },
+              "price": {
+                "type": "number"
+              },
+              "action": {
+                "type": "string",
+                "enum": [
+                  "purchased",
+                  "sold"
+                ]
+              }
+            },
+            "required": [
+              "assetId",
+              "itemName",
+              "type",
+              "price",
+              "action"
+            ],
+            "additionalProperties": false
+          },
+          "character": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "gameId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "name": {
+                "type": "string"
+              },
+              "balance": {
+                "type": "number"
+              },
+              "profession": {
+                "type": "string",
+                "enum": [
+                  "DOCTOR",
+                  "DEVELOPER",
+                  "FINANCIER",
+                  "FARMER",
+                  "ENGINEER",
+                  "STREET_CLEANER"
+                ]
+              },
+              "professionLevel": {
+                "type": "integer"
+              },
+              "salary": {
+                "type": "number"
+              },
+              "reputation": {
+                "type": "number"
+              },
+              "tradingLevel": {
+                "type": "integer"
+              },
+              "bankingLevel": {
+                "type": "integer"
+              },
+              "propertySlotLevel": {
+                "type": "integer"
+              },
+              "isNpc": {
+                "type": "boolean"
+              },
+              "dreamItemRefs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "totalEarned": {
+                "type": "number"
+              },
+              "totalSpent": {
+                "type": "number"
+              },
+              "totalTrades": {
+                "type": "integer"
+              },
+              "successfulTrades": {
+                "type": "integer"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "inventoryItems": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "characterId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "itemRef": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "purchasePrice": {
+                      "type": "number"
+                    },
+                    "isInstallment": {
+                      "type": "boolean"
+                    },
+                    "monthlyPayment": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "installmentsTotal": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "installmentsPaid": {
+                      "type": "integer"
+                    },
+                    "special": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "isPaidOff": {
+                      "type": "boolean"
+                    },
+                    "purchasedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "characterId",
+                    "itemRef",
+                    "name",
+                    "purchasePrice",
+                    "isInstallment",
+                    "monthlyPayment",
+                    "installmentsTotal",
+                    "installmentsPaid",
+                    "special",
+                    "isPaidOff",
+                    "purchasedAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id",
+              "gameId",
+              "name",
+              "balance",
+              "profession",
+              "professionLevel",
+              "salary",
+              "reputation",
+              "tradingLevel",
+              "bankingLevel",
+              "propertySlotLevel",
+              "isNpc",
+              "dreamItemRefs",
+              "totalEarned",
+              "totalSpent",
+              "totalTrades",
+              "successfulTrades",
+              "createdAt",
+              "updatedAt"
+            ],
+            "additionalProperties": false
+          },
+          "propertyOffers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "assetId": {
+                  "type": "string"
+                },
+                "itemName": {
+                  "type": "string"
+                },
+                "inventoryItemId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "BUY",
+                    "SELL"
+                  ]
+                },
+                "offerPrice": {
+                  "type": "number"
+                },
+                "marketPrice": {
+                  "type": "number"
+                },
+                "profitPercent": {
+                  "type": "number"
+                },
+                "profitGrade": {
+                  "type": "string",
+                  "enum": [
+                    "F",
+                    "E",
+                    "D",
+                    "C",
+                    "B",
+                    "A"
+                  ]
+                },
+                "requiredBankingLevel": {
+                  "type": "integer"
+                },
+                "isHot": {
+                  "type": "boolean"
+                },
+                "expiresInTurns": {
+                  "type": "integer"
+                },
+                "isLocked": {
+                  "type": "boolean"
+                },
+                "downPaymentPercent": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "assetId",
+                "itemName",
+                "inventoryItemId",
+                "type",
+                "offerPrice",
+                "marketPrice",
+                "profitPercent",
+                "profitGrade",
+                "requiredBankingLevel",
+                "isHot",
+                "expiresInTurns",
+                "isLocked",
+                "downPaymentPercent"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "balance",
+          "previousBalance",
+          "previousReputation",
+          "reputation",
+          "profitAmount",
+          "installmentBreakdown",
+          "deal",
+          "character",
+          "propertyOffers"
+        ],
+        "additionalProperties": false
+      },
+      "NegotiatePropertyOfferBody": {
+        "type": "object",
+        "properties": {
+          "adjustmentPercent": {
+            "type": "number",
+            "minimum": -15,
+            "maximum": 45
+          }
+        },
+        "required": [
+          "adjustmentPercent"
+        ],
+        "additionalProperties": false
+      },
+      "NegotiatePropertyOfferResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "d20": {
+            "type": "integer"
+          },
+          "roll": {
+            "type": "integer"
+          },
+          "target": {
+            "type": "integer"
+          },
+          "negotiatedPrice": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "deal": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "assetId": {
+                    "type": "string"
+                  },
+                  "itemName": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "BUY",
+                      "SELL"
+                    ]
+                  },
+                  "price": {
+                    "type": "number"
+                  },
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "purchased",
+                      "sold"
+                    ]
+                  }
+                },
+                "required": [
+                  "assetId",
+                  "itemName",
+                  "type",
+                  "price",
+                  "action"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "previousReputation": {
+            "type": "number"
+          },
+          "reputation": {
+            "type": "number"
+          },
+          "previousBalance": {
+            "type": "number"
+          },
+          "balance": {
+            "type": "number"
+          },
+          "propertyOffers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "assetId": {
+                  "type": "string"
+                },
+                "itemName": {
+                  "type": "string"
+                },
+                "inventoryItemId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "BUY",
+                    "SELL"
+                  ]
+                },
+                "offerPrice": {
+                  "type": "number"
+                },
+                "marketPrice": {
+                  "type": "number"
+                },
+                "profitPercent": {
+                  "type": "number"
+                },
+                "profitGrade": {
+                  "type": "string",
+                  "enum": [
+                    "F",
+                    "E",
+                    "D",
+                    "C",
+                    "B",
+                    "A"
+                  ]
+                },
+                "requiredBankingLevel": {
+                  "type": "integer"
+                },
+                "isHot": {
+                  "type": "boolean"
+                },
+                "expiresInTurns": {
+                  "type": "integer"
+                },
+                "isLocked": {
+                  "type": "boolean"
+                },
+                "downPaymentPercent": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "assetId",
+                "itemName",
+                "inventoryItemId",
+                "type",
+                "offerPrice",
+                "marketPrice",
+                "profitPercent",
+                "profitGrade",
+                "requiredBankingLevel",
+                "isHot",
+                "expiresInTurns",
+                "isLocked",
+                "downPaymentPercent"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "character": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "gameId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "name": {
+                "type": "string"
+              },
+              "balance": {
+                "type": "number"
+              },
+              "profession": {
+                "type": "string",
+                "enum": [
+                  "DOCTOR",
+                  "DEVELOPER",
+                  "FINANCIER",
+                  "FARMER",
+                  "ENGINEER",
+                  "STREET_CLEANER"
+                ]
+              },
+              "professionLevel": {
+                "type": "integer"
+              },
+              "salary": {
+                "type": "number"
+              },
+              "reputation": {
+                "type": "number"
+              },
+              "tradingLevel": {
+                "type": "integer"
+              },
+              "bankingLevel": {
+                "type": "integer"
+              },
+              "propertySlotLevel": {
+                "type": "integer"
+              },
+              "isNpc": {
+                "type": "boolean"
+              },
+              "dreamItemRefs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "totalEarned": {
+                "type": "number"
+              },
+              "totalSpent": {
+                "type": "number"
+              },
+              "totalTrades": {
+                "type": "integer"
+              },
+              "successfulTrades": {
+                "type": "integer"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "inventoryItems": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "characterId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "itemRef": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "purchasePrice": {
+                      "type": "number"
+                    },
+                    "isInstallment": {
+                      "type": "boolean"
+                    },
+                    "monthlyPayment": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "installmentsTotal": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "installmentsPaid": {
+                      "type": "integer"
+                    },
+                    "special": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "isPaidOff": {
+                      "type": "boolean"
+                    },
+                    "purchasedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "characterId",
+                    "itemRef",
+                    "name",
+                    "purchasePrice",
+                    "isInstallment",
+                    "monthlyPayment",
+                    "installmentsTotal",
+                    "installmentsPaid",
+                    "special",
+                    "isPaidOff",
+                    "purchasedAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id",
+              "gameId",
+              "name",
+              "balance",
+              "profession",
+              "professionLevel",
+              "salary",
+              "reputation",
+              "tradingLevel",
+              "bankingLevel",
+              "propertySlotLevel",
+              "isNpc",
+              "dreamItemRefs",
+              "totalEarned",
+              "totalSpent",
+              "totalTrades",
+              "successfulTrades",
+              "createdAt",
+              "updatedAt"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "success",
+          "d20",
+          "roll",
+          "target",
+          "negotiatedPrice",
+          "deal",
+          "previousReputation",
+          "reputation",
+          "previousBalance",
+          "balance",
+          "propertyOffers",
+          "character"
         ],
         "additionalProperties": false
       },
@@ -3086,6 +5432,105 @@
         }
       }
     },
+    "/saves/{id}/skills/{skillId}/upgrade": {
+      "post": {
+        "tags": [
+          "game"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "qualification",
+                "banking",
+                "trading",
+                "property_slots"
+              ]
+            },
+            "in": "path",
+            "name": "skillId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpgradeSkillResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/saves/{id}/dashboard": {
       "get": {
         "tags": [
@@ -3114,6 +5559,203 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GameDashboardResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/property-offers/{offerId}/accept": {
+      "post": {
+        "tags": [
+          "game"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "offerId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptPropertyOfferResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/property-offers/{offerId}/negotiate": {
+      "post": {
+        "tags": [
+          "game"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NegotiatePropertyOfferBody"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "offerId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegotiatePropertyOfferResponse"
                 }
               }
             }

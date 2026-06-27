@@ -18,8 +18,9 @@ model Character {
   professionLevel Int        @default(1)
   salary          Float      @default(0)
 
-  reputation   Float   @default(3)
-  tradingLevel Int     @default(1)
+  reputation         Float @default(3)
+  tradeSuccessStreak Int   @default(0)
+  tradingLevel       Int   @default(1)
   bankingLevel Int     @default(1)
   propertySlotLevel Int @default(1)
   isNpc        Boolean @default(false)

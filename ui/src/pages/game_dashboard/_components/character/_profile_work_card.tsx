@@ -21,7 +21,7 @@ export function ProfileWorkCard({ baseSalary, stats, className = '' }: ProfileWo
           <h3 className="text-sm font-bold uppercase tracking-wider text-white">Работа</h3>
         </div>
         <span className="rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-0.5 text-sm font-bold tabular-nums text-emerald-400">
-          Lv.{stats.workLevel}
+          уровень {stats.workLevel}
         </span>
       </div>
 

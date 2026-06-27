@@ -10,6 +10,12 @@ import {
   mapOtcDealToCard,
   upgradeCharacterSkill,
 } from '../api/gameTurn';
+import {
+  acceptPropertyOffer,
+  negotiatePropertyOffer,
+  type AcceptPropertyOfferResponse,
+  type NegotiatePropertyOfferResponse,
+} from '../api/propertyOffers';
 import type { Game } from '../api/types';
 import type { ActiveLoan, BankSummary } from '../pages/game_dashboard/_components/bank';
 import type {
@@ -29,9 +35,9 @@ import {
 } from '../pages/game_dashboard/_components/sidebar/_next_turn_forecast';
 import { createEmptyPropertySlots, type PropertySlot } from '../pages/game_dashboard/_components/property';
 import { EMPTY_CHARACTER_PROFILE } from '../pages/game_dashboard/_model/defaults';
-import { mapCharacterSnapshot } from '../pages/game_dashboard/_model/game_mappers';
+import { mapCharacterSnapshot, type InventoryItemDto } from '../pages/game_dashboard/_model/game_mappers';
 import { merge_news_items, remap_news_for_step } from '../pages/game_dashboard/_model/utils';
-import type { bot_deal, news_item, portfolio_row } from '../pages/game_dashboard/_model/types';
+import type { bot_deal, news_item, portfolio_row, PropertyOffer } from '../pages/game_dashboard/_model/types';
 
 const EMPTY_FORECAST: NextTurnForecast = {
   lines: [],
@@ -59,6 +65,8 @@ interface GameState {
   news: news_item[];
   enteringNewsIds: string[];
   otcDeals: bot_deal[];
+  propertyOffers: PropertyOffer[];
+  propertyOfferBusy: boolean;
   portfolio: portfolio_row[];
   characterProfile: CharacterProfile;
   characterSkills: CharacterSkill[];
@@ -66,6 +74,7 @@ interface GameState {
   bankLoans: ActiveLoan[];
   bankSummary: BankSummary;
   propertySlots: PropertySlot[];
+  inventoryItems: InventoryItemDto[];
   nextTurnForecast: NextTurnForecast;
   creditRating: string;
 
@@ -73,6 +82,11 @@ interface GameState {
   init: (gameId: string, initialGame?: Game) => Promise<void>;
   setBalance: (balance: number | ((current: number) => number)) => void;
   removeOtcDeal: (id: string) => void;
+  acceptPropertyOffer: (offerId: string) => Promise<AcceptPropertyOfferResponse>;
+  negotiatePropertyOffer: (
+    offerId: string,
+    adjustmentPercent: number,
+  ) => Promise<NegotiatePropertyOfferResponse>;
   purchaseSkill: (skillId: string) => Promise<void>;
   payOffLoan: (loanId: string) => void;
   endTurn: () => Promise<void>;
@@ -87,6 +101,8 @@ function getInitialState(): Omit<
   | 'init'
   | 'setBalance'
   | 'removeOtcDeal'
+  | 'acceptPropertyOffer'
+  | 'negotiatePropertyOffer'
   | 'purchaseSkill'
   | 'payOffLoan'
   | 'endTurn'
@@ -105,6 +121,8 @@ function getInitialState(): Omit<
     news: [],
     enteringNewsIds: [],
     otcDeals: [],
+    propertyOffers: [],
+    propertyOfferBusy: false,
     portfolio: [],
     characterProfile: EMPTY_CHARACTER_PROFILE,
     characterSkills: [],
@@ -112,6 +130,7 @@ function getInitialState(): Omit<
     bankLoans: [],
     bankSummary: EMPTY_BANK_SUMMARY,
     propertySlots: createEmptyPropertySlots(),
+    inventoryItems: [],
     nextTurnForecast: EMPTY_FORECAST,
     creditRating: 'A+',
   };
@@ -130,6 +149,7 @@ function applyCharacterSkillsState(
     balance: snapshot.balance,
     characterProfile: snapshot.profile,
     propertySlots: snapshot.propertySlots,
+    inventoryItems: snapshot.inventoryItems,
     characterSkills: characterSkills.skills,
     characterStats: characterSkills.stats,
   };
@@ -149,6 +169,7 @@ export const useGameStore = create<GameState>((set, get) => {
       balance: applied.balance,
       characterProfile: applied.characterProfile,
       propertySlots: applied.propertySlots,
+      inventoryItems: applied.inventoryItems,
       characterSkills: applied.characterSkills,
       characterStats: applied.characterStats,
       portfolio: [],
@@ -189,12 +210,14 @@ export const useGameStore = create<GameState>((set, get) => {
     newsItems: Parameters<typeof mapApiNewsToFeedItem>[0][],
     forecast: NextTurnForecast,
     characterSkills: CharacterSkillsState,
+    propertyOffers: PropertyOffer[] = [],
     loanPaymentPerTurn = 0,
   ) => {
     applyGameSnapshot(character, step, characterSkills);
     set({
       news: mapApiNewsList(newsItems, step),
       nextTurnForecast: appendLoanToForecast(forecast, loanPaymentPerTurn),
+      propertyOffers,
     });
   };
 
@@ -209,6 +232,7 @@ export const useGameStore = create<GameState>((set, get) => {
         dashboard.news,
         dashboard.nextTurnForecast,
         dashboard.characterSkills,
+        dashboard.propertyOffers,
       );
       return;
     } catch {
@@ -280,6 +304,74 @@ export const useGameStore = create<GameState>((set, get) => {
       }));
     },
 
+    acceptPropertyOffer: async (offerId) => {
+      const { gameId } = get();
+      if (!gameId) {
+        throw new Error('Game is not loaded');
+      }
+
+      set({ propertyOfferBusy: true });
+      try {
+        const result = await acceptPropertyOffer(gameId, offerId);
+        const applied = applyCharacterSkillsState(
+          result.character,
+          get().characterSkills.length > 0
+            ? { skills: get().characterSkills, stats: get().characterStats }
+            : EMPTY_CHARACTER_SKILLS_STATE,
+        );
+        const balanceDelta = result.balance - result.previousBalance;
+
+        set({
+          balance: result.balance,
+          characterProfile: applied.characterProfile,
+          propertySlots: applied.propertySlots,
+          inventoryItems: applied.inventoryItems,
+          propertyOffers: result.propertyOffers,
+          balanceFx:
+            balanceDelta !== 0
+              ? { delta: balanceDelta, id: Date.now() }
+              : get().balanceFx,
+        });
+        return result;
+      } finally {
+        set({ propertyOfferBusy: false });
+      }
+    },
+
+    negotiatePropertyOffer: async (offerId, adjustmentPercent) => {
+      const { gameId } = get();
+      if (!gameId) {
+        throw new Error('Game is not loaded');
+      }
+
+      set({ propertyOfferBusy: true });
+      try {
+        const result = await negotiatePropertyOffer(gameId, offerId, adjustmentPercent);
+        const applied = applyCharacterSkillsState(
+          result.character,
+          get().characterSkills.length > 0
+            ? { skills: get().characterSkills, stats: get().characterStats }
+            : EMPTY_CHARACTER_SKILLS_STATE,
+        );
+        const balanceDelta = result.balance - result.previousBalance;
+
+        set({
+          propertyOffers: result.propertyOffers,
+          balance: applied.balance,
+          characterProfile: applied.characterProfile,
+          propertySlots: applied.propertySlots,
+          inventoryItems: applied.inventoryItems,
+          balanceFx:
+            balanceDelta !== 0
+              ? { delta: balanceDelta, id: Date.now() }
+              : get().balanceFx,
+        });
+        return result;
+      } finally {
+        set({ propertyOfferBusy: false });
+      }
+    },
+
     purchaseSkill: async (skillId) => {
       const { gameId, bankSummary } = get();
       if (!gameId) return;
@@ -294,6 +386,7 @@ export const useGameStore = create<GameState>((set, get) => {
           balance: applied.balance,
           characterProfile: applied.characterProfile,
           propertySlots: applied.propertySlots,
+          inventoryItems: applied.inventoryItems,
           characterSkills: applied.characterSkills,
           characterStats: applied.characterStats,
           nextTurnForecast: appendLoanToForecast(
@@ -351,6 +444,7 @@ export const useGameStore = create<GameState>((set, get) => {
           balanceFx: netDelta !== 0 ? { delta: netDelta, id: Date.now() } : null,
           characterProfile: applied.characterProfile,
           propertySlots: applied.propertySlots,
+          inventoryItems: applied.inventoryItems,
           characterSkills: applied.characterSkills,
           characterStats: applied.characterStats,
           nextTurnForecast: appendLoanToForecast(
@@ -376,6 +470,8 @@ export const useGameStore = create<GameState>((set, get) => {
             ],
           }));
         }
+
+        set({ propertyOffers: result.propertyOffers });
       } catch {
         if (gameId) {
           try {
@@ -387,6 +483,7 @@ export const useGameStore = create<GameState>((set, get) => {
                 dashboard.news,
                 dashboard.nextTurnForecast,
                 dashboard.characterSkills,
+                dashboard.propertyOffers,
                 bankSummary.paymentPerTurn,
               );
             }

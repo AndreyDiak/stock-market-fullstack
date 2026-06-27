@@ -1,6 +1,7 @@
 import { http } from '../lib/http';
 import type { NextTurnForecast } from '../pages/game_dashboard/_components/sidebar/_next_turn_forecast';
 import type { CharacterSkillsState } from '../pages/game_dashboard/_components/character/_character_skills';
+import type { PropertyOffer } from '../pages/game_dashboard/_model/types';
 import { format_news_age_label, resolve_published_step } from '../pages/game_dashboard/_model/utils';
 import type { Game } from './types';
 
@@ -47,7 +48,7 @@ export interface EndTurnResponse {
   insiderRolled: boolean;
   news: GeneratedNewsItem[];
   otcDeal?: OtcDealPayload;
-  propertyOffer?: unknown;
+  propertyOffers: PropertyOffer[];
   characterSkills: CharacterSkillsState;
 }
 
@@ -56,6 +57,7 @@ export interface GameDashboardResponse {
   news: GeneratedNewsItem[];
   nextTurnForecast: NextTurnForecast;
   characterSkills: CharacterSkillsState;
+  propertyOffers: PropertyOffer[];
 }
 
 export async function fetchGameDashboard(gameId: string) {

@@ -51,6 +51,26 @@ export interface bot_deal {
   turnsLeft: number
 }
 
+export type property_offer_type = 'BUY' | 'SELL'
+export type profit_grade = 'F' | 'E' | 'D' | 'C' | 'B' | 'A'
+
+export interface PropertyOffer {
+  id: string
+  assetId: string
+  itemName: string
+  inventoryItemId: string | null
+  type: property_offer_type
+  offerPrice: number
+  marketPrice: number
+  profitPercent: number
+  profitGrade: profit_grade
+  requiredBankingLevel: number
+  isHot: boolean
+  expiresInTurns: number
+  isLocked: boolean
+  downPaymentPercent: number
+}
+
 export interface sidebar_nav_item {
   id: dashboard_tab
   label: string

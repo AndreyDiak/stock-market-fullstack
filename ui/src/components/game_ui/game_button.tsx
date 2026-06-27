@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes } from 'react'
 
-type GameButtonVariant = 'action' | 'muted' | 'danger' | 'ghost'
+type GameButtonVariant = 'action' | 'muted' | 'danger' | 'ghost' | 'emerald' | 'teal'
 type GameButtonSize = 'sm' | 'md' | 'lg'
 
 interface GameButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -24,6 +24,10 @@ const variantClasses: Record<GameButtonVariant, string> = {
     'rounded-2xl bg-gradient-to-b from-red-400 via-red-500 to-red-600 font-black uppercase tracking-wide text-red-950 shadow-[0_4px_0_#991b1b,0_0_20px_rgba(239,68,68,0.35)] hover:from-red-300 hover:via-red-400 hover:to-red-500 hover:shadow-[0_4px_0_#991b1b,0_0_28px_rgba(239,68,68,0.45)] active:translate-y-0.5 active:shadow-[0_2px_0_#991b1b,0_0_16px_rgba(239,68,68,0.3)] disabled:active:translate-y-0',
   ghost:
     'rounded-xl bg-transparent font-semibold normal-case tracking-normal text-slate-400 underline-offset-4 shadow-none hover:text-amber-300 hover:underline active:translate-y-0',
+  emerald:
+    'rounded-xl bg-gradient-to-b from-emerald-400 via-emerald-500 to-emerald-600 font-black uppercase tracking-wide text-white shadow-[0_4px_0_#047857,0_0_15px_rgba(16,185,129,0.4),inset_0_1px_0_rgba(255,255,255,0.25)] hover:from-emerald-300 hover:via-emerald-400 hover:to-emerald-500 hover:shadow-[0_4px_0_#047857,0_0_22px_rgba(16,185,129,0.5),inset_0_1px_0_rgba(255,255,255,0.3)] active:translate-y-0.5 active:shadow-[0_2px_0_#047857,0_0_12px_rgba(16,185,129,0.35),inset_0_1px_0_rgba(255,255,255,0.2)] disabled:from-slate-700 disabled:via-slate-800 disabled:to-slate-900 disabled:text-slate-400 disabled:opacity-90 disabled:shadow-[0_4px_0_#0f172a,0_0_0_transparent] disabled:hover:from-slate-700 disabled:hover:via-slate-800 disabled:hover:to-slate-900 disabled:active:translate-y-0',
+  teal:
+    'rounded-xl bg-gradient-to-b from-teal-400 via-cyan-500 to-teal-600 font-black uppercase tracking-wide text-white shadow-[0_4px_0_#0f766e,0_0_14px_rgba(45,212,191,0.35),inset_0_1px_0_rgba(255,255,255,0.25)] hover:from-teal-300 hover:via-cyan-400 hover:to-teal-500 hover:shadow-[0_4px_0_#0f766e,0_0_20px_rgba(45,212,191,0.45),inset_0_1px_0_rgba(255,255,255,0.3)] active:translate-y-0.5 active:shadow-[0_2px_0_#0f766e,0_0_10px_rgba(45,212,191,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] disabled:from-slate-700 disabled:via-slate-800 disabled:to-slate-900 disabled:text-slate-400 disabled:opacity-90 disabled:shadow-[0_4px_0_#0f172a,0_0_0_transparent] disabled:hover:from-slate-700 disabled:hover:via-slate-800 disabled:hover:to-slate-900 disabled:active:translate-y-0',
 }
 
 export function GameButton({

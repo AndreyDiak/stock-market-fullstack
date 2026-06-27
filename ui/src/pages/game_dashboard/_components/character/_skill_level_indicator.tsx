@@ -81,7 +81,7 @@ function QualificationProgress({ skill }: { skill: CharacterSkill }) {
       aria-label={`Квалификация: уровень ${skill.level} из ${skill.maxLevel}`}
     >
       <span className="text-xs font-bold tabular-nums text-slate-300">
-        Lv. {skill.level} / {skill.maxLevel}
+        уровень {skill.level} / {skill.maxLevel}
       </span>
       <div className="flex gap-0.5" role="list">
         {Array.from({ length: skill.maxLevel }, (_, index) => {

@@ -22,8 +22,9 @@ model Game {
   completedAt   DateTime?
   totalPlayTime Int       @default(0)
 
-  character Character?
-  news      News[]
+  character      Character?
+  news           News[]
+  propertyOffers PropertyOffer[]
 
   scheduledPriceImpacts ScheduledPriceImpact[]
   gameCompanyQuotes     GameCompanyQuote[]

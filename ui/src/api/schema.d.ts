@@ -1066,6 +1066,89 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/saves/{id}/skills/{skillId}/upgrade": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    skillId: "qualification" | "banking" | "trading" | "property_slots";
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UpgradeSkillResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/saves/{id}/dashboard": {
         parameters: {
             query?: never;
@@ -1142,6 +1225,176 @@ export interface paths {
         };
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/property-offers/{offerId}/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    offerId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AcceptPropertyOfferResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/property-offers/{offerId}/negotiate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    offerId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["NegotiatePropertyOfferBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["NegotiatePropertyOfferResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;
@@ -1373,6 +1626,8 @@ export interface components {
             salary: number;
             reputation: number;
             tradingLevel: number;
+            bankingLevel: number;
+            propertySlotLevel: number;
             isNpc: boolean;
             dreamItemRefs: string[];
             totalEarned: number;
@@ -1400,6 +1655,202 @@ export interface components {
                 /** Format: date-time */
                 purchasedAt: string;
             }[];
+        };
+        CharacterSkillsState: {
+            skills: {
+                id: string;
+                name: string;
+                tag: string;
+                description: string;
+                effectLabel: string;
+                level: number;
+                maxLevel: number;
+                upgradePrice: number | null;
+                canUpgrade: boolean;
+                infographic: {
+                    id: string;
+                    label: string;
+                    value?: string;
+                    moneyAmount?: number;
+                    /** @enum {string} */
+                    tone?: "emerald" | "amber";
+                }[];
+                upgradePreview: {
+                    skillName: string;
+                    tag: string;
+                    currentLevel: number;
+                    nextLevel: number;
+                    maxLevel: number;
+                    price: number;
+                    benefits: {
+                        id: string;
+                        /** @enum {string} */
+                        kind: "compare" | "text" | "bonus";
+                        label: string;
+                        from?: string;
+                        to?: string;
+                        suffix?: string;
+                        /** @enum {string} */
+                        fromTone?: "muted" | "emerald" | "amber";
+                        /** @enum {string} */
+                        toTone?: "emerald" | "amber";
+                        text?: string;
+                        highlight?: string;
+                    }[];
+                } | null;
+                segmentDisplay: {
+                    filled: number;
+                    total: number;
+                };
+                levelTooltips: {
+                    title: string;
+                    lines: string[];
+                }[];
+            }[];
+            stats: {
+                effectiveSalary: number;
+                workLevel: number;
+                insiderChancePercent: number;
+                bankBaseRatePercent: number;
+                tradingGrade: string;
+                propertySlotsUnlocked: number;
+                salaryBonus: number;
+                qualificationBonusPercent: number;
+            };
+        };
+        UpgradeSkillResponse: {
+            game: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                userId: string;
+                name: string;
+                slot: number;
+                /** @enum {string} */
+                status: "ACTIVE" | "INACTIVE" | "PAUSED" | "COMPLETED";
+                step: number;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date-time */
+                updatedAt: string;
+                startedAt: string | null;
+                completedAt: string | null;
+                totalPlayTime: number;
+                character: {
+                    /** Format: uuid */
+                    id: string;
+                    gameId: string | null;
+                    name: string;
+                    balance: number;
+                    /** @enum {string} */
+                    profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
+                    professionLevel: number;
+                    salary: number;
+                    reputation: number;
+                    tradingLevel: number;
+                    bankingLevel: number;
+                    propertySlotLevel: number;
+                    isNpc: boolean;
+                    dreamItemRefs: string[];
+                    totalEarned: number;
+                    totalSpent: number;
+                    totalTrades: number;
+                    successfulTrades: number;
+                    /** Format: date-time */
+                    createdAt: string;
+                    /** Format: date-time */
+                    updatedAt: string;
+                    inventoryItems?: {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        characterId: string;
+                        itemRef: string;
+                        name: string;
+                        purchasePrice: number;
+                        isInstallment: boolean;
+                        monthlyPayment: number | null;
+                        installmentsTotal: number | null;
+                        installmentsPaid: number;
+                        special: string | null;
+                        isPaidOff: boolean;
+                        /** Format: date-time */
+                        purchasedAt: string;
+                    }[];
+                } | null;
+            };
+            characterSkills: {
+                skills: {
+                    id: string;
+                    name: string;
+                    tag: string;
+                    description: string;
+                    effectLabel: string;
+                    level: number;
+                    maxLevel: number;
+                    upgradePrice: number | null;
+                    canUpgrade: boolean;
+                    infographic: {
+                        id: string;
+                        label: string;
+                        value?: string;
+                        moneyAmount?: number;
+                        /** @enum {string} */
+                        tone?: "emerald" | "amber";
+                    }[];
+                    upgradePreview: {
+                        skillName: string;
+                        tag: string;
+                        currentLevel: number;
+                        nextLevel: number;
+                        maxLevel: number;
+                        price: number;
+                        benefits: {
+                            id: string;
+                            /** @enum {string} */
+                            kind: "compare" | "text" | "bonus";
+                            label: string;
+                            from?: string;
+                            to?: string;
+                            suffix?: string;
+                            /** @enum {string} */
+                            fromTone?: "muted" | "emerald" | "amber";
+                            /** @enum {string} */
+                            toTone?: "emerald" | "amber";
+                            text?: string;
+                            highlight?: string;
+                        }[];
+                    } | null;
+                    segmentDisplay: {
+                        filled: number;
+                        total: number;
+                    };
+                    levelTooltips: {
+                        title: string;
+                        lines: string[];
+                    }[];
+                }[];
+                stats: {
+                    effectiveSalary: number;
+                    workLevel: number;
+                    insiderChancePercent: number;
+                    bankBaseRatePercent: number;
+                    tradingGrade: string;
+                    propertySlotsUnlocked: number;
+                    salaryBonus: number;
+                    qualificationBonusPercent: number;
+                };
+            };
+            nextTurnForecast: {
+                lines: {
+                    id: string;
+                    label: string;
+                    amount: number;
+                }[];
+                incomeTotal: number;
+                expenseTotal: number;
+                netChange: number;
+            };
         };
         CharacterRoster: {
             /** @enum {string} */
@@ -1451,6 +1902,8 @@ export interface components {
                 salary: number;
                 reputation: number;
                 tradingLevel: number;
+                bankingLevel: number;
+                propertySlotLevel: number;
                 isNpc: boolean;
                 dreamItemRefs: string[];
                 totalEarned: number;
@@ -1509,6 +1962,8 @@ export interface components {
                 salary: number;
                 reputation: number;
                 tradingLevel: number;
+                bankingLevel: number;
+                propertySlotLevel: number;
                 isNpc: boolean;
                 dreamItemRefs: string[];
                 totalEarned: number;
@@ -1567,6 +2022,8 @@ export interface components {
                 salary: number;
                 reputation: number;
                 tradingLevel: number;
+                bankingLevel: number;
+                propertySlotLevel: number;
                 isNpc: boolean;
                 dreamItemRefs: string[];
                 totalEarned: number;
@@ -1632,6 +2089,7 @@ export interface components {
                 hot?: boolean;
                 /** Format: date-time */
                 publishedAt: string;
+                publishedStep?: number;
                 payload?: unknown;
             }[];
             otcDeal?: {
@@ -1645,16 +2103,25 @@ export interface components {
                 turnsLeft: number;
                 flavorText: string;
             };
-            propertyOffer?: {
-                botName: string;
-                itemRef: string;
+            propertyOffers: {
+                /** Format: uuid */
+                id: string;
+                assetId: string;
                 itemName: string;
+                inventoryItemId: string | null;
                 /** @enum {string} */
-                side: "buy" | "sell";
-                price: number;
-                turnsLeft: number;
-                flavorText: string;
-            };
+                type: "BUY" | "SELL";
+                offerPrice: number;
+                marketPrice: number;
+                profitPercent: number;
+                /** @enum {string} */
+                profitGrade: "F" | "E" | "D" | "C" | "B" | "A";
+                requiredBankingLevel: number;
+                isHot: boolean;
+                expiresInTurns: number;
+                isLocked: boolean;
+                downPaymentPercent: number;
+            }[];
             appliedPriceImpacts?: {
                 /** Format: uuid */
                 impactId: string;
@@ -1666,6 +2133,68 @@ export interface components {
                 newPrice: number;
                 triggerAtStep: number;
             }[];
+            characterSkills: {
+                skills: {
+                    id: string;
+                    name: string;
+                    tag: string;
+                    description: string;
+                    effectLabel: string;
+                    level: number;
+                    maxLevel: number;
+                    upgradePrice: number | null;
+                    canUpgrade: boolean;
+                    infographic: {
+                        id: string;
+                        label: string;
+                        value?: string;
+                        moneyAmount?: number;
+                        /** @enum {string} */
+                        tone?: "emerald" | "amber";
+                    }[];
+                    upgradePreview: {
+                        skillName: string;
+                        tag: string;
+                        currentLevel: number;
+                        nextLevel: number;
+                        maxLevel: number;
+                        price: number;
+                        benefits: {
+                            id: string;
+                            /** @enum {string} */
+                            kind: "compare" | "text" | "bonus";
+                            label: string;
+                            from?: string;
+                            to?: string;
+                            suffix?: string;
+                            /** @enum {string} */
+                            fromTone?: "muted" | "emerald" | "amber";
+                            /** @enum {string} */
+                            toTone?: "emerald" | "amber";
+                            text?: string;
+                            highlight?: string;
+                        }[];
+                    } | null;
+                    segmentDisplay: {
+                        filled: number;
+                        total: number;
+                    };
+                    levelTooltips: {
+                        title: string;
+                        lines: string[];
+                    }[];
+                }[];
+                stats: {
+                    effectiveSalary: number;
+                    workLevel: number;
+                    insiderChancePercent: number;
+                    bankBaseRatePercent: number;
+                    tradingGrade: string;
+                    propertySlotsUnlocked: number;
+                    salaryBonus: number;
+                    qualificationBonusPercent: number;
+                };
+            };
         };
         EndTurnBody: {
             expectedStep: number;
@@ -1688,6 +2217,7 @@ export interface components {
                 hot?: boolean;
                 /** Format: date-time */
                 publishedAt: string;
+                publishedStep?: number;
                 payload?: unknown;
             }[];
         };
@@ -1731,6 +2261,8 @@ export interface components {
                     salary: number;
                     reputation: number;
                     tradingLevel: number;
+                    bankingLevel: number;
+                    propertySlotLevel: number;
                     isNpc: boolean;
                     dreamItemRefs: string[];
                     totalEarned: number;
@@ -1777,6 +2309,7 @@ export interface components {
                 hot?: boolean;
                 /** Format: date-time */
                 publishedAt: string;
+                publishedStep?: number;
                 payload?: unknown;
             }[];
             nextTurnForecast: {
@@ -1788,6 +2321,254 @@ export interface components {
                 incomeTotal: number;
                 expenseTotal: number;
                 netChange: number;
+            };
+            characterSkills: {
+                skills: {
+                    id: string;
+                    name: string;
+                    tag: string;
+                    description: string;
+                    effectLabel: string;
+                    level: number;
+                    maxLevel: number;
+                    upgradePrice: number | null;
+                    canUpgrade: boolean;
+                    infographic: {
+                        id: string;
+                        label: string;
+                        value?: string;
+                        moneyAmount?: number;
+                        /** @enum {string} */
+                        tone?: "emerald" | "amber";
+                    }[];
+                    upgradePreview: {
+                        skillName: string;
+                        tag: string;
+                        currentLevel: number;
+                        nextLevel: number;
+                        maxLevel: number;
+                        price: number;
+                        benefits: {
+                            id: string;
+                            /** @enum {string} */
+                            kind: "compare" | "text" | "bonus";
+                            label: string;
+                            from?: string;
+                            to?: string;
+                            suffix?: string;
+                            /** @enum {string} */
+                            fromTone?: "muted" | "emerald" | "amber";
+                            /** @enum {string} */
+                            toTone?: "emerald" | "amber";
+                            text?: string;
+                            highlight?: string;
+                        }[];
+                    } | null;
+                    segmentDisplay: {
+                        filled: number;
+                        total: number;
+                    };
+                    levelTooltips: {
+                        title: string;
+                        lines: string[];
+                    }[];
+                }[];
+                stats: {
+                    effectiveSalary: number;
+                    workLevel: number;
+                    insiderChancePercent: number;
+                    bankBaseRatePercent: number;
+                    tradingGrade: string;
+                    propertySlotsUnlocked: number;
+                    salaryBonus: number;
+                    qualificationBonusPercent: number;
+                };
+            };
+            propertyOffers: {
+                /** Format: uuid */
+                id: string;
+                assetId: string;
+                itemName: string;
+                inventoryItemId: string | null;
+                /** @enum {string} */
+                type: "BUY" | "SELL";
+                offerPrice: number;
+                marketPrice: number;
+                profitPercent: number;
+                /** @enum {string} */
+                profitGrade: "F" | "E" | "D" | "C" | "B" | "A";
+                requiredBankingLevel: number;
+                isHot: boolean;
+                expiresInTurns: number;
+                isLocked: boolean;
+                downPaymentPercent: number;
+            }[];
+        };
+        AcceptPropertyOfferResponse: {
+            balance: number;
+            previousBalance: number;
+            previousReputation: number;
+            reputation: number;
+            profitAmount: number;
+            installmentBreakdown: {
+                paidTotal: number;
+                remainingTotal: number;
+                saleProceeds: number;
+                netProfit: number;
+            } | null;
+            deal: {
+                assetId: string;
+                itemName: string;
+                /** @enum {string} */
+                type: "BUY" | "SELL";
+                price: number;
+                /** @enum {string} */
+                action: "purchased" | "sold";
+            };
+            character: {
+                /** Format: uuid */
+                id: string;
+                gameId: string | null;
+                name: string;
+                balance: number;
+                /** @enum {string} */
+                profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
+                professionLevel: number;
+                salary: number;
+                reputation: number;
+                tradingLevel: number;
+                bankingLevel: number;
+                propertySlotLevel: number;
+                isNpc: boolean;
+                dreamItemRefs: string[];
+                totalEarned: number;
+                totalSpent: number;
+                totalTrades: number;
+                successfulTrades: number;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date-time */
+                updatedAt: string;
+                inventoryItems?: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    characterId: string;
+                    itemRef: string;
+                    name: string;
+                    purchasePrice: number;
+                    isInstallment: boolean;
+                    monthlyPayment: number | null;
+                    installmentsTotal: number | null;
+                    installmentsPaid: number;
+                    special: string | null;
+                    isPaidOff: boolean;
+                    /** Format: date-time */
+                    purchasedAt: string;
+                }[];
+            };
+            propertyOffers: {
+                /** Format: uuid */
+                id: string;
+                assetId: string;
+                itemName: string;
+                inventoryItemId: string | null;
+                /** @enum {string} */
+                type: "BUY" | "SELL";
+                offerPrice: number;
+                marketPrice: number;
+                profitPercent: number;
+                /** @enum {string} */
+                profitGrade: "F" | "E" | "D" | "C" | "B" | "A";
+                requiredBankingLevel: number;
+                isHot: boolean;
+                expiresInTurns: number;
+                isLocked: boolean;
+                downPaymentPercent: number;
+            }[];
+        };
+        NegotiatePropertyOfferBody: {
+            adjustmentPercent: number;
+        };
+        NegotiatePropertyOfferResponse: {
+            success: boolean;
+            d20: number;
+            roll: number;
+            target: number;
+            negotiatedPrice: number | null;
+            deal: {
+                assetId: string;
+                itemName: string;
+                /** @enum {string} */
+                type: "BUY" | "SELL";
+                price: number;
+                /** @enum {string} */
+                action: "purchased" | "sold";
+            } | null;
+            previousReputation: number;
+            reputation: number;
+            previousBalance: number;
+            balance: number;
+            propertyOffers: {
+                /** Format: uuid */
+                id: string;
+                assetId: string;
+                itemName: string;
+                inventoryItemId: string | null;
+                /** @enum {string} */
+                type: "BUY" | "SELL";
+                offerPrice: number;
+                marketPrice: number;
+                profitPercent: number;
+                /** @enum {string} */
+                profitGrade: "F" | "E" | "D" | "C" | "B" | "A";
+                requiredBankingLevel: number;
+                isHot: boolean;
+                expiresInTurns: number;
+                isLocked: boolean;
+                downPaymentPercent: number;
+            }[];
+            character: {
+                /** Format: uuid */
+                id: string;
+                gameId: string | null;
+                name: string;
+                balance: number;
+                /** @enum {string} */
+                profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
+                professionLevel: number;
+                salary: number;
+                reputation: number;
+                tradingLevel: number;
+                bankingLevel: number;
+                propertySlotLevel: number;
+                isNpc: boolean;
+                dreamItemRefs: string[];
+                totalEarned: number;
+                totalSpent: number;
+                totalTrades: number;
+                successfulTrades: number;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date-time */
+                updatedAt: string;
+                inventoryItems?: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    characterId: string;
+                    itemRef: string;
+                    name: string;
+                    purchasePrice: number;
+                    isInstallment: boolean;
+                    monthlyPayment: number | null;
+                    installmentsTotal: number | null;
+                    installmentsPaid: number;
+                    special: string | null;
+                    isPaidOff: boolean;
+                    /** Format: date-time */
+                    purchasedAt: string;
+                }[];
             };
         };
         User: {

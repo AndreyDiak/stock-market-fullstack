@@ -1,9 +1,9 @@
 import type { Character, Game, InventoryItem } from '@prisma/client';
 import type {
   GeneratedOtcDeal,
-  GeneratedPropertyOffer,
   PersistedNewsItem,
 } from '../news/types.js';
+import type { PropertyOfferDto } from '../property_offers/_types.js';
 import type { CharacterDto } from '../../schemas/character.schema.js';
 import type { CharacterSkillsState } from '../../schemas/character_skills.schema.js';
 import type { PassiveResult, TurnForecast } from './_passive_income.service.js';
@@ -31,7 +31,7 @@ export interface TurnState {
   insiderRolled: boolean;
   news: PersistedNewsItem[];
   otcDeal?: GeneratedOtcDeal;
-  propertyOffer?: GeneratedPropertyOffer;
+  propertyOffersCreated?: boolean;
   appliedPriceImpacts?: AppliedPriceImpact[];
 }
 
@@ -53,7 +53,7 @@ export interface EndTurnResult {
   insiderRolled: boolean;
   news: PersistedNewsItem[];
   otcDeal?: GeneratedOtcDeal;
-  propertyOffer?: GeneratedPropertyOffer;
+  propertyOffers: PropertyOfferDto[];
   appliedPriceImpacts?: AppliedPriceImpact[];
   characterSkills: CharacterSkillsState;
 }

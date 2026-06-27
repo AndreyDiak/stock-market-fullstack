@@ -42,7 +42,7 @@ export function NewsBlock() {
       ) : (
         <div className="space-y-2 overflow-x-hidden">
           <AnimatePresence initial={false} mode="popLayout">
-            {latest.map((item) => {
+            {latest.map((item, index) => {
               const isEntering = enteringNewsIds.includes(item.id)
 
               return (
@@ -60,6 +60,7 @@ export function NewsBlock() {
                     item={item}
                     theme={theme}
                     compact
+                    latest={index === 0}
                     turn={turn}
                     onSelect={selectNews}
                   />

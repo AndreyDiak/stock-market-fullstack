@@ -91,7 +91,7 @@ export function ProfileInfoCard({ profile, stats, className = '' }: ProfileInfoC
             {professionLabel}
           </p>
           <span className="mt-2 inline-flex rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-bold text-emerald-400">
-            Карьера Lv.{stats.workLevel}
+            Карьера · уровень {stats.workLevel}
           </span>
         </div>
       </div>

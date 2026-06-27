@@ -1,7 +1,7 @@
-import { calcPropertyPassiveIncome, type PropertySlot } from '../_components/property'
-import type { bot_deal_side, news_item, portfolio_row } from './types'
+import { calcPropertyPassiveIncome, type PropertySlot } from '../_components/property';
+import type { bot_deal_side, news_item, portfolio_row } from './types';
 
-import { SALARY_CYCLE_TURNS } from './constants'
+import { SALARY_CYCLE_TURNS } from './constants';
 
 export function turnsUntilSalary(step: number): number {
   const remainder = step % SALARY_CYCLE_TURNS
@@ -180,6 +180,10 @@ export function format_turns_left_label(turnsLeft: number) {
   const mod100 = turnsLeft % 100
   if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return `${turnsLeft} хода`
   return `${turnsLeft} ходов`
+}
+
+export function format_turns_remaining_label(turnsLeft: number) {
+  return `ещё ${format_turns_left_label(turnsLeft)}`
 }
 
 export function format_insider_relevance_label(turnsLeft: number) {

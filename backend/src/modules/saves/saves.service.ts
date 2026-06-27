@@ -1,6 +1,7 @@
 import { NPCS } from '@/assets/npcs.js';
 import { REAL_ESTATE } from '@/assets/real_estate.js';
 import { NewsGenerationService } from '@/modules/news/news_generation.service.js';
+import { PropertyOffersService } from '@/modules/property_offers/property_offers.service.js';
 import { AppError } from '@/utils/errors.js';
 import type { Character, Game, InventoryItem, PrismaClient } from '@prisma/client';
 import { GameStatus } from '@prisma/client';
@@ -19,11 +20,13 @@ type GameWithCharacter = Game & {
 
 export class SavesService {
   readonly #newsService: NewsGenerationService;
+  readonly #propertyOffersService: PropertyOffersService;
   readonly #prisma: PrismaClient;
 
   constructor(prisma: PrismaClient) {
     this.#prisma = prisma;
     this.#newsService = new NewsGenerationService(prisma);
+    this.#propertyOffersService = new PropertyOffersService(prisma);
   }
 
   async listSaves(userId: string) {
@@ -78,7 +81,7 @@ export class SavesService {
               inventoryItems: {
                 create: starterItems.map((item) => {
                   const template = REAL_ESTATE.find((r) => r.id === item.itemRef)!;
-                  return this.#starterInventoryData(item, template);
+                  return this.#starterInventoryFields(item, template);
                 }),
               },
             },
@@ -94,6 +97,16 @@ export class SavesService {
       where: { id: game.id },
       include: { character: { include: characterInclude } },
     });
+
+    if (!saved.character) {
+      throw new AppError(500, 'CHARACTER_MISSING', 'Character was not created');
+    }
+
+    await this.#propertyOffersService.createStarterOffers(
+      game.id,
+      1,
+      saved.character.inventoryItems,
+    );
 
     return serializeGame(saved);
   }
@@ -201,13 +214,11 @@ export class SavesService {
     return true;
   }
 
-  #starterInventoryData(
+  #starterInventoryFields(
     starter: { itemRef: string; installmentsPaid: number },
     template: (typeof REAL_ESTATE)[number],
-    characterId?: string,
   ) {
     return {
-      ...(characterId ? { characterId } : {}),
       itemRef: starter.itemRef,
       name: template.name,
       purchasePrice: template.basePrice,
@@ -216,6 +227,17 @@ export class SavesService {
       installmentsTotal: template.installmentMonths,
       installmentsPaid: starter.installmentsPaid,
       special: template.special,
+    };
+  }
+
+  #starterInventoryData(
+    starter: { itemRef: string; installmentsPaid: number },
+    template: (typeof REAL_ESTATE)[number],
+    characterId: string,
+  ) {
+    return {
+      characterId,
+      ...this.#starterInventoryFields(starter, template),
     };
   }
 }

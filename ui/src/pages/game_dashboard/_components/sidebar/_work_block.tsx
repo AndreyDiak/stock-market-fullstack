@@ -19,7 +19,7 @@ export function WorkBlock() {
       theme={theme}
       action={
         <span className="rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-0.5 text-sm font-bold tabular-nums text-emerald-400">
-          Lv.{careerLevel}
+          уровень {careerLevel}
         </span>
       }
     >

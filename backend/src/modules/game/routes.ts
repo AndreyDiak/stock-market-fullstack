@@ -5,6 +5,7 @@ import { saveIdParamSchema } from '../saves/saves.schema.js';
 import { endTurnBodySchema } from '../../schemas/turn.schema.js';
 import { GameService } from './_service.js';
 import { upgradeSkillParamsSchema } from '../../schemas/character_skills.schema.js';
+import { negotiatePropertyOfferBodySchema } from '../../schemas/property_offer.schema.js';
 
 export async function gameRoutes(fastify: FastifyInstance) {
   const gameService = new GameService(fastify.prisma);
@@ -89,6 +90,62 @@ export async function gameRoutes(fastify: FastifyInstance) {
     async (request) => {
       const { id } = saveIdParamSchema.parse(request.params);
       return gameService.getDashboard(request.user.sub, id);
+    },
+  );
+
+  fastify.post(
+    '/saves/:id/property-offers/:offerId/accept',
+    {
+      preHandler: authenticate,
+      schema: {
+        tags: ['game'],
+        security: [{ bearerAuth: [] }],
+        params: {
+          type: 'object',
+          required: ['id', 'offerId'],
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            offerId: { type: 'string', format: 'uuid' },
+          },
+        },
+        response: {
+          200: { $ref: 'AcceptPropertyOfferResponse#' },
+          ...errorResponses,
+        },
+      },
+    },
+    async (request) => {
+      const { id, offerId } = request.params as { id: string; offerId: string };
+      return gameService.acceptPropertyOffer(request.user.sub, id, offerId);
+    },
+  );
+
+  fastify.post(
+    '/saves/:id/property-offers/:offerId/negotiate',
+    {
+      preHandler: authenticate,
+      schema: {
+        tags: ['game'],
+        security: [{ bearerAuth: [] }],
+        params: {
+          type: 'object',
+          required: ['id', 'offerId'],
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            offerId: { type: 'string', format: 'uuid' },
+          },
+        },
+        body: { $ref: 'NegotiatePropertyOfferBody#' },
+        response: {
+          200: { $ref: 'NegotiatePropertyOfferResponse#' },
+          ...errorResponses,
+        },
+      },
+    },
+    async (request) => {
+      const { id, offerId } = request.params as { id: string; offerId: string };
+      const { adjustmentPercent } = negotiatePropertyOfferBodySchema.parse(request.body);
+      return gameService.negotiatePropertyOffer(request.user.sub, id, offerId, adjustmentPercent);
     },
   );
 

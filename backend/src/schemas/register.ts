@@ -18,6 +18,11 @@ import {
 } from './game.schema.js';
 import { endTurnBodySchema, endTurnResponseSchema, gameNewsResponseSchema, nextTurnForecastResponseSchema } from './turn.schema.js';
 import { gameDashboardResponseSchema } from './dashboard.schema.js';
+import {
+  acceptPropertyOfferResponseSchema,
+  negotiatePropertyOfferBodySchema,
+  negotiatePropertyOfferResponseSchema,
+} from './property_offer.schema.js';
 import { updateUserBodySchema, userSchema } from './user.schema.js';
 import { logoutResponseSchema, refreshTokenResponseSchema, authTokenResponseSchema, registerBodySchema, loginBodySchema } from './auth.schema.js';
 
@@ -37,6 +42,9 @@ const schemaEntries = {
   GameNewsResponse: gameNewsResponseSchema,
   NextTurnForecastResponse: nextTurnForecastResponseSchema,
   GameDashboardResponse: gameDashboardResponseSchema,
+  AcceptPropertyOfferResponse: acceptPropertyOfferResponseSchema,
+  NegotiatePropertyOfferBody: negotiatePropertyOfferBodySchema,
+  NegotiatePropertyOfferResponse: negotiatePropertyOfferResponseSchema,
   User: userSchema,
   UpdateUserBody: updateUserBodySchema,
   RefreshTokenResponse: refreshTokenResponseSchema,

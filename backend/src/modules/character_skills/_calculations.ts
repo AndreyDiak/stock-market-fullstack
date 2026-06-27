@@ -34,6 +34,11 @@ export function getTradingGrade(tradingLevel: number) {
   return TRADING_GRADES[gradeIndex];
 }
 
+export function getAccessiblePropertyGrades(bankingLevel: number): string {
+  const count = Math.max(1, Math.min(bankingLevel, TRADING_GRADES.length));
+  return TRADING_GRADES.slice(0, count).join(', ');
+}
+
 export function countUnlockedPropertySlots(propertySlotLevel: number) {
   return Math.min(4, Math.max(1, propertySlotLevel));
 }
@@ -157,6 +162,14 @@ export function buildSkillUpgradePreview(
         to: `${calcBankBaseRate(nextLevel)}%`,
         toTone: 'emerald',
       });
+      benefits.push({
+        id: 'property-deals',
+        kind: 'compare',
+        label: 'Сделки с имуществом:',
+        from: getAccessiblePropertyGrades(level),
+        to: getAccessiblePropertyGrades(nextLevel),
+        toTone: 'amber',
+      });
       break;
     }
     case 'trading': {
@@ -245,6 +258,12 @@ export function buildSkillCurrentInfographic(
           value: `${calcBankBaseRate(level)}%`,
           tone: 'emerald',
         },
+        {
+          id: 'property-deals',
+          label: 'Сделки с имуществом',
+          value: getAccessiblePropertyGrades(level),
+          tone: 'amber',
+        },
       ];
     case 'trading':
       return [
@@ -271,7 +290,10 @@ export function getSkillLevelTooltip(
       const bankingLevel = levelAtCell + 1;
       return {
         title: `Грейд ${grade}`,
-        lines: [`Ставка по кредиту: ${calcBankBaseRate(bankingLevel)}%`],
+        lines: [
+          `Ставка по кредиту: ${calcBankBaseRate(bankingLevel)}%`,
+          `Сделки с имуществом: ${getAccessiblePropertyGrades(bankingLevel)}`,
+        ],
       };
     }
     case 'trading': {

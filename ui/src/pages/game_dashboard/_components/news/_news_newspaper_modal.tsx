@@ -1,6 +1,9 @@
 import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { GameModal } from '../../../../components/game_ui/floating'
+import { GameButton } from '../../../../components/game_ui/game_button'
+import { getRealEstateImage } from '../../../../constants/realEstateImages'
+import { useDashboardUi } from '../../_model/dashboard_ui_context'
 import type { news_item } from '../../_model/types'
 import {
   format_turns_left_label,
@@ -56,7 +59,36 @@ interface NewsNewspaperModalProps {
   onClose: () => void
 }
 
+function PropertyOfferNewsExtras({
+  item,
+  onGoToOffer,
+}: {
+  item: news_item
+  onGoToOffer: (offerId: string) => void
+}) {
+  const payload = item.payload as { offerId?: string; assetId?: string } | undefined
+  if (!payload?.offerId) return null
+
+  const image = payload.assetId ? getRealEstateImage(payload.assetId) : undefined
+
+  return (
+    <div className="mt-5 flex flex-col items-center gap-4 border-t border-[#3d4a30]/15 pt-5">
+      {image ? (
+        <img
+          src={image}
+          alt=""
+          className="h-16 w-16 rounded-lg object-cover ring-2 ring-[#3d4a30]/25"
+        />
+      ) : null}
+      <GameButton size="sm" onClick={() => onGoToOffer(payload.offerId!)}>
+        Перейти к предложению
+      </GameButton>
+    </div>
+  )
+}
+
 export function NewsNewspaperModal({ item, onClose }: NewsNewspaperModalProps) {
+  const { openRealEstateTab } = useDashboardUi()
   const layout = useMemo(() => {
     if (!item) return null
 
@@ -161,6 +193,16 @@ export function NewsNewspaperModal({ item, onClose }: NewsNewspaperModalProps) {
                 </p>
               ))}
             </div>
+
+            {item.kind === 'PROPERTY_OFFER' ? (
+              <PropertyOfferNewsExtras
+                item={item}
+                onGoToOffer={(offerId) => {
+                  onClose()
+                  openRealEstateTab(offerId)
+                }}
+              />
+            ) : null}
           </div>
 
           <footer className="relative shrink-0 border-t border-[#3d4a30]/15 px-6 py-3 sm:px-8">

@@ -8,6 +8,7 @@ import {
   sort_news_for_panel,
 } from '../../_model/utils'
 import { NewsCard } from './_news_card'
+import { NewsCycleIndicator } from './_news_cycle_indicator'
 
 export function NewsPanel() {
   const theme = useDashboardTheme()
@@ -48,6 +49,8 @@ export function NewsPanel() {
         </span>
       </div>
 
+      <NewsCycleIndicator news={visibleNews} />
+
       <div className={`min-h-0 flex-1 space-y-3 overflow-y-auto pr-0.5 ${theme.scrollArea}`}>
         {pinned ? (
           <NewsCard
@@ -64,11 +67,12 @@ export function NewsPanel() {
             Пока нет новостей за этот период
           </p>
         ) : (
-          feed.map((item) => (
+          feed.map((item, index) => (
             <NewsCard
               key={item.id}
               item={item}
               theme={theme}
+              latest={index === 0}
               turn={turn}
               onSelect={selectNews}
             />

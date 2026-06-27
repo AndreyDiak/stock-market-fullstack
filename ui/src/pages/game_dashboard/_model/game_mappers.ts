@@ -8,6 +8,7 @@ export interface InventoryItemDto {
   id: string
   itemRef: string
   name: string
+  purchasePrice: number
   special: string | null
   monthlyPayment: number | null
   installmentsTotal: number | null
@@ -35,12 +36,17 @@ function mapPropertyItem(item: InventoryItemDto): PropertyItem {
     installmentsTotal > 0
       ? Math.round((item.installmentsPaid / installmentsTotal) * 100)
       : 0
+  const isOwned =
+    item.isPaidOff ||
+    !item.isInstallment ||
+    (installmentsTotal > 0 && item.installmentsPaid >= installmentsTotal)
 
   return {
     itemRef: item.itemRef,
     name: item.name,
     income: parsePassiveIncome(special),
     paybackPct,
+    isOwned,
     monthlyPayment: item.monthlyPayment ?? catalog?.monthlyPayment,
   }
 }
@@ -100,6 +106,7 @@ export function mapCharacterSnapshot(
       getGameInventoryItems(character),
       unlockedSlotCount,
     ),
+    inventoryItems: getGameInventoryItems(character),
     balance: character.balance,
   }
 }

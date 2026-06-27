@@ -117,6 +117,79 @@ export class NewsGenerationService {
     });
   }
 
+  async createPropertyOfferNews(input: {
+    gameId: string;
+    gameStep: number;
+    offerId: string;
+    assetId: string;
+    body: string;
+  }) {
+    return this.#persistNews({
+      gameId: input.gameId,
+      gameStep: input.gameStep,
+      kind: 'PROPERTY_OFFER',
+      title: 'Новое предложение на рынке недвижимости!',
+      body: input.body,
+      sentiment: 'POSITIVE',
+      impact: 0,
+      hot: false,
+      payload: { offerId: input.offerId, assetId: input.assetId },
+    });
+  }
+
+  async generateInsiderNews(input: {
+    gameId: string;
+    gameStep: number;
+  }): Promise<{ news: PersistedNewsItem; insiderRolled: true }> {
+    const baseCtx = {
+      gameId: input.gameId,
+      gameStep: input.gameStep,
+      company: pickRandom(COMPANIES),
+    };
+    const item = await this.#generateStaticNews(baseCtx, this.#insiderNewsConfig());
+    return { news: item, insiderRolled: true };
+  }
+
+  async generateJunkNews(input: {
+    gameId: string;
+    gameStep: number;
+  }): Promise<PersistedNewsItem> {
+    const baseCtx = {
+      gameId: input.gameId,
+      gameStep: input.gameStep,
+      company: pickRandom(COMPANIES),
+    };
+    if (Math.random() < 0.35) {
+      return this.#generateStaticNews(baseCtx, this.#rumorNewsConfig());
+    }
+    return this.#generateStaticNews(baseCtx, this.#marketNewsConfig());
+  }
+
+  async createOtcDealNews(input: {
+    gameId: string;
+    gameStep: number;
+    deal: import('./types.js').GeneratedOtcDeal;
+  }) {
+    return this.#persistNews({
+      gameId: input.gameId,
+      gameStep: input.gameStep,
+      kind: 'OTC_DEAL',
+      title: `OTC-сделка: ${input.deal.companyName}`,
+      body: input.deal.flavorText,
+      sentiment: 'NEUTRAL',
+      impact: 0,
+      ticker: input.deal.ticker,
+      payload: {
+        botName: input.deal.botName,
+        ticker: input.deal.ticker,
+        side: input.deal.side,
+        qty: input.deal.qty,
+        price: input.deal.price,
+        turnsLeft: input.deal.turnsLeft,
+      },
+    });
+  }
+
   async listGameNews(gameId: string, limit = 20): Promise<PersistedNewsItem[]> {
     const rows = await this.#prisma.news.findMany({
       where: { gameId },

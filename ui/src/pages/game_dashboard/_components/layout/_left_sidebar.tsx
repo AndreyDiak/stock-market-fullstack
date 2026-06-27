@@ -61,6 +61,7 @@ function SidebarNavButton({
   onSelect,
   theme,
   notify,
+  badgeCount,
 }: {
   item: sidebar_nav_item
   active: boolean
@@ -68,12 +69,18 @@ function SidebarNavButton({
   onSelect: () => void
   theme: GameDashboardThemeTokens
   notify?: boolean
+  badgeCount?: number
 }) {
+  const showBadge = badgeCount != null && badgeCount > 0
+
   return (
     <button
       type="button"
       title={item.label}
       onClick={onSelect}
+      aria-label={
+        showBadge ? `${item.label}, ${badgeCount} предложений` : item.label
+      }
       className={`group relative isolate flex min-w-0 max-w-full items-center overflow-hidden rounded-[28px] border py-3 text-left backdrop-blur-md transition-[gap,padding,border-radius] duration-300 ease-in-out ${navShellClass(collapsed)} ${
         collapsed ? 'lg:rounded-2xl' : ''
       } ${active ? theme.navActive : theme.navIdle}`}
@@ -92,7 +99,14 @@ function SidebarNavButton({
         }`}
       >
         {item.icon}
-        {notify ? (
+        {showBadge ? (
+          <span
+            aria-hidden
+            className="absolute -right-1.5 -top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-emerald-400 px-1 text-[10px] font-black leading-none text-emerald-950 shadow-[0_0_8px_rgba(52,211,153,0.65)] ring-2 ring-slate-900"
+          >
+            {badgeCount > 99 ? '99+' : badgeCount}
+          </span>
+        ) : notify ? (
           <span
             aria-hidden
             className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)] ring-2 ring-slate-900"
@@ -183,6 +197,7 @@ export function LeftSidebar() {
   const { activeTab, setActiveTab, openExitModal } = useDashboardUi()
   const news = useGameStore((state) => state.news)
   const turn = useGameStore((state) => state.turn)
+  const propertyOfferCount = useGameStore((state) => state.propertyOffers.length)
 
   const showNewsInsiderAlert = useMemo(
     () => has_active_insider_alert(news, turn),
@@ -221,6 +236,7 @@ export function LeftSidebar() {
               active={activeTab === item.id}
               onSelect={go(item.id)}
               notify={item.id === 'news' && showNewsInsiderAlert && activeTab !== 'news'}
+              badgeCount={item.id === 'real-estate' ? propertyOfferCount : undefined}
             />
           ))}
         </div>

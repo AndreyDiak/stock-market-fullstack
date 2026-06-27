@@ -1,0 +1,21 @@
+model PropertyOffer {
+  id                   String   @id @default(uuid())
+  gameId               String
+  game                 Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  assetId              String
+  inventoryItemId      String?
+  type                 String
+  offerPrice           Float
+  marketPrice          Float
+  profitPercent        Float
+  profitGrade          String
+  requiredBankingLevel Int
+  isHot                Boolean  @default(false)
+  expiresInTurns       Int
+  expiresAtTurn        Int
+  isActive             Boolean  @default(true)
+  createdAt            DateTime @default(now())
+
+  @@index([gameId, isActive])
+  @@map("property_offers")
+}

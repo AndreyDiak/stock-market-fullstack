@@ -23,9 +23,11 @@
     "framer-motion": "^12.41.0",
     "ky": "^2.0.2",
     "react": "^19.2.7",
+    "react-3d-dice": "^0.1.0",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.0",
     "tailwindcss": "^4.3.1",
+    "three": "^0.185.0",
     "zustand": "^5.0.14"
   }
 }
