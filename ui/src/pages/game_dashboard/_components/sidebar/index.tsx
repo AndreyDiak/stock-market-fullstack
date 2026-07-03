@@ -2,6 +2,7 @@ import { MoneyValue } from '../../../../components/money/money_value'
 import { useGameStore } from '../../../../stores/game.store'
 import { useDashboardTheme } from '../../_model/use_dashboard_theme'
 import type { TurnCashflowLine } from './_next_turn_forecast'
+import { EMPTY_NEXT_TURN_FORECAST } from './_next_turn_forecast'
 import type { GameDashboardThemeTokens } from '../shared'
 import { SidebarSection } from '../shared'
 
@@ -45,7 +46,7 @@ function CashflowRow({
 
 export function NextTurnForecastBlock() {
   const theme = useDashboardTheme()
-  const forecast = useGameStore((state) => state.nextTurnForecast)
+  const forecast = useGameStore((state) => state.nextTurnForecast) ?? EMPTY_NEXT_TURN_FORECAST
   const hasLines = forecast.lines.length > 0
 
   return (
@@ -63,19 +64,17 @@ export function NextTurnForecastBlock() {
           Нет запланированных операций
         </p>
       ) : (
-        <article className={`relative overflow-hidden px-4 pb-4 pt-3.5 ${theme.sidebarInset}`}>
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-2 bg-[repeating-linear-gradient(90deg,transparent,transparent_6px,rgba(148,163,184,0.12)_6px,rgba(148,163,184,0.12)_12px)]" />
+        <article className="relative overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-inset)] px-4 pb-4 pt-3.5">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-[repeating-linear-gradient(90deg,transparent,transparent_8px,rgba(148,163,184,0.06)_8px,rgba(148,163,184,0.06)_16px)]" />
 
-          <div className="space-y-2.5 border-b border-dashed border-slate-600/45 pb-3">
+          <div className="space-y-2 border-b border-dashed border-slate-600/35 pb-3">
             {forecast.lines.map((line) => (
               <CashflowRow key={line.id} line={line} theme={theme} />
             ))}
           </div>
 
-          <div className="mt-3 flex items-center justify-between gap-3">
-            <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">
-              Итого
-            </span>
+          <div className="mt-3 flex items-center justify-between gap-3 rounded-lg bg-[var(--surface-card)] px-2 py-1.5">
+            <span className="text-xs font-bold text-[var(--text-secondary)]">Итого</span>
             <MoneyValue
               amount={Math.abs(forecast.netChange)}
               size="sm"
@@ -84,8 +83,6 @@ export function NextTurnForecastBlock() {
               prefix={forecast.netChange > 0 ? '+' : undefined}
             />
           </div>
-
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2 bg-[repeating-linear-gradient(90deg,transparent,transparent_6px,rgba(148,163,184,0.1)_6px,rgba(148,163,184,0.1)_12px)]" />
         </article>
       )}
     </SidebarSection>

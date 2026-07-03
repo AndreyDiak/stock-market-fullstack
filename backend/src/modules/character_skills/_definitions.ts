@@ -36,7 +36,7 @@ export const SKILL_DEFINITIONS: SkillDefinition[] = [
     name: 'Курс трейдинга',
     tag: 'Трейдинг',
     description: 'Практика на симуляторе и разбор сделок с наставником.',
-    effectLabel: 'Грейды F → A: доступ к дорогим акциям и выше шанс успешной сделки',
+    effectLabel: 'Грейды F → A: доступ к акциям и до 50% скидки при торге по имуществу',
     basePrice: 5000,
     maxLevel: 6,
     defaultLevel: 1,

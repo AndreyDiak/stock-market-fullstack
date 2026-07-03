@@ -4,17 +4,34 @@ export function PanelSectionHeading({
   title,
   subtitle,
   size = 'lg',
+  variant = 'default',
+  align = 'center',
 }: {
   title: string
   subtitle?: string
   size?: 'lg' | 'sm'
+  variant?: 'default' | 'compact'
+  align?: 'center' | 'left'
 }) {
   const titleClass =
     size === 'lg'
-      ? 'text-xl font-bold tracking-wide text-white'
-      : 'text-sm font-bold uppercase tracking-wider text-white'
+      ? variant === 'compact'
+        ? 'text-lg font-bold text-white'
+        : 'text-xl font-bold tracking-wide text-white'
+      : 'text-sm font-bold text-white'
 
   const TitleTag = size === 'lg' ? 'h2' : 'h3'
+
+  if (variant === 'compact' || align === 'left') {
+    return (
+      <div className={align === 'left' ? 'text-left' : 'text-center'}>
+        <TitleTag className={titleClass}>{title}</TitleTag>
+        {subtitle ? (
+          <p className={`mt-0.5 text-xs leading-snug ${SECONDARY_TEXT}`}>{subtitle}</p>
+        ) : null}
+      </div>
+    )
+  }
 
   return (
     <div className="flex items-center gap-3 sm:gap-4">

@@ -45,7 +45,7 @@ export function getGameDashboardTheme(theme: GameColorTheme): GameDashboardTheme
       modalBackdrop: 'bg-slate-900/35',
       sidebarSection:
         'overflow-hidden rounded-2xl border border-slate-200/80 bg-white/80 p-3',
-      sidebarSectionTitle: 'text-[11px] font-bold uppercase tracking-[0.2em] text-slate-600',
+      sidebarSectionTitle: 'text-xs font-bold text-slate-600',
       sidebarInset: 'overflow-hidden rounded-xl border border-slate-200/70 bg-slate-50',
       sidebarLink:
         'shrink-0 text-[10px] font-bold uppercase tracking-[0.14em] text-emerald-700 transition hover:text-emerald-900',
@@ -74,7 +74,7 @@ export function getGameDashboardTheme(theme: GameColorTheme): GameDashboardTheme
     modalBackdrop: 'bg-black/65',
     sidebarSection:
       'overflow-hidden rounded-2xl border border-slate-700/40 bg-slate-900/65 p-3',
-    sidebarSectionTitle: 'text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400',
+    sidebarSectionTitle: 'text-xs font-bold text-slate-300',
     sidebarInset:
       'overflow-hidden rounded-xl border border-slate-600/30 bg-[#0c1218]/90',
     sidebarLink:

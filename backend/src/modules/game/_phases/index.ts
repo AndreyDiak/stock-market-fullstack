@@ -19,7 +19,7 @@ export function createGamePipeline(prisma: PrismaClient): GamePipeline {
   const propertyOffersService = new PropertyOffersService(prisma);
 
   return new GamePipeline([
-    new EconomyPhase(new PassiveIncomeService(prisma)),
+    new EconomyPhase(new PassiveIncomeService(prisma), newsService),
     new AdvanceStepPhase(prisma),
     new PriceImpactPhase(new PriceImpactService(prisma)),
     new PropertyOffersExpiryPhase(propertyOffersService),

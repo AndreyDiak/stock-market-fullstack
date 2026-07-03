@@ -20,6 +20,7 @@ import {
   TradingChartIcon,
 } from '../../../../shared/icons'
 import { useGameStore } from '../../../../stores/game.store'
+import { formatReputation } from '../../_model/utils'
 import { TRADING_GRADES, getSkillLevel } from '../character/_character_skills'
 import type { CharacterSkill } from '../character/_character_skills'
 import './_header_stats.css'
@@ -136,8 +137,8 @@ export function HeaderStats() {
     {
       variant: 'reputation',
       icon: <StarIcon className="h-3.5 w-3.5 text-amber-400" />,
-      value: reputation.toFixed(1),
-      title: 'Репутация',
+      value: formatReputation(reputation),
+      title: `Репутация: ${formatReputation(reputation)}`,
       description: 'Доверие рынка к вам. Чем выше репутация, тем лучше условия сделок.',
       valueClassName: 'text-amber-300',
     },
@@ -145,7 +146,7 @@ export function HeaderStats() {
       variant: 'trading',
       icon: <TradingChartIcon className="h-3.5 w-3.5 text-cyan-400" />,
       value: stats.tradingGrade,
-      title: 'Доступные акции',
+      title: `Доступный ранг акций: ${stats.tradingGrade}`,
       description:
         'Грейд торгового навыка от F до A. Открывает доступ к более дорогим акциям.',
       badgeClassName: 'border-cyan-500/30 bg-cyan-500/12 text-cyan-200',
@@ -154,7 +155,7 @@ export function HeaderStats() {
       variant: 'insider',
       icon: <ShieldInsiderIcon className="h-3.5 w-3.5 text-violet-300" />,
       value: `${stats.insiderChancePercent}%`,
-      title: 'Шанс инсайда',
+      title: `Шанс инсайда: ${stats.insiderChancePercent}%`,
       description:
         'Вероятность получить инсайдерскую новость. +2% за каждый уровень карьеры, максимум 30%.',
       valueClassName: 'text-emerald-200',
@@ -163,7 +164,7 @@ export function HeaderStats() {
       variant: 'realty',
       icon: <RealEstateIcon className="h-3.5 w-3.5 text-emerald-400" />,
       value: propertyGrade,
-      title: 'Сделки с имуществом',
+      title: `Доступный ранг недвижимости: ${propertyGrade}`,
       description:
         'Текущая доступная категория выгодных предложений на рынке недвижимости.',
       badgeClassName: 'border-emerald-500/30 bg-emerald-500/12 text-emerald-200',
@@ -172,7 +173,7 @@ export function HeaderStats() {
       variant: 'bank',
       icon: <BankIcon className="h-3.5 w-3.5 text-sky-400" />,
       value: bankingGrade,
-      title: 'Банковское дело',
+      title: `Банковский ранг: ${bankingGrade}`,
       description: `Грейд навыка Banking. Ставка по кредиту: ${stats.bankBaseRatePercent}%.`,
       badgeClassName: 'border-sky-500/30 bg-sky-500/12 text-sky-200',
     },

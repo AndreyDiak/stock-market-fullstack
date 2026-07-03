@@ -4,18 +4,22 @@ import {
   get_insider_turns_left,
   is_insider_news,
 } from '../../_model/utils'
+import { useGameStore } from '../../../../stores/game.store'
 import { InsiderNewsBadge } from './_insider_news_badge'
 import {
   getNewsCategoryForItem,
   NEWS_CATEGORY_CONFIG,
 } from './_news_category'
+import { getNewsPropertyAlt, getNewsPropertyImage } from './_news_asset_image'
 import './_news.css'
 import type { GameDashboardThemeTokens } from '../shared'
+
+export type NewsCardVariant = 'full' | 'compact'
 
 interface NewsCardProps {
   item: news_item
   theme: GameDashboardThemeTokens
-  compact?: boolean
+  variant?: NewsCardVariant
   pinned?: boolean
   latest?: boolean
   turn?: number
@@ -55,13 +59,7 @@ function ReadIssueOverlay({
   )
 }
 
-function NewsTypeChip({
-  item,
-  compact = false,
-}: {
-  item: news_item
-  compact?: boolean
-}) {
+function NewsTypeChip({ item }: { item: news_item }) {
   const category = getNewsCategoryForItem(item)
   const config = NEWS_CATEGORY_CONFIG[category]
   const Icon = config.Icon
@@ -70,126 +68,152 @@ function NewsTypeChip({
     <span className={`news-card__type-chip ${config.chipClass}`}>
       <Icon className="news-card__type-icon" aria-hidden />
       {config.label}
-      {compact ? null : <span className="sr-only"> новость</span>}
     </span>
+  )
+}
+
+function NewsPropertyThumbnail({
+  item,
+  variant,
+  propertyOffers,
+}: {
+  item: news_item
+  variant: NewsCardVariant
+  propertyOffers: Array<{ id: string; assetId: string; itemName?: string }>
+}) {
+  const image = getNewsPropertyImage(item, propertyOffers)
+  if (!image) return null
+
+  const alt = getNewsPropertyAlt(item, propertyOffers) ?? 'Недвижимость'
+
+  return (
+    <div className={`news-card__thumbnail news-card__thumbnail--${variant}`}>
+      <img src={image} alt={alt} />
+      <span className="news-card__thumbnail-vignette" aria-hidden />
+    </div>
   )
 }
 
 export function NewsCard({
   item,
   theme,
-  compact = false,
+  variant = 'full',
   pinned = false,
   latest = false,
   turn,
   onSelect,
 }: NewsCardProps) {
+  const propertyOffers = useGameStore((state) => state.propertyOffers)
   const insider = is_insider_news(item)
   const interactive = Boolean(onSelect)
   const category = getNewsCategoryForItem(item)
   const categoryConfig = NEWS_CATEGORY_CONFIG[category]
+  const isCompact = variant === 'compact'
+  const propertyImage = getNewsPropertyImage(item, propertyOffers)
+  const hasThumbnail = Boolean(propertyImage)
+
   const turnsLeft =
     item.turnsLeft ??
     (insider && turn != null ? get_insider_turns_left(item, turn) ?? undefined : undefined)
 
-  const useInsiderFrame = insider && !compact
+  const useInsiderFrame = insider && !isCompact
   const accentClass = insider ? 'bg-amber-400' : categoryConfig.accentClass
 
   const cardClass = [
-    'news-card',
+    'news-card shrink-0',
     'group',
     `news-card--${category}`,
-    compact ? 'news-card--compact' : '',
-    interactive ? 'news-card--interactive cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400/60' : '',
-    latest ? `news-card--latest ${categoryConfig.latestBorderClass} ${categoryConfig.glowClass}` : '',
+    isCompact ? 'news-card--compact' : '',
+    interactive ? 'news-card--interactive' : '',
+    latest ? 'news-card--latest' : '',
     useInsiderFrame ? 'news-card--insider' : '',
     pinned ? 'sticky top-0 z-10' : '',
-    theme.isLight ? 'border-slate-200/80 bg-white/90' : '',
+    theme.isLight ? 'news-card--light' : '',
   ]
     .filter(Boolean)
     .join(' ')
 
   const titleClass = [
-    'news-card__title transition-colors',
-    compact ? 'news-card__title--compact' : 'news-card__title--full',
-    insider && !compact
-      ? 'text-amber-50 group-hover:text-amber-100'
-      : theme.isLight
-        ? 'text-slate-900 group-hover:text-emerald-900'
-        : 'group-hover:text-emerald-50',
-  ].join(' ')
-
-  const descriptionClass = [
-    'news-card__description',
-    compact ? 'news-card__description--compact' : '',
-    insider && !compact
-      ? 'text-amber-100/75'
-      : theme.isLight
-        ? 'text-slate-600'
-        : '',
+    'news-card__title',
+    isCompact ? 'news-card__title--compact' : 'news-card__title--full',
+    insider && !isCompact ? 'text-amber-50 group-hover:text-amber-100' : '',
   ]
     .filter(Boolean)
     .join(' ')
 
+  const descriptionClass = [
+    'news-card__description',
+    isCompact ? 'news-card__description--compact' : 'news-card__description--full',
+    insider && !isCompact ? 'text-amber-100/75' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  const showTimeLabel = !latest
+
   const body = (
-    <div className={`news-card__body ${compact ? 'p-2.5' : 'p-3'}`}>
-      <div
-        aria-hidden
-        className={`news-card__accent ${accentClass}`}
-      />
-      {!insider ? (
-        <div
-          aria-hidden
-          className={`news-card__top-rail bg-gradient-to-r ${categoryConfig.railClass}`}
-        />
-      ) : null}
+    <div
+      className={`news-card__inner flex flex-col ${
+        isCompact ? 'gap-2 p-2.5 pl-3.5' : 'gap-2.5 p-3.5 pl-4'
+      }`}
+    >
+      <div aria-hidden className={`news-card__accent ${accentClass}`} />
 
-      <div className="pl-2">
-        <div className="news-card__header">
-          <div className="news-card__header-left">
-            <NewsTypeChip item={item} compact={compact} />
-            {insider ? <InsiderNewsBadge /> : null}
-            {pinned ? (
-              <span className="inline-flex items-center gap-1 rounded-md border border-amber-300/50 bg-amber-400/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-amber-100">
-                <span aria-hidden>📌</span>
-                Закреплено
-              </span>
-            ) : null}
-            {item.ticker ? (
-              <span className="news-card__ticker">{item.ticker}</span>
-            ) : null}
-          </div>
+      <div className="news-card__meta">
+        <div className="news-card__meta-left">
+          <NewsTypeChip item={item} />
+          {insider ? <InsiderNewsBadge /> : null}
+          {pinned ? (
+            <span className="inline-flex items-center gap-1 rounded-md border border-amber-300/50 bg-amber-400/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-amber-100">
+              <span aria-hidden>📌</span>
+              Закреплено
+            </span>
+          ) : null}
+          {item.ticker ? <span className="news-card__ticker">{item.ticker}</span> : null}
+        </div>
 
-          <div className="news-card__meta">
-            {latest ? (
-              <span className="news-card__latest-badge">Новое</span>
-            ) : null}
-            {insider && turnsLeft != null && !compact ? (
-              <span className="whitespace-nowrap rounded-md border border-amber-400/35 bg-amber-500/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-amber-200">
-                {format_insider_relevance_label(turnsLeft)}
-              </span>
-            ) : null}
+        <div className="news-card__meta-right">
+          {latest ? <span className="news-card__new">Новое</span> : null}
+          {insider && turnsLeft != null && !isCompact ? (
+            <span className="whitespace-nowrap rounded-md border border-amber-400/35 bg-amber-500/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-amber-200">
+              {format_insider_relevance_label(turnsLeft)}
+            </span>
+          ) : null}
+          {showTimeLabel ? (
             <span
               className={`news-card__time ${
                 insider
                   ? '!text-amber-300/90'
                   : item.hot
                     ? '!text-emerald-400'
-                    : theme.isLight
-                      ? '!text-slate-500'
-                      : ''
+                    : ''
               }`}
             >
               {item.timeLabel}
             </span>
-          </div>
+          ) : null}
         </div>
-
-        <h4 className={titleClass}>{item.title}</h4>
-        <p className={descriptionClass}>{compact ? item.excerpt : item.body}</p>
       </div>
 
-      {interactive ? <ReadIssueOverlay insider={insider && !compact} theme={theme} /> : null}
+      <div
+        className={`news-card__content flex flex-col gap-1.5${
+          hasThumbnail ? ' news-card__content--with-thumb' : ''
+        }`}
+      >
+        <div className="news-card__text space-y-1">
+          <h4 className={titleClass}>{item.title}</h4>
+          <p className={descriptionClass}>{isCompact ? item.excerpt : item.body}</p>
+        </div>
+        {hasThumbnail ? (
+          <NewsPropertyThumbnail
+            item={item}
+            variant={variant}
+            propertyOffers={propertyOffers}
+          />
+        ) : null}
+      </div>
+
+      {interactive ? <ReadIssueOverlay insider={insider && !isCompact} theme={theme} /> : null}
     </div>
   )
 

@@ -1,7 +1,7 @@
 .property-sale-modal {
   position: relative;
   display: flex;
-  width: clamp(660px, 66vw, 760px);
+  width: clamp(680px, 70vw, 800px);
   max-width: calc(100vw - 1.5rem);
   flex-direction: column;
   overflow: visible;
@@ -158,16 +158,18 @@
 
 .property-sale-modal__body {
   display: grid;
-  grid-template-columns: minmax(250px, 0.85fr) minmax(300px, 1.15fr);
-  gap: 1.25rem;
+  grid-template-columns: minmax(11.5rem, 0.68fr) minmax(24rem, 1.42fr);
+  gap: 1rem;
+  align-items: stretch;
   padding: 1.375rem 1.5rem 1.125rem;
 }
 
 .property-sale-modal__visual-card {
   position: relative;
   display: flex;
-  min-height: 17.5rem;
-  max-height: 20rem;
+  height: 100%;
+  min-height: 0;
+  align-self: stretch;
   flex-direction: column;
   overflow: hidden;
   border-radius: 0.85rem;
@@ -193,14 +195,15 @@
   background: radial-gradient(ellipse at 50% 50%, transparent 42%, rgba(0, 0, 0, 0.38) 100%);
 }
 
-.property-sale-modal__asset-stage {
+.property-sale-modal__visual-stage {
   position: relative;
   z-index: 1;
   display: flex;
   flex: 1;
+  min-height: 0;
   align-items: flex-end;
   justify-content: center;
-  padding: 1rem 0.75rem 0.5rem;
+  padding: 0.75rem 0.5rem 0.5rem;
   transform-style: preserve-3d;
 }
 
@@ -217,8 +220,8 @@
 }
 
 .property-sale-modal__asset-image {
-  max-height: min(14rem, 82%);
-  max-width: 92%;
+  max-height: min(15.25rem, 88%);
+  max-width: 86%;
   width: auto;
   height: auto;
   object-fit: contain;
@@ -230,6 +233,7 @@
 .property-sale-modal__visual-meta {
   position: relative;
   z-index: 2;
+  flex: 0 0 auto;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.35) 100%);
   padding: 0.5rem 0.75rem;
@@ -243,6 +247,7 @@
 .property-sale-modal__details {
   display: flex;
   min-width: 0;
+  min-height: 0;
   flex-direction: column;
   gap: 0.875rem;
 }
@@ -264,12 +269,87 @@
 .property-sale-modal__offer {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.65rem;
   border-radius: 0.75rem;
   border: 1px solid rgba(255, 255, 255, 0.06);
   background: linear-gradient(180deg, rgba(15, 23, 42, 0.55) 0%, rgba(2, 6, 23, 0.72) 100%);
-  padding: 0.75rem 0.85rem;
+  padding: 0.7rem 0.75rem;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.property-sale-modal__offer-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(5.75rem, 1fr));
+  gap: 0.375rem;
+}
+
+.property-sale-modal__offer-metric {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.3rem;
+  border-radius: 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(2, 6, 23, 0.35);
+  padding: 0.45rem 0.5rem;
+}
+
+.property-sale-modal__offer-metric--profit {
+  border-color: rgba(16, 185, 129, 0.18);
+  background: rgba(16, 185, 129, 0.06);
+}
+
+.property-sale-modal__offer-metric--profit.property-sale-modal__offer-metric--negative {
+  border-color: rgba(248, 113, 113, 0.2);
+  background: rgba(248, 113, 113, 0.06);
+}
+
+.property-sale-modal__offer-metric--profit.property-sale-modal__offer-metric--neutral {
+  border-color: rgba(100, 116, 139, 0.22);
+  background: rgba(100, 116, 139, 0.08);
+}
+
+.property-sale-modal__offer-metric-label {
+  font-size: 0.5rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(148, 163, 184, 0.88);
+}
+
+.property-sale-modal__offer-metric-value {
+  min-width: 0;
+}
+
+.property-sale-modal__offer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.property-sale-modal__offer-percent {
+  shrink: 0;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  color: rgba(148, 163, 184, 0.85);
+}
+
+.property-sale-modal__offer-percent--positive {
+  color: rgba(110, 231, 183, 0.92);
+}
+
+.property-sale-modal__offer-percent--negative {
+  color: rgba(252, 165, 165, 0.92);
+}
+
+.property-sale-modal__offer-percent--neutral {
+  color: rgba(203, 213, 225, 0.78);
 }
 
 .property-sale-modal__offer-status {
@@ -303,57 +383,6 @@
   color: #cbd5e1;
 }
 
-.property-sale-modal__offer-label {
-  font-size: 0.5625rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.9);
-}
-
-.property-sale-modal__offer-value {
-  font-size: clamp(1.75rem, 2.5vw, 2.125rem);
-  font-weight: 800;
-  line-height: 1.1;
-  color: #fef3c7;
-}
-
-.property-sale-modal--buy .property-sale-modal__offer-value {
-  color: #ecfdf5;
-}
-
-.property-sale-modal__market-reference {
-  font-size: 0.75rem;
-  color: rgba(203, 213, 225, 0.78);
-}
-
-.property-sale-modal__benefit {
-  display: inline-flex;
-  width: fit-content;
-  align-items: center;
-  gap: 0.35rem;
-  margin-top: 0.15rem;
-  border-radius: 0.45rem;
-  padding: 0.2rem 0.45rem;
-  font-size: 0.6875rem;
-  font-weight: 700;
-}
-
-.property-sale-modal__benefit--positive {
-  background: rgba(16, 185, 129, 0.1);
-  color: #6ee7b7;
-}
-
-.property-sale-modal__benefit--negative {
-  background: rgba(248, 113, 113, 0.1);
-  color: #fca5a5;
-}
-
-.property-sale-modal__benefit--neutral {
-  background: rgba(100, 116, 139, 0.12);
-  color: #cbd5e1;
-}
-
 .property-sale-modal__note {
   border-radius: 0.65rem;
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -369,13 +398,30 @@
   border: 1px solid rgba(255, 255, 255, 0.06);
   background: rgba(15, 23, 42, 0.48);
   padding: 0.55rem 0.7rem;
-  min-height: 4.75rem;
+}
+
+.property-sale-modal__reputation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .property-sale-modal__reputation-label {
   display: flex;
+  min-width: 0;
   align-items: center;
   gap: 0.35rem;
+}
+
+.property-sale-modal__reputation-icon {
+  height: 0.875rem;
+  width: 0.875rem;
+  shrink: 0;
+  color: rgba(251, 191, 36, 0.85);
+}
+
+.property-sale-modal__reputation-title {
   font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -383,49 +429,40 @@
   color: rgba(148, 163, 184, 0.9);
 }
 
-.property-sale-modal__reputation-row {
+.property-sale-modal__reputation-change {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin-top: 0.35rem;
-}
-
-.property-sale-modal__reputation-values {
-  display: flex;
+  shrink: 0;
   align-items: center;
   gap: 0.4rem;
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
-  color: #fcd34d;
+}
+
+.property-sale-modal__reputation-current {
+  color: rgba(251, 191, 36, 0.68);
 }
 
 .property-sale-modal__reputation-arrow {
-  color: rgba(148, 163, 184, 0.75);
+  font-weight: 500;
+  color: rgba(148, 163, 184, 0.58);
 }
 
-.property-sale-modal__reputation-delta {
-  font-size: 0.8125rem;
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-}
-
-.property-sale-modal__reputation-delta--positive {
+.property-sale-modal__reputation-next--positive {
   color: #34d399;
 }
 
-.property-sale-modal__reputation-delta--negative {
+.property-sale-modal__reputation-next--negative {
   color: #f87171;
 }
 
-.property-sale-modal__reputation-delta--neutral {
-  color: rgba(148, 163, 184, 0.9);
+.property-sale-modal__reputation-next--neutral {
+  color: rgba(148, 163, 184, 0.92);
 }
 
 .property-sale-modal__reputation-bar {
-  margin-top: 0.4rem;
-  max-width: 13.75rem;
+  width: min(13.75rem, 100%);
+  margin-top: 0.6875rem;
 }
 
 .property-sale-modal__footer {
@@ -437,8 +474,6 @@
 
 .property-sale-modal__footer-btn {
   display: flex;
-  height: 3rem;
-  min-height: 3rem;
   width: 100%;
   align-items: center;
   justify-content: center;
@@ -450,37 +485,46 @@
   letter-spacing: 0.08em !important;
 }
 
+.property-sale-modal__footer-btn:not(.property-sale-modal__confirm-btn) {
+  height: 3rem;
+  min-height: 3rem;
+}
+
 .property-sale-modal__confirm-btn {
+  min-height: 3rem;
+  height: auto;
   box-shadow:
-    0 3px 0 #92400e,
-    0 0 10px rgba(251, 191, 36, 0.18),
+    0 3px 0 #047857,
+    0 0 12px rgba(16, 185, 129, 0.22),
     inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
 .property-sale-modal__confirm-btn:hover:not(:disabled) {
   box-shadow:
-    0 3px 0 #92400e,
-    0 0 14px rgba(251, 191, 36, 0.26),
+    0 3px 0 #047857,
+    0 0 16px rgba(16, 185, 129, 0.32),
     inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
 }
 
-.property-sale-modal--buy .property-sale-modal__confirm-btn {
-  box-shadow:
-    0 3px 0 #047857,
-    0 0 10px rgba(16, 185, 129, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+.property-sale-modal__confirm-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
 }
 
-.property-sale-modal--buy .property-sale-modal__confirm-btn:hover:not(:disabled) {
-  box-shadow:
-    0 3px 0 #047857,
-    0 0 14px rgba(16, 185, 129, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+.property-sale-modal__confirm-money {
+  gap: 0.3rem !important;
 }
 
-.property-sale-modal__confirm-amount {
-  font-weight: 700;
-  opacity: 0.88;
+.property-sale-modal__confirm-money svg {
+  color: #fcd34d;
+  filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.4));
 }
 
 .property-sale-modal--success {
@@ -506,13 +550,18 @@
     padding: 1rem 1rem 0.75rem;
   }
 
+  .property-sale-modal__offer-metrics {
+    grid-template-columns: 1fr;
+  }
+
   .property-sale-modal__visual-card {
+    height: auto;
     min-height: 13.125rem;
-    max-height: 15rem;
+    align-self: auto;
   }
 
   .property-sale-modal__asset-image {
-    max-height: 10.5rem;
+    max-height: min(11.5rem, 84%);
   }
 }
 
@@ -521,6 +570,62 @@
     grid-template-columns: 1fr;
     padding: 0 1rem 1rem;
   }
+}
+
+.property-sale-modal__payment-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.property-sale-modal__payment-mode-label {
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.85);
+}
+
+.property-sale-modal__payment-mode-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.property-sale-modal__payment-mode-option {
+  display: flex;
+  min-height: 4.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(15, 23, 42, 0.55);
+  padding: 0.75rem;
+  text-align: left;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.property-sale-modal__payment-mode-option--active {
+  border-color: rgba(52, 211, 153, 0.45);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.property-sale-modal__payment-mode-option--disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.property-sale-modal__payment-mode-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.property-sale-modal__payment-mode-subtitle {
+  font-size: 0.6875rem;
+  color: rgba(148, 163, 184, 0.9);
 }
 
 @media (prefers-reduced-motion: reduce) {

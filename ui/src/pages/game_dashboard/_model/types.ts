@@ -69,6 +69,8 @@ export interface PropertyOffer {
   expiresInTurns: number
   isLocked: boolean
   downPaymentPercent: number
+  pendingNegotiatedPrice: number | null
+  pendingNegotiatedPercent: number | null
 }
 
 export interface sidebar_nav_item {

@@ -1250,7 +1250,11 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AcceptPropertyOfferBody"];
+                };
+            };
             responses: {
                 /** @description Default Response */
                 200: {
@@ -1346,6 +1350,264 @@ export interface paths {
                     };
                     content: {
                         "application/json": components["schemas"]["NegotiatePropertyOfferResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/property-offers/{offerId}/negotiate/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    offerId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AcceptPropertyOfferBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AcceptPropertyOfferResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/property-offers/{offerId}/negotiate/decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    offerId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            propertyOffers: components["schemas"]["PropertyOffer"][];
+                        };
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/otc-deals/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AcceptOtcDealBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AcceptOtcDealResponse"];
                     };
                 };
                 /** @description Default Response */
@@ -1646,6 +1908,7 @@ export interface components {
                 itemRef: string;
                 name: string;
                 purchasePrice: number;
+                downPaymentAmount: number | null;
                 isInstallment: boolean;
                 monthlyPayment: number | null;
                 installmentsTotal: number | null;
@@ -1768,6 +2031,7 @@ export interface components {
                         itemRef: string;
                         name: string;
                         purchasePrice: number;
+                        downPaymentAmount: number | null;
                         isInstallment: boolean;
                         monthlyPayment: number | null;
                         installmentsTotal: number | null;
@@ -1922,6 +2186,7 @@ export interface components {
                     itemRef: string;
                     name: string;
                     purchasePrice: number;
+                    downPaymentAmount: number | null;
                     isInstallment: boolean;
                     monthlyPayment: number | null;
                     installmentsTotal: number | null;
@@ -1982,6 +2247,7 @@ export interface components {
                     itemRef: string;
                     name: string;
                     purchasePrice: number;
+                    downPaymentAmount: number | null;
                     isInstallment: boolean;
                     monthlyPayment: number | null;
                     installmentsTotal: number | null;
@@ -2042,6 +2308,7 @@ export interface components {
                     itemRef: string;
                     name: string;
                     purchasePrice: number;
+                    downPaymentAmount: number | null;
                     isInstallment: boolean;
                     monthlyPayment: number | null;
                     installmentsTotal: number | null;
@@ -2076,7 +2343,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -2121,6 +2388,8 @@ export interface components {
                 expiresInTurns: number;
                 isLocked: boolean;
                 downPaymentPercent: number;
+                pendingNegotiatedPrice: number | null;
+                pendingNegotiatedPercent: number | null;
             }[];
             appliedPriceImpacts?: {
                 /** Format: uuid */
@@ -2204,7 +2473,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -2281,6 +2550,7 @@ export interface components {
                         itemRef: string;
                         name: string;
                         purchasePrice: number;
+                        downPaymentAmount: number | null;
                         isInstallment: boolean;
                         monthlyPayment: number | null;
                         installmentsTotal: number | null;
@@ -2296,7 +2566,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -2402,6 +2672,8 @@ export interface components {
                 expiresInTurns: number;
                 isLocked: boolean;
                 downPaymentPercent: number;
+                pendingNegotiatedPrice: number | null;
+                pendingNegotiatedPercent: number | null;
             }[];
         };
         AcceptPropertyOfferResponse: {
@@ -2414,6 +2686,8 @@ export interface components {
                 paidTotal: number;
                 remainingTotal: number;
                 saleProceeds: number;
+                purchasePrice: number;
+                priceDelta: number;
                 netProfit: number;
             } | null;
             deal: {
@@ -2457,6 +2731,7 @@ export interface components {
                     itemRef: string;
                     name: string;
                     purchasePrice: number;
+                    downPaymentAmount: number | null;
                     isInstallment: boolean;
                     monthlyPayment: number | null;
                     installmentsTotal: number | null;
@@ -2485,7 +2760,39 @@ export interface components {
                 expiresInTurns: number;
                 isLocked: boolean;
                 downPaymentPercent: number;
+                pendingNegotiatedPrice: number | null;
+                pendingNegotiatedPercent: number | null;
             }[];
+            news: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE";
+                title: string;
+                body: string;
+                excerpt: string;
+                /** @enum {string} */
+                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+                impact: number;
+                sector?: string | null;
+                companyId?: string | null;
+                ticker?: string;
+                hot?: boolean;
+                /** Format: date-time */
+                publishedAt: string;
+                publishedStep?: number;
+                payload?: unknown;
+            };
+            nextTurnForecast: {
+                lines: {
+                    id: string;
+                    label: string;
+                    amount: number;
+                }[];
+                incomeTotal: number;
+                expenseTotal: number;
+                netChange: number;
+            };
         };
         NegotiatePropertyOfferBody: {
             adjustmentPercent: number;
@@ -2527,6 +2834,8 @@ export interface components {
                 expiresInTurns: number;
                 isLocked: boolean;
                 downPaymentPercent: number;
+                pendingNegotiatedPrice: number | null;
+                pendingNegotiatedPercent: number | null;
             }[];
             character: {
                 /** Format: uuid */
@@ -2560,6 +2869,7 @@ export interface components {
                     itemRef: string;
                     name: string;
                     purchasePrice: number;
+                    downPaymentAmount: number | null;
                     isInstallment: boolean;
                     monthlyPayment: number | null;
                     installmentsTotal: number | null;
@@ -2569,6 +2879,135 @@ export interface components {
                     /** Format: date-time */
                     purchasedAt: string;
                 }[];
+            };
+            news: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE";
+                title: string;
+                body: string;
+                excerpt: string;
+                /** @enum {string} */
+                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+                impact: number;
+                sector?: string | null;
+                companyId?: string | null;
+                ticker?: string;
+                hot?: boolean;
+                /** Format: date-time */
+                publishedAt: string;
+                publishedStep?: number;
+                payload?: unknown;
+            } | null;
+        };
+        /** @enum {string} */
+        PropertyOfferPaymentMode: "full" | "installment";
+        AcceptPropertyOfferBody: {
+            /**
+             * @default installment
+             * @enum {string}
+             */
+            paymentMode: "full" | "installment";
+        };
+        PropertyOffer: {
+            /** Format: uuid */
+            id: string;
+            assetId: string;
+            itemName: string;
+            inventoryItemId: string | null;
+            /** @enum {string} */
+            type: "BUY" | "SELL";
+            offerPrice: number;
+            marketPrice: number;
+            profitPercent: number;
+            /** @enum {string} */
+            profitGrade: "F" | "E" | "D" | "C" | "B" | "A";
+            requiredBankingLevel: number;
+            isHot: boolean;
+            expiresInTurns: number;
+            isLocked: boolean;
+            downPaymentPercent: number;
+            pendingNegotiatedPrice: number | null;
+            pendingNegotiatedPercent: number | null;
+        };
+        AcceptOtcDealBody: {
+            deal: {
+                botName: string;
+                ticker: string;
+                companyName: string;
+                /** @enum {string} */
+                side: "buy" | "sell";
+                qty: number;
+                price: number;
+                turnsLeft: number;
+                flavorText: string;
+            };
+        };
+        AcceptOtcDealResponse: {
+            balance: number;
+            character: {
+                /** Format: uuid */
+                id: string;
+                gameId: string | null;
+                name: string;
+                balance: number;
+                /** @enum {string} */
+                profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
+                professionLevel: number;
+                salary: number;
+                reputation: number;
+                tradingLevel: number;
+                bankingLevel: number;
+                propertySlotLevel: number;
+                isNpc: boolean;
+                dreamItemRefs: string[];
+                totalEarned: number;
+                totalSpent: number;
+                totalTrades: number;
+                successfulTrades: number;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date-time */
+                updatedAt: string;
+                inventoryItems?: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    characterId: string;
+                    itemRef: string;
+                    name: string;
+                    purchasePrice: number;
+                    downPaymentAmount: number | null;
+                    isInstallment: boolean;
+                    monthlyPayment: number | null;
+                    installmentsTotal: number | null;
+                    installmentsPaid: number;
+                    special: string | null;
+                    isPaidOff: boolean;
+                    /** Format: date-time */
+                    purchasedAt: string;
+                }[];
+            };
+            news: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE";
+                title: string;
+                body: string;
+                excerpt: string;
+                /** @enum {string} */
+                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+                impact: number;
+                sector?: string | null;
+                companyId?: string | null;
+                ticker?: string;
+                hot?: boolean;
+                /** Format: date-time */
+                publishedAt: string;
+                publishedStep?: number;
+                payload?: unknown;
             };
         };
         User: {

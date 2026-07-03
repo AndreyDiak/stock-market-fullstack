@@ -1,5 +1,6 @@
 import { MoneyValue } from '../../../../components/money/money_value'
 import type { CharacterSkill, SkillInfographicChip } from './_character_skills'
+import { getSkillEffectChips } from './_character_skills'
 
 const chipBase =
   'inline-flex max-w-full items-center gap-1.5 rounded-md border border-white/5 bg-slate-900/60 px-2 py-1 text-[10px] leading-tight'
@@ -38,7 +39,9 @@ interface SkillBonusInfographicProps {
 }
 
 export function SkillBonusInfographic({ skill, className = '' }: SkillBonusInfographicProps) {
-  if (skill.id === 'property_slots' || skill.infographic.length === 0) {
+  const chips = getSkillEffectChips(skill)
+
+  if (chips.length === 0) {
     return <div className={className} />
   }
 
@@ -47,7 +50,7 @@ export function SkillBonusInfographic({ skill, className = '' }: SkillBonusInfog
       className={`flex flex-wrap items-center gap-1.5 ${className}`}
       aria-label="Бонусы текущего уровня"
     >
-      {skill.infographic.map((chip) => (
+      {chips.map((chip) => (
         <InfographicChip key={chip.id} chip={chip} />
       ))}
     </div>

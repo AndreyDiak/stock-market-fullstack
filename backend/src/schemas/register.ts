@@ -16,13 +16,19 @@ import {
   gameSchema,
   updateGameBodySchema,
 } from './game.schema.js';
-import { endTurnBodySchema, endTurnResponseSchema, gameNewsResponseSchema, nextTurnForecastResponseSchema } from './turn.schema.js';
+import { endTurnBodySchema, endTurnResponseSchema, nextTurnForecastResponseSchema } from './turn.schema.js';
+import { gameNewsResponseSchema } from './news.schema.js';
 import { gameDashboardResponseSchema } from './dashboard.schema.js';
 import {
   acceptPropertyOfferResponseSchema,
   negotiatePropertyOfferBodySchema,
   negotiatePropertyOfferResponseSchema,
+  propertyOfferPaymentModeSchema,
+  acceptPropertyOfferBodySchema,
+  propertyOfferSchema,
 } from './property_offer.schema.js';
+import { acceptOtcDealBodySchema, acceptOtcDealResponseSchema } from './otc_deal.schema.js';
+import { payOffInstallmentResponseSchema } from './property_loan.schema.js';
 import { updateUserBodySchema, userSchema } from './user.schema.js';
 import { logoutResponseSchema, refreshTokenResponseSchema, authTokenResponseSchema, registerBodySchema, loginBodySchema } from './auth.schema.js';
 
@@ -45,6 +51,12 @@ const schemaEntries = {
   AcceptPropertyOfferResponse: acceptPropertyOfferResponseSchema,
   NegotiatePropertyOfferBody: negotiatePropertyOfferBodySchema,
   NegotiatePropertyOfferResponse: negotiatePropertyOfferResponseSchema,
+  PropertyOfferPaymentMode: propertyOfferPaymentModeSchema,
+  AcceptPropertyOfferBody: acceptPropertyOfferBodySchema,
+  PropertyOffer: propertyOfferSchema,
+  AcceptOtcDealBody: acceptOtcDealBodySchema,
+  AcceptOtcDealResponse: acceptOtcDealResponseSchema,
+  PayOffInstallmentResponse: payOffInstallmentResponseSchema,
   User: userSchema,
   UpdateUserBody: updateUserBodySchema,
   RefreshTokenResponse: refreshTokenResponseSchema,

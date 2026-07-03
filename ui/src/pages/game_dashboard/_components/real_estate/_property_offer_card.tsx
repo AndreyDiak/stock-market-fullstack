@@ -8,7 +8,7 @@ import { getRealEstateImage } from "../../../../constants/realEstateImages";
 import { DealArrowIcon } from "../../../../shared/icons";
 import { useGameStore } from "../../../../stores/game.store";
 import type { PropertyOffer } from "../../_model/types";
-import { format_turns_remaining_label } from "../../_model/utils";
+import { format_turns_left_label, format_turns_remaining_label } from "../../_model/utils";
 import { AcceptDealModal } from "./_accept_deal_modal";
 import "./_asset_market_card.css";
 import { NegotiateModal } from "./_negotiate_modal";
@@ -17,23 +17,46 @@ import {
   OfferCardActions,
 } from "./_offer_card_actions";
 import {
-  formatGradeRequiredLabel,
-  formatOfferPriceVsMarket,
+  formatBankingRequiredLabel,
+  formatMarketComparisonPercent,
   getDealTypeLabel,
+  getMarketComparisonCaption,
   getPlayerDealType,
   getPriceCaption,
 } from "./_offer_styles";
+import {
+  getPurchaseInstallmentPlan,
+  hasInsufficientDownPayment,
+  INSUFFICIENT_DOWN_PAYMENT_REASON,
+} from "./_accept_deal_utils";
 import { ProfitGradeBadge } from "./_profit_grade_badge";
+import {
+  calcPurchaseProposedPrice,
+  getMaxNegotiateDiscountPercent,
+} from "./_negotiate_utils";
 
 function getBlockReason(
   offer: PropertyOffer,
   isPurchase: boolean,
   noFreeSlots: boolean,
   notInInventory: boolean,
+  balance: number,
 ): string | null {
   if (isPurchase && noFreeSlots) return "Нет свободных слотов";
   if (!isPurchase && notInInventory) return "Нет в инвентаре";
-  if (offer.isLocked) return formatGradeRequiredLabel(offer.profitGrade);
+  if (offer.isLocked) {
+    return formatBankingRequiredLabel(offer.requiredBankingLevel);
+  }
+  if (
+    hasInsufficientDownPayment(
+      balance,
+      isPurchase,
+      offer.offerPrice,
+      offer.downPaymentPercent,
+    )
+  ) {
+    return INSUFFICIENT_DOWN_PAYMENT_REASON;
+  }
   return null;
 }
 
@@ -43,22 +66,44 @@ export function PropertyOfferCard({
   busy,
   onAccept,
   onNegotiate,
+  onAcceptNegotiated,
+  onDeclineNegotiated,
 }: {
   offer: PropertyOffer;
   highlighted?: boolean;
   busy?: boolean;
-  onAccept: (offerId: string) => Promise<AcceptPropertyOfferResponse>;
+  onAccept: (
+    offerId: string,
+    paymentMode: import('../../../../api/propertyOffers').PropertyOfferPaymentMode,
+  ) => Promise<AcceptPropertyOfferResponse>;
   onNegotiate: (
     offerId: string,
     adjustmentPercent: number,
   ) => Promise<NegotiatePropertyOfferResponse>;
+  onAcceptNegotiated: (
+    offerId: string,
+    paymentMode: import('../../../../api/propertyOffers').PropertyOfferPaymentMode,
+  ) => Promise<AcceptPropertyOfferResponse>;
+  onDeclineNegotiated: (offerId: string) => Promise<void>;
 }) {
   const [negotiateOpen, setNegotiateOpen] = useState(false);
   const [acceptOpen, setAcceptOpen] = useState(false);
   const propertySlots = useGameStore((state) => state.propertySlots);
+  const inventoryItems = useGameStore((state) => state.inventoryItems);
+  const balance = useGameStore((state) => state.balance);
+  const tradingLevel = useGameStore((state) => state.characterProfile.tradingLevel) || 1;
+  const bankBaseRatePercent = useGameStore((state) => state.characterStats.bankBaseRatePercent);
   const image = getRealEstateImage(offer.assetId);
   const dealType = getPlayerDealType(offer.type);
   const isPurchase = dealType === "buy";
+  const installmentPlan = isPurchase
+    ? getPurchaseInstallmentPlan(
+        offer.assetId,
+        offer.offerPrice,
+        offer.downPaymentPercent,
+        bankBaseRatePercent,
+      )
+    : null;
   const profitable = offer.profitPercent >= 0;
   const isHotDeal = offer.profitPercent > 50 || offer.isHot;
   const isUrgent = offer.expiresInTurns <= 1;
@@ -66,20 +111,39 @@ export function PropertyOfferCard({
     (slot) => !slot.isLocked && !slot.item,
   ).length;
   const noFreeSlots = isPurchase && freeSlots === 0;
-  const notInInventory = !isPurchase && !offer.inventoryItemId;
+  const notInInventory =
+    !isPurchase &&
+    (!offer.inventoryItemId ||
+      !inventoryItems.some((item) => item.id === offer.inventoryItemId));
   const blockReason = getBlockReason(
     offer,
     isPurchase,
     noFreeSlots,
     notInInventory,
+    balance,
   );
   const actionDisabled = busy || Boolean(blockReason);
+  const maxNegotiateDiscount = getMaxNegotiateDiscountPercent(tradingLevel);
+  const minNegotiatedPurchasePrice = isPurchase
+    ? calcPurchaseProposedPrice(offer.offerPrice, maxNegotiateDiscount, maxNegotiateDiscount)
+    : offer.offerPrice;
   const negotiateBlockReason = busy
     ? null
-    : getNegotiateBlockReason(offer, noFreeSlots);
+    : getNegotiateBlockReason(
+        offer,
+        noFreeSlots,
+        isPurchase,
+        notInInventory,
+        balance,
+        minNegotiatedPurchasePrice,
+      );
   const negotiateDisabled = busy || Boolean(negotiateBlockReason);
   const fullyDisabled = actionDisabled && negotiateDisabled;
-  const marketLabel = formatOfferPriceVsMarket(
+  const marketComparisonCaption = getMarketComparisonCaption(
+    offer.offerPrice,
+    offer.marketPrice,
+  );
+  const marketComparisonPercent = formatMarketComparisonPercent(
     offer.offerPrice,
     offer.marketPrice,
   );
@@ -161,60 +225,105 @@ export function PropertyOfferCard({
             </div>
 
             <div className="asset-market-card__content">
-              <div className="asset-market-card__title-row">
-                <h3 className="asset-market-card__title">{offer.itemName}</h3>
+              <h3 className="asset-market-card__title">{offer.itemName}</h3>
 
-                <p className="asset-market-card__price-caption">
-                  {getPriceCaption(dealType)}
-                </p>
-
-                <div className="asset-market-card__price-row">
+              <div className="asset-market-card__price-band">
+                <div className="asset-market-card__price-metric">
+                  <span className="asset-market-card__price-caption">
+                    {getPriceCaption(dealType)}
+                  </span>
                   <MoneyValue
                     amount={offer.offerPrice}
                     size="sm"
                     color="white"
+                    className="asset-market-card__money-nowrap asset-market-card__price-value"
                   />
                 </div>
 
-                <span
-                  className={[
-                    "asset-market-card__market-chip",
-                    profitable
-                      ? "asset-market-card__market-chip--profit"
-                      : "asset-market-card__market-chip--loss",
-                    fullyDisabled ? "opacity-80" : "",
-                  ].join(" ")}
-                >
-                  {marketLabel}
-                </span>
-              </div>
-
-              <div
-                className={[
-                  "asset-market-card__stats asset-market-card__term",
-                  isPurchase ? "" : "asset-market-card__stats--single",
-                ].join(" ")}
-              >
-                {isPurchase ? (
-                  <div>
-                    <span className="asset-market-card__stat-label">Взнос</span>
-                    <span className="asset-market-card__stat-value">
-                      {offer.downPaymentPercent}%
-                    </span>
-                  </div>
-                ) : null}
-                <div>
-                  <span className="asset-market-card__stat-label">Срок</span>
+                <div className="asset-market-card__market-metric">
+                  <span className="asset-market-card__price-caption">
+                    {marketComparisonCaption}
+                  </span>
                   <span
                     className={[
-                      "asset-market-card__stat-value",
-                      isUrgent ? "asset-market-card__stat-value--urgent" : "",
+                      "asset-market-card__market-percent",
+                      profitable
+                        ? "asset-market-card__market-percent--profit"
+                        : "asset-market-card__market-percent--loss",
+                      fullyDisabled ? "opacity-80" : "",
                     ].join(" ")}
                   >
-                    {format_turns_remaining_label(offer.expiresInTurns)}
+                    {marketComparisonPercent}
                   </span>
                 </div>
               </div>
+
+              {isPurchase && installmentPlan ? (
+                <div className="asset-market-card__stats asset-market-card__stats--purchase">
+                  <div className="asset-market-card__stats-row asset-market-card__stats-row--triple">
+                    <div className="asset-market-card__stat-cell">
+                      <span className="asset-market-card__stat-label">Взнос</span>
+                      <MoneyValue
+                        amount={installmentPlan.downPayment}
+                        size="xs"
+                        color="white"
+                        className="asset-market-card__stat-value asset-market-card__money-nowrap"
+                      />
+                    </div>
+                    <div className="asset-market-card__stat-cell">
+                      <span className="asset-market-card__stat-label">Платёж</span>
+                      <MoneyValue
+                        amount={installmentPlan.monthlyPayment}
+                        size="xs"
+                        color="white"
+                        suffix="/ход"
+                        className="asset-market-card__stat-value asset-market-card__money-nowrap"
+                      />
+                    </div>
+                    <div className="asset-market-card__stat-cell asset-market-card__stat-cell--end">
+                      <span className="asset-market-card__stat-label">Срок</span>
+                      <span className="asset-market-card__stat-value asset-market-card__stat-value--term">
+                        {format_turns_left_label(installmentPlan.installmentsTotal)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="asset-market-card__stats-row asset-market-card__stats-row--summary">
+                    <div className="asset-market-card__stat-cell asset-market-card__stat-cell--span-2">
+                      <span className="asset-market-card__stat-label">Переплата</span>
+                      <MoneyValue
+                        amount={installmentPlan.overpayment}
+                        size="xs"
+                        color="amber"
+                        className="asset-market-card__stat-value asset-market-card__money-nowrap"
+                      />
+                    </div>
+                    <div className="asset-market-card__stat-cell asset-market-card__stat-cell--end">
+                      <span className="asset-market-card__stat-label">Итого</span>
+                      <MoneyValue
+                        amount={installmentPlan.totalWithInterest}
+                        size="xs"
+                        color="white"
+                        className="asset-market-card__stat-value asset-market-card__money-nowrap"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="asset-market-card__stats asset-market-card__stats--single">
+                  <div className="asset-market-card__stat-cell">
+                    <span className="asset-market-card__stat-label">Срок</span>
+                    <span
+                      className={[
+                        "asset-market-card__stat-value",
+                        isUrgent ? "asset-market-card__stat-value--urgent" : "",
+                      ].join(" ")}
+                    >
+                      {format_turns_remaining_label(offer.expiresInTurns)}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -237,7 +346,7 @@ export function PropertyOfferCard({
         offer={offer}
         busy={busy}
         onClose={() => setAcceptOpen(false)}
-        onConfirm={(id) => onAccept(id)}
+        onConfirm={(id, paymentMode) => onAccept(id, paymentMode)}
       />
 
       <NegotiateModal
@@ -246,6 +355,8 @@ export function PropertyOfferCard({
         busy={busy}
         onClose={() => setNegotiateOpen(false)}
         onRoll={(adjustmentPercent) => onNegotiate(offer.id, adjustmentPercent)}
+        onAcceptNegotiated={(id, paymentMode) => onAcceptNegotiated(id, paymentMode)}
+        onDeclineNegotiated={onDeclineNegotiated}
       />
     </>
   );

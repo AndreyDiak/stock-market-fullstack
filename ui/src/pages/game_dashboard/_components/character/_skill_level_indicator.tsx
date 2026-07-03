@@ -15,6 +15,7 @@ function GradeLevelCells({ skill }: { skill: CharacterSkill }) {
     <div className="flex gap-1" role="list" aria-label={`Уровень навыка: ${skill.level}`}>
       {TRADING_GRADES.map((letter, index) => {
         const isActive = index === activeIndex
+        const isPassed = index < activeIndex
         const tooltip = skill.levelTooltips[index] ?? { title: '', lines: [] }
 
         return (
@@ -28,8 +29,10 @@ function GradeLevelCells({ skill }: { skill: CharacterSkill }) {
               role="listitem"
               className={`${cellBase} ${
                 isActive
-                  ? 'border-emerald-400/40 bg-emerald-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.25)]'
-                  : 'border-slate-600/30 bg-slate-700/50 text-slate-400'
+                  ? 'border-emerald-400/50 bg-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.22)] ring-1 ring-emerald-300/30'
+                  : isPassed
+                    ? 'border-emerald-500/25 bg-emerald-900/40 text-emerald-200'
+                    : 'border-slate-600/30 bg-slate-800/50 text-slate-500'
               }`}
             >
               {letter}
@@ -77,13 +80,10 @@ function PropertySlotCells({ skill }: { skill: CharacterSkill }) {
 function QualificationProgress({ skill }: { skill: CharacterSkill }) {
   return (
     <div
-      className="flex flex-col items-end gap-1.5"
+      className="flex gap-0.5"
+      role="list"
       aria-label={`Квалификация: уровень ${skill.level} из ${skill.maxLevel}`}
     >
-      <span className="text-xs font-bold tabular-nums text-slate-300">
-        уровень {skill.level} / {skill.maxLevel}
-      </span>
-      <div className="flex gap-0.5" role="list">
         {Array.from({ length: skill.maxLevel }, (_, index) => {
           const level = index + 1
           const isFilled = level <= skill.level
@@ -105,7 +105,6 @@ function QualificationProgress({ skill }: { skill: CharacterSkill }) {
             </SkillLevelTooltipWrap>
           )
         })}
-      </div>
     </div>
   )
 }

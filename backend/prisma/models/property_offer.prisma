@@ -14,6 +14,8 @@ model PropertyOffer {
   expiresInTurns       Int
   expiresAtTurn        Int
   isActive             Boolean  @default(true)
+  pendingNegotiatedPrice   Float?
+  pendingNegotiatedPercent Int?
   createdAt            DateTime @default(now())
 
   @@index([gameId, isActive])

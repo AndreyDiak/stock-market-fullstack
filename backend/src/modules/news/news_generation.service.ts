@@ -18,8 +18,10 @@ import {
   calcInsiderNewsChancePercent,
   impactFromScore,
   sentimentFromScore,
+  type GeneratedNewsKind,
   type InsiderScheduledImpactPayload,
   type PersistedNewsItem,
+  TURN_CYCLE_NEWS_KINDS,
 } from './types.js';
 
 function pickRandom<T>(items: T[]): T {
@@ -148,6 +150,150 @@ export class NewsGenerationService {
     };
     const item = await this.#generateStaticNews(baseCtx, this.#insiderNewsConfig());
     return { news: item, insiderRolled: true };
+  }
+
+  async getLatestCycleNewsKind(gameId: string): Promise<GeneratedNewsKind | null> {
+    const row = await this.#prisma.news.findFirst({
+      where: {
+        gameId,
+        kind: { in: [...TURN_CYCLE_NEWS_KINDS] },
+      },
+      orderBy: { publishedAt: 'desc' },
+      select: { kind: true },
+    });
+    return (row?.kind as GeneratedNewsKind | undefined) ?? null;
+  }
+
+  async createPropertyDealNews(input: {
+    gameId: string;
+    gameStep: number;
+    action: 'purchased' | 'sold';
+    itemName: string;
+    assetId: string;
+    price: number;
+    profitAmount: number;
+  }) {
+    const isPurchase = input.action === 'purchased';
+    const title = isPurchase ? `Покупка: ${input.itemName}` : `Продажа: ${input.itemName}`;
+    const verb = isPurchase ? 'купили' : 'продали';
+    const priceLabel = input.price.toLocaleString('ru-RU');
+    const profitLabel =
+      input.profitAmount > 0
+        ? `Чистая выгода: +${input.profitAmount.toLocaleString('ru-RU')}.`
+        : input.profitAmount < 0
+          ? `Отклонение от рынка: ${input.profitAmount.toLocaleString('ru-RU')}.`
+          : 'Сделка закрыта по рыночной цене.';
+
+    return this.#persistNews({
+      gameId: input.gameId,
+      gameStep: input.gameStep,
+      kind: 'PROPERTY_DEAL',
+      title,
+      body: `Вы ${verb} «${input.itemName}» за ${priceLabel}. ${profitLabel}`,
+      sentiment:
+        input.profitAmount > 0 ? 'POSITIVE' : input.profitAmount < 0 ? 'NEGATIVE' : 'NEUTRAL',
+      impact: 0,
+      payload: {
+        assetId: input.assetId,
+        itemName: input.itemName,
+        action: input.action,
+        price: input.price,
+        profitAmount: input.profitAmount,
+      },
+    });
+  }
+
+  async createPropertyInstallmentNews(input: {
+    gameId: string;
+    gameStep: number;
+    itemRef: string;
+    itemName: string;
+    amount: number;
+    paidOff: boolean;
+    installmentsPaidAfter: number;
+    installmentsTotal: number | null;
+  }) {
+    const amountLabel = input.amount.toLocaleString('ru-RU');
+    const title = input.paidOff
+      ? `Ипотека погашена: ${input.itemName}`
+      : `Платёж по ипотеке: ${input.itemName}`;
+
+    const body = input.paidOff
+      ? `Вы внесли последний платёж ${amountLabel} по «${input.itemName}». Объект теперь полностью ваш.`
+      : input.installmentsTotal
+        ? `Списано ${amountLabel} за «${input.itemName}». Платёж ${input.installmentsPaidAfter} из ${input.installmentsTotal}.`
+        : `Списано ${amountLabel} за «${input.itemName}».`;
+
+    return this.#persistNews({
+      gameId: input.gameId,
+      gameStep: input.gameStep,
+      kind: 'PROPERTY_INSTALLMENT',
+      title,
+      body,
+      sentiment: input.paidOff ? 'POSITIVE' : 'NEUTRAL',
+      impact: 0,
+      payload: {
+        assetId: input.itemRef,
+        itemName: input.itemName,
+        amount: input.amount,
+        paidOff: input.paidOff,
+        installmentsPaid: input.installmentsPaidAfter,
+        installmentsTotal: input.installmentsTotal,
+      },
+    });
+  }
+
+  async createStockTradeNews(input: {
+    gameId: string;
+    gameStep: number;
+    ticker: string;
+    companyName: string;
+    playerAction: 'buy' | 'sell';
+    qty: number;
+    price: number;
+    botName?: string;
+  }) {
+    const total = input.qty * input.price;
+    const totalLabel = total.toLocaleString('ru-RU');
+    const priceLabel = input.price.toLocaleString('ru-RU');
+    const isBuy = input.playerAction === 'buy';
+    const title = isBuy ? `Покупка акций: ${input.ticker}` : `Продажа акций: ${input.ticker}`;
+    const counterparty = input.botName ? ` у ${input.botName}` : '';
+    const body = isBuy
+      ? `Купили ${input.qty} акций ${input.companyName} (${input.ticker})${counterparty} по ${priceLabel} за штуку. Итого: ${totalLabel}.`
+      : `Продали ${input.qty} акций ${input.companyName} (${input.ticker})${counterparty} по ${priceLabel} за штуку. Итого: ${totalLabel}.`;
+
+    return this.#persistNews({
+      gameId: input.gameId,
+      gameStep: input.gameStep,
+      kind: 'STOCK_TRADE',
+      title,
+      body,
+      sentiment: 'NEUTRAL',
+      impact: 0,
+      ticker: input.ticker,
+      payload: {
+        ticker: input.ticker,
+        companyName: input.companyName,
+        playerAction: input.playerAction,
+        qty: input.qty,
+        price: input.price,
+        total,
+        botName: input.botName,
+      },
+    });
+  }
+
+  async generateStockNews(input: {
+    gameId: string;
+    gameStep: number;
+  }): Promise<{ news: PersistedNewsItem; insiderRolled: boolean }> {
+    if (Math.random() < 0.15) {
+      const { news } = await this.generateInsiderNews(input);
+      return { news, insiderRolled: true };
+    }
+    const news = await this.generateJunkNews(input);
+    return { news, insiderRolled: false };
   }
 
   async generateJunkNews(input: {

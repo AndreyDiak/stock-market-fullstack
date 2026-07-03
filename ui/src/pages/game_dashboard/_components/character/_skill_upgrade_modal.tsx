@@ -1,6 +1,7 @@
 import { GameModal } from '../../../../components/game_ui/floating'
 import { GameButton } from '../../../../components/game_ui/game_button'
 import { MoneyValue } from '../../../../components/money/money_value'
+import { gameAudio } from '../../../../lib/audio/game_audio'
 import { UpgradeIcon } from '../../../../shared/icons'
 import type { SkillUpgradePreview } from './_character_skills'
 import { SkillSegmentBar } from './_skill_segment_bar'
@@ -92,10 +93,19 @@ export function SkillUpgradeModal({
       )}
 
       <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        <GameButton variant="ghost" onClick={onCancel}>
+        <GameButton variant="ghost" onClick={() => {
+          gameAudio.playSfx('buttonClick')
+          onCancel()
+        }}>
           Отмена
         </GameButton>
-        <GameButton disabled={!canAfford} onClick={onConfirm}>
+        <GameButton
+          disabled={!canAfford}
+          onClick={() => {
+            gameAudio.playSfx('buttonClick')
+            onConfirm()
+          }}
+        >
           Улучшить
         </GameButton>
       </div>

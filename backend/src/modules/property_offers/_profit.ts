@@ -36,6 +36,10 @@ export function calcDownPaymentPercent(grade: ProfitGrade): number {
   return DOWN_PAYMENT_BY_GRADE[grade];
 }
 
+export function calcDownPaymentAmount(offerPrice: number, downPaymentPercent: number): number {
+  return Math.round((offerPrice * downPaymentPercent) / 100);
+}
+
 export function isProfitableForPlayer(
   type: PropertyOfferType,
   offerPrice: number,

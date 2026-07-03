@@ -6,10 +6,17 @@ import { getRealEstateImage } from '../../../../constants/realEstateImages';
 import { TrendArrowIcon } from '../../../../shared/icons';
 import { useGameStore } from '../../../../stores/game.store';
 import type { PropertyOffer } from '../../_model/types';
-import { buildAcceptDealPreview } from './_accept_deal_utils';
+import {
+  buildAcceptDealPreview,
+  canAffordPurchase,
+  getDefaultPurchasePaymentMode,
+  type PropertyOfferPaymentMode,
+} from './_accept_deal_utils';
 import { AcceptDealPreviewView } from './_accept_deal_modal_preview';
 import { ReputationChangeBlock } from './_reputation_change_block';
+import { NegotiateDealSuccessFooter } from './_negotiate_outcome_view';
 import './_accept_deal_modal.css';
+import './_negotiate_modal.css';
 
 type AcceptPhase = 'preview' | 'confirming' | 'success';
 
@@ -18,7 +25,10 @@ interface AcceptDealModalProps {
   offer: PropertyOffer;
   busy?: boolean;
   onClose: () => void;
-  onConfirm: (offerId: string) => Promise<AcceptPropertyOfferResponse>;
+  onConfirm: (
+    offerId: string,
+    paymentMode: PropertyOfferPaymentMode,
+  ) => Promise<AcceptPropertyOfferResponse>;
 }
 
 function ProfitHighlight({ amount, isPurchase }: { amount: number; isPurchase: boolean }) {
@@ -77,7 +87,7 @@ function InstallmentBreakdownBlock({
         </div>
         <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-2.5">
           <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-400/80">
-            Заработок с продажи
+            На баланс
           </p>
           <MoneyValue
             amount={Math.abs(breakdown.netProfit)}
@@ -89,9 +99,16 @@ function InstallmentBreakdownBlock({
         </div>
       </div>
       <p className="mt-3 text-center text-xs text-slate-400">
-        Получите за объект:{' '}
-        <MoneyValue amount={breakdown.saleProceeds} size="sm" color="white" className="inline-flex" />
-        {' · '}остаток рассрочки списывается при продаже
+        Цена покупки:{' '}
+        <MoneyValue amount={breakdown.purchasePrice} size="sm" color="white" className="inline-flex" />
+        {' · '}разница с предложением:{' '}
+        <MoneyValue
+          amount={Math.abs(breakdown.priceDelta)}
+          size="sm"
+          color={breakdown.priceDelta >= 0 ? 'emerald' : 'red'}
+          prefix={breakdown.priceDelta >= 0 ? '+' : '−'}
+          className="inline-flex"
+        />
       </p>
     </div>
   );
@@ -99,16 +116,15 @@ function InstallmentBreakdownBlock({
 
 function AcceptSuccessView({
   outcome,
-  onClose,
 }: {
   outcome: AcceptPropertyOfferResponse;
-  onClose: () => void;
 }) {
   const deal = outcome.deal;
   const image = getRealEstateImage(deal.assetId);
   const isPurchase = deal.action === 'purchased';
   const balanceDelta = outcome.balance - outcome.previousBalance;
   const profitable = outcome.profitAmount >= 0;
+  const displayAmount = Math.abs(balanceDelta) || outcome.deal.price;
 
   return (
     <div className="negotiate-modal-enter flex w-full flex-col items-center gap-5">
@@ -137,7 +153,11 @@ function AcceptSuccessView({
                 <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
                   {isPurchase ? 'Оплачено' : 'Получено'}
                 </p>
-                <MoneyValue amount={deal.price} size="lg" color={isPurchase ? 'white' : 'emerald'} />
+                <MoneyValue
+                  amount={displayAmount}
+                  size="lg"
+                  color={isPurchase ? 'white' : 'emerald'}
+                />
               </div>
               {balanceDelta !== 0 ? (
                 <div className="text-right">
@@ -166,23 +186,17 @@ function AcceptSuccessView({
           animate
           positive={profitable}
         />
-
-        <button
-          type="button"
-          onClick={onClose}
-          className="w-full rounded-xl bg-gradient-to-b from-amber-300 via-yellow-500 to-amber-600 py-3 text-sm font-black uppercase tracking-[0.14em] text-amber-950 shadow-[0_0_20px_rgba(234,179,8,0.3)] transition hover:shadow-[0_0_28px_rgba(234,179,8,0.45)]"
-        >
-          Отлично
-        </button>
       </div>
   );
 }
 
 export function AcceptDealModal({ open, offer, busy = false, onClose, onConfirm }: AcceptDealModalProps) {
   const reputation = useGameStore((state) => state.characterProfile.reputation);
+  const balance = useGameStore((state) => state.balance);
   const inventoryItems = useGameStore((state) => state.inventoryItems);
   const [phase, setPhase] = useState<AcceptPhase>('preview');
   const [outcome, setOutcome] = useState<AcceptPropertyOfferResponse | null>(null);
+  const [paymentMode, setPaymentMode] = useState<PropertyOfferPaymentMode>('installment');
 
   const preview = useMemo(
     () => buildAcceptDealPreview(offer, reputation, inventoryItems),
@@ -192,18 +206,26 @@ export function AcceptDealModal({ open, offer, busy = false, onClose, onConfirm 
   const image = getRealEstateImage(offer.assetId);
   const controlsLocked = phase === 'confirming' || busy;
   const isPurchase = preview.isPurchase;
+  const canConfirmPurchase = isPurchase
+    ? canAffordPurchase(balance, offer.offerPrice, offer.downPaymentPercent, paymentMode)
+    : true;
 
   useEffect(() => {
     if (!open) return;
     setPhase('preview');
     setOutcome(null);
-  }, [open, offer.id]);
+    setPaymentMode(
+      isPurchase
+        ? getDefaultPurchasePaymentMode(balance, offer.offerPrice)
+        : 'installment',
+    );
+  }, [balance, isPurchase, offer.downPaymentPercent, offer.id, offer.offerPrice, open]);
 
   const handleConfirm = async () => {
-    if (controlsLocked) return;
+    if (controlsLocked || !canConfirmPurchase) return;
     setPhase('confirming');
     try {
-      const result = await onConfirm(offer.id);
+      const result = await onConfirm(offer.id, isPurchase ? paymentMode : 'installment');
       setOutcome(result);
       setPhase('success');
     } catch {
@@ -231,17 +253,23 @@ export function AcceptDealModal({ open, offer, busy = false, onClose, onConfirm 
         .join(' ')}
     >
       {phase === 'success' && outcome ? (
-        <div className="property-sale-modal__body-scroll">
-          <AcceptSuccessView outcome={outcome} onClose={handleClose} />
-        </div>
+        <>
+          <div className="property-sale-modal__body-scroll">
+            <AcceptSuccessView outcome={outcome} />
+          </div>
+          <NegotiateDealSuccessFooter onClose={handleClose} />
+        </>
       ) : (
         <AcceptDealPreviewView
           offer={offer}
           preview={preview}
           reputation={reputation}
           image={image}
+          balance={balance}
+          paymentMode={paymentMode}
+          onPaymentModeChange={setPaymentMode}
           confirming={phase === 'confirming'}
-          controlsLocked={controlsLocked}
+          controlsLocked={controlsLocked || !canConfirmPurchase}
           onClose={handleClose}
           onConfirm={() => void handleConfirm()}
         />

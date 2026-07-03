@@ -16,6 +16,8 @@ export interface PropertyOfferDto {
   expiresInTurns: number;
   isLocked: boolean;
   downPaymentPercent: number;
+  pendingNegotiatedPrice: number | null;
+  pendingNegotiatedPercent: number | null;
 }
 
 export interface GeneratedOfferParams {

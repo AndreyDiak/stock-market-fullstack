@@ -87,6 +87,57 @@ function SettingsToggle({
   );
 }
 
+function SettingsVolumeSlider({
+  label,
+  description,
+  value,
+  disabled,
+  onChange,
+  theme,
+}: {
+  label: string;
+  description: string;
+  value: number;
+  disabled?: boolean;
+  onChange: (value: number) => void;
+  theme: GameDashboardThemeTokens;
+}) {
+  const percent = Math.round(value * 100);
+
+  return (
+    <div
+      className={`rounded-2xl border px-4 py-3 ${
+        theme.isLight
+          ? "border-slate-200 bg-slate-50/80"
+          : "border-slate-700/40 bg-slate-800/40"
+      } ${disabled ? "opacity-55" : ""}`}
+    >
+      <div className="mb-3 flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className={`text-sm font-bold ${theme.primaryText}`}>{label}</p>
+          <p className={`mt-1 text-xs leading-relaxed ${theme.secondaryText}`}>
+            {description}
+          </p>
+        </div>
+        <span className={`shrink-0 text-sm font-bold tabular-nums ${theme.primaryText}`}>
+          {percent}%
+        </span>
+      </div>
+      <input
+        type="range"
+        min={0}
+        max={100}
+        step={1}
+        value={percent}
+        disabled={disabled}
+        onChange={(event) => onChange(Number(event.target.value) / 100)}
+        className="h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-500/35 accent-emerald-500 disabled:cursor-not-allowed"
+        aria-label={label}
+      />
+    </div>
+  );
+}
+
 function ThemeOption({
   label,
   active,
@@ -137,8 +188,16 @@ export function GameSettingsPanel({
   const {
     dynamicBackground: storeDynamicBackground,
     colorTheme: storeColorTheme,
+    musicEnabled,
+    sfxEnabled,
+    musicVolume,
+    sfxVolume,
     setDynamicBackground,
     setColorTheme,
+    setMusicEnabled,
+    setSfxEnabled,
+    setMusicVolume,
+    setSfxVolume,
   } = useGameSettingsStore()
 
   const theme = themeProp ?? dashboardTheme
@@ -167,6 +226,42 @@ export function GameSettingsPanel({
             checked={dynamicBackground}
             onChange={onDynamicBackgroundChange}
           />
+        </SettingsSection>
+
+        <SettingsSection animated={animated}>
+          <section className="flex flex-col gap-3">
+            <p className={`text-sm font-bold ${theme.primaryText}`}>Звук</p>
+            <SettingsToggle
+              theme={theme}
+              label="Фоновая музыка"
+              description="Зацикленное воспроизведение фоновых треков во время игры."
+              checked={musicEnabled}
+              onChange={setMusicEnabled}
+            />
+            <SettingsVolumeSlider
+              theme={theme}
+              label="Громкость музыки"
+              description="Регулирует громкость фоновых треков."
+              value={musicVolume}
+              disabled={!musicEnabled}
+              onChange={setMusicVolume}
+            />
+            <SettingsToggle
+              theme={theme}
+              label="Звуковые эффекты"
+              description="Короткие звуки на действия: ход, сделки, новости и покупки."
+              checked={sfxEnabled}
+              onChange={setSfxEnabled}
+            />
+            <SettingsVolumeSlider
+              theme={theme}
+              label="Громкость эффектов"
+              description="Регулирует громкость игровых звуковых эффектов."
+              value={sfxVolume}
+              disabled={!sfxEnabled}
+              onChange={setSfxVolume}
+            />
+          </section>
         </SettingsSection>
 
         <SettingsSection animated={animated}>

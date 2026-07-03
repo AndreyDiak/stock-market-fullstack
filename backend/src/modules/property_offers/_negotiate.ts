@@ -1,7 +1,11 @@
 import type { PropertyOfferType } from './_types.js';
+import {
+  calcPurchaseDiscountDiceRequirement,
+  NEGOTIATE_SLIDER_MAX_DISCOUNT_PERCENT,
+} from './_negotiate_discount.js';
 
 export const NEGOTIATE_MIN_ADJUSTMENT = -15;
-export const NEGOTIATE_MAX_ADJUSTMENT = 45;
+export const NEGOTIATE_MAX_ADJUSTMENT = NEGOTIATE_SLIDER_MAX_DISCOUNT_PERCENT;
 export const NEGOTIATE_MIN_TARGET = 5;
 export const NEGOTIATE_MAX_TARGET = 19;
 
@@ -16,14 +20,52 @@ export function calcNegotiateTarget(adjustmentPercent: number): number {
   return Math.round(NEGOTIATE_MIN_TARGET + ratio * (NEGOTIATE_MAX_TARGET - NEGOTIATE_MIN_TARGET));
 }
 
-export function calcNegotiateSuccessChance(adjustmentPercent: number, reputation: number): number {
-  const target = calcNegotiateTarget(adjustmentPercent);
+export function calcPurchaseNegotiateTarget(discountPercent: number): number {
+  return calcPurchaseDiscountDiceRequirement(discountPercent);
+}
+
+export function calcNegotiateTargetForOffer(
+  type: PropertyOfferType,
+  adjustmentPercent: number,
+): number {
+  if (type === 'SELL' || type === 'BUY') {
+    return calcPurchaseNegotiateTarget(adjustmentPercent);
+  }
+  return calcNegotiateTarget(adjustmentPercent);
+}
+
+export function calcNegotiateSuccessChanceForOffer(
+  type: PropertyOfferType,
+  adjustmentPercent: number,
+  reputation: number,
+): number {
+  if (type === 'SELL' || type === 'BUY') {
+    return calcPurchaseNegotiateSuccessChance(adjustmentPercent, reputation);
+  }
+  return calcNegotiateSuccessChance(adjustmentPercent, reputation);
+}
+
+function calcSuccessChanceFromTarget(target: number, reputation: number): number {
   const repBonus = Math.floor(reputation);
   const minD20 = target - repBonus;
 
   if (minD20 <= 1) return 100;
   if (minD20 > 20) return 0;
   return Math.round(((21 - minD20) / 20) * 100);
+}
+
+export function calcNegotiateSuccessChance(adjustmentPercent: number, reputation: number): number {
+  return calcSuccessChanceFromTarget(calcNegotiateTarget(adjustmentPercent), reputation);
+}
+
+export function calcPurchaseNegotiateSuccessChance(
+  discountPercent: number,
+  reputation: number,
+): number {
+  return calcSuccessChanceFromTarget(
+    calcPurchaseNegotiateTarget(discountPercent),
+    reputation,
+  );
 }
 
 export function calcProposedPrice(

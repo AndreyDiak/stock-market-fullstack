@@ -14,6 +14,14 @@ export function format_change(value: number) {
   return `${sign}${value.toFixed(1)}%`
 }
 
+export function roundReputation(value: number): number {
+  return Math.round(value * 10) / 10
+}
+
+export function formatReputation(value: number): string {
+  return roundReputation(value).toFixed(1)
+}
+
 export function calc_passive_income(slots: PropertySlot[]) {
   return calcPropertyPassiveIncome(slots)
 }

@@ -1,0 +1,106 @@
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .header {
+    flex-wrap: nowrap;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-5);
+  }
+}
+
+.header__player {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.header__avatar {
+  position: relative;
+  height: 2.5rem;
+  width: 2.5rem;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .header__avatar {
+    height: 2.75rem;
+    width: 2.75rem;
+  }
+}
+
+.header__avatar-ring {
+  position: absolute;
+  inset: -2px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.7), rgba(52, 211, 153, 0.6), rgba(34, 211, 238, 0.6));
+  opacity: 0.9;
+}
+
+.header__avatar-image {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 9999px;
+  box-shadow: inset 0 0 0 2px rgba(15, 23, 42, 0.85);
+}
+
+.header__session {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-4);
+}
+
+.header__divider {
+  height: 2rem;
+  width: 1px;
+  flex-shrink: 0;
+}
+
+.header__balance-group,
+.header__turn-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.header__turn-value {
+  font-size: 1.5rem;
+  font-weight: 900;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.header__primary-action {
+  flex-shrink: 0;
+}
+
+.header__finish-turn {
+  min-height: 3rem;
+  min-width: 10.5rem;
+  box-shadow: var(--shadow-action), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+.header__finish-turn:hover:not(:disabled),
+.header__finish-turn:focus-visible:not(:disabled) {
+  box-shadow:
+    var(--shadow-action),
+    0 0 18px rgba(251, 191, 36, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+}
+
+.header__finish-turn:disabled {
+  box-shadow: 0 4px 0 #1e293b !important;
+}

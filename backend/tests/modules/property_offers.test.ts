@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   calcDownPaymentPercent,
+  calcDownPaymentAmount,
   calcOfferPrice,
   calcProfitPercent,
   gradeFromPercent,
@@ -8,23 +9,40 @@ import {
   requiredBankingLevel,
 } from '../../src/modules/property_offers/_profit.js';
 import { buildOfferParams } from '../../src/modules/property_offers/_generator.js';
-import { pickContentType } from '../../src/modules/game/_phases/_turn_content.phase.js';
+import {
+  getNextCycleCategory,
+  kindToNewsCategory,
+  pickNextContentType,
+} from '../../src/modules/news/news_cycle.js';
 import {
   calcNegotiateSuccessChance,
   calcNegotiateTarget,
   calcProposedPrice,
+  calcPurchaseNegotiateSuccessChance,
+  calcPurchaseNegotiateTarget,
 } from '../../src/modules/property_offers/_negotiate.js';
 
 describe('property offer negotiate slider', () => {
-  it('maps adjustment to D20 target', () => {
+  it('maps purchase discount to fixed d20 requirement', () => {
+    expect(calcPurchaseNegotiateTarget(5)).toBe(11);
+    expect(calcPurchaseNegotiateTarget(25)).toBe(15);
+    expect(calcPurchaseNegotiateTarget(50)).toBe(20);
+  });
+
+  it('maps sell markup adjustment to D20 target', () => {
     expect(calcNegotiateTarget(-15)).toBe(5);
-    expect(calcNegotiateTarget(45)).toBe(19);
+    expect(calcNegotiateTarget(50)).toBe(19);
     expect(calcNegotiateTarget(15)).toBe(12);
   });
 
-  it('calculates success chance from reputation', () => {
+  it('calculates purchase success chance from reputation', () => {
+    expect(calcPurchaseNegotiateSuccessChance(25, 2)).toBe(40);
+    expect(calcPurchaseNegotiateSuccessChance(5, 0)).toBe(50);
+  });
+
+  it('calculates sell success chance from reputation', () => {
     expect(calcNegotiateSuccessChance(-15, 3)).toBeGreaterThan(80);
-    expect(calcNegotiateSuccessChance(45, 3)).toBeLessThan(20);
+    expect(calcNegotiateSuccessChance(50, 3)).toBeLessThan(20);
   });
 
   it('calculates proposed price by offer type', () => {
@@ -37,6 +55,11 @@ describe('property offer profit', () => {
   it('maps down payment percent by grade', () => {
     expect(calcDownPaymentPercent('F')).toBe(15);
     expect(calcDownPaymentPercent('A')).toBe(40);
+  });
+
+  it('calculates down payment amount from offer price', () => {
+    expect(calcDownPaymentAmount(10_000, 15)).toBe(1500);
+    expect(calcDownPaymentAmount(10_000, 40)).toBe(4000);
   });
 
   it('maps grades to banking levels', () => {
@@ -107,15 +130,28 @@ describe('property offer profit', () => {
   });
 });
 
-describe('turn content distribution', () => {
-  it('picks mutually exclusive content types from weights', () => {
-    expect(pickContentType(() => 0)).toBe('property');
-    expect(pickContentType(() => 0.19)).toBe('property');
-    expect(pickContentType(() => 0.21)).toBe('otc');
-    expect(pickContentType(() => 0.39)).toBe('otc');
-    expect(pickContentType(() => 0.41)).toBe('insider');
-    expect(pickContentType(() => 0.54)).toBe('insider');
-    expect(pickContentType(() => 0.56)).toBe('junk');
-    expect(pickContentType(() => 0.99)).toBe('junk');
+describe('news cycle', () => {
+  it('maps news kinds to cycle categories', () => {
+    expect(kindToNewsCategory('MARKET')).toBe('stock');
+    expect(kindToNewsCategory('INSIDER')).toBe('stock');
+    expect(kindToNewsCategory('RUMOR')).toBe('stock');
+    expect(kindToNewsCategory('OTC_DEAL')).toBe('deal');
+    expect(kindToNewsCategory('PROPERTY_OFFER')).toBe('realty');
+  });
+
+  it('rotates categories stock -> deal -> realty', () => {
+    expect(getNextCycleCategory(null)).toBe('stock');
+    expect(getNextCycleCategory('stock')).toBe('deal');
+    expect(getNextCycleCategory('deal')).toBe('realty');
+    expect(getNextCycleCategory('realty')).toBe('stock');
+  });
+
+  it('picks next turn content from last news kind', () => {
+    expect(pickNextContentType(null)).toBe('stock');
+    expect(pickNextContentType('MARKET')).toBe('otc');
+    expect(pickNextContentType('RUMOR')).toBe('otc');
+    expect(pickNextContentType('INSIDER')).toBe('otc');
+    expect(pickNextContentType('OTC_DEAL')).toBe('property');
+    expect(pickNextContentType('PROPERTY_OFFER')).toBe('stock');
   });
 });

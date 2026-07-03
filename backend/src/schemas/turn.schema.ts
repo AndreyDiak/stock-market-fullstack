@@ -3,26 +3,9 @@ import { characterSchema } from './character.schema.js';
 import { characterSkillsStateSchema } from './character_skills.schema.js';
 import { nextTurnForecastResponseSchema } from './forecast.schema.js';
 import { propertyOfferSchema } from './property_offer.schema.js';
+import { generatedNewsItemSchema } from './news.schema.js';
 
-const sentimentSchema = z.enum(['POSITIVE', 'NEGATIVE', 'NEUTRAL']);
-const newsKindSchema = z.enum(['WELCOME', 'MARKET', 'INSIDER', 'RUMOR', 'OTC_DEAL', 'PROPERTY_OFFER']);
-
-export const generatedNewsItemSchema = z.object({
-  id: z.string().uuid(),
-  kind: newsKindSchema,
-  title: z.string(),
-  body: z.string(),
-  excerpt: z.string(),
-  sentiment: sentimentSchema,
-  impact: z.number(),
-  sector: z.string().nullable().optional(),
-  companyId: z.string().uuid().nullable().optional(),
-  ticker: z.string().optional(),
-  hot: z.boolean().optional(),
-  publishedAt: z.string().datetime(),
-  publishedStep: z.number().int().positive().optional(),
-  payload: z.unknown().optional(),
-});
+export { generatedNewsItemSchema, gameNewsResponseSchema } from './news.schema.js';
 
 export const otcDealSchema = z.object({
   botName: z.string(),
@@ -71,10 +54,6 @@ export const endTurnResponseSchema = z.object({
   propertyOffers: z.array(propertyOfferSchema),
   appliedPriceImpacts: z.array(appliedPriceImpactSchema).optional(),
   characterSkills: characterSkillsStateSchema,
-});
-
-export const gameNewsResponseSchema = z.object({
-  news: z.array(generatedNewsItemSchema),
 });
 
 export type { NextTurnForecastResponse } from './forecast.schema.js';

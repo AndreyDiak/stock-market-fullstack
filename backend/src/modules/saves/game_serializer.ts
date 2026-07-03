@@ -12,6 +12,7 @@ function serializeInventoryItem(item: InventoryItem) {
     itemRef: item.itemRef,
     name: item.name,
     purchasePrice: item.purchasePrice,
+    downPaymentAmount: item.downPaymentAmount,
     isInstallment: item.isInstallment,
     monthlyPayment: item.monthlyPayment,
     installmentsTotal: item.installmentsTotal,

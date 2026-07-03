@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { StarIcon } from '../../../../shared/icons';
+import { roundReputation } from '../../_model/utils';
 import { SkillSegmentBar } from '../character/_skill_segment_bar';
 
 const REPUTATION_ANIM_MS = 1400;
@@ -46,9 +47,9 @@ export function ReputationChangeBlock({
   preview?: boolean;
 }) {
   const animated = useAnimatedReputation(previousReputation, reputation, animate);
-  const displayValue = animate ? animated : reputation;
+  const displayValue = roundReputation(animate ? animated : reputation);
   const filled = Math.max(1, Math.min(10, Math.round(displayValue)));
-  const delta = reputation - previousReputation;
+  const delta = roundReputation(reputation - previousReputation);
   const deltaLabel = delta >= 0 ? `+${delta.toFixed(1)}` : delta.toFixed(1);
 
   return (

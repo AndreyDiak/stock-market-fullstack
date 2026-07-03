@@ -17,6 +17,9 @@ const KIND_LABELS: Record<NonNullable<news_item['kind']>, string> = {
   RUMOR: 'Слухи',
   OTC_DEAL: 'Внебиржа',
   PROPERTY_OFFER: 'Недвижимость',
+  PROPERTY_DEAL: 'Сделка',
+  PROPERTY_INSTALLMENT: 'Ипотека',
+  STOCK_TRADE: 'Биржа',
 }
 
 function formatIssueDate(publishedAt: string) {

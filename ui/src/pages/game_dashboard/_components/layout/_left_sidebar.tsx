@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { useMemo } from 'react'
+import { gameAudio } from '../../../../lib/audio/game_audio'
 import { ExitIcon, SettingsIcon } from '../../../../shared/icons'
 import { useGameSettingsStore } from '../../../../stores/game_settings.store'
 import { useGameStore } from '../../../../stores/game.store'
@@ -28,7 +29,10 @@ function SidebarCollapseToggle({
   return (
     <button
       type="button"
-      onClick={onToggle}
+      onClick={() => {
+        gameAudio.playSfx('buttonClick')
+        onToggle()
+      }}
       title={collapsed ? 'Развернуть меню' : 'Свернуть меню'}
       aria-expanded={!collapsed}
       aria-label={collapsed ? 'Развернуть меню' : 'Свернуть меню'}
@@ -77,11 +81,14 @@ function SidebarNavButton({
     <button
       type="button"
       title={item.label}
-      onClick={onSelect}
+      onClick={() => {
+        gameAudio.playSfx('buttonClick')
+        onSelect()
+      }}
       aria-label={
         showBadge ? `${item.label}, ${badgeCount} предложений` : item.label
       }
-      className={`group relative isolate flex min-w-0 max-w-full items-center overflow-hidden rounded-[28px] border py-3 text-left backdrop-blur-md transition-[gap,padding,border-radius] duration-300 ease-in-out ${navShellClass(collapsed)} ${
+      className={`group relative isolate flex min-h-11 min-w-0 max-w-full items-center overflow-hidden rounded-[28px] border py-3 text-left backdrop-blur-md transition-[gap,padding,border-radius,transform] duration-200 ease-in-out hover:-translate-y-px ${navShellClass(collapsed)} ${
         collapsed ? 'lg:rounded-2xl' : ''
       } ${active ? theme.navActive : theme.navIdle}`}
     >
@@ -94,7 +101,7 @@ function SidebarNavButton({
         />
       ) : null}
       <div
-        className={`relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ${
+        className={`relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl [&_svg]:h-5 [&_svg]:w-5 ${
           active ? theme.navIconActive : theme.navIconIdle
         }`}
       >
@@ -145,7 +152,10 @@ function SidebarFooterButton({
     <button
       type="button"
       title={label}
-      onClick={onClick}
+      onClick={() => {
+        gameAudio.playSfx('buttonClick')
+        onClick()
+      }}
       className={`group relative isolate flex min-w-0 max-w-full items-center overflow-hidden rounded-[28px] border py-2.5 text-left backdrop-blur-md transition-[gap,padding,border-radius] duration-300 ease-in-out ${navShellClass(collapsed)} ${
         collapsed ? 'lg:rounded-2xl' : ''
       } ${
@@ -208,12 +218,10 @@ export function LeftSidebar() {
 
   return (
     <nav
-      className={`flex h-full min-h-0 w-full min-w-0 shrink-0 flex-col overflow-x-hidden transition-[width] duration-300 ease-in-out lg:self-stretch lg:overflow-y-auto ${
-        collapsed ? 'lg:w-[4.5rem]' : 'lg:w-48'
-      } ${theme.scrollArea}`}
+      className={`flex h-full min-h-0 w-full min-w-0 shrink-0 flex-col overflow-x-hidden transition-[width] duration-300 ease-in-out lg:overflow-y-auto ${theme.scrollArea}`}
     >
       <div className={`flex min-h-full min-w-0 flex-col gap-3 py-0.5 ${collapsed ? 'px-0' : 'px-1'}`}>
-        <div className="flex min-w-0 flex-col gap-3">
+        <div className="sidebar__main flex min-w-0 flex-col gap-3">
           {SIDEBAR_PRIMARY_ITEMS.map((item) => (
             <SidebarNavButton
               key={item.id}
@@ -241,8 +249,8 @@ export function LeftSidebar() {
           ))}
         </div>
 
-        <div className="mt-auto flex min-w-0 flex-col gap-2 pt-2">
-          <div className="hidden lg:flex lg:flex-col lg:gap-2">
+        <div className="sidebar__system mt-auto flex min-w-0 flex-col gap-2 pt-2">
+          <div className="sidebar__collapse hidden lg:flex lg:flex-col lg:gap-2">
             <SidebarCollapseToggle
               collapsed={collapsed}
               onToggle={toggleSidebarCollapsed}

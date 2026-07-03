@@ -143,6 +143,12 @@
                 "purchasePrice": {
                   "type": "number"
                 },
+                "downPaymentAmount": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
                 "isInstallment": {
                   "type": "boolean"
                 },
@@ -185,6 +191,7 @@
                 "itemRef",
                 "name",
                 "purchasePrice",
+                "downPaymentAmount",
                 "isInstallment",
                 "monthlyPayment",
                 "installmentsTotal",
@@ -663,6 +670,12 @@
                             "purchasePrice": {
                               "type": "number"
                             },
+                            "downPaymentAmount": {
+                              "type": [
+                                "number",
+                                "null"
+                              ]
+                            },
                             "isInstallment": {
                               "type": "boolean"
                             },
@@ -705,6 +718,7 @@
                             "itemRef",
                             "name",
                             "purchasePrice",
+                            "downPaymentAmount",
                             "isInstallment",
                             "monthlyPayment",
                             "installmentsTotal",
@@ -1353,6 +1367,12 @@
                         "purchasePrice": {
                           "type": "number"
                         },
+                        "downPaymentAmount": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
                         "isInstallment": {
                           "type": "boolean"
                         },
@@ -1395,6 +1415,7 @@
                         "itemRef",
                         "name",
                         "purchasePrice",
+                        "downPaymentAmount",
                         "isInstallment",
                         "monthlyPayment",
                         "installmentsTotal",
@@ -1622,6 +1643,12 @@
                           "purchasePrice": {
                             "type": "number"
                           },
+                          "downPaymentAmount": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
                           "isInstallment": {
                             "type": "boolean"
                           },
@@ -1664,6 +1691,7 @@
                           "itemRef",
                           "name",
                           "purchasePrice",
+                          "downPaymentAmount",
                           "isInstallment",
                           "monthlyPayment",
                           "installmentsTotal",
@@ -1899,6 +1927,12 @@
                     "purchasePrice": {
                       "type": "number"
                     },
+                    "downPaymentAmount": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
                     "isInstallment": {
                       "type": "boolean"
                     },
@@ -1941,6 +1975,7 @@
                     "itemRef",
                     "name",
                     "purchasePrice",
+                    "downPaymentAmount",
                     "isInstallment",
                     "monthlyPayment",
                     "installmentsTotal",
@@ -2078,7 +2113,10 @@
                     "INSIDER",
                     "RUMOR",
                     "OTC_DEAL",
-                    "PROPERTY_OFFER"
+                    "PROPERTY_OFFER",
+                    "PROPERTY_DEAL",
+                    "PROPERTY_INSTALLMENT",
+                    "STOCK_TRADE"
                   ]
                 },
                 "title": {
@@ -2258,6 +2296,22 @@
                 },
                 "downPaymentPercent": {
                   "type": "number"
+                },
+                "pendingNegotiatedPrice": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "pendingNegotiatedPercent": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               },
               "required": [
@@ -2274,7 +2328,9 @@
                 "isHot",
                 "expiresInTurns",
                 "isLocked",
-                "downPaymentPercent"
+                "downPaymentPercent",
+                "pendingNegotiatedPrice",
+                "pendingNegotiatedPercent"
               ],
               "additionalProperties": false
             }
@@ -2643,7 +2699,10 @@
                     "INSIDER",
                     "RUMOR",
                     "OTC_DEAL",
-                    "PROPERTY_OFFER"
+                    "PROPERTY_OFFER",
+                    "PROPERTY_DEAL",
+                    "PROPERTY_INSTALLMENT",
+                    "STOCK_TRADE"
                   ]
                 },
                 "title": {
@@ -2933,6 +2992,12 @@
                             "purchasePrice": {
                               "type": "number"
                             },
+                            "downPaymentAmount": {
+                              "type": [
+                                "number",
+                                "null"
+                              ]
+                            },
                             "isInstallment": {
                               "type": "boolean"
                             },
@@ -2975,6 +3040,7 @@
                             "itemRef",
                             "name",
                             "purchasePrice",
+                            "downPaymentAmount",
                             "isInstallment",
                             "monthlyPayment",
                             "installmentsTotal",
@@ -3049,7 +3115,10 @@
                     "INSIDER",
                     "RUMOR",
                     "OTC_DEAL",
-                    "PROPERTY_OFFER"
+                    "PROPERTY_OFFER",
+                    "PROPERTY_DEAL",
+                    "PROPERTY_INSTALLMENT",
+                    "STOCK_TRADE"
                   ]
                 },
                 "title": {
@@ -3501,6 +3570,22 @@
                 },
                 "downPaymentPercent": {
                   "type": "number"
+                },
+                "pendingNegotiatedPrice": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "pendingNegotiatedPercent": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               },
               "required": [
@@ -3517,7 +3602,9 @@
                 "isHot",
                 "expiresInTurns",
                 "isLocked",
-                "downPaymentPercent"
+                "downPaymentPercent",
+                "pendingNegotiatedPrice",
+                "pendingNegotiatedPercent"
               ],
               "additionalProperties": false
             }
@@ -3564,6 +3651,12 @@
                   "saleProceeds": {
                     "type": "number"
                   },
+                  "purchasePrice": {
+                    "type": "number"
+                  },
+                  "priceDelta": {
+                    "type": "number"
+                  },
                   "netProfit": {
                     "type": "number"
                   }
@@ -3572,6 +3665,8 @@
                   "paidTotal",
                   "remainingTotal",
                   "saleProceeds",
+                  "purchasePrice",
+                  "priceDelta",
                   "netProfit"
                 ],
                 "additionalProperties": false
@@ -3721,6 +3816,12 @@
                     "purchasePrice": {
                       "type": "number"
                     },
+                    "downPaymentAmount": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
                     "isInstallment": {
                       "type": "boolean"
                     },
@@ -3763,6 +3864,7 @@
                     "itemRef",
                     "name",
                     "purchasePrice",
+                    "downPaymentAmount",
                     "isInstallment",
                     "monthlyPayment",
                     "installmentsTotal",
@@ -3865,6 +3967,22 @@
                 },
                 "downPaymentPercent": {
                   "type": "number"
+                },
+                "pendingNegotiatedPrice": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "pendingNegotiatedPercent": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               },
               "required": [
@@ -3881,10 +3999,142 @@
                 "isHot",
                 "expiresInTurns",
                 "isLocked",
-                "downPaymentPercent"
+                "downPaymentPercent",
+                "pendingNegotiatedPrice",
+                "pendingNegotiatedPercent"
               ],
               "additionalProperties": false
             }
+          },
+          "news": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "WELCOME",
+                  "MARKET",
+                  "INSIDER",
+                  "RUMOR",
+                  "OTC_DEAL",
+                  "PROPERTY_OFFER",
+                  "PROPERTY_DEAL",
+                  "PROPERTY_INSTALLMENT",
+                  "STOCK_TRADE"
+                ]
+              },
+              "title": {
+                "type": "string"
+              },
+              "body": {
+                "type": "string"
+              },
+              "excerpt": {
+                "type": "string"
+              },
+              "sentiment": {
+                "type": "string",
+                "enum": [
+                  "POSITIVE",
+                  "NEGATIVE",
+                  "NEUTRAL"
+                ]
+              },
+              "impact": {
+                "type": "number"
+              },
+              "sector": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "companyId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "ticker": {
+                "type": "string"
+              },
+              "hot": {
+                "type": "boolean"
+              },
+              "publishedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "publishedStep": {
+                "type": "integer",
+                "exclusiveMinimum": 0
+              },
+              "payload": {}
+            },
+            "required": [
+              "id",
+              "kind",
+              "title",
+              "body",
+              "excerpt",
+              "sentiment",
+              "impact",
+              "publishedAt"
+            ],
+            "additionalProperties": false
+          },
+          "nextTurnForecast": {
+            "type": "object",
+            "properties": {
+              "lines": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "amount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "label",
+                    "amount"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "incomeTotal": {
+                "type": "number"
+              },
+              "expenseTotal": {
+                "type": "number"
+              },
+              "netChange": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "lines",
+              "incomeTotal",
+              "expenseTotal",
+              "netChange"
+            ],
+            "additionalProperties": false
           }
         },
         "required": [
@@ -3896,7 +4146,9 @@
           "installmentBreakdown",
           "deal",
           "character",
-          "propertyOffers"
+          "propertyOffers",
+          "news",
+          "nextTurnForecast"
         ],
         "additionalProperties": false
       },
@@ -3904,9 +4156,7 @@
         "type": "object",
         "properties": {
           "adjustmentPercent": {
-            "type": "number",
-            "minimum": -15,
-            "maximum": 45
+            "type": "number"
           }
         },
         "required": [
@@ -4057,6 +4307,22 @@
                 },
                 "downPaymentPercent": {
                   "type": "number"
+                },
+                "pendingNegotiatedPrice": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "pendingNegotiatedPercent": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               },
               "required": [
@@ -4073,7 +4339,9 @@
                 "isHot",
                 "expiresInTurns",
                 "isLocked",
-                "downPaymentPercent"
+                "downPaymentPercent",
+                "pendingNegotiatedPrice",
+                "pendingNegotiatedPercent"
               ],
               "additionalProperties": false
             }
@@ -4182,6 +4450,12 @@
                     "purchasePrice": {
                       "type": "number"
                     },
+                    "downPaymentAmount": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
                     "isInstallment": {
                       "type": "boolean"
                     },
@@ -4224,6 +4498,7 @@
                     "itemRef",
                     "name",
                     "purchasePrice",
+                    "downPaymentAmount",
                     "isInstallment",
                     "monthlyPayment",
                     "installmentsTotal",
@@ -4258,6 +4533,99 @@
               "updatedAt"
             ],
             "additionalProperties": false
+          },
+          "news": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "WELCOME",
+                      "MARKET",
+                      "INSIDER",
+                      "RUMOR",
+                      "OTC_DEAL",
+                      "PROPERTY_OFFER",
+                      "PROPERTY_DEAL",
+                      "PROPERTY_INSTALLMENT",
+                      "STOCK_TRADE"
+                    ]
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "body": {
+                    "type": "string"
+                  },
+                  "excerpt": {
+                    "type": "string"
+                  },
+                  "sentiment": {
+                    "type": "string",
+                    "enum": [
+                      "POSITIVE",
+                      "NEGATIVE",
+                      "NEUTRAL"
+                    ]
+                  },
+                  "impact": {
+                    "type": "number"
+                  },
+                  "sector": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "companyId": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "ticker": {
+                    "type": "string"
+                  },
+                  "hot": {
+                    "type": "boolean"
+                  },
+                  "publishedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "publishedStep": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0
+                  },
+                  "payload": {}
+                },
+                "required": [
+                  "id",
+                  "kind",
+                  "title",
+                  "body",
+                  "excerpt",
+                  "sentiment",
+                  "impact",
+                  "publishedAt"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -4272,7 +4640,473 @@
           "previousBalance",
           "balance",
           "propertyOffers",
-          "character"
+          "character",
+          "news"
+        ],
+        "additionalProperties": false
+      },
+      "PropertyOfferPaymentMode": {
+        "type": "string",
+        "enum": [
+          "full",
+          "installment"
+        ]
+      },
+      "AcceptPropertyOfferBody": {
+        "type": "object",
+        "properties": {
+          "paymentMode": {
+            "type": "string",
+            "enum": [
+              "full",
+              "installment"
+            ],
+            "default": "installment"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PropertyOffer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "assetId": {
+            "type": "string"
+          },
+          "itemName": {
+            "type": "string"
+          },
+          "inventoryItemId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "offerPrice": {
+            "type": "number"
+          },
+          "marketPrice": {
+            "type": "number"
+          },
+          "profitPercent": {
+            "type": "number"
+          },
+          "profitGrade": {
+            "type": "string",
+            "enum": [
+              "F",
+              "E",
+              "D",
+              "C",
+              "B",
+              "A"
+            ]
+          },
+          "requiredBankingLevel": {
+            "type": "integer"
+          },
+          "isHot": {
+            "type": "boolean"
+          },
+          "expiresInTurns": {
+            "type": "integer"
+          },
+          "isLocked": {
+            "type": "boolean"
+          },
+          "downPaymentPercent": {
+            "type": "number"
+          },
+          "pendingNegotiatedPrice": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "pendingNegotiatedPercent": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "assetId",
+          "itemName",
+          "inventoryItemId",
+          "type",
+          "offerPrice",
+          "marketPrice",
+          "profitPercent",
+          "profitGrade",
+          "requiredBankingLevel",
+          "isHot",
+          "expiresInTurns",
+          "isLocked",
+          "downPaymentPercent",
+          "pendingNegotiatedPrice",
+          "pendingNegotiatedPercent"
+        ],
+        "additionalProperties": false
+      },
+      "AcceptOtcDealBody": {
+        "type": "object",
+        "properties": {
+          "deal": {
+            "type": "object",
+            "properties": {
+              "botName": {
+                "type": "string"
+              },
+              "ticker": {
+                "type": "string"
+              },
+              "companyName": {
+                "type": "string"
+              },
+              "side": {
+                "type": "string",
+                "enum": [
+                  "buy",
+                  "sell"
+                ]
+              },
+              "qty": {
+                "type": "integer"
+              },
+              "price": {
+                "type": "number"
+              },
+              "turnsLeft": {
+                "type": "integer"
+              },
+              "flavorText": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "botName",
+              "ticker",
+              "companyName",
+              "side",
+              "qty",
+              "price",
+              "turnsLeft",
+              "flavorText"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "deal"
+        ],
+        "additionalProperties": false
+      },
+      "AcceptOtcDealResponse": {
+        "type": "object",
+        "properties": {
+          "balance": {
+            "type": "number"
+          },
+          "character": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "gameId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "name": {
+                "type": "string"
+              },
+              "balance": {
+                "type": "number"
+              },
+              "profession": {
+                "type": "string",
+                "enum": [
+                  "DOCTOR",
+                  "DEVELOPER",
+                  "FINANCIER",
+                  "FARMER",
+                  "ENGINEER",
+                  "STREET_CLEANER"
+                ]
+              },
+              "professionLevel": {
+                "type": "integer"
+              },
+              "salary": {
+                "type": "number"
+              },
+              "reputation": {
+                "type": "number"
+              },
+              "tradingLevel": {
+                "type": "integer"
+              },
+              "bankingLevel": {
+                "type": "integer"
+              },
+              "propertySlotLevel": {
+                "type": "integer"
+              },
+              "isNpc": {
+                "type": "boolean"
+              },
+              "dreamItemRefs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "totalEarned": {
+                "type": "number"
+              },
+              "totalSpent": {
+                "type": "number"
+              },
+              "totalTrades": {
+                "type": "integer"
+              },
+              "successfulTrades": {
+                "type": "integer"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "inventoryItems": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "characterId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "itemRef": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "purchasePrice": {
+                      "type": "number"
+                    },
+                    "downPaymentAmount": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "isInstallment": {
+                      "type": "boolean"
+                    },
+                    "monthlyPayment": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "installmentsTotal": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "installmentsPaid": {
+                      "type": "integer"
+                    },
+                    "special": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "isPaidOff": {
+                      "type": "boolean"
+                    },
+                    "purchasedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "characterId",
+                    "itemRef",
+                    "name",
+                    "purchasePrice",
+                    "downPaymentAmount",
+                    "isInstallment",
+                    "monthlyPayment",
+                    "installmentsTotal",
+                    "installmentsPaid",
+                    "special",
+                    "isPaidOff",
+                    "purchasedAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id",
+              "gameId",
+              "name",
+              "balance",
+              "profession",
+              "professionLevel",
+              "salary",
+              "reputation",
+              "tradingLevel",
+              "bankingLevel",
+              "propertySlotLevel",
+              "isNpc",
+              "dreamItemRefs",
+              "totalEarned",
+              "totalSpent",
+              "totalTrades",
+              "successfulTrades",
+              "createdAt",
+              "updatedAt"
+            ],
+            "additionalProperties": false
+          },
+          "news": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "WELCOME",
+                  "MARKET",
+                  "INSIDER",
+                  "RUMOR",
+                  "OTC_DEAL",
+                  "PROPERTY_OFFER",
+                  "PROPERTY_DEAL",
+                  "PROPERTY_INSTALLMENT",
+                  "STOCK_TRADE"
+                ]
+              },
+              "title": {
+                "type": "string"
+              },
+              "body": {
+                "type": "string"
+              },
+              "excerpt": {
+                "type": "string"
+              },
+              "sentiment": {
+                "type": "string",
+                "enum": [
+                  "POSITIVE",
+                  "NEGATIVE",
+                  "NEUTRAL"
+                ]
+              },
+              "impact": {
+                "type": "number"
+              },
+              "sector": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "companyId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "ticker": {
+                "type": "string"
+              },
+              "hot": {
+                "type": "boolean"
+              },
+              "publishedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "publishedStep": {
+                "type": "integer",
+                "exclusiveMinimum": 0
+              },
+              "payload": {}
+            },
+            "required": [
+              "id",
+              "kind",
+              "title",
+              "body",
+              "excerpt",
+              "sentiment",
+              "impact",
+              "publishedAt"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "balance",
+          "character",
+          "news"
         ],
         "additionalProperties": false
       },
@@ -5621,6 +6455,15 @@
         "tags": [
           "game"
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptPropertyOfferBody"
+              }
+            }
+          }
+        },
         "parameters": [
           {
             "schema": {
@@ -5756,6 +6599,308 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NegotiatePropertyOfferResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/property-offers/{offerId}/negotiate/accept": {
+      "post": {
+        "tags": [
+          "game"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptPropertyOfferBody"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "offerId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptPropertyOfferResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/property-offers/{offerId}/negotiate/decline": {
+      "post": {
+        "tags": [
+          "game"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "offerId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "propertyOffers"
+                  ],
+                  "properties": {
+                    "propertyOffers": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PropertyOffer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/otc-deals/accept": {
+      "post": {
+        "tags": [
+          "game"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptOtcDealBody"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptOtcDealResponse"
                 }
               }
             }

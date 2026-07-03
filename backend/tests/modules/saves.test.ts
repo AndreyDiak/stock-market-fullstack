@@ -297,7 +297,7 @@ describe('Saves module', () => {
     expect(body.nextTurnForecast.lines.length).toBeGreaterThan(0);
   });
 
-  it('GET /saves/:id removes duplicate starter inventory on bootstrap', async () => {
+  it('GET /saves/:id keeps purchased inventory on bootstrap', async () => {
     const user = await createTestUser();
 
     const createResponse = await app.inject({
@@ -340,9 +340,11 @@ describe('Saves module', () => {
       character: { inventoryItems?: Array<{ itemRef: string; name: string }> };
     };
 
-    expect(body.character.inventoryItems).toHaveLength(1);
-    expect(body.character.inventoryItems?.[0]?.itemRef).toBe('garage');
-    expect(body.character.inventoryItems?.[0]?.name).toBe('Гараж');
+    expect(body.character.inventoryItems).toHaveLength(2);
+    expect(body.character.inventoryItems?.map((item) => item.itemRef).sort()).toEqual([
+      'garage',
+      'parking_spot',
+    ]);
   });
 
   it('GET /saves/:id/next-turn-forecast returns salary and installment lines', async () => {

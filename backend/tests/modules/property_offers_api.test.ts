@@ -97,8 +97,9 @@ describe('Property offers API', () => {
     expect(body.character.reputation).toBeGreaterThanOrEqual(1);
     expect(body.character.reputation).toBeLessThanOrEqual(10);
     if (body.success) {
-      expect(body.deal).not.toBeNull();
+      expect(body.deal).toBeNull();
       expect(body.negotiatedPrice).not.toBeNull();
+      expect(body.balance).toBe(body.previousBalance);
     }
   });
 });

@@ -6,7 +6,18 @@ export type GeneratedNewsKind =
   | 'INSIDER'
   | 'RUMOR'
   | 'OTC_DEAL'
-  | 'PROPERTY_OFFER';
+  | 'PROPERTY_OFFER'
+  | 'PROPERTY_DEAL'
+  | 'PROPERTY_INSTALLMENT'
+  | 'STOCK_TRADE';
+
+export const TURN_CYCLE_NEWS_KINDS = [
+  'MARKET',
+  'RUMOR',
+  'INSIDER',
+  'OTC_DEAL',
+  'PROPERTY_OFFER',
+] as const satisfies readonly GeneratedNewsKind[];
 
 export interface NewsContext {
   sector: string;

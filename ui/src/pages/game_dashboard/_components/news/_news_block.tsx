@@ -13,7 +13,7 @@ export function NewsBlock() {
   const { openNewsTab, selectNews } = useDashboardUi()
   const news = useGameStore((state) => state.news)
   const turn = useGameStore((state) => state.turn)
-  const latest = get_latest_news(news, 2, turn)
+  const latest = get_latest_news(news, 5, turn)
   const enteringNewsIds = useGameStore((state) => state.enteringNewsIds)
   const clearEnteringNews = useGameStore((state) => state.clearEnteringNews)
 
@@ -29,8 +29,12 @@ export function NewsBlock() {
       theme={theme}
       fill
       scrollable
-      action={
-        <button type="button" onClick={openNewsTab} className={theme.sidebarLink}>
+      footer={
+        <button
+          type="button"
+          onClick={openNewsTab}
+          className={`w-full text-center text-xs ${theme.secondaryText} transition-opacity hover:opacity-80`}
+        >
           Все новости →
         </button>
       }
@@ -40,16 +44,15 @@ export function NewsBlock() {
           Новостей пока нет. Завершите ход.
         </p>
       ) : (
-        <div className="space-y-2 overflow-x-hidden">
-          <AnimatePresence initial={false} mode="popLayout">
+        <div className="space-y-2.5 overflow-x-hidden">
+          <AnimatePresence initial={false}>
             {latest.map((item, index) => {
               const isEntering = enteringNewsIds.includes(item.id)
 
               return (
                 <motion.div
                   key={item.id}
-                  layout
-                  className="py-0.5"
+                  className="overflow-hidden"
                   initial={isEntering ? 'enter' : false}
                   animate="visible"
                   exit="exit"
@@ -59,7 +62,7 @@ export function NewsBlock() {
                   <NewsCard
                     item={item}
                     theme={theme}
-                    compact
+                    variant="compact"
                     latest={index === 0}
                     turn={turn}
                     onSelect={selectNews}

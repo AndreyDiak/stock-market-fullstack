@@ -4,17 +4,29 @@ import { NewsGenerationService } from '../news/news_generation.service.js';
 import { AppError } from '../../utils/errors.js';
 import { buildOfferParams, formatOfferNewsBody, getAssetName } from './_generator.js';
 import {
-  calcNegotiateTarget,
+  calcNegotiateTargetForOffer,
   calcProposedPrice,
   clampNegotiateAdjustment,
 } from './_negotiate.js';
 import {
+  normalizeNegotiatePercent,
+} from './_negotiate_discount.js';
+import {
   calcDealProfitAmount,
   calcInstallmentSaleBreakdown,
+  calcPaidLoanAmount,
   calcReputationAfterSuccessfulTrade,
+  calcSaleBalanceCredit,
+  hasActiveInstallmentDebt,
+  roundReputation,
+  type PropertyOfferPaymentMode,
 } from './_deal.js';
+import { calcInstallmentTotalOwed } from './_installment_purchase.js';
+import type { PersistedNewsItem } from '../news/types.js';
 import type { PropertyOfferDto } from './_types.js';
-import { calcDownPaymentPercent } from './_profit.js';
+import { calcDownPaymentAmount, calcDownPaymentPercent } from './_profit.js';
+import { calcInstallmentPurchasePlan } from './_installment_purchase.js';
+import type { ProfitGrade } from './_types.js';
 
 type CharacterWithInventory = Character & { inventoryItems: InventoryItem[] };
 
@@ -44,18 +56,46 @@ export class PropertyOffersService {
       expiresInTurns,
       isLocked: bankingLevel < offer.requiredBankingLevel,
       downPaymentPercent: calcDownPaymentPercent(offer.profitGrade as PropertyOfferDto['profitGrade']),
+      pendingNegotiatedPrice: offer.pendingNegotiatedPrice,
+      pendingNegotiatedPercent: offer.pendingNegotiatedPercent,
     };
   }
 
-  async listActive(gameId: string, bankingLevel: number, currentStep: number): Promise<PropertyOfferDto[]> {
+  async listActive(
+    gameId: string,
+    bankingLevel: number,
+    currentStep: number,
+    inventoryItems: InventoryItem[] = [],
+  ): Promise<PropertyOfferDto[]> {
     const offers = await this.#prisma.propertyOffer.findMany({
       where: { gameId, isActive: true },
       orderBy: [{ expiresAtTurn: 'asc' }, { createdAt: 'desc' }],
     });
 
-    return offers
-      .filter((o) => o.expiresAtTurn > currentStep)
-      .map((o) => this.serializeOffer(o, bankingLevel, currentStep));
+    const ownedIds = new Set(inventoryItems.map((item) => item.id));
+    const staleOfferIds: string[] = [];
+
+    const activeOffers = offers.filter((offer) => {
+      if (offer.expiresAtTurn <= currentStep) return false;
+
+      if (offer.type === 'BUY') {
+        if (!offer.inventoryItemId || !ownedIds.has(offer.inventoryItemId)) {
+          staleOfferIds.push(offer.id);
+          return false;
+        }
+      }
+
+      return true;
+    });
+
+    if (staleOfferIds.length > 0) {
+      await this.#prisma.propertyOffer.updateMany({
+        where: { id: { in: staleOfferIds } },
+        data: { isActive: false },
+      });
+    }
+
+    return activeOffers.map((offer) => this.serializeOffer(offer, bankingLevel, currentStep));
   }
 
   async expireOffers(gameId: string, currentStep: number): Promise<void> {
@@ -163,9 +203,40 @@ export class PropertyOffersService {
     gameId: string,
     gameStep: number,
     inventoryItems: InventoryItem[],
-  ): Promise<PropertyOffer | null> {
-    const offers = await this.createOffers(gameId, gameStep, inventoryItems, 1, true);
-    return offers[0] ?? null;
+  ): Promise<{ offer: PropertyOffer; news: PersistedNewsItem } | null> {
+    for (let attempt = 0; attempt < 10; attempt++) {
+      const params = buildOfferParams({ gameId, gameStep, inventoryItems });
+      if (!params) continue;
+
+      const offer = await this.#prisma.propertyOffer.create({
+        data: {
+          gameId: params.gameId,
+          assetId: params.assetId,
+          inventoryItemId: params.inventoryItemId,
+          type: params.type,
+          offerPrice: params.offerPrice,
+          marketPrice: params.marketPrice,
+          profitPercent: params.profitPercent,
+          profitGrade: params.profitGrade,
+          requiredBankingLevel: params.requiredBankingLevel,
+          isHot: params.isHot,
+          expiresInTurns: params.expiresInTurns,
+          expiresAtTurn: params.expiresAtTurn,
+        },
+      });
+
+      const news = await this.#newsService.createPropertyOfferNews({
+        gameId,
+        gameStep,
+        offerId: offer.id,
+        assetId: offer.assetId,
+        body: formatOfferNewsBody(params),
+      });
+
+      return { offer, news };
+    }
+
+    return null;
   }
 
   async accept(
@@ -174,6 +245,7 @@ export class PropertyOffersService {
     offerId: string,
     character: CharacterWithInventory,
     currentStep: number,
+    paymentMode: PropertyOfferPaymentMode = 'installment',
   ): Promise<{
     balance: number;
     previousBalance: number;
@@ -189,8 +261,10 @@ export class PropertyOffersService {
       action: 'purchased' | 'sold';
     };
     character: CharacterWithInventory;
+    news: PersistedNewsItem;
   }> {
     const offer = await this.#loadActiveOffer(gameId, offerId, currentStep);
+    this.#assertSellOfferOwned(offer, character);
 
     if (character.bankingLevel < offer.requiredBankingLevel) {
       throw new AppError(403, 'BANKING_LEVEL_TOO_LOW', 'Banking level too low for this offer');
@@ -208,6 +282,16 @@ export class PropertyOffersService {
       owned && type === 'BUY'
         ? calcInstallmentSaleBreakdown(owned, offer.offerPrice)
         : null;
+
+    if (type === 'SELL') {
+      this.#validatePurchaseFunds(
+        character,
+        offer.offerPrice,
+        offer.profitGrade as ProfitGrade,
+        paymentMode,
+      );
+    }
+
     const { reputation: newReputation, tradeSuccessStreak: newStreak } =
       calcReputationAfterSuccessfulTrade(character.reputation, character.tradeSuccessStreak);
 
@@ -220,7 +304,7 @@ export class PropertyOffersService {
         },
       });
 
-      await this.#executeOfferDeal(tx, offer, character, offer.offerPrice);
+      await this.#executeOfferDeal(tx, offer, character, offer.offerPrice, paymentMode);
       await tx.propertyOffer.update({
         where: { id: offerId },
         data: { isActive: false },
@@ -230,6 +314,17 @@ export class PropertyOffersService {
     const updated = await this.#prisma.character.findUniqueOrThrow({
       where: { id: character.id },
       include: { inventoryItems: { orderBy: { purchasedAt: 'asc' } } },
+    });
+
+    const dealAction = type === 'SELL' ? 'purchased' : 'sold';
+    const news = await this.#newsService.createPropertyDealNews({
+      gameId,
+      gameStep: currentStep,
+      action: dealAction,
+      itemName: getAssetName(offer.assetId),
+      assetId: offer.assetId,
+      price: offer.offerPrice,
+      profitAmount,
     });
 
     return {
@@ -244,9 +339,10 @@ export class PropertyOffersService {
         itemName: getAssetName(offer.assetId),
         type,
         price: offer.offerPrice,
-        action: type === 'SELL' ? 'purchased' : 'sold',
+        action: dealAction,
       },
       character: updated,
+      news,
     };
   }
 
@@ -276,31 +372,40 @@ export class PropertyOffersService {
     previousBalance: number;
     balance: number;
     character: CharacterWithInventory;
+    news: PersistedNewsItem | null;
   }> {
     const offer = await this.#loadActiveOffer(gameId, offerId, currentStep);
+    this.#assertSellOfferOwned(offer, character);
     const previousReputation = character.reputation;
     const previousBalance = character.balance;
     const clampedAdjustment = clampNegotiateAdjustment(adjustmentPercent);
-    const target = calcNegotiateTarget(clampedAdjustment);
+    const effectiveAdjustment = normalizeNegotiatePercent(
+      clampedAdjustment,
+      character.tradingLevel,
+    );
+
+    await this.#prisma.propertyOffer.update({
+      where: { id: offerId },
+      data: {
+        pendingNegotiatedPrice: null,
+        pendingNegotiatedPercent: null,
+      },
+    });
+
+    const target = calcNegotiateTargetForOffer(offer.type as 'BUY' | 'SELL', effectiveAdjustment);
     const d20 = rollDice ? rollDice() : 1 + Math.floor(Math.random() * 20);
     const roll = d20 + Math.floor(character.reputation);
     const success = roll >= target;
 
     if (!success) {
-      const newReputation = Math.max(1, character.reputation - 0.1);
-      await this.#prisma.$transaction([
-        this.#prisma.propertyOffer.update({
-          where: { id: offerId },
-          data: { isActive: false },
-        }),
-        this.#prisma.character.update({
-          where: { id: character.id },
-          data: {
-            reputation: newReputation,
-            tradeSuccessStreak: 0,
-          },
-        }),
-      ]);
+      const newReputation = roundReputation(Math.max(1, character.reputation - 0.1));
+      await this.#prisma.character.update({
+        where: { id: character.id },
+        data: {
+          reputation: newReputation,
+          tradeSuccessStreak: 0,
+        },
+      });
 
       const updated = await this.#prisma.character.findUniqueOrThrow({
         where: { id: character.id },
@@ -319,16 +424,95 @@ export class PropertyOffersService {
         previousBalance,
         balance: updated.balance,
         character: updated,
+        news: null,
       };
     }
 
     const type = offer.type as 'BUY' | 'SELL';
-    const negotiatedPrice = calcProposedPrice(type, offer.offerPrice, clampedAdjustment);
+    const negotiatedPrice = calcProposedPrice(type, offer.offerPrice, effectiveAdjustment);
 
-    if (type === 'SELL' && character.balance < negotiatedPrice) {
-      throw new AppError(400, 'INSUFFICIENT_FUNDS', 'Insufficient balance for negotiated price');
+    await this.#prisma.propertyOffer.update({
+      where: { id: offerId },
+      data: {
+        pendingNegotiatedPrice: negotiatedPrice,
+        pendingNegotiatedPercent: effectiveAdjustment,
+      },
+    });
+
+    return {
+      success: true,
+      d20,
+      roll,
+      target,
+      negotiatedPrice,
+      deal: null,
+      previousReputation,
+      reputation: character.reputation,
+      previousBalance,
+      balance: character.balance,
+      character,
+      news: null,
+    };
+  }
+
+  async acceptNegotiated(
+    _userId: string,
+    gameId: string,
+    offerId: string,
+    character: CharacterWithInventory,
+    currentStep: number,
+    paymentMode: PropertyOfferPaymentMode = 'installment',
+  ): Promise<{
+    balance: number;
+    previousBalance: number;
+    previousReputation: number;
+    reputation: number;
+    profitAmount: number;
+    installmentBreakdown: ReturnType<typeof calcInstallmentSaleBreakdown>;
+    deal: {
+      assetId: string;
+      itemName: string;
+      type: 'BUY' | 'SELL';
+      price: number;
+      action: 'purchased' | 'sold';
+    };
+    character: CharacterWithInventory;
+    news: PersistedNewsItem;
+  }> {
+    const offer = await this.#loadActiveOffer(gameId, offerId, currentStep);
+    this.#assertSellOfferOwned(offer, character);
+
+    if (offer.pendingNegotiatedPrice == null) {
+      throw new AppError(400, 'NO_PENDING_NEGOTIATION', 'Нет согласованной цены для принятия');
     }
 
+    if (character.bankingLevel < offer.requiredBankingLevel) {
+      throw new AppError(403, 'BANKING_LEVEL_TOO_LOW', 'Banking level too low for this offer');
+    }
+
+    const negotiatedPrice = offer.pendingNegotiatedPrice;
+    const previousBalance = character.balance;
+    const previousReputation = character.reputation;
+    const type = offer.type as 'BUY' | 'SELL';
+
+    if (type === 'SELL') {
+      this.#validatePurchaseFunds(
+        character,
+        negotiatedPrice,
+        offer.profitGrade as ProfitGrade,
+        paymentMode,
+      );
+    }
+
+    const profitAmount = calcDealProfitAmount(type, negotiatedPrice, offer.marketPrice);
+    const owned =
+      type === 'BUY' && offer.inventoryItemId
+        ? character.inventoryItems.find((item) => item.id === offer.inventoryItemId)
+        : undefined;
+    const installmentBreakdown =
+      owned && type === 'BUY'
+        ? calcInstallmentSaleBreakdown(owned, negotiatedPrice)
+        : null;
     const { reputation: newReputation, tradeSuccessStreak: newStreak } =
       calcReputationAfterSuccessfulTrade(character.reputation, character.tradeSuccessStreak);
 
@@ -341,10 +525,14 @@ export class PropertyOffersService {
         },
       });
 
-      await this.#executeOfferDeal(tx, offer, character, negotiatedPrice);
+      await this.#executeOfferDeal(tx, offer, character, negotiatedPrice, paymentMode);
       await tx.propertyOffer.update({
         where: { id: offerId },
-        data: { isActive: false },
+        data: {
+          isActive: false,
+          pendingNegotiatedPrice: null,
+          pendingNegotiatedPercent: null,
+        },
       });
     });
 
@@ -353,25 +541,54 @@ export class PropertyOffersService {
       include: { inventoryItems: { orderBy: { purchasedAt: 'asc' } } },
     });
 
+    const dealAction = type === 'SELL' ? 'purchased' : 'sold';
+    const news = await this.#newsService.createPropertyDealNews({
+      gameId,
+      gameStep: currentStep,
+      action: dealAction,
+      itemName: getAssetName(offer.assetId),
+      assetId: offer.assetId,
+      price: negotiatedPrice,
+      profitAmount,
+    });
+
     return {
-      success: true,
-      d20,
-      roll,
-      target,
-      negotiatedPrice,
+      balance: updated.balance,
+      previousBalance,
+      previousReputation,
+      reputation: newReputation,
+      profitAmount,
+      installmentBreakdown,
       deal: {
         assetId: offer.assetId,
         itemName: getAssetName(offer.assetId),
         type,
         price: negotiatedPrice,
-        action: type === 'SELL' ? 'purchased' : 'sold',
+        action: dealAction,
       },
-      previousReputation,
-      reputation: newReputation,
-      previousBalance,
-      balance: updated.balance,
       character: updated,
+      news,
     };
+  }
+
+  async declineNegotiated(
+    gameId: string,
+    offerId: string,
+    currentStep: number,
+  ): Promise<void> {
+    const offer = await this.#loadActiveOffer(gameId, offerId, currentStep);
+
+    if (offer.pendingNegotiatedPrice == null) {
+      return;
+    }
+
+    await this.#prisma.propertyOffer.update({
+      where: { id: offerId },
+      data: {
+        pendingNegotiatedPrice: null,
+        pendingNegotiatedPercent: null,
+      },
+    });
   }
 
   async #executeOfferDeal(
@@ -379,22 +596,58 @@ export class PropertyOffersService {
     offer: PropertyOffer,
     character: CharacterWithInventory,
     price: number,
+    paymentMode: PropertyOfferPaymentMode = 'installment',
   ): Promise<void> {
     if (offer.type === 'SELL') {
-      if (character.balance < price) {
-        throw new AppError(400, 'INSUFFICIENT_FUNDS', 'Insufficient balance');
-      }
-
       const asset = REAL_ESTATE.find((r) => r.id === offer.assetId);
       if (!asset) {
         throw new AppError(404, 'ASSET_NOT_FOUND', 'Asset not found');
       }
 
+      if (paymentMode === 'full') {
+        await tx.character.update({
+          where: { id: character.id },
+          data: {
+            balance: { decrement: price },
+            totalSpent: { increment: price },
+          },
+        });
+
+        await tx.inventoryItem.create({
+          data: {
+            characterId: character.id,
+            itemRef: offer.assetId,
+            name: asset.name,
+            purchasePrice: price,
+            isInstallment: false,
+            monthlyPayment: null,
+            installmentsTotal: null,
+            installmentsPaid: 0,
+            isPaidOff: true,
+            special: asset.special,
+          },
+        });
+
+        return;
+      }
+
+      const downPaymentPercent = calcDownPaymentPercent(offer.profitGrade as ProfitGrade);
+      const plan = calcInstallmentPurchasePlan({
+        purchasePrice: price,
+        downPaymentPercent,
+        installmentsTotal: asset.installmentMonths,
+        bankingLevel: character.bankingLevel,
+      });
+
+      if (character.balance < plan.downPayment) {
+        throw new AppError(400, 'INSUFFICIENT_FUNDS', 'Недостаточно средств для взноса');
+      }
+
       await tx.character.update({
         where: { id: character.id },
         data: {
-          balance: { decrement: price },
-          totalSpent: { increment: price },
+          balance: { decrement: plan.downPayment },
+          totalSpent: { increment: plan.downPayment },
         },
       });
 
@@ -404,8 +657,12 @@ export class PropertyOffersService {
           itemRef: offer.assetId,
           name: asset.name,
           purchasePrice: price,
-          isInstallment: false,
-          isPaidOff: true,
+          downPaymentAmount: plan.downPayment,
+          isInstallment: true,
+          monthlyPayment: plan.monthlyPayment,
+          installmentsTotal: plan.installmentsTotal,
+          installmentsPaid: 0,
+          isPaidOff: false,
           special: asset.special,
         },
       });
@@ -422,15 +679,126 @@ export class PropertyOffersService {
       throw new AppError(404, 'ITEM_NOT_OWNED', 'You do not own this property');
     }
 
+    const balanceCredit = calcSaleBalanceCredit(owned, price);
+
     await tx.character.update({
       where: { id: character.id },
       data: {
-        balance: { increment: price },
-        totalEarned: { increment: price },
+        balance: { increment: balanceCredit },
+        totalEarned: { increment: balanceCredit },
       },
     });
 
     await tx.inventoryItem.delete({ where: { id: offer.inventoryItemId } });
+  }
+
+  #validatePurchaseFunds(
+    character: CharacterWithInventory,
+    price: number,
+    profitGrade: ProfitGrade,
+    paymentMode: PropertyOfferPaymentMode,
+  ): void {
+    if (paymentMode === 'full') {
+      if (character.balance < price) {
+        throw new AppError(400, 'INSUFFICIENT_FUNDS', 'Недостаточно средств для полной оплаты');
+      }
+      return;
+    }
+
+    const downPayment = calcDownPaymentAmount(price, calcDownPaymentPercent(profitGrade));
+    if (character.balance < downPayment) {
+      throw new AppError(400, 'INSUFFICIENT_FUNDS', 'Недостаточно средств для взноса');
+    }
+  }
+
+  #assertSellOfferOwned(offer: PropertyOffer, character: CharacterWithInventory): void {
+    if (offer.type !== 'BUY') return;
+
+    if (!offer.inventoryItemId) {
+      throw new AppError(400, 'INVALID_OFFER', 'BUY offer missing inventory item');
+    }
+
+    const owned = character.inventoryItems.find((item) => item.id === offer.inventoryItemId);
+    if (!owned) {
+      throw new AppError(404, 'ITEM_NOT_OWNED', 'You do not own this property');
+    }
+  }
+
+  async payOffInstallment(userId: string, gameId: string, itemId: string) {
+    const game = await this.#prisma.game.findFirst({
+      where: { id: gameId, userId },
+      include: {
+        character: {
+          include: {
+            inventoryItems: { orderBy: { purchasedAt: 'asc' } },
+          },
+        },
+      },
+    });
+
+    if (!game?.character) {
+      throw new AppError(404, 'GAME_NOT_FOUND', 'Game not found');
+    }
+
+    const item = game.character.inventoryItems.find((entry) => entry.id === itemId);
+    if (!item) {
+      throw new AppError(404, 'ITEM_NOT_FOUND', 'Inventory item not found');
+    }
+
+    if (!hasActiveInstallmentDebt(item)) {
+      throw new AppError(400, 'NO_ACTIVE_DEBT', 'No active installment debt for this property');
+    }
+
+    const remaining = calcInstallmentTotalOwed(item) - calcPaidLoanAmount(item);
+    if (game.character.balance < remaining) {
+      throw new AppError(400, 'INSUFFICIENT_FUNDS', 'Недостаточно средств для досрочного погашения');
+    }
+
+    const previousBalance = game.character.balance;
+    const installmentsTotal = item.installmentsTotal ?? item.installmentsPaid;
+
+    await this.#prisma.$transaction(async (tx) => {
+      await tx.character.update({
+        where: { id: game.character!.id },
+        data: {
+          balance: { decrement: remaining },
+          totalSpent: { increment: remaining },
+        },
+      });
+
+      await tx.inventoryItem.update({
+        where: { id: itemId },
+        data: {
+          isPaidOff: true,
+          installmentsPaid: installmentsTotal,
+        },
+      });
+    });
+
+    const news = await this.#newsService.createPropertyInstallmentNews({
+      gameId,
+      gameStep: game.step,
+      itemRef: item.itemRef,
+      itemName: item.name,
+      amount: remaining,
+      paidOff: true,
+      installmentsPaidAfter: installmentsTotal,
+      installmentsTotal: item.installmentsTotal,
+    });
+
+    const character = await this.#prisma.character.findUniqueOrThrow({
+      where: { id: game.character.id },
+      include: {
+        inventoryItems: { orderBy: { purchasedAt: 'asc' } },
+      },
+    });
+
+    return {
+      balance: character.balance,
+      previousBalance,
+      character,
+      news,
+    };
   }
 
   async #loadActiveOffer(

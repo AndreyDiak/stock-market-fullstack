@@ -3,12 +3,16 @@ import { REAL_ESTATE_CATALOG } from '../../../constants/realEstate'
 import type { CharacterProfile } from '../_components/character'
 import type { PropertyItem, PropertySlot } from '../_components/property'
 import { createEmptyPropertySlots } from '../_components/property'
+import { calcPaidLoanAmount } from '../_components/real_estate/_accept_deal_utils'
+import { calcInstallmentTotalOwed } from '../_components/real_estate/_installment_purchase'
+import { roundReputation } from './utils'
 
 export interface InventoryItemDto {
   id: string
   itemRef: string
   name: string
   purchasePrice: number
+  downPaymentAmount: number | null
   special: string | null
   monthlyPayment: number | null
   installmentsTotal: number | null
@@ -28,18 +32,48 @@ function parsePassiveIncome(special: string | null | undefined) {
   return match ? Number(match[1]) : 0
 }
 
+function calcPaybackPct(item: InventoryItemDto): number {
+  if (item.isPaidOff || !item.isInstallment) {
+    return 100
+  }
+
+  const totalOwed = calcInstallmentTotalOwed(item)
+  const paidTotal = calcPaidLoanAmount(item)
+
+  if (paidTotal >= totalOwed) {
+    return 100
+  }
+
+  if (totalOwed > 0) {
+    return Math.min(100, Math.round((paidTotal / totalOwed) * 100))
+  }
+
+  const installmentsTotal = item.installmentsTotal ?? 0
+  if (installmentsTotal <= 0) return 0
+
+  return Math.round((item.installmentsPaid / installmentsTotal) * 100)
+}
+
+function hasActiveInstallmentDebt(item: InventoryItemDto): boolean {
+  if (!item.isInstallment || item.isPaidOff) return false
+
+  const installmentsTotal = item.installmentsTotal ?? 0
+  if (installmentsTotal > 0 && item.installmentsPaid >= installmentsTotal) {
+    return false
+  }
+
+  return calcPaidLoanAmount(item) < calcInstallmentTotalOwed(item)
+}
+
 function mapPropertyItem(item: InventoryItemDto): PropertyItem {
   const catalog = REAL_ESTATE_CATALOG.find((entry) => entry.id === item.itemRef)
   const special = item.special ?? catalog?.special
-  const installmentsTotal = item.installmentsTotal ?? catalog?.installmentMonths ?? 0
-  const paybackPct =
-    installmentsTotal > 0
-      ? Math.round((item.installmentsPaid / installmentsTotal) * 100)
-      : 0
+  const monthlyPayment = item.monthlyPayment ?? catalog?.monthlyPayment ?? 0
+  const paybackPct = calcPaybackPct(item)
   const isOwned =
     item.isPaidOff ||
     !item.isInstallment ||
-    (installmentsTotal > 0 && item.installmentsPaid >= installmentsTotal)
+    !hasActiveInstallmentDebt(item)
 
   return {
     itemRef: item.itemRef,
@@ -47,7 +81,7 @@ function mapPropertyItem(item: InventoryItemDto): PropertyItem {
     income: parsePassiveIncome(special),
     paybackPct,
     isOwned,
-    monthlyPayment: item.monthlyPayment ?? catalog?.monthlyPayment,
+    monthlyPayment: monthlyPayment || catalog?.monthlyPayment,
   }
 }
 
@@ -77,7 +111,7 @@ export function mapCharacterToProfile(character: GameCharacter): CharacterProfil
     profession: character.profession,
     professionLevel: character.professionLevel,
     salary: character.salary,
-    reputation: character.reputation,
+    reputation: roundReputation(character.reputation),
     tradingLevel: character.tradingLevel,
     dreams: character.dreamItemRefs.map((itemRef) => {
       const catalog = REAL_ESTATE_CATALOG.find((entry) => entry.id === itemRef)

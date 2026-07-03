@@ -1,40 +1,26 @@
 import { NewsGenerationService } from '../../news/news_generation.service.js';
+import {
+  pickNextContentType,
+  type TurnContentType,
+} from '../../news/news_cycle.js';
+import type { GeneratedNewsKind } from '../../news/types.js';
 import { PropertyOffersService } from '../../property_offers/property_offers.service.js';
 import { OtcDealGenerator } from '../_generators/_otc_deal.generator.js';
 import type { TurnContext, TurnPhase, TurnState } from '../_types.js';
 
-export type TurnContentType = 'property' | 'otc' | 'insider' | 'junk';
-
-const CONTENT_WEIGHTS: { type: TurnContentType; weight: number }[] = [
-  { type: 'property', weight: 20 },
-  { type: 'otc', weight: 20 },
-  { type: 'insider', weight: 15 },
-  { type: 'junk', weight: 45 },
-];
-
-function pickContentType(random: () => number = Math.random): TurnContentType {
-  const total = CONTENT_WEIGHTS.reduce((sum, w) => sum + w.weight, 0);
-  let roll = random() * total;
-  for (const entry of CONTENT_WEIGHTS) {
-    roll -= entry.weight;
-    if (roll <= 0) return entry.type;
-  }
-  return 'junk';
-}
-
-/** Единая фаза генерации контента хода: property / OTC / insider / junk */
+/** Фаза генерации контента хода: строгий цикл stock → deal → realty */
 export class TurnContentPhase implements TurnPhase {
   readonly id = 'turn-content';
   readonly #newsService: NewsGenerationService;
   readonly #propertyOffersService: PropertyOffersService;
   readonly #otcGenerator: OtcDealGenerator;
-  readonly #pickContent: () => TurnContentType;
+  readonly #pickContent: (lastKind: GeneratedNewsKind | null) => TurnContentType;
 
   constructor(
     newsService: NewsGenerationService,
     propertyOffersService: PropertyOffersService,
     otcGenerator: OtcDealGenerator,
-    pickContent: () => TurnContentType = () => pickContentType(),
+    pickContent: (lastKind: GeneratedNewsKind | null) => TurnContentType = pickNextContentType,
   ) {
     this.#newsService = newsService;
     this.#propertyOffersService = propertyOffersService;
@@ -43,23 +29,26 @@ export class TurnContentPhase implements TurnPhase {
   }
 
   async execute(context: TurnContext, state: TurnState): Promise<void> {
-    const contentType = this.#pickContent();
+    const lastKind = await this.#newsService.getLatestCycleNewsKind(context.gameId);
+    const contentType = this.#pickContent(lastKind);
 
     switch (contentType) {
       case 'property': {
-        const offer = await this.#propertyOffersService.createWithNews(
+        const result = await this.#propertyOffersService.createWithNews(
           context.gameId,
           context.game.step,
           context.game.character.inventoryItems,
         );
-        if (offer) {
+        if (result) {
           state.propertyOffersCreated = true;
+          state.news.push(result.news);
         } else {
-          const junk = await this.#newsService.generateJunkNews({
+          const stock = await this.#newsService.generateStockNews({
             gameId: context.gameId,
             gameStep: context.game.step,
           });
-          state.news.push(junk);
+          if (stock.insiderRolled) state.insiderRolled = true;
+          state.news.push(stock.news);
         }
         break;
       }
@@ -78,34 +67,26 @@ export class TurnContentPhase implements TurnPhase {
           });
           state.news.push(news);
         } else {
-          const junk = await this.#newsService.generateJunkNews({
+          const stock = await this.#newsService.generateStockNews({
             gameId: context.gameId,
             gameStep: context.game.step,
           });
-          state.news.push(junk);
+          if (stock.insiderRolled) state.insiderRolled = true;
+          state.news.push(stock.news);
         }
         break;
       }
-      case 'insider': {
-        const { news } = await this.#newsService.generateInsiderNews({
-          gameId: context.gameId,
-          gameStep: context.game.step,
-        });
-        state.insiderRolled = true;
-        state.news.push(news);
-        break;
-      }
-      case 'junk':
+      case 'stock':
       default: {
-        const junk = await this.#newsService.generateJunkNews({
+        const stock = await this.#newsService.generateStockNews({
           gameId: context.gameId,
           gameStep: context.game.step,
         });
-        state.news.push(junk);
+        if (stock.insiderRolled) state.insiderRolled = true;
+        state.news.push(stock.news);
         break;
       }
     }
   }
 }
 
-export { pickContentType };

@@ -28,6 +28,8 @@ function PropertyOffersSection({
   const propertyOfferBusy = useGameStore((state) => state.propertyOfferBusy)
   const acceptOffer = useGameStore((state) => state.acceptPropertyOffer)
   const negotiateOffer = useGameStore((state) => state.negotiatePropertyOffer)
+  const acceptNegotiatedOffer = useGameStore((state) => state.acceptNegotiatedPropertyOffer)
+  const declineNegotiatedOffer = useGameStore((state) => state.declineNegotiatedPropertyOffer)
   const highlightRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -37,7 +39,7 @@ function PropertyOffersSection({
   }, [highlightedOfferId, sortedOffers])
 
   return (
-    <section ref={highlightRef} className="px-1 py-2">
+    <section ref={highlightRef} className="px-1 pb-2">
       {sortedOffers.length === 0 ? (
         <motion.div
           className="rounded-2xl border border-dashed border-white/10 bg-slate-800/25 px-6 py-10 text-center"
@@ -53,7 +55,7 @@ function PropertyOffersSection({
         </motion.div>
       ) : (
         <motion.div
-          className="grid grid-cols-1 gap-5 px-1 py-2 min-[720px]:grid-cols-2"
+          className="grid grid-cols-1 gap-5 px-1 pt-1 min-[720px]:grid-cols-2"
           variants={realEstateCardsContainerVariants}
           initial="hidden"
           animate="show"
@@ -68,8 +70,10 @@ function PropertyOffersSection({
                 offer={offer}
                 highlighted={offer.id === highlightedOfferId}
                 busy={propertyOfferBusy}
-                onAccept={(id) => acceptOffer(id)}
+                onAccept={(id, paymentMode) => acceptOffer(id, paymentMode)}
                 onNegotiate={(id, adjustmentPercent) => negotiateOffer(id, adjustmentPercent)}
+                onAcceptNegotiated={(id, paymentMode) => acceptNegotiatedOffer(id, paymentMode)}
+                onDeclineNegotiated={(id) => declineNegotiatedOffer(id)}
               />
             </motion.div>
           ))}
@@ -91,7 +95,7 @@ function RealEstateMarketList() {
       animate="show"
     >
       <motion.header
-        className="mb-5 px-3 pt-2"
+        className="mb-4 px-1"
         variants={realEstateSectionVariants}
         initial="hidden"
         animate="show"
@@ -102,7 +106,7 @@ function RealEstateMarketList() {
         />
       </motion.header>
 
-      <div className={`min-h-0 flex-1 overflow-auto px-2 py-3 pr-1 ${theme.scrollArea}`}>
+      <div className={`min-h-0 flex-1 overflow-auto px-1 pb-2 pr-0.5 ${theme.scrollArea}`}>
         <PropertyOffersSection highlightedOfferId={highlightPropertyOfferId} />
       </div>
     </motion.div>

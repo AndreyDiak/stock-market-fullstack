@@ -5,6 +5,7 @@ interface SidebarSectionProps {
   title: string
   subtitle?: string
   action?: ReactNode
+  footer?: ReactNode
   theme: GameDashboardThemeTokens
   children: ReactNode
   className?: string
@@ -16,6 +17,7 @@ export function SidebarSection({
   title,
   subtitle,
   action,
+  footer,
   theme,
   children,
   className = '',
@@ -42,6 +44,7 @@ export function SidebarSection({
         {action}
       </div>
       {content}
+      {footer ? <div className="mt-2 shrink-0">{footer}</div> : null}
     </section>
   )
 }

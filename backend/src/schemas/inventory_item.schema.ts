@@ -6,6 +6,7 @@ export const inventoryItemSchema = z.object({
   itemRef: z.string(),
   name: z.string(),
   purchasePrice: z.number(),
+  downPaymentAmount: z.number().nullable(),
   isInstallment: z.boolean(),
   monthlyPayment: z.number().nullable(),
   installmentsTotal: z.number().int().nullable(),

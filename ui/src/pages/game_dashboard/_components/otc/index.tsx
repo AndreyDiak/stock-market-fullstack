@@ -5,6 +5,7 @@ import { BotDealCard } from './_bot_deal_card'
 export function OtcDealsPanel() {
   const theme = useDashboardTheme()
   const deals = useGameStore((state) => state.otcDeals)
+  const acceptOtcDeal = useGameStore((state) => state.acceptOtcDeal)
   const removeOtcDeal = useGameStore((state) => state.removeOtcDeal)
 
   return (
@@ -41,7 +42,10 @@ export function OtcDealsPanel() {
             <BotDealCard
               key={deal.id}
               deal={deal}
-              onAccept={removeOtcDeal}
+              onAccept={(id) => {
+                const target = deals.find((entry) => entry.id === id)
+                if (target) void acceptOtcDeal(target)
+              }}
               onDecline={removeOtcDeal}
             />
           ))

@@ -26,7 +26,7 @@ export function NewGameAtmosphere() {
       {tickers.map((ticker) => (
         <div
           key={ticker.label}
-          className="new-game-ticker absolute left-0 w-[200%] whitespace-nowrap font-mono text-[11px] tracking-widest text-emerald-400/20"
+          className="new-game-ticker absolute left-0 w-[200%] whitespace-nowrap font-mono text-[11px] tracking-widest text-emerald-400/12"
           style={{
             top: ticker.y,
             animationDuration: ticker.duration,
@@ -37,7 +37,7 @@ export function NewGameAtmosphere() {
             <span key={i} className="mx-8 inline-block">
               {ticker.label}
               <span className="mx-3 text-emerald-300/10">|</span>
-              <span className="text-cyan-400/15">▁▂▃▅▇▅▃▂</span>
+              <span className="text-cyan-400/9">▁▂▃▅▇▅▃▂</span>
             </span>
           ))}
         </div>

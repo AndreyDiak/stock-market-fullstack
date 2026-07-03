@@ -63,6 +63,19 @@ button:hover {
   }
 }
 
+.new-game-ticker {
+  animation-name: new-game-ticker-scroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .new-game-ticker {
+    animation: none;
+  }
+}
+
 @keyframes balance-coin-in {
   0% {
     opacity: 0;

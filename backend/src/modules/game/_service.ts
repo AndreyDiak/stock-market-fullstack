@@ -1,6 +1,7 @@
 import type { PrismaClient } from '@prisma/client';
 import { NewsGenerationService } from '../news/news_generation.service.js';
 import { PropertyOffersService } from '../property_offers/property_offers.service.js';
+import { OtcDealsService } from '../otc_deals/otc_deals.service.js';
 import { AppError } from '../../utils/errors.js';
 import { CharacterSkillsService } from '../character_skills/character_skills.service.js';
 import { serializeCharacter, serializeGame } from '../saves/game_serializer.js';
@@ -22,6 +23,7 @@ const EMPTY_PASSIVE_INCOME: EndTurnResult['passiveIncome'] = {
   livingExpense: 0,
   livingExpenseReceipts: [],
   installmentTotal: 0,
+  installmentPayments: [],
   passiveIncome: 0,
   itemsPaidOff: [],
   netChange: 0,
@@ -31,6 +33,7 @@ export class GameService {
   readonly #pipeline: GamePipeline;
   readonly #newsService: NewsGenerationService;
   readonly #propertyOffersService: PropertyOffersService;
+  readonly #otcDealsService: OtcDealsService;
   readonly #passiveIncomeService: PassiveIncomeService;
   readonly #savesService: SavesService;
   readonly #characterSkillsService: CharacterSkillsService;
@@ -41,6 +44,7 @@ export class GameService {
     this.#pipeline = createGamePipeline(prisma);
     this.#newsService = new NewsGenerationService(prisma);
     this.#propertyOffersService = new PropertyOffersService(prisma);
+    this.#otcDealsService = new OtcDealsService(prisma);
     this.#passiveIncomeService = new PassiveIncomeService(prisma);
     this.#savesService = new SavesService(prisma);
     this.#characterSkillsService = new CharacterSkillsService(prisma);
@@ -97,6 +101,7 @@ export class GameService {
       saveId,
       character.bankingLevel,
       context.game.step,
+      character.inventoryItems,
     );
 
     return {
@@ -115,7 +120,12 @@ export class GameService {
     };
   }
 
-  async acceptPropertyOffer(userId: string, saveId: string, offerId: string) {
+  async acceptPropertyOffer(
+    userId: string,
+    saveId: string,
+    offerId: string,
+    paymentMode: import('../property_offers/_deal.js').PropertyOfferPaymentMode = 'installment',
+  ) {
     const game = await this.#loadGame(userId, saveId);
     const result = await this.#propertyOffersService.accept(
       userId,
@@ -123,12 +133,14 @@ export class GameService {
       offerId,
       game.character,
       game.step,
+      paymentMode,
     );
 
     const propertyOffers = await this.#propertyOffersService.listActive(
       saveId,
       result.character.bankingLevel,
       game.step,
+      result.character.inventoryItems,
     );
 
     return {
@@ -141,6 +153,32 @@ export class GameService {
       deal: result.deal,
       character: serializeCharacter(result.character),
       propertyOffers,
+      news: result.news,
+      nextTurnForecast: this.#passiveIncomeService.buildForecast(
+        result.character,
+        game.step,
+        saveId,
+      ),
+    };
+  }
+
+  async acceptOtcDeal(
+    userId: string,
+    saveId: string,
+    deal: import('../news/types.js').GeneratedOtcDeal,
+  ) {
+    const game = await this.#loadGame(userId, saveId);
+    const result = await this.#otcDealsService.accept(
+      saveId,
+      game.step,
+      game.character,
+      deal,
+    );
+
+    return {
+      balance: result.balance,
+      character: serializeCharacter(result.character),
+      news: result.news,
     };
   }
 
@@ -164,6 +202,7 @@ export class GameService {
       saveId,
       result.character.bankingLevel,
       game.step,
+      result.character.inventoryItems,
     );
 
     return {
@@ -179,7 +218,64 @@ export class GameService {
       balance: result.balance,
       propertyOffers,
       character: serializeCharacter(result.character),
+      news: result.news,
     };
+  }
+
+  async acceptNegotiatedPropertyOffer(
+    userId: string,
+    saveId: string,
+    offerId: string,
+    paymentMode: import('../property_offers/_deal.js').PropertyOfferPaymentMode = 'installment',
+  ) {
+    const game = await this.#loadGame(userId, saveId);
+    const result = await this.#propertyOffersService.acceptNegotiated(
+      userId,
+      saveId,
+      offerId,
+      game.character,
+      game.step,
+      paymentMode,
+    );
+
+    const propertyOffers = await this.#propertyOffersService.listActive(
+      saveId,
+      result.character.bankingLevel,
+      game.step,
+      result.character.inventoryItems,
+    );
+
+    return {
+      balance: result.balance,
+      previousBalance: result.previousBalance,
+      previousReputation: result.previousReputation,
+      reputation: result.reputation,
+      profitAmount: result.profitAmount,
+      installmentBreakdown: result.installmentBreakdown,
+      deal: result.deal,
+      character: serializeCharacter(result.character),
+      propertyOffers,
+      news: result.news,
+      nextTurnForecast: this.#passiveIncomeService.buildForecast(
+        result.character,
+        game.step,
+        saveId,
+      ),
+    };
+  }
+
+  async declineNegotiatedPropertyOffer(userId: string, saveId: string, offerId: string) {
+    const game = await this.#loadGame(userId, saveId);
+    await this.#propertyOffersService.declineNegotiated(saveId, offerId, game.step);
+
+    const propertyOffers = await this.#propertyOffersService.listActive(
+      saveId,
+      game.character.bankingLevel,
+      game.step,
+      game.character.inventoryItems,
+    );
+
+    return { propertyOffers };
   }
 
   async #buildCurrentTurnSnapshot(
@@ -191,6 +287,7 @@ export class GameService {
       saveId,
       game.character.bankingLevel,
       game.step,
+      game.character.inventoryItems,
     );
 
     return {
@@ -219,30 +316,60 @@ export class GameService {
 
   async getNextTurnForecast(userId: string, saveId: string) {
     const game = await this.#loadGame(userId, saveId);
-    return this.#passiveIncomeService.buildForecast(game.character, game.step, game.id);
+    const inventoryItems = await this.#passiveIncomeService.reconcilePaidOffInstallments(
+      game.character.inventoryItems,
+    );
+
+    return this.#passiveIncomeService.buildForecast(
+      { ...game.character, inventoryItems },
+      game.step,
+      game.id,
+    );
   }
 
   async getDashboard(userId: string, saveId: string) {
     const game = await this.#loadGame(userId, saveId);
     const bootstrapped = await this.#savesService.ensureGameBootstrap(game);
+    const inventoryItems = await this.#passiveIncomeService.reconcilePaidOffInstallments(
+      bootstrapped.character.inventoryItems,
+    );
+    const character = { ...bootstrapped.character, inventoryItems };
     const news = await this.#newsService.listGameNews(saveId);
     const nextTurnForecast = this.#passiveIncomeService.buildForecast(
-      bootstrapped.character,
+      character,
       bootstrapped.step,
       bootstrapped.id,
     );
     const propertyOffers = await this.#propertyOffersService.listActive(
       saveId,
-      bootstrapped.character.bankingLevel,
+      character.bankingLevel,
       bootstrapped.step,
+      inventoryItems,
     );
 
     return {
-      game: serializeGame(bootstrapped),
+      game: serializeGame({ ...bootstrapped, character }),
       news,
       nextTurnForecast,
-      characterSkills: this.#characterSkillsService.buildState(bootstrapped.character),
+      characterSkills: this.#characterSkillsService.buildState(character),
       propertyOffers,
+    };
+  }
+
+  async payOffInstallment(userId: string, saveId: string, itemId: string) {
+    const game = await this.#loadGame(userId, saveId);
+    const result = await this.#propertyOffersService.payOffInstallment(userId, saveId, itemId);
+
+    return {
+      balance: result.balance,
+      previousBalance: result.previousBalance,
+      character: serializeCharacter(result.character),
+      news: result.news,
+      nextTurnForecast: this.#passiveIncomeService.buildForecast(
+        result.character,
+        game.step,
+        saveId,
+      ),
     };
   }
 

@@ -1,6 +1,7 @@
 import { NPCS } from '@/assets/npcs.js';
 import { REAL_ESTATE } from '@/assets/real_estate.js';
 import { NewsGenerationService } from '@/modules/news/news_generation.service.js';
+import { buildInstallmentInventoryFields } from '@/modules/property_offers/_installment_purchase.js';
 import { PropertyOffersService } from '@/modules/property_offers/property_offers.service.js';
 import { AppError } from '@/utils/errors.js';
 import type { Character, Game, InventoryItem, PrismaClient } from '@prisma/client';
@@ -119,12 +120,6 @@ export class SavesService {
 
   async ensureGameBootstrap(game: GameWithCharacter): Promise<GameWithCharacter> {
     const character = game.character;
-    let needsReload = false;
-
-    const inventoryChanged = await this.#syncStarterInventory(character);
-    if (inventoryChanged) {
-      needsReload = true;
-    }
 
     const welcomeCount = await this.#prisma.news.count({
       where: { gameId: game.id, kind: 'WELCOME' },
@@ -138,11 +133,7 @@ export class SavesService {
       );
     }
 
-    if (!needsReload) {
-      return game;
-    }
-
-    return this.#loadSaveForUser(game.userId, game.id);
+    return game;
   }
 
   async #loadSaveForUser(userId: string, saveId: string): Promise<GameWithCharacter> {
@@ -182,62 +173,27 @@ export class SavesService {
     return { success: true };
   }
 
-  async #syncStarterInventory(character: Character & { inventoryItems: InventoryItem[] }) {
-    const starter = NPCS.find((entry) => entry.profession === character.profession)?.items[0];
-    if (!starter) return false;
-
-    const template = REAL_ESTATE.find((entry) => entry.id === starter.itemRef);
-    if (!template) return false;
-
-    if (character.inventoryItems.length === 0) {
-      await this.#prisma.inventoryItem.create({
-        data: this.#starterInventoryData(starter, template, character.id),
-      });
-      return true;
-    }
-
-    if (character.inventoryItems.length === 1) {
-      return false;
-    }
-
-    const keeper =
-      character.inventoryItems.find((item) => item.itemRef === starter.itemRef) ??
-      character.inventoryItems[0]!;
-
-    await this.#prisma.inventoryItem.deleteMany({
-      where: {
-        characterId: character.id,
-        id: { not: keeper.id },
-      },
-    });
-
-    return true;
-  }
-
   #starterInventoryFields(
     starter: { itemRef: string; installmentsPaid: number },
     template: (typeof REAL_ESTATE)[number],
   ) {
+    const installment = buildInstallmentInventoryFields({
+      purchasePrice: template.basePrice,
+      installmentsTotal: template.installmentMonths,
+      installmentsPaid: starter.installmentsPaid,
+      bankingLevel: 1,
+    });
+
     return {
       itemRef: starter.itemRef,
       name: template.name,
       purchasePrice: template.basePrice,
       isInstallment: true,
-      monthlyPayment: template.monthlyPayment,
-      installmentsTotal: template.installmentMonths,
-      installmentsPaid: starter.installmentsPaid,
+      downPaymentAmount: installment.downPaymentAmount,
+      monthlyPayment: installment.monthlyPayment,
+      installmentsTotal: installment.installmentsTotal,
+      installmentsPaid: installment.installmentsPaid,
       special: template.special,
-    };
-  }
-
-  #starterInventoryData(
-    starter: { itemRef: string; installmentsPaid: number },
-    template: (typeof REAL_ESTATE)[number],
-    characterId: string,
-  ) {
-    return {
-      characterId,
-      ...this.#starterInventoryFields(starter, template),
     };
   }
 }

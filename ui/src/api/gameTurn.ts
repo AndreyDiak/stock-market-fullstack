@@ -7,7 +7,7 @@ import type { Game } from './types';
 
 export interface GeneratedNewsItem {
   id: string;
-  kind: 'WELCOME' | 'MARKET' | 'INSIDER' | 'RUMOR' | 'OTC_DEAL' | 'PROPERTY_OFFER';
+  kind: 'WELCOME' | 'MARKET' | 'INSIDER' | 'RUMOR' | 'OTC_DEAL' | 'PROPERTY_OFFER' | 'PROPERTY_DEAL' | 'PROPERTY_INSTALLMENT' | 'STOCK_TRADE';
   title: string;
   body: string;
   excerpt: string;

@@ -53,13 +53,13 @@ export function CharacterProfilePanel() {
 
   return (
     <motion.div
-      className="flex min-h-0 flex-1 flex-col overflow-hidden"
+      className="flex h-full min-h-0 flex-col"
       variants={characterPanelVariants}
       initial="hidden"
       animate="show"
     >
       <motion.header
-        className="mb-5 px-3 pt-2"
+        className="mb-4 px-1"
         variants={characterSectionVariants}
         initial="hidden"
         animate="show"
@@ -71,29 +71,24 @@ export function CharacterProfilePanel() {
       </motion.header>
 
       <div
-        className={`min-h-0 flex-1 space-y-6 overflow-x-hidden overflow-y-auto px-1 pb-1 pr-0.5 ${theme.scrollArea}`}
+        className={`min-h-0 flex-1 space-y-5 overflow-x-hidden overflow-y-auto px-1 pb-2 pr-0.5 ${theme.scrollArea}`}
       >
         <motion.div
-          className="grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)] lg:items-stretch"
+          className="grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]"
           variants={characterPanelVariants}
           initial="hidden"
           animate="show"
         >
-          <motion.div className="h-full" variants={characterSectionVariants}>
-            <ProfileInfoCard profile={profile} stats={stats} className="h-full" />
+          <motion.div variants={characterSectionVariants}>
+            <ProfileInfoCard profile={profile} stats={stats} />
           </motion.div>
-          <motion.div className="h-full" variants={characterSectionVariants}>
-            <ProfileWorkCard baseSalary={profile.salary} stats={stats} className="h-full" />
+          <motion.div variants={characterSectionVariants}>
+            <ProfileWorkCard baseSalary={profile.salary} stats={stats} />
           </motion.div>
         </motion.div>
 
-        <motion.section
-          className="mt-6"
-          variants={characterSectionVariants}
-          initial="hidden"
-          animate="show"
-        >
-          <div className="mb-4">
+        <motion.section variants={characterSectionVariants} initial="hidden" animate="show">
+          <div className="mb-3">
             <PanelSectionHeading
               title="Навыки"
               subtitle="Прокачивайте персонажа и становитесь сильнее"

@@ -2,9 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import type { Game } from '../../api/types'
 import { GameShell } from '../../components/game_ui/game_shell'
-import { useGameStore } from '../../stores/game.store'
+import { useGameBackgroundMusic } from '../../hooks/use_game_background_music'
 import { useGameSettingsStore } from '../../stores/game_settings.store'
+import { useGameStore } from '../../stores/game.store'
 import { BackgroundEffects } from './_components/layout/_background_effects'
+import './_components/shared/_dashboard_tokens.css'
 import { CenterPanel } from './_components/layout'
 import { Header } from './_components/layout/_header'
 import { LeftSidebar } from './_components/layout/_left_sidebar'
@@ -22,7 +24,7 @@ export function GameDashboardPage() {
   const gameId = searchParams.get('id')
   const initialGame = (location.state as { initialGame?: Game } | null)?.initialGame
 
-  const { dynamicBackground, colorTheme } = useGameSettingsStore()
+  const { dynamicBackground, colorTheme, sidebarCollapsed } = useGameSettingsStore()
   const loading = useGameStore((state) => state.loading)
   const init = useGameStore((state) => state.init)
   const reset = useGameStore((state) => state.reset)
@@ -64,6 +66,8 @@ export function GameDashboardPage() {
 
   const closeNews = useCallback(() => setSelectedNews(null), [])
 
+  useGameBackgroundMusic(!loading)
+
   return (
     <DashboardUiProvider value={dashboardUi}>
       <GameShell
@@ -77,16 +81,26 @@ export function GameDashboardPage() {
             <p className={`text-sm ${dashboardTheme.secondaryText}`}>Загрузка игры...</p>
           </div>
         ) : (
-          <div className="relative mx-auto flex h-full max-w-[100rem] flex-col gap-4 overflow-hidden p-3 md:p-4">
+          <div
+            className={`dashboard-root relative mx-auto flex h-full max-w-[100rem] flex-col gap-4 overflow-hidden p-3 md:p-4${
+              sidebarCollapsed ? ' dashboard-root--sidebar-collapsed' : ''
+            }`}
+          >
             {dynamicBackground && <BackgroundEffects />}
 
-            <div className="relative z-10 flex h-full min-h-0 flex-col gap-4">
+            <div className="relative z-10 flex min-h-0 flex-1 flex-col gap-4">
               <Header />
 
-              <div className="flex min-h-0 flex-1 flex-col gap-4 lg:flex-row lg:items-stretch">
-                <LeftSidebar />
-                <CenterPanel />
-                <RightPanel />
+              <div className="dashboard min-h-0 flex-1">
+                <div className="dashboard__sidebar dashboard-column-scrim flex h-full min-h-0 flex-col">
+                  <LeftSidebar />
+                </div>
+                <div className="dashboard__center dashboard-column-scrim">
+                  <CenterPanel />
+                </div>
+                <div className="dashboard__right dashboard-column-scrim">
+                  <RightPanel />
+                </div>
               </div>
             </div>
           </div>

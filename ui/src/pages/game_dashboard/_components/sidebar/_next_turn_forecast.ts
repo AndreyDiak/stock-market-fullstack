@@ -17,6 +17,13 @@ export interface NextTurnForecast {
   netChange: number
 }
 
+export const EMPTY_NEXT_TURN_FORECAST: NextTurnForecast = {
+  lines: [],
+  incomeTotal: 0,
+  expenseTotal: 0,
+  netChange: 0,
+}
+
 function isSalaryTurn(step: number): boolean {
   return step > 0 && step % SALARY_CYCLE_TURNS === 0
 }
@@ -42,9 +49,21 @@ function summarizeForecast(lines: TurnCashflowLine[]): NextTurnForecast {
 }
 
 export function appendLoanToForecast(
-  forecast: NextTurnForecast,
+  forecast: NextTurnForecast | undefined,
   loanPaymentPerTurn: number,
 ): NextTurnForecast {
+  if (!forecast) {
+    return loanPaymentPerTurn > 0
+      ? summarizeForecast([
+          {
+            id: 'loan-payments',
+            label: 'Платежи по кредитам',
+            amount: -loanPaymentPerTurn,
+          },
+        ])
+      : EMPTY_NEXT_TURN_FORECAST
+  }
+
   if (loanPaymentPerTurn <= 0) return forecast
 
   const lines = [
@@ -100,7 +119,7 @@ export function buildNextTurnForecast(input: {
   }
 
   for (const slot of input.propertySlots) {
-    if (!slot.item) continue
+    if (!slot.item || slot.item.isOwned) continue
     const payment = slot.item.monthlyPayment ?? catalogPayment(slot.item.itemRef)
     if (payment <= 0) continue
 
@@ -111,14 +130,25 @@ export function buildNextTurnForecast(input: {
     })
   }
 
-  const loanPayment = input.loanPaymentPerTurn ?? 0
-  if (loanPayment > 0) {
-    lines.push({
-      id: 'loan-payments',
-      label: 'Платежи по кредитам',
-      amount: -loanPayment,
-    })
-  }
-
   return summarizeForecast(lines)
+}
+
+export function resolveNextTurnForecast(
+  input: {
+    step: number
+    salary: number
+    propertySlots: PropertySlot[]
+    loanPaymentPerTurn: number
+  },
+  apiForecast?: NextTurnForecast,
+): NextTurnForecast {
+  const base =
+    apiForecast ??
+    buildNextTurnForecast({
+      step: input.step,
+      salary: input.salary,
+      propertySlots: input.propertySlots,
+    })
+
+  return appendLoanToForecast(base, input.loanPaymentPerTurn)
 }

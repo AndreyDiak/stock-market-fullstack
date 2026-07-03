@@ -1,4 +1,5 @@
 import type { Character } from '@prisma/client';
+import { getMaxNegotiateDiscountPercent } from '../property_offers/_negotiate_discount.js';
 import { TRADING_GRADES } from './_definitions.js';
 
 export function getSkillUpgradeTier(_skillId: string, level: number) {
@@ -182,16 +183,18 @@ export function buildSkillUpgradePreview(
         toTone: 'amber',
       });
       benefits.push({
+        id: 'property-bargain',
+        kind: 'compare',
+        label: 'Торг',
+        from: `${getMaxNegotiateDiscountPercent(level)}%`,
+        to: `${getMaxNegotiateDiscountPercent(nextLevel)}%`,
+        toTone: 'emerald',
+      });
+      benefits.push({
         id: 'stocks',
         kind: 'text',
         label: '',
         text: 'Доступ к более дорогим акциям',
-      });
-      benefits.push({
-        id: 'deals',
-        kind: 'text',
-        label: '',
-        text: 'Выше шанс успешной сделки',
       });
       break;
     }
@@ -273,6 +276,12 @@ export function buildSkillCurrentInfographic(
           value: getTradingGrade(level),
           tone: 'amber',
         },
+        {
+          id: 'property-bargain',
+          label: 'Торг',
+          value: `${getMaxNegotiateDiscountPercent(level)}%`,
+          tone: 'emerald',
+        },
       ];
     default:
       return [];
@@ -301,7 +310,10 @@ export function getSkillLevelTooltip(
       const grade = getTradingGrade(tradingLevel);
       return {
         title: `Грейд ${grade}`,
-        lines: [`Доступные акции: ${grade}`, 'Выше шанс успешной сделки'],
+        lines: [
+          `Доступные акции: ${grade}`,
+          `Макс. скидка при торге: ${getMaxNegotiateDiscountPercent(tradingLevel)}%`,
+        ],
       };
     }
     case 'qualification': {

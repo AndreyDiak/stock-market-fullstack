@@ -5,7 +5,8 @@ import { saveIdParamSchema } from '../saves/saves.schema.js';
 import { endTurnBodySchema } from '../../schemas/turn.schema.js';
 import { GameService } from './_service.js';
 import { upgradeSkillParamsSchema } from '../../schemas/character_skills.schema.js';
-import { negotiatePropertyOfferBodySchema } from '../../schemas/property_offer.schema.js';
+import { negotiatePropertyOfferBodySchema, acceptPropertyOfferBodySchema } from '../../schemas/property_offer.schema.js';
+import { acceptOtcDealBodySchema } from '../../schemas/otc_deal.schema.js';
 
 export async function gameRoutes(fastify: FastifyInstance) {
   const gameService = new GameService(fastify.prisma);
@@ -108,6 +109,7 @@ export async function gameRoutes(fastify: FastifyInstance) {
             offerId: { type: 'string', format: 'uuid' },
           },
         },
+        body: { $ref: 'AcceptPropertyOfferBody#' },
         response: {
           200: { $ref: 'AcceptPropertyOfferResponse#' },
           ...errorResponses,
@@ -116,7 +118,8 @@ export async function gameRoutes(fastify: FastifyInstance) {
     },
     async (request) => {
       const { id, offerId } = request.params as { id: string; offerId: string };
-      return gameService.acceptPropertyOffer(request.user.sub, id, offerId);
+      const { paymentMode } = acceptPropertyOfferBodySchema.parse(request.body ?? {});
+      return gameService.acceptPropertyOffer(request.user.sub, id, offerId, paymentMode);
     },
   );
 
@@ -146,6 +149,102 @@ export async function gameRoutes(fastify: FastifyInstance) {
       const { id, offerId } = request.params as { id: string; offerId: string };
       const { adjustmentPercent } = negotiatePropertyOfferBodySchema.parse(request.body);
       return gameService.negotiatePropertyOffer(request.user.sub, id, offerId, adjustmentPercent);
+    },
+  );
+
+  fastify.post(
+    '/saves/:id/property-offers/:offerId/negotiate/accept',
+    {
+      preHandler: authenticate,
+      schema: {
+        tags: ['game'],
+        security: [{ bearerAuth: [] }],
+        params: {
+          type: 'object',
+          required: ['id', 'offerId'],
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            offerId: { type: 'string', format: 'uuid' },
+          },
+        },
+        body: { $ref: 'AcceptPropertyOfferBody#' },
+        response: {
+          200: { $ref: 'AcceptPropertyOfferResponse#' },
+          ...errorResponses,
+        },
+      },
+    },
+    async (request) => {
+      const { id, offerId } = request.params as { id: string; offerId: string };
+      const { paymentMode } = acceptPropertyOfferBodySchema.parse(request.body ?? {});
+      return gameService.acceptNegotiatedPropertyOffer(
+        request.user.sub,
+        id,
+        offerId,
+        paymentMode,
+      );
+    },
+  );
+
+  fastify.post(
+    '/saves/:id/property-offers/:offerId/negotiate/decline',
+    {
+      preHandler: authenticate,
+      schema: {
+        tags: ['game'],
+        security: [{ bearerAuth: [] }],
+        params: {
+          type: 'object',
+          required: ['id', 'offerId'],
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            offerId: { type: 'string', format: 'uuid' },
+          },
+        },
+        response: {
+          200: {
+            type: 'object',
+            required: ['propertyOffers'],
+            properties: {
+              propertyOffers: {
+                type: 'array',
+                items: { $ref: 'PropertyOffer#' },
+              },
+            },
+          },
+          ...errorResponses,
+        },
+      },
+    },
+    async (request) => {
+      const { id, offerId } = request.params as { id: string; offerId: string };
+      return gameService.declineNegotiatedPropertyOffer(request.user.sub, id, offerId);
+    },
+  );
+
+  fastify.post(
+    '/saves/:id/otc-deals/accept',
+    {
+      preHandler: authenticate,
+      schema: {
+        tags: ['game'],
+        security: [{ bearerAuth: [] }],
+        params: {
+          type: 'object',
+          required: ['id'],
+          properties: { id: { type: 'string', format: 'uuid' } },
+        },
+        body: { $ref: 'AcceptOtcDealBody#' },
+        response: {
+          200: { $ref: 'AcceptOtcDealResponse#' },
+          ...errorResponses,
+        },
+      },
+    },
+    async (request) => {
+      const { id } = saveIdParamSchema.parse(request.params);
+      const { deal } = acceptOtcDealBodySchema.parse(request.body);
+      return gameService.acceptOtcDeal(request.user.sub, id, deal);
     },
   );
 
@@ -194,6 +293,33 @@ export async function gameRoutes(fastify: FastifyInstance) {
     async (request) => {
       const { id } = saveIdParamSchema.parse(request.params);
       return gameService.getNextTurnForecast(request.user.sub, id);
+    },
+  );
+
+  fastify.post(
+    '/saves/:id/inventory/:itemId/pay-off-installment',
+    {
+      preHandler: authenticate,
+      schema: {
+        tags: ['game'],
+        security: [{ bearerAuth: [] }],
+        params: {
+          type: 'object',
+          required: ['id', 'itemId'],
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            itemId: { type: 'string', format: 'uuid' },
+          },
+        },
+        response: {
+          200: { $ref: 'PayOffInstallmentResponse#' },
+          ...errorResponses,
+        },
+      },
+    },
+    async (request) => {
+      const { id, itemId } = request.params as { id: string; itemId: string };
+      return gameService.payOffInstallment(request.user.sub, id, itemId);
     },
   );
 }

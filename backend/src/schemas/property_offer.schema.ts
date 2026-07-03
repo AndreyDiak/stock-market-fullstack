@@ -1,5 +1,7 @@
 import { z } from 'zod';
+import { generatedNewsItemSchema } from './news.schema.js';
 import { characterSchema } from './character.schema.js';
+import { nextTurnForecastResponseSchema } from './forecast.schema.js';
 
 export const propertyOfferTypeSchema = z.enum(['BUY', 'SELL']);
 export const profitGradeSchema = z.enum(['F', 'E', 'D', 'C', 'B', 'A']);
@@ -19,10 +21,21 @@ export const propertyOfferSchema = z.object({
   expiresInTurns: z.number().int(),
   isLocked: z.boolean(),
   downPaymentPercent: z.number(),
+  pendingNegotiatedPrice: z.number().nullable(),
+  pendingNegotiatedPercent: z.number().int().nullable(),
 });
 
 export const negotiatePropertyOfferBodySchema = z.object({
-  adjustmentPercent: z.number().min(-15).max(45),
+  adjustmentPercent: z.coerce
+    .number()
+    .finite()
+    .transform((value) => Math.round(value)),
+});
+
+export const propertyOfferPaymentModeSchema = z.enum(['full', 'installment']);
+
+export const acceptPropertyOfferBodySchema = z.object({
+  paymentMode: propertyOfferPaymentModeSchema.optional().default('installment'),
 });
 
 export const negotiateDealSchema = z.object({
@@ -46,12 +59,15 @@ export const negotiatePropertyOfferResponseSchema = z.object({
   balance: z.number(),
   propertyOffers: z.array(propertyOfferSchema),
   character: characterSchema,
+  news: generatedNewsItemSchema.nullable(),
 });
 
 export const installmentSaleBreakdownSchema = z.object({
   paidTotal: z.number(),
   remainingTotal: z.number(),
   saleProceeds: z.number(),
+  purchasePrice: z.number(),
+  priceDelta: z.number(),
   netProfit: z.number(),
 });
 
@@ -65,6 +81,8 @@ export const acceptPropertyOfferResponseSchema = z.object({
   deal: negotiateDealSchema,
   character: characterSchema,
   propertyOffers: z.array(propertyOfferSchema),
+  news: generatedNewsItemSchema,
+  nextTurnForecast: nextTurnForecastResponseSchema,
 });
 
 export type PropertyOfferDto = z.infer<typeof propertyOfferSchema>;

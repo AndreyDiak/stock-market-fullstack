@@ -12,6 +12,14 @@ export const PROFIT_GRADE_RANGES: Record<
   A: { min: 50, max: 100, banking: 6 },
 };
 
+const PROFIT_GRADES_BY_BANKING: profit_grade[] = ['F', 'E', 'D', 'C', 'B', 'A'];
+
+export function bankingLevelToProfitGrade(bankingLevel: number): profit_grade {
+  return PROFIT_GRADES_BY_BANKING[
+    Math.max(0, Math.min(bankingLevel - 1, PROFIT_GRADES_BY_BANKING.length - 1))
+  ] ?? 'F';
+}
+
 export function getProfitGradeTooltip(grade: profit_grade) {
   const range = PROFIT_GRADE_RANGES[grade];
 
@@ -70,6 +78,11 @@ export function formatGradeRequiredLabel(grade: profit_grade) {
   return `Доступно от ${grade} категории`;
 }
 
+export function formatBankingRequiredLabel(requiredBankingLevel: number) {
+  const grade = bankingLevelToProfitGrade(requiredBankingLevel);
+  return `Нужен уровень банковского дела ${grade}`;
+}
+
 export type AssetDealType = 'buy' | 'sell';
 
 export function getPlayerDealType(offerType: 'BUY' | 'SELL'): AssetDealType {
@@ -100,6 +113,20 @@ export function formatOfferPriceVsMarket(offerPrice: number, marketPrice: number
   return offerPrice > marketPrice
     ? `Выше рынка на ${percent}%`
     : `Ниже рынка на ${percent}%`;
+}
+
+export function getMarketComparisonCaption(offerPrice: number, marketPrice: number) {
+  const diff = offerPrice - marketPrice;
+  if (diff === 0) return 'На уровне рынка';
+  return diff > 0 ? 'Выше рынка' : 'Ниже рынка';
+}
+
+export function formatMarketComparisonPercent(offerPrice: number, marketPrice: number) {
+  const diff = offerPrice - marketPrice;
+  if (diff === 0) return '0%';
+
+  const percent = ((Math.abs(diff) / marketPrice) * 100).toFixed(1).replace('.', ',');
+  return diff > 0 ? `+${percent}%` : `−${percent}%`;
 }
 
 export function getOfferStatusLabel(isHotDeal: boolean) {

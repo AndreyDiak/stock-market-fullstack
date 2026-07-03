@@ -88,10 +88,10 @@ function countOccupiedSlots(slots: PropertySlot[]) {
 function LockedPropertySlot({ theme }: { theme: GameDashboardThemeTokens }) {
   return (
     <article
-      className={`relative aspect-square overflow-hidden rounded-xl border ${
+      className={`relative aspect-square overflow-hidden rounded-xl border opacity-70 ${
         theme.isLight
-          ? "border-slate-300/70 bg-slate-100/80"
-          : "border-slate-700/50 bg-slate-800/60"
+          ? "border-slate-300/50 bg-slate-100/50"
+          : "border-slate-800/60 bg-slate-900/35"
       }`}
     >
       <div
@@ -106,9 +106,7 @@ function LockedPropertySlot({ theme }: { theme: GameDashboardThemeTokens }) {
             theme.isLight ? "text-slate-400" : "text-slate-500/80"
           }`}
         />
-        <p
-          className={`text-[10px] font-bold uppercase tracking-wider ${theme.secondaryText}`}
-        >
+        <p className={`text-[10px] font-medium ${theme.secondaryText}`}>
           Заблокировано
         </p>
       </div>

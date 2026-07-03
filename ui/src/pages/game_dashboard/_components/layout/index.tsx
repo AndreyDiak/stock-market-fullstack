@@ -14,7 +14,7 @@ export function CenterPanel() {
 
   return (
     <section
-      className={`flex min-h-0 min-w-0 flex-1 flex-col p-4 md:p-5 ${theme.frameDeep}`}
+      className={`flex h-full min-h-0 min-w-0 flex-col overflow-hidden p-4 pb-6 md:p-5 md:pb-8 ${theme.frameDeep}`}
     >
       {activeTab === 'settings' && <GameSettingsPanel />}
       {activeTab === 'character' && <CharacterProfilePanel />}
