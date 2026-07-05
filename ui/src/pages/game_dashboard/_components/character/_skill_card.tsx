@@ -1,6 +1,5 @@
 import { MoneyValue } from '../../../../components/money/money_value'
 import { GameButton } from '../../../../components/game_ui/game_button'
-import { gameAudio } from '../../../../lib/audio/game_audio'
 import { UpgradeIcon } from '../../../../shared/icons'
 import type { CharacterSkill } from './_character_skills'
 import { getSkillEffectChips } from './_character_skills'
@@ -85,10 +84,7 @@ export function SkillCard({ skill, balance, onRequestUpgrade }: SkillCardProps) 
                 size="sm"
                 disabled={!skill.canUpgrade || !canAfford}
                 title={disabledReason}
-                onClick={() => {
-                  gameAudio.playSfx('buttonClick')
-                  onRequestUpgrade(skill.id)
-                }}
+                onClick={() => onRequestUpgrade(skill.id)}
                 className="shadow-[0_3px_0_#047857,inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_3px_0_#047857,0_0_14px_rgba(16,185,129,0.3),inset_0_1px_0_rgba(255,255,255,0.25)] disabled:shadow-[0_3px_0_#0f172a] disabled:hover:shadow-[0_3px_0_#0f172a]"
               >
                 Улучшить

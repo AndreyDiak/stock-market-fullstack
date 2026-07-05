@@ -59,7 +59,7 @@ function PropertyOffersSection({
         </motion.div>
       ) : (
         <motion.div
-          className="grid grid-cols-1 gap-5 px-1 pt-1 min-[720px]:grid-cols-2"
+          className="grid grid-cols-1 items-stretch gap-5 px-1 pt-1 min-[720px]:grid-cols-2"
           variants={realEstateCardsContainerVariants}
           initial="hidden"
           animate="show"
@@ -68,7 +68,7 @@ function PropertyOffersSection({
             <motion.div
               key={offer.id}
               variants={realEstateOfferCardVariants}
-              className="min-w-0 overflow-visible"
+              className="flex min-w-0 overflow-visible"
             >
               <PropertyOfferCard
                 offer={offer}
@@ -110,7 +110,7 @@ function RealEstateMarketList() {
         />
       </motion.header>
 
-      <div className={`min-h-0 flex-1 overflow-auto px-1 pb-2 pr-0.5 ${theme.scrollArea}`}>
+      <div className={`min-h-0 flex-1 overflow-auto px-1 pb-2 ${theme.scrollArea}`}>
         <PropertyOffersSection highlightedOfferId={highlightPropertyOfferId} />
       </div>
     </motion.div>

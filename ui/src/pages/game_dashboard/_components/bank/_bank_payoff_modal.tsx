@@ -191,10 +191,7 @@ export function BankPayoffModal({
             size="sm"
             fullWidth
             disabled={!canConfirm}
-            onClick={() => {
-              gameAudio.playSfx('buttonClick')
-              onConfirm(loan.id, normalizePayoffPercent(payPercent))
-            }}
+            onClick={() => onConfirm(loan.id, normalizePayoffPercent(payPercent))}
             className="trade-modal__footer-btn trade-modal__confirm-btn"
           >
             {payPercent >= PAYOFF_PERCENT_MAX && canPayFull ? 'Погасить полностью' : 'Выплатить'}

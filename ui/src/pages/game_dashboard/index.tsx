@@ -15,12 +15,18 @@ import { ExitGameModal } from './_components/layout/_exit_game_modal'
 import { NewsNewspaperModal } from './_components/news/_news_newspaper_modal'
 import { useDashboardTheme } from './_model/use_dashboard_theme'
 import { DashboardUiProvider } from './_model/dashboard_ui_context'
+import {
+  applyDashboardTabSearchParam,
+  isDashboardTab,
+  parseDashboardTab,
+  DASHBOARD_TAB_SEARCH_PARAM,
+} from './_model/_dashboard_tab_search'
 import type { dashboard_tab, news_item } from './_model/types'
 
 export function GameDashboardPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const gameId = searchParams.get('id')
   const initialGame = (location.state as { initialGame?: Game } | null)?.initialGame
 
@@ -31,7 +37,14 @@ export function GameDashboardPage() {
 
   const dashboardTheme = useDashboardTheme()
 
-  const [activeTab, setActiveTab] = useState<dashboard_tab>('character')
+  const activeTab = parseDashboardTab(searchParams)
+
+  const setActiveTab = useCallback(
+    (tab: dashboard_tab) => {
+      setSearchParams((prev) => applyDashboardTabSearchParam(prev, tab), { replace: true })
+    },
+    [setSearchParams],
+  )
   const [exitModalOpen, setExitModalOpen] = useState(false)
   const [selectedNews, setSelectedNews] = useState<news_item | null>(null)
   const [highlightPropertyOfferId, setHighlightPropertyOfferId] = useState<string | null>(null)
@@ -50,7 +63,7 @@ export function GameDashboardPage() {
       highlightPropertyOfferId,
       clearHighlightPropertyOffer: () => setHighlightPropertyOfferId(null),
     }),
-    [activeTab, highlightPropertyOfferId],
+    [activeTab, highlightPropertyOfferId, setActiveTab],
   )
 
   useEffect(() => {
@@ -63,6 +76,13 @@ export function GameDashboardPage() {
       reset()
     }
   }, [gameId, initialGame, init, reset, navigate])
+
+  useEffect(() => {
+    const tabParam = searchParams.get(DASHBOARD_TAB_SEARCH_PARAM)
+    if (tabParam != null && !isDashboardTab(tabParam)) {
+      setSearchParams((prev) => applyDashboardTabSearchParam(prev, activeTab), { replace: true })
+    }
+  }, [searchParams, activeTab, setSearchParams])
 
   const closeNews = useCallback(() => setSelectedNews(null), [])
 

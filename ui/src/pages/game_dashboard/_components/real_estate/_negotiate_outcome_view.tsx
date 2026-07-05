@@ -2,7 +2,6 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { MoneyValue } from '../../../../components/money/money_value';
 import { GameButton } from '../../../../components/game_ui/game_button';
 import { AssetImageFrame } from '../../../../shared/components';
-import { gameAudio } from '../../../../lib/audio/game_audio';
 import type { AcceptPropertyOfferResponse } from '../../../../api/propertyOffers';
 import type { NegotiatePropertyOfferResponse } from '../../../../api/propertyOffers';
 import type { PropertyOffer } from '../../_model/types';
@@ -254,10 +253,7 @@ export function NegotiatePendingAcceptView({
           size="sm"
           fullWidth
           disabled={busy || !canConfirm}
-          onClick={() => {
-            gameAudio.playSfx('buttonClick');
-            onAccept(paymentMode);
-          }}
+          onClick={() => onAccept(paymentMode)}
           className="trade-modal__footer-btn trade-modal__confirm-btn"
         >
           Принять сделку

@@ -12,20 +12,25 @@ import {
   useRole,
 } from '@floating-ui/react'
 import { useMemo, useState, type ReactNode } from 'react'
+import { formatMoney } from '../../../../components/money/money_value'
 import {
   BankIcon,
+  BriefcaseIcon,
+  CoinIcon,
   RealEstateIcon,
-  ShieldInsiderIcon,
   StarIcon,
   TradingChartIcon,
 } from '../../../../shared/icons'
 import { useGameStore } from '../../../../stores/game.store'
 import { formatReputation } from '../../_model/utils'
-import { TRADING_GRADES, getSkillLevel } from '../character/_character_skills'
-import type { CharacterSkill } from '../character/_character_skills'
+import {
+  getMaxNegotiateDiscountPercent,
+  getSkillLevel,
+  type CharacterSkill,
+} from '../character/_character_skills'
 import './_header_stats.css'
 
-type HeaderStatVariant = 'reputation' | 'trading' | 'insider' | 'realty' | 'bank'
+type HeaderStatVariant = 'reputation' | 'work' | 'bank' | 'trading' | 'realty'
 
 interface HeaderStatConfig {
   variant: HeaderStatVariant
@@ -33,7 +38,6 @@ interface HeaderStatConfig {
   value: ReactNode
   title: string
   description: string
-  valueClassName?: string
   badgeClassName?: string
 }
 
@@ -52,10 +56,10 @@ function getBankingInfographicValue(skills: CharacterSkill[], chipId: string): s
   return chip?.value ?? null
 }
 
-function getBankingGrade(skills: CharacterSkill[]): string {
-  const level = getSkillLevel(skills, 'banking')
-  const index = Math.min(Math.max(0, level - 1), TRADING_GRADES.length - 1)
-  return TRADING_GRADES[index]
+function countOccupiedPropertySlots(
+  slots: { isLocked: boolean; item?: unknown }[],
+) {
+  return slots.filter((slot) => !slot.isLocked && slot.item).length
 }
 
 function HeaderStatItem({
@@ -64,11 +68,9 @@ function HeaderStatItem({
   value,
   title,
   description,
-  valueClassName = '',
   badgeClassName = '',
 }: HeaderStatConfig) {
   const [open, setOpen] = useState(false)
-  const useBadge = variant === 'trading' || variant === 'realty' || variant === 'bank'
 
   const { refs, floatingStyles, context } = useFloating({
     open,
@@ -90,18 +92,14 @@ function HeaderStatItem({
         ref={refs.setReference}
         tabIndex={0}
         className={`header-stats__item header-stats__item--${variant}`}
-        aria-label={`${title}: ${typeof value === 'string' ? value : ''}. ${description}`}
+        aria-label={`${title}. ${description}`}
         {...getReferenceProps()}
       >
         <span className="header-stats__icon" aria-hidden>
           {icon}
         </span>
 
-        {useBadge ? (
-          <span className={`header-stats__badge ${badgeClassName}`}>{value}</span>
-        ) : (
-          <span className={`header-stats__value ${valueClassName}`}>{value}</span>
-        )}
+        <span className={`header-stats__badge ${badgeClassName}`}>{value}</span>
       </div>
 
       {open ? (
@@ -125,13 +123,24 @@ export function HeaderStats() {
   const reputation = useGameStore((state) => state.characterProfile.reputation)
   const stats = useGameStore((state) => state.characterStats)
   const skills = useGameStore((state) => state.characterSkills)
+  const propertySlots = useGameStore((state) => state.propertySlots)
 
-  const bankingGrade = useMemo(() => getBankingGrade(skills), [skills])
-
-  const propertyGrade = useMemo(() => {
+  const propertyDealGrade = useMemo(() => {
     const raw = getBankingInfographicValue(skills, 'property-deals') ?? 'F'
     return getHighestAccessibleGrade(raw)
   }, [skills])
+
+  const tradingLevel = useMemo(() => getSkillLevel(skills, 'trading'), [skills])
+  const negotiateDiscountPercent = useMemo(
+    () => getMaxNegotiateDiscountPercent(tradingLevel),
+    [tradingLevel],
+  )
+
+  const occupiedPropertySlots = useMemo(
+    () => countOccupiedPropertySlots(propertySlots),
+    [propertySlots],
+  )
+  const totalPropertySlots = propertySlots.length
 
   const items: HeaderStatConfig[] = [
     {
@@ -140,42 +149,45 @@ export function HeaderStats() {
       value: formatReputation(reputation),
       title: `Репутация: ${formatReputation(reputation)}`,
       description: 'Доверие рынка к вам. Чем выше репутация, тем лучше условия сделок.',
-      valueClassName: 'text-amber-300',
+      badgeClassName: 'border-amber-500/30 bg-amber-500/12 text-amber-200',
     },
     {
-      variant: 'trading',
-      icon: <TradingChartIcon className="h-3.5 w-3.5 text-cyan-400" />,
-      value: stats.tradingGrade,
-      title: `Доступный ранг акций: ${stats.tradingGrade}`,
-      description:
-        'Грейд торгового навыка от F до A. Открывает доступ к более дорогим акциям.',
-      badgeClassName: 'border-cyan-500/30 bg-cyan-500/12 text-cyan-200',
-    },
-    {
-      variant: 'insider',
-      icon: <ShieldInsiderIcon className="h-3.5 w-3.5 text-violet-300" />,
-      value: `${stats.insiderChancePercent}%`,
-      title: `Шанс инсайда: ${stats.insiderChancePercent}%`,
-      description:
-        'Вероятность получить инсайдерскую новость. +2% за каждый уровень карьеры, максимум 30%.',
-      valueClassName: 'text-emerald-200',
-    },
-    {
-      variant: 'realty',
-      icon: <RealEstateIcon className="h-3.5 w-3.5 text-emerald-400" />,
-      value: propertyGrade,
-      title: `Доступный ранг недвижимости: ${propertyGrade}`,
-      description:
-        'Текущая доступная категория выгодных предложений на рынке недвижимости.',
+      variant: 'work',
+      icon: <BriefcaseIcon className="h-3.5 w-3.5 text-emerald-400" />,
+      value: (
+        <span className="inline-flex items-center gap-0.5">
+          <span>{formatMoney(stats.salaryBonus)}</span>
+          <CoinIcon className="h-3 w-3 shrink-0" aria-hidden />
+          <span>/{stats.insiderChancePercent}%</span>
+        </span>
+      ),
+      title: 'Карьера',
+      description: `Бонус к зарплате: +${formatMoney(stats.salaryBonus)}. Шанс получить инсайд: ${stats.insiderChancePercent}%.`,
       badgeClassName: 'border-emerald-500/30 bg-emerald-500/12 text-emerald-200',
     },
     {
       variant: 'bank',
       icon: <BankIcon className="h-3.5 w-3.5 text-sky-400" />,
-      value: bankingGrade,
-      title: `Банковский ранг: ${bankingGrade}`,
-      description: `Грейд навыка Banking. Ставка по кредиту: ${stats.bankBaseRatePercent}%.`,
+      value: `${propertyDealGrade}/${stats.bankBaseRatePercent}%`,
+      title: 'Банк',
+      description: `Лучшая доступная сделка с имуществом: грейд ${propertyDealGrade}. Ставка по кредиту: ${stats.bankBaseRatePercent}%.`,
       badgeClassName: 'border-sky-500/30 bg-sky-500/12 text-sky-200',
+    },
+    {
+      variant: 'trading',
+      icon: <TradingChartIcon className="h-3.5 w-3.5 text-cyan-400" />,
+      value: `${stats.tradingGrade}/${negotiateDiscountPercent}%`,
+      title: 'Трейдинг',
+      description: `Лучшие доступные акции: грейд ${stats.tradingGrade}. Максимальный торг: ${negotiateDiscountPercent}%.`,
+      badgeClassName: 'border-cyan-500/30 bg-cyan-500/12 text-cyan-200',
+    },
+    {
+      variant: 'realty',
+      icon: <RealEstateIcon className="h-3.5 w-3.5 text-emerald-400" />,
+      value: `${occupiedPropertySlots}/${totalPropertySlots}`,
+      title: 'Имущество',
+      description: `Занято слотов: ${occupiedPropertySlots} из ${totalPropertySlots}.`,
+      badgeClassName: 'border-emerald-500/30 bg-emerald-500/12 text-emerald-200',
     },
   ]
 

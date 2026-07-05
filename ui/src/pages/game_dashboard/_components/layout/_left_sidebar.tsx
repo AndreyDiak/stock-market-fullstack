@@ -11,10 +11,20 @@ import { has_active_insider_alert } from '../../_model/utils'
 import { useDashboardTheme } from '../../_model/use_dashboard_theme'
 import type { GameDashboardThemeTokens } from '../shared'
 
-function navShellClass(collapsed: boolean) {
-  return collapsed
-    ? 'w-full min-w-0 max-w-full gap-3 px-4 lg:justify-center lg:gap-0 lg:px-2.5'
-    : 'w-full min-w-0 gap-3 px-4'
+function navButtonClass(collapsed: boolean) {
+  const base = 'w-full px-4 py-3'
+  if (collapsed) {
+    return `${base} gap-0 lg:rounded-2xl`
+  }
+  return `${base} gap-3 max-lg:gap-0 max-lg:rounded-2xl`
+}
+
+function navLabelClass(collapsed: boolean) {
+  return `min-w-0 overflow-hidden whitespace-nowrap text-sm font-bold leading-tight tracking-wide transition-[max-width,opacity] duration-300 ease-in-out ${
+    collapsed
+      ? 'max-w-0 opacity-0'
+      : 'max-w-[12rem] opacity-100 max-lg:max-w-0 max-lg:opacity-0'
+  }`
 }
 
 function SidebarCollapseToggle({
@@ -36,9 +46,7 @@ function SidebarCollapseToggle({
       title={collapsed ? 'Развернуть меню' : 'Свернуть меню'}
       aria-expanded={!collapsed}
       aria-label={collapsed ? 'Развернуть меню' : 'Свернуть меню'}
-      className={`flex min-w-0 max-w-full items-center overflow-hidden rounded-[28px] border py-2 transition-colors ${navShellClass(collapsed)} ${
-        collapsed ? 'lg:rounded-2xl' : ''
-      } ${
+      className={`flex w-full min-w-0 items-center justify-start overflow-hidden rounded-[28px] border transition-[gap,padding,border-radius,colors] duration-300 ease-in-out ${navButtonClass(collapsed)} ${
         theme.isLight
           ? 'border-slate-200/80 bg-white/60 text-slate-500 hover:bg-white hover:text-emerald-700'
           : 'border-slate-700/45 bg-slate-800/45 text-slate-400 hover:border-emerald-400/25 hover:text-emerald-300'
@@ -66,6 +74,7 @@ function SidebarNavButton({
   theme,
   notify,
   badgeCount,
+  badgeCountLabel = 'предложений',
 }: {
   item: sidebar_nav_item
   active: boolean
@@ -74,6 +83,7 @@ function SidebarNavButton({
   theme: GameDashboardThemeTokens
   notify?: boolean
   badgeCount?: number
+  badgeCountLabel?: string
 }) {
   const showBadge = badgeCount != null && badgeCount > 0
 
@@ -86,17 +96,17 @@ function SidebarNavButton({
         onSelect()
       }}
       aria-label={
-        showBadge ? `${item.label}, ${badgeCount} предложений` : item.label
+        showBadge ? `${item.label}, ${badgeCount} ${badgeCountLabel}` : item.label
       }
-      className={`group relative isolate flex min-h-11 min-w-0 max-w-full items-center overflow-hidden rounded-[28px] border py-3 text-left backdrop-blur-md transition-[gap,padding,border-radius,transform] duration-200 ease-in-out hover:-translate-y-px ${navShellClass(collapsed)} ${
-        collapsed ? 'lg:rounded-2xl' : ''
-      } ${active ? theme.navActive : theme.navIdle}`}
+      className={`group relative isolate flex min-h-11 w-full min-w-0 items-center justify-start overflow-hidden rounded-[28px] border text-left backdrop-blur-md transition-[gap,padding,border-radius,transform] duration-300 ease-in-out hover:-translate-y-px ${navButtonClass(collapsed)} ${
+        active ? theme.navActive : theme.navIdle
+      }`}
     >
       {active ? (
         <span
           aria-hidden
           className={`pointer-events-none absolute inset-0 ${
-            collapsed ? 'rounded-2xl lg:rounded-2xl' : 'rounded-[28px]'
+            collapsed ? 'rounded-2xl' : 'rounded-[28px]'
           } ${theme.isLight ? 'bg-white/35' : 'bg-emerald-400/8'}`}
         />
       ) : null}
@@ -120,13 +130,7 @@ function SidebarNavButton({
           />
         ) : null}
       </div>
-      <span
-        className={`relative shrink-0 text-sm font-bold leading-tight tracking-wide ${
-          collapsed ? 'lg:hidden' : ''
-        }`}
-      >
-        {item.label}
-      </span>
+      <span className={navLabelClass(collapsed)}>{item.label}</span>
     </button>
   )
 }
@@ -156,9 +160,7 @@ function SidebarFooterButton({
         gameAudio.playSfx('buttonClick')
         onClick()
       }}
-      className={`group relative isolate flex min-w-0 max-w-full items-center overflow-hidden rounded-[28px] border py-2.5 text-left backdrop-blur-md transition-[gap,padding,border-radius] duration-300 ease-in-out ${navShellClass(collapsed)} ${
-        collapsed ? 'lg:rounded-2xl' : ''
-      } ${
+      className={`group relative isolate flex w-full min-w-0 items-center justify-start overflow-hidden rounded-[28px] border text-left backdrop-blur-md transition-[gap,padding,border-radius] duration-300 ease-in-out ${navButtonClass(collapsed)} ${
         danger
           ? theme.isLight
             ? 'border-red-200/80 bg-red-50/80 text-red-700 hover:border-red-300 hover:bg-red-50'
@@ -172,7 +174,7 @@ function SidebarFooterButton({
         <span
           aria-hidden
           className={`pointer-events-none absolute inset-0 ${
-            collapsed ? 'rounded-2xl lg:rounded-2xl' : 'rounded-[28px]'
+            collapsed ? 'rounded-2xl' : 'rounded-[28px]'
           } ${theme.isLight ? 'bg-white/35' : 'bg-emerald-400/8'}`}
         />
       ) : null}
@@ -189,13 +191,7 @@ function SidebarFooterButton({
       >
         {icon}
       </div>
-      <span
-        className={`relative shrink-0 text-sm font-bold leading-tight tracking-wide ${
-          collapsed ? 'lg:hidden' : ''
-        }`}
-      >
-        {label}
-      </span>
+      <span className={navLabelClass(collapsed)}>{label}</span>
     </button>
   )
 }
@@ -208,6 +204,7 @@ export function LeftSidebar() {
   const news = useGameStore((state) => state.news)
   const turn = useGameStore((state) => state.turn)
   const propertyOfferCount = useGameStore((state) => state.propertyOffers.length)
+  const activeLoanCount = useGameStore((state) => state.bankLoans.length)
 
   const showNewsInsiderAlert = useMemo(
     () => has_active_insider_alert(news, turn),
@@ -218,10 +215,10 @@ export function LeftSidebar() {
 
   return (
     <nav
-      className={`flex h-full min-h-0 w-full min-w-0 shrink-0 flex-col overflow-x-hidden transition-[width] duration-300 ease-in-out lg:overflow-y-auto ${theme.scrollArea}`}
+      className={`flex h-full min-h-0 w-full min-w-0 shrink-0 flex-col overflow-x-hidden lg:overflow-y-auto ${theme.scrollArea}`}
     >
-      <div className={`flex min-h-full min-w-0 flex-col gap-3 py-0.5 ${collapsed ? 'px-0' : 'px-1'}`}>
-        <div className="sidebar__main flex min-w-0 flex-col gap-3">
+      <div className="flex min-h-full w-full min-w-0 flex-col gap-3 py-0.5">
+        <div className="sidebar__main flex w-full min-w-0 flex-col gap-3">
           {SIDEBAR_PRIMARY_ITEMS.map((item) => (
             <SidebarNavButton
               key={item.id}
@@ -230,6 +227,8 @@ export function LeftSidebar() {
               collapsed={collapsed}
               active={activeTab === item.id}
               onSelect={go(item.id)}
+              badgeCount={item.id === 'bank' ? activeLoanCount : undefined}
+              badgeCountLabel={item.id === 'bank' ? 'активных кредитов' : undefined}
             />
           ))}
 
@@ -249,7 +248,7 @@ export function LeftSidebar() {
           ))}
         </div>
 
-        <div className="sidebar__system mt-auto flex min-w-0 flex-col gap-2 pt-2">
+        <div className="sidebar__system mt-auto flex w-full min-w-0 flex-col gap-2 pt-2">
           <div className="sidebar__collapse hidden lg:flex lg:flex-col lg:gap-2">
             <SidebarCollapseToggle
               collapsed={collapsed}

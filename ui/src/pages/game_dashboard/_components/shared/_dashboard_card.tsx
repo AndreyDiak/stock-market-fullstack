@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react'
+import type { HTMLAttributes, ReactNode } from 'react'
 
-interface DashboardCardProps {
+interface DashboardCardProps extends HTMLAttributes<HTMLElement> {
   children: ReactNode
   className?: string
   as?: 'section' | 'article' | 'div'
@@ -10,6 +10,7 @@ export function DashboardCard({
   children,
   className = '',
   as: Tag = 'section',
+  ...props
 }: DashboardCardProps) {
   return (
     <Tag
@@ -18,6 +19,7 @@ export function DashboardCard({
         backgroundImage:
           'linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.08) 100%)',
       }}
+      {...props}
     >
       {children}
     </Tag>

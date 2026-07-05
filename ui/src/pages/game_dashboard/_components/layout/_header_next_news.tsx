@@ -9,15 +9,16 @@ export function HeaderNextNewsPreview() {
   const news = useGameStore((state) => state.news)
   const turn = useGameStore((state) => state.turn)
   const visibleNews = filter_visible_news(news, turn)
-  const { nextType } = resolveNewsCycleState(visibleNews)
-  const config = NEWS_CATEGORY_CONFIG[nextType]
+  const { lastType } = resolveNewsCycleState(visibleNews)
+  const currentType = lastType ?? 'stock'
+  const config = NEWS_CATEGORY_CONFIG[currentType]
   const Icon = config.Icon
 
   return (
     <div
       className="header__next-news"
-      title={`На следующем ходе: ${config.label.toLowerCase()}`}
-      aria-label={`Следующая новость: ${config.label}`}
+      title={`Текущая новость: ${config.label.toLowerCase()}`}
+      aria-label={`Текущая новость: ${config.label}`}
     >
       <span className={`header__next-news-chip ${config.chipClass}`}>
         <Icon className="header__next-news-icon" aria-hidden />

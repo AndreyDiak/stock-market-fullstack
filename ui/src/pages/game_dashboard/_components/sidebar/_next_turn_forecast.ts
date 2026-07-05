@@ -32,6 +32,39 @@ function catalogPayment(itemRef: string) {
   return REAL_ESTATE_CATALOG.find((item) => item.id === itemRef)?.monthlyPayment ?? 0
 }
 
+function buildPropertyIncomeLines(slots: PropertySlot[]): TurnCashflowLine[] {
+  const lines: TurnCashflowLine[] = []
+
+  for (const slot of slots) {
+    const item = slot.item
+    if (!item || item.income <= 0) continue
+
+    lines.push({
+      id: `passive-income-${slot.id}`,
+      label: item.name,
+      amount: item.income,
+    })
+  }
+
+  return lines
+}
+
+function replacePassiveIncomeLines(
+  lines: TurnCashflowLine[],
+  propertySlots: PropertySlot[],
+): TurnCashflowLine[] {
+  if (!lines.some((line) => line.id === 'passive-income')) {
+    return lines
+  }
+
+  const incomeLines = buildPropertyIncomeLines(propertySlots)
+  if (incomeLines.length === 0) {
+    return lines
+  }
+
+  return [...lines.filter((line) => line.id !== 'passive-income'), ...incomeLines]
+}
+
 function summarizeForecast(lines: TurnCashflowLine[]): NextTurnForecast {
   const incomeTotal = lines
     .filter((line) => line.amount > 0)
@@ -111,11 +144,7 @@ export function buildNextTurnForecast(input: {
 
   const passiveIncome = calcPropertyPassiveIncome(input.propertySlots)
   if (passiveIncome > 0) {
-    lines.push({
-      id: 'passive-income',
-      label: 'Пассивный доход',
-      amount: passiveIncome,
-    })
+    lines.push(...buildPropertyIncomeLines(input.propertySlots))
   }
 
   for (const slot of input.propertySlots) {
@@ -150,5 +179,9 @@ export function resolveNextTurnForecast(
       propertySlots: input.propertySlots,
     })
 
-  return appendLoanToForecast(base, input.loanPaymentPerTurn)
+  const withPropertyIncomeLabels = summarizeForecast(
+    replacePassiveIncomeLines(base.lines, input.propertySlots),
+  )
+
+  return appendLoanToForecast(withPropertyIncomeLabels, input.loanPaymentPerTurn)
 }

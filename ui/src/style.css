@@ -124,7 +124,6 @@ button:hover {
 .game-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: rgba(16, 185, 129, 0.42) transparent;
-  scrollbar-gutter: stable;
 }
 
 .game-scrollbar::-webkit-scrollbar {
@@ -160,7 +159,6 @@ button:hover {
 .game-scrollbar-light {
   scrollbar-width: thin;
   scrollbar-color: rgba(5, 150, 105, 0.45) rgba(241, 245, 249, 0.6);
-  scrollbar-gutter: stable;
 }
 
 .game-scrollbar-light::-webkit-scrollbar {

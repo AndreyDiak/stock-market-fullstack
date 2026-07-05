@@ -1,6 +1,6 @@
 .dashboard-root {
   --sidebar-width-expanded: 11.5rem;
-  --sidebar-width-collapsed: 5rem;
+  --sidebar-width-collapsed: 4.5rem;
   --sidebar-width: var(--sidebar-width-expanded);
   --right-rail-width: 20rem;
   --layout-gap: 1rem;

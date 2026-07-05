@@ -1,11 +1,14 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { MoneyValue } from "../../../../components/money/money_value";
+import { gameAudio } from "../../../../lib/audio/game_audio";
 import { AssetImageFrame } from "../../../../shared/components";
-import { LockIcon, PropertySlotIcon } from "../../../../shared/icons";
+import { EyeIcon, LockIcon, PropertySlotIcon, CoinIcon } from "../../../../shared/icons";
 import { useGameStore } from "../../../../stores/game.store";
+import { useDashboardUi } from "../../_model/dashboard_ui_context";
 import { useDashboardTheme } from "../../_model/use_dashboard_theme";
 import type { GameDashboardThemeTokens } from "../shared";
+import { StatusBadge } from "../shared";
 
 function AccordionChevron({
   open,
@@ -114,16 +117,74 @@ function LockedPropertySlot({ theme }: { theme: GameDashboardThemeTokens }) {
   );
 }
 
+function PropertySlotTopLeft({
+  item,
+}: {
+  item: PropertyItem;
+}) {
+  const showPayback = !item.isOwned;
+  const showOwned = item.isOwned;
+  const showIncome = item.income > 0;
+
+  if (!showPayback && !showOwned && !showIncome) return null;
+
+  return (
+    <div className="pointer-events-none absolute left-1.5 top-1.5 z-10 flex max-w-[calc(100%-0.75rem)] flex-wrap items-start gap-1">
+      {showPayback ? (
+        <span className="rounded-md border border-white/15 bg-black/55 px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-white backdrop-blur-md">
+          {item.paybackPct}%
+        </span>
+      ) : null}
+      {showOwned ? (
+        <StatusBadge
+          tone="emerald"
+          solid
+          className="rounded-md px-1.5 py-0.5 text-[10px] leading-none uppercase tracking-wide"
+        >
+          Куплено
+        </StatusBadge>
+      ) : null}
+      {showIncome ? (
+        <span className="inline-flex items-center gap-0.5 rounded-md border border-emerald-400/35 bg-emerald-500/20 px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-emerald-100 backdrop-blur-md">
+          <CoinIcon className="h-3 w-3" />
+          +{item.income.toLocaleString("ru-RU")}
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
+function PropertySlotTopRight() {
+  return (
+    <div className="pointer-events-none absolute right-1.5 top-1.5 z-10">
+      <span
+        className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-white/20 bg-black/60 text-sky-300 opacity-0 shadow-sm backdrop-blur-sm transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+        aria-hidden
+      >
+        <EyeIcon className="h-3.5 w-3.5" />
+      </span>
+    </div>
+  );
+}
+
 function OccupiedPropertySlot({
   item,
   theme,
+  onOpenBank,
 }: {
   item: PropertyItem;
   theme: GameDashboardThemeTokens;
+  onOpenBank: () => void;
 }) {
   return (
-    <article
-      className={`group relative aspect-square overflow-hidden rounded-xl border transition hover:border-emerald-400/25 ${
+    <button
+      type="button"
+      onClick={() => {
+        gameAudio.playSfx("buttonClick");
+        onOpenBank();
+      }}
+      aria-label={`Открыть в банке: ${item.name}`}
+      className={`group relative aspect-square cursor-pointer overflow-hidden rounded-xl border text-left transition hover:border-emerald-400/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/60 ${
         theme.isLight
           ? "border-slate-300/70 bg-slate-100"
           : "border-slate-700/40 bg-slate-800/60"
@@ -137,30 +198,10 @@ function OccupiedPropertySlot({
         className="absolute inset-0 rounded-xl"
       />
 
-      <span
-        className={`absolute right-2 top-2 rounded-md border px-1.5 py-0.5 text-[10px] font-bold backdrop-blur-md ${
-          item.isOwned
-            ? "border-emerald-400/35 bg-emerald-500/20 text-emerald-100"
-            : "border-white/15 bg-black/55 tabular-nums text-white"
-        }`}
-      >
-        {item.isOwned ? "КУПЛЕНО" : `${item.paybackPct}%`}
-      </span>
+      <PropertySlotTopLeft item={item} />
+      <PropertySlotTopRight />
 
-      {item.income > 0 ? (
-        <span className="absolute left-2 top-2 rounded-md border border-emerald-400/35 bg-emerald-500/25 px-1.5 py-0.5 backdrop-blur-md">
-          <MoneyValue
-            amount={item.income}
-            size="xs"
-            prefix="+"
-            suffix="/ход"
-            tone="overlay"
-            className="gap-1 font-extrabold"
-          />
-        </span>
-      ) : null}
-
-      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-2.5 pb-2.5 pt-10">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-2.5 pb-2.5 pt-10">
         <p className="truncate text-sm font-bold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
           {item.name}
         </p>
@@ -175,7 +216,7 @@ function OccupiedPropertySlot({
           ) : null}
         </div>
       </div>
-    </article>
+    </button>
   );
 }
 
@@ -219,10 +260,13 @@ function EmptyPropertySlot({ theme }: { theme: GameDashboardThemeTokens }) {
 
 export function PropertyInventoryBlock() {
   const theme = useDashboardTheme();
+  const { setActiveTab } = useDashboardUi();
   const slots = useGameStore((state) => state.propertySlots);
   const [open, setOpen] = useState(true);
   const occupied = countOccupiedSlots(slots);
   const total = slots.length;
+
+  const openBank = () => setActiveTab("bank");
 
   return (
     <section className={theme.sidebarSection}>
@@ -259,6 +303,7 @@ export function PropertyInventoryBlock() {
                       key={slot.id}
                       item={slot.item}
                       theme={theme}
+                      onOpenBank={openBank}
                     />
                   );
                 }

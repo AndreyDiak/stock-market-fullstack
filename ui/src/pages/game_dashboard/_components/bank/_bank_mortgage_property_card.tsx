@@ -1,83 +1,120 @@
+import { useMemo, useState, type KeyboardEvent } from 'react'
 import { MoneyValue } from '../../../../components/money/money_value'
-import { REAL_ESTATE_CATALOG } from '../../../../constants/realEstate'
-import { CategoryChip, DashboardCard, SegmentBar, StatusBadge } from '../shared'
-import { BankCommercialBadge, BankCommercialIncomeHighlight } from './_bank_commercial_income_highlight'
+import { gameAudio } from '../../../../lib/audio/game_audio'
+import { useGameStore } from '../../../../stores/game.store'
+import { CategoryChip, DashboardCard } from '../shared'
+import { BankCommercialBadge, BankCommercialIncomeChip } from './_bank_commercial_income_highlight'
+import { mapMortgagePropertyDetails } from './_bank_mappers'
+import { BankMortgagePropertyModal } from './_bank_mortgage_property_modal'
 import { parseCatalogPassiveIncome } from './_bank_operation_history'
+import { BankPropertyOpenHint } from './_bank_property_open_hint'
 import { BankPropertyPreview } from './_bank_property_preview'
 import type { ActiveLoan } from './index'
 
+function openOnKeyboard(event: KeyboardEvent, onOpen: () => void) {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault()
+    onOpen()
+  }
+}
+
 export function BankMortgagePropertyCard({ loan }: { loan: ActiveLoan }) {
-  const catalog = REAL_ESTATE_CATALOG.find((entry) => entry.id === loan.itemRef)
-  const description = catalog?.description ?? null
+  const [detailsOpen, setDetailsOpen] = useState(false)
+  const inventoryItems = useGameStore((state) => state.inventoryItems)
+  const news = useGameStore((state) => state.news)
+  const bankBaseRatePercent = useGameStore((state) => state.characterStats.bankBaseRatePercent)
+
   const passiveIncome = parseCatalogPassiveIncome(loan.itemRef)
   const isCommercial = passiveIncome > 0
 
+  const propertyDetails = useMemo(() => {
+    const inventoryItem = inventoryItems.find((item) => item.id === loan.id)
+    return mapMortgagePropertyDetails(loan, inventoryItem, news, bankBaseRatePercent)
+  }, [loan, inventoryItems, news, bankBaseRatePercent])
+
+  const openDetails = () => {
+    gameAudio.playSfx('buttonClick')
+    setDetailsOpen(true)
+  }
+
   return (
-    <DashboardCard
-      as="article"
-      className={`bank-paid-card bank-mortgage-card overflow-visible${isCommercial ? ' bank-paid-card--commercial' : ''}`}
-    >
-      <div className="bank-paid-card__body">
-        <BankPropertyPreview itemRef={loan.itemRef} name={loan.name} size="paid" />
+    <>
+      <DashboardCard
+        as="article"
+        role="button"
+        tabIndex={0}
+        aria-label={`Подробнее: ${loan.name}`}
+        onClick={openDetails}
+        onKeyDown={(event) => openOnKeyboard(event, openDetails)}
+        className={`bank-paid-card bank-mortgage-card bank-paid-card--interactive overflow-visible${isCommercial ? ' bank-paid-card--commercial' : ''}`}
+      >
+        <div className="bank-paid-card__body">
+          <BankPropertyPreview itemRef={loan.itemRef} name={loan.name} size="paid" />
 
-        <div className="bank-paid-card__main">
-          <h4 className="bank-paid-card__title">{loan.name}</h4>
-
-          <div className="bank-mortgage-card__badges">
-            <StatusBadge tone="sky">Ипотека</StatusBadge>
-            <CategoryChip>В кредит</CategoryChip>
-            {isCommercial ? <BankCommercialBadge /> : null}
-          </div>
-
-          {description ? <p className="bank-paid-card__description">{description}</p> : null}
-
-          <BankCommercialIncomeHighlight amount={passiveIncome} />
-
-          <div className="bank-paid-card__stats">
-            <div>
-              <p className="bank-paid-card__stat-label">Цена покупки</p>
-              <MoneyValue
-                amount={loan.purchasePrice}
-                size="sm"
-                color="amber"
-                className="bank-paid-card__stat-value"
-              />
+          <div className="bank-paid-card__main">
+            <div className="bank-paid-card__title-row">
+              <h4 className="bank-paid-card__title">{loan.name}</h4>
+              <span className="bank-paid-card__open-hint" aria-hidden>
+                <BankPropertyOpenHint />
+              </span>
             </div>
 
-            <div>
-              <p className="bank-paid-card__stat-label">Остаток</p>
-              <MoneyValue
-                amount={loan.remainingAmount}
-                size="sm"
-                color="red"
-                className="bank-paid-card__stat-value"
-              />
+            <div className="bank-mortgage-card__badges">
+              <CategoryChip>ИПОТЕКА</CategoryChip>
+              {isCommercial ? <BankCommercialBadge /> : null}
+              <BankCommercialIncomeChip amount={passiveIncome} />
             </div>
 
-            <div>
-              <p className="bank-paid-card__stat-label">Платёж / ход</p>
-              <MoneyValue
-                amount={loan.paymentPerTurn}
-                size="sm"
-                className="bank-paid-card__stat-value"
-              />
-            </div>
+            {propertyDetails.description ? (
+              <p className="bank-paid-card__description">{propertyDetails.description}</p>
+            ) : null}
 
-            <div>
-              <p className="bank-paid-card__stat-label">Осталось ходов</p>
-              <span className="bank-paid-card__stat-text">{loan.turnsRemaining}</span>
-            </div>
-          </div>
+            <div className="bank-paid-card__stats">
+              <div>
+                <p className="bank-paid-card__stat-label">Цена покупки</p>
+                <MoneyValue
+                  amount={loan.purchasePrice}
+                  size="sm"
+                  color="amber"
+                  className="bank-paid-card__stat-value"
+                />
+              </div>
 
-          <div className="bank-mortgage-card__progress">
-            <div className="bank-mortgage-card__progress-head">
-              <span className="bank-paid-card__stat-label">Выплачено</span>
-              <span className="bank-mortgage-card__progress-value">{loan.paybackPct}%</span>
+              <div>
+                <p className="bank-paid-card__stat-label">Остаток</p>
+                <MoneyValue
+                  amount={loan.remainingAmount}
+                  size="sm"
+                  color="red"
+                  className="bank-paid-card__stat-value"
+                />
+              </div>
+
+              <div>
+                <p className="bank-paid-card__stat-label">Платёж / ход</p>
+                <MoneyValue
+                  amount={loan.paymentPerTurn}
+                  size="sm"
+                  className="bank-paid-card__stat-value"
+                />
+              </div>
+
+              <div>
+                <p className="bank-paid-card__stat-label">Выплачено</p>
+                <div className="bank-mortgage-card__paid-value">
+                  <MoneyValue amount={loan.paidAmount} size="sm" color="emerald" className="inline-flex" />
+                  <span className="bank-mortgage-card__paid-pct">{loan.paybackPct}%</span>
+                </div>
+              </div>
             </div>
-            <SegmentBar percent={loan.paybackPct} />
           </div>
         </div>
-      </div>
-    </DashboardCard>
+      </DashboardCard>
+
+      <BankMortgagePropertyModal
+        property={detailsOpen ? propertyDetails : null}
+        onClose={() => setDetailsOpen(false)}
+      />
+    </>
   )
 }

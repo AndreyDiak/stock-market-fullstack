@@ -85,6 +85,14 @@ export function formatOperationPriceDiff(
   const tone = resolvePriceDiffTone(type, priceDiff.amount)
 
   if (type === 'buy') {
+    if (priceDiff.amount === 0) {
+      return {
+        label: 'Рыночная стоимость',
+        detailLabel: 'Рыночная стоимость',
+        tone,
+      }
+    }
+
     const percentLabel = formatMarketComparisonPercent(price, priceDiff.referencePrice)
     return {
       label: `${percentLabel} от рынка`,

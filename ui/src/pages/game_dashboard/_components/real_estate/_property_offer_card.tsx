@@ -26,6 +26,7 @@ import {
 } from "./_offer_styles";
 import {
   getPurchaseInstallmentPlan,
+  getSellOfferEconomics,
   hasInsufficientDownPayment,
   INSUFFICIENT_DOWN_PAYMENT_REASON,
 } from "./_accept_deal_utils";
@@ -158,6 +159,10 @@ export function PropertyOfferCard({
   const marketComparisonPercent = formatMarketComparisonPercent(
     offer.offerPrice,
     offer.marketPrice,
+  );
+  const sellEconomics = useMemo(
+    () => (!isPurchase ? getSellOfferEconomics(offer, inventoryItems) : null),
+    [isPurchase, offer, inventoryItems],
   );
 
   return (
@@ -309,6 +314,47 @@ export function PropertyOfferCard({
                         color="white"
                         className="asset-market-card__stat-value asset-market-card__money-nowrap"
                       />
+                    </div>
+                  </div>
+                </div>
+              ) : sellEconomics ? (
+                <div className="asset-market-card__stats asset-market-card__stats--sell">
+                  <div className="asset-market-card__stats-row asset-market-card__stats-row--triple">
+                    <div className="asset-market-card__stat-cell">
+                      <span className="asset-market-card__stat-label">Куплено за</span>
+                      <MoneyValue
+                        amount={sellEconomics.purchasePrice}
+                        size="xs"
+                        color="white"
+                        className="asset-market-card__stat-value asset-market-card__money-nowrap"
+                      />
+                    </div>
+                    <div className="asset-market-card__stat-cell">
+                      <span className="asset-market-card__stat-label">Прибыль</span>
+                      <MoneyValue
+                        amount={Math.abs(sellEconomics.profit)}
+                        size="xs"
+                        color={sellEconomics.profit >= 0 ? "emerald" : "red"}
+                        prefix={
+                          sellEconomics.profit > 0
+                            ? "+"
+                            : sellEconomics.profit < 0
+                              ? "−"
+                              : undefined
+                        }
+                        className="asset-market-card__stat-value asset-market-card__money-nowrap"
+                      />
+                    </div>
+                    <div className="asset-market-card__stat-cell asset-market-card__stat-cell--end">
+                      <span className="asset-market-card__stat-label">Срок</span>
+                      <span
+                        className={[
+                          "asset-market-card__stat-value",
+                          isUrgent ? "asset-market-card__stat-value--urgent" : "",
+                        ].join(" ")}
+                      >
+                        {format_turns_remaining_label(offer.expiresInTurns)}
+                      </span>
                     </div>
                   </div>
                 </div>

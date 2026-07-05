@@ -10,8 +10,19 @@ import {
   formatPropertyPurchaseTurnLabel,
   parseCatalogPassiveIncome,
   resolvePropertyPurchaseStep,
+  type PropertyOperationDetails,
 } from './_bank_operation_history'
 import type { ActiveLoan, BankSummary, PaidProperty } from './index'
+
+export interface MortgagePropertyDetails {
+  loan: ActiveLoan
+  itemRef: string
+  name: string
+  description: string | null
+  passiveIncome: number
+  purchaseTurn: number
+  details: PropertyOperationDetails | null
+}
 
 function hasActiveInstallmentDebt(item: InventoryItemDto): boolean {
   if (!item.isInstallment || item.isPaidOff) return false
@@ -92,6 +103,32 @@ function mapPaidProperty(
     description: catalog?.description ?? null,
     purchaseTurn,
     details: buildInventoryItemFinanceDetails(item, news, bankBaseRatePercent),
+  }
+}
+
+export function mapMortgagePropertyDetails(
+  loan: ActiveLoan,
+  inventoryItem: InventoryItemDto | undefined,
+  news: news_item[],
+  bankBaseRatePercent: number,
+): MortgagePropertyDetails {
+  const catalog = REAL_ESTATE_CATALOG.find((entry) => entry.id === loan.itemRef)
+  const passiveIncome = parseCatalogPassiveIncome(loan.itemRef)
+  const lookup = buildPropertyPurchaseStepLookup(news)
+  const purchaseTurn = inventoryItem
+    ? resolvePropertyPurchaseStep(inventoryItem.itemRef, inventoryItem.purchasePrice, lookup)
+    : resolvePropertyPurchaseStep(loan.itemRef, loan.purchasePrice, lookup)
+
+  return {
+    loan,
+    itemRef: loan.itemRef,
+    name: loan.name,
+    description: catalog?.description ?? null,
+    passiveIncome,
+    purchaseTurn,
+    details: inventoryItem
+      ? buildInventoryItemFinanceDetails(inventoryItem, news, bankBaseRatePercent)
+      : null,
   }
 }
 

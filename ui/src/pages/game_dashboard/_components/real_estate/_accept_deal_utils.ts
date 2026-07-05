@@ -456,3 +456,20 @@ export function buildAcceptDealPreview(
 
 }
 
+export function getSellOfferEconomics(
+  offer: PropertyOffer,
+  inventoryItems: InventoryItemDto[],
+): { purchasePrice: number; profit: number } | null {
+  if (!offer.inventoryItemId) return null
+
+  const owned = inventoryItems.find((item) => item.id === offer.inventoryItemId)
+  if (!owned) return null
+
+  const purchasePrice = owned.purchasePrice
+
+  return {
+    purchasePrice,
+    profit: offer.offerPrice - purchasePrice,
+  }
+}
+

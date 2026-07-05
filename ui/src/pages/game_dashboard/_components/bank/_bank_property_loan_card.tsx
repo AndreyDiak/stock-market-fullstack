@@ -4,7 +4,7 @@ import { GameButton } from '../../../../components/game_ui/game_button'
 import { gameAudio } from '../../../../lib/audio/game_audio'
 import { format_turns_remaining_label } from '../../_model/utils'
 import { calcMinPayoffAmount } from './_bank_payoff_utils'
-import { BankCommercialBadge, BankCommercialIncomeHighlight } from './_bank_commercial_income_highlight'
+import { BankCommercialBadge, BankCommercialIncomeChip } from './_bank_commercial_income_highlight'
 import { parseCatalogPassiveIncome } from './_bank_operation_history'
 import { BankPropertyPreview } from './_bank_property_preview'
 import { CategoryChip, DashboardCard, SegmentBar } from '../shared'
@@ -23,6 +23,25 @@ function StatCell({
       <div className="bank-loan-card__stat-value">{children}</div>
     </div>
   )
+}
+
+function LoanInfoChip({
+  children,
+  variant = 'muted',
+}: {
+  children: ReactNode
+  variant?: 'muted' | 'emerald'
+}) {
+  return (
+    <span className={`bank-loan-card__chip bank-loan-card__chip--${variant}`}>
+      {children}
+    </span>
+  )
+}
+
+function capitalizeLabel(value: string) {
+  if (!value) return value
+  return value.charAt(0).toUpperCase() + value.slice(1)
 }
 
 export function BankPropertyLoanCard({
@@ -51,24 +70,30 @@ export function BankPropertyLoanCard({
         <BankPropertyPreview itemRef={loan.itemRef} name={loan.name} size="loan" />
 
         <div className="bank-loan-card__main">
-          <div className="bank-loan-card__header">
-            <div className="min-w-0 flex-1">
+          <div className="bank-loan-card__top">
+            <div className="bank-loan-card__identity">
               <div className="bank-loan-card__title-row">
                 <h4 className="bank-loan-card__title">{loan.name}</h4>
-                <CategoryChip>Ипотека</CategoryChip>
+                <CategoryChip>ИПОТЕКА</CategoryChip>
                 {isCommercial ? <BankCommercialBadge /> : null}
               </div>
 
-              <p className="bank-loan-card__subtitle">
-                {format_turns_remaining_label(loan.turnsRemaining)}
-              </p>
+              <div className="bank-loan-card__chips">
+                <BankCommercialIncomeChip amount={passiveIncome} />
+                <LoanInfoChip>
+                  {capitalizeLabel(format_turns_remaining_label(loan.turnsRemaining))}
+                </LoanInfoChip>
+              </div>
+            </div>
 
-              <p className="bank-loan-card__meta">
-                Цена покупки:{' '}
-                <MoneyValue amount={loan.purchasePrice} size="xs" color="amber" className="inline-flex" />
-              </p>
-
-              <BankCommercialIncomeHighlight amount={passiveIncome} compact />
+            <div className="bank-loan-card__price-accent">
+              <p className="bank-loan-card__price-label">Цена покупки</p>
+              <MoneyValue
+                amount={loan.purchasePrice}
+                size="md"
+                color="amber"
+                className="bank-loan-card__price-value"
+              />
             </div>
           </div>
 
@@ -80,10 +105,10 @@ export function BankPropertyLoanCard({
               <MoneyValue amount={loan.remainingAmount} size="sm" color="red" className="inline-flex" />
             </StatCell>
             <StatCell label="Платёж / ход">
-              <MoneyValue amount={loan.paymentPerTurn} size="sm" color="amber" className="inline-flex" />
+              <MoneyValue amount={loan.paymentPerTurn} size="sm" className="inline-flex" />
             </StatCell>
             <StatCell label="Прогресс">
-              <span className="text-emerald-400">{loan.paybackPct}%</span>
+              <span className="bank-loan-card__progress-stat">{loan.paybackPct}%</span>
             </StatCell>
           </div>
         </div>
@@ -111,7 +136,7 @@ export function BankPropertyLoanCard({
               ? 'Выбрать сумму досрочного погашения'
               : `Недостаточно средств (минимум ${formatMoney(calcMinPayoffAmount(loan.remainingAmount))})`
           }
-          className="w-full shrink-0 shadow-[0_3px_0_#047857,inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_3px_0_#047857,0_0_14px_rgba(16,185,129,0.3),inset_0_1px_0_rgba(255,255,255,0.25)] disabled:shadow-[0_3px_0_#0f172a] disabled:hover:shadow-[0_3px_0_#0f172a] sm:w-auto"
+          className="bank-loan-card__payoff-btn"
         >
           Досрочное погашение
         </GameButton>

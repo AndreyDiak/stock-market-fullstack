@@ -156,9 +156,9 @@ export function format_turns_ago_label(turnsAgo: number) {
   if (turnsAgo <= 0) return 'этот ход'
   if (turnsAgo > 10) return 'давно'
   if (turnsAgo > 5) return 'недавно'
-  if (turnsAgo === 1) return '1 ход назад'
   const mod10 = turnsAgo % 10
   const mod100 = turnsAgo % 100
+  if (mod10 === 1 && mod100 !== 11) return `${turnsAgo} ход назад`
   if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) {
     return `${turnsAgo} хода назад`
   }
@@ -183,9 +183,9 @@ export function format_news_age_label(
 }
 
 export function format_turns_left_label(turnsLeft: number) {
-  if (turnsLeft === 1) return '1 ход'
   const mod10 = turnsLeft % 10
   const mod100 = turnsLeft % 100
+  if (mod10 === 1 && mod100 !== 11) return `${turnsLeft} ход`
   if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return `${turnsLeft} хода`
   return `${turnsLeft} ходов`
 }

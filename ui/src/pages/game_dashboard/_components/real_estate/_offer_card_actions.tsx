@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 import { GameButton } from '../../../../components/game_ui/game_button';
-import { gameAudio } from '../../../../lib/audio/game_audio';
 import { ChatBubbleIcon, CoinIcon, LockOutlineIcon } from '../../../../shared/icons';
 import type { PropertyOffer } from '../../_model/types';
 import {
@@ -157,10 +156,7 @@ export function OfferCardActions({
       size="sm"
       fullWidth
       disabled={actionDisabled}
-      onClick={() => {
-        gameAudio.playSfx('buttonClick');
-        onAccept();
-      }}
+      onClick={() => onAccept()}
       className={ACTION_BUTTON_CLASS}
       aria-label={primaryLabel}
     >
@@ -175,10 +171,7 @@ export function OfferCardActions({
       size="sm"
       fullWidth
       disabled={negotiateDisabled}
-      onClick={() => {
-        gameAudio.playSfx('buttonClick');
-        onNegotiate();
-      }}
+      onClick={() => onNegotiate()}
       className={`${ACTION_BUTTON_CLASS} asset-market-card__secondary-button`}
     >
       <ChatBubbleIcon className="h-3.5 w-3.5 shrink-0 opacity-90" aria-hidden />

@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes } from 'react'
+import { gameAudio } from '../../lib/audio/game_audio'
 
 type GameButtonVariant = 'action' | 'muted' | 'danger' | 'ghost' | 'emerald' | 'teal'
 type GameButtonSize = 'sm' | 'md' | 'lg'
@@ -36,14 +37,25 @@ export function GameButton({
   fullWidth = false,
   className = '',
   children,
+  onClick,
+  disabled,
   ...props
 }: GameButtonProps) {
+  const handleClick: ButtonHTMLAttributes<HTMLButtonElement>['onClick'] = (event) => {
+    if (!disabled) {
+      gameAudio.playSfx('buttonClick')
+    }
+    onClick?.(event)
+  }
+
   return (
     <button
       type="button"
       className={`shrink-0 transition disabled:cursor-not-allowed disabled:opacity-60 ${sizeClasses[size]} ${
         fullWidth ? 'w-full' : ''
       } ${variantClasses[variant]} ${className}`}
+      disabled={disabled}
+      onClick={handleClick}
       {...props}
     >
       {children}
