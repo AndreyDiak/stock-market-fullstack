@@ -28,7 +28,7 @@ import {
   propertyOfferSchema,
 } from './property_offer.schema.js';
 import { acceptOtcDealBodySchema, acceptOtcDealResponseSchema } from './otc_deal.schema.js';
-import { payOffInstallmentResponseSchema } from './property_loan.schema.js';
+import { payOffInstallmentBodySchema, payOffInstallmentResponseSchema } from './property_loan.schema.js';
 import { updateUserBodySchema, userSchema } from './user.schema.js';
 import { logoutResponseSchema, refreshTokenResponseSchema, authTokenResponseSchema, registerBodySchema, loginBodySchema } from './auth.schema.js';
 
@@ -57,6 +57,7 @@ const schemaEntries = {
   AcceptOtcDealBody: acceptOtcDealBodySchema,
   AcceptOtcDealResponse: acceptOtcDealResponseSchema,
   PayOffInstallmentResponse: payOffInstallmentResponseSchema,
+  PayOffInstallmentBody: payOffInstallmentBodySchema,
   User: userSchema,
   UpdateUserBody: updateUserBodySchema,
   RefreshTokenResponse: refreshTokenResponseSchema,

@@ -110,9 +110,6 @@
 .trade-modal__asset-media {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
 }
 
@@ -952,8 +949,17 @@
   color: rgba(226, 232, 240, 0.92);
 }
 
+.negotiate-outcome__metric--pay-now {
+  min-height: 3.75rem;
+  justify-content: center;
+}
+
+.negotiate-outcome__metric-label--pay-now {
+  min-height: 0.875rem;
+}
+
 .negotiate-outcome__payment {
-  margin-top: auto;
+  flex-shrink: 0;
 }
 
 .negotiate-outcome__payment .property-sale-modal__payment-mode {
@@ -961,7 +967,7 @@
 }
 
 .negotiate-outcome__payment .property-sale-modal__payment-mode-option {
-  min-height: 3.75rem;
+  min-height: 4.5rem;
   padding: 0.6rem 0.7rem;
 }
 

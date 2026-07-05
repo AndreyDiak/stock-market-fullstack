@@ -9,6 +9,7 @@ model InventoryItem {
   monthlyPayment    Float?
   installmentsTotal Int?
   installmentsPaid  Int      @default(0)
+  installmentPrepay Float    @default(0)
   special           String?
   purchasedAt       DateTime @default(now())
   isPaidOff         Boolean  @default(false)

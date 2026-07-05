@@ -356,9 +356,14 @@ export class GameService {
     };
   }
 
-  async payOffInstallment(userId: string, saveId: string, itemId: string) {
+  async payOffInstallment(userId: string, saveId: string, itemId: string, payPercent: number) {
     const game = await this.#loadGame(userId, saveId);
-    const result = await this.#propertyOffersService.payOffInstallment(userId, saveId, itemId);
+    const result = await this.#propertyOffersService.payOffInstallment(
+      userId,
+      saveId,
+      itemId,
+      payPercent,
+    );
 
     return {
       balance: result.balance,

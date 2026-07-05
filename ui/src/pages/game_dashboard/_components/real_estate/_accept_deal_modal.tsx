@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { AcceptPropertyOfferResponse } from '../../../../api/propertyOffers';
 import { GameModal } from '../../../../components/game_ui/floating';
 import { MoneyValue } from '../../../../components/money/money_value';
-import { getRealEstateImage } from '../../../../constants/realEstateImages';
+import { AssetImageFrame } from '../../../../shared/components';
 import { TrendArrowIcon } from '../../../../shared/icons';
 import { useGameStore } from '../../../../stores/game.store';
 import type { PropertyOffer } from '../../_model/types';
@@ -120,7 +120,6 @@ function AcceptSuccessView({
   outcome: AcceptPropertyOfferResponse;
 }) {
   const deal = outcome.deal;
-  const image = getRealEstateImage(deal.assetId);
   const isPurchase = deal.action === 'purchased';
   const balanceDelta = outcome.balance - outcome.previousBalance;
   const profitable = outcome.profitAmount >= 0;
@@ -137,9 +136,13 @@ function AcceptSuccessView({
 
         <article className="w-full overflow-hidden rounded-2xl border border-emerald-500/20 bg-slate-800/50">
           <div className="relative h-36 w-full overflow-hidden bg-slate-950/60">
-            {image ? (
-              <img src={image} alt={deal.itemName} className="h-full w-full object-contain p-4 opacity-90" />
-            ) : null}
+            <AssetImageFrame
+              assetId={deal.assetId}
+              alt={deal.itemName}
+              size="fill"
+              decorations={false}
+              imageClassName="opacity-90"
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent" />
             <span className="absolute bottom-3 left-3 rounded-lg border border-emerald-400/30 bg-emerald-500/15 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-200">
               {isPurchase ? 'Куплено' : 'Продано'}
@@ -203,7 +206,7 @@ export function AcceptDealModal({ open, offer, busy = false, onClose, onConfirm 
     [offer, reputation, inventoryItems],
   );
 
-  const image = getRealEstateImage(offer.assetId);
+
   const controlsLocked = phase === 'confirming' || busy;
   const isPurchase = preview.isPurchase;
   const canConfirmPurchase = isPurchase
@@ -264,7 +267,6 @@ export function AcceptDealModal({ open, offer, busy = false, onClose, onConfirm 
           offer={offer}
           preview={preview}
           reputation={reputation}
-          image={image}
           balance={balance}
           paymentMode={paymentMode}
           onPaymentModeChange={setPaymentMode}

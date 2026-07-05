@@ -25,6 +25,7 @@ import type { GeneratedNewsItem } from '../api/gameTurn';
 import type { Game } from '../api/types';
 import type { ActiveLoan, BankSummary, PaidProperty } from '../pages/game_dashboard/_components/bank';
 import { mapInventoryToBankState } from '../pages/game_dashboard/_components/bank/_bank_mappers';
+import { calcInstallmentEarlyPayAmount } from '../pages/game_dashboard/_components/bank/_bank_payoff_utils';
 import type {
   CharacterProfile,
   CharacterSkill,
@@ -47,6 +48,10 @@ import { EMPTY_CHARACTER_PROFILE } from '../pages/game_dashboard/_model/defaults
 import { mapCharacterSnapshot, type InventoryItemDto } from '../pages/game_dashboard/_model/game_mappers';
 import { merge_news_items, remap_news_for_step } from '../pages/game_dashboard/_model/utils';
 import type { bot_deal, news_item, portfolio_row, PropertyOffer } from '../pages/game_dashboard/_model/types';
+import {
+  applyBankingLevelToPropertyOffers,
+  getPlayerBankingLevel,
+} from '../pages/game_dashboard/_components/real_estate/_property_offer_access';
 import { gameAudio } from '../lib/audio/game_audio';
 import { playTurnResultSounds } from '../lib/audio/turn_result_sounds';
 
@@ -113,7 +118,7 @@ interface GameState {
   ) => Promise<AcceptPropertyOfferResponse>;
   declineNegotiatedPropertyOffer: (offerId: string) => Promise<void>;
   purchaseSkill: (skillId: string) => Promise<void>;
-  payOffLoan: (loanId: string) => Promise<void>;
+  payOffLoan: (loanId: string, payPercent: number) => Promise<void>;
   endTurn: () => Promise<void>;
   loadNews: () => Promise<void>;
   clearEnteringNews: () => void;
@@ -169,12 +174,17 @@ function getInitialState(): Omit<
 function applyCharacterSkillsState(
   character: NonNullable<Game['character']>,
   characterSkills: CharacterSkillsState,
+  news: news_item[] = [],
 ) {
   const snapshot = mapCharacterSnapshot(
     character,
     characterSkills.stats.propertySlotsUnlocked,
   );
-  const bank = mapInventoryToBankState(snapshot.inventoryItems);
+  const bank = mapInventoryToBankState(
+    snapshot.inventoryItems,
+    news,
+    characterSkills.stats.bankBaseRatePercent,
+  );
 
   return {
     balance: snapshot.balance,
@@ -213,7 +223,7 @@ export const useGameStore = create<GameState>((set, get) => {
       ? { skills: get().characterSkills, stats: get().characterStats }
       : EMPTY_CHARACTER_SKILLS_STATE,
   ) => {
-    const applied = applyCharacterSkillsState(character, characterSkills);
+    const applied = applyCharacterSkillsState(character, characterSkills, get().news);
     set({
       turn: step,
       ...spreadCharacterBankState(applied),
@@ -235,7 +245,10 @@ export const useGameStore = create<GameState>((set, get) => {
     set({
       news: mapApiNewsList(newsItems, step),
       nextTurnForecast: appendLoanToForecast(forecast, applied.bankSummary.paymentPerTurn),
-      propertyOffers,
+      propertyOffers: applyBankingLevelToPropertyOffers(
+        propertyOffers,
+        getPlayerBankingLevel(characterSkills.skills),
+      ),
     });
   };
 
@@ -348,6 +361,7 @@ export const useGameStore = create<GameState>((set, get) => {
         get().characterSkills.length > 0
           ? { skills: get().characterSkills, stats: get().characterStats }
           : EMPTY_CHARACTER_SKILLS_STATE,
+        get().news,
       );
       const balanceDelta = result.balance - get().balance;
 
@@ -377,11 +391,16 @@ export const useGameStore = create<GameState>((set, get) => {
       set({ propertyOfferBusy: true });
       try {
         const result = await acceptPropertyOffer(gameId, offerId, paymentMode);
+        const state = get();
+        const newsForBank = result.news
+          ? appendNewsItem(state, result.news).news
+          : state.news;
         const applied = applyCharacterSkillsState(
           result.character,
           get().characterSkills.length > 0
             ? { skills: get().characterSkills, stats: get().characterStats }
             : EMPTY_CHARACTER_SKILLS_STATE,
+          newsForBank,
         );
         const balanceDelta = result.balance - result.previousBalance;
 
@@ -425,11 +444,16 @@ export const useGameStore = create<GameState>((set, get) => {
       set({ propertyOfferBusy: true });
       try {
         const result = await negotiatePropertyOffer(gameId, offerId, adjustmentPercent);
+        const state = get();
+        const newsForBank = result.news
+          ? appendNewsItem(state, result.news).news
+          : state.news;
         const applied = applyCharacterSkillsState(
           result.character,
           get().characterSkills.length > 0
             ? { skills: get().characterSkills, stats: get().characterStats }
             : EMPTY_CHARACTER_SKILLS_STATE,
+          newsForBank,
         );
         const balanceDelta = result.balance - result.previousBalance;
         const reputationChanged = result.reputation !== result.previousReputation;
@@ -471,11 +495,16 @@ export const useGameStore = create<GameState>((set, get) => {
       set({ propertyOfferBusy: true });
       try {
         const result = await acceptNegotiatedPropertyOffer(gameId, offerId, paymentMode);
+        const state = get();
+        const newsForBank = result.news
+          ? appendNewsItem(state, result.news).news
+          : state.news;
         const applied = applyCharacterSkillsState(
           result.character,
           get().characterSkills.length > 0
             ? { skills: get().characterSkills, stats: get().characterStats }
             : EMPTY_CHARACTER_SKILLS_STATE,
+          newsForBank,
         );
         const balanceDelta = result.balance - result.previousBalance;
 
@@ -529,9 +558,13 @@ export const useGameStore = create<GameState>((set, get) => {
         const result = await upgradeCharacterSkill(gameId, skillId);
         if (!result.game.character) return;
 
-        const applied = applyCharacterSkillsState(result.game.character, result.characterSkills);
+        const applied = applyCharacterSkillsState(result.game.character, result.characterSkills, get().news);
         set({
           ...spreadCharacterBankState(applied),
+          propertyOffers: applyBankingLevelToPropertyOffers(
+            get().propertyOffers,
+            getPlayerBankingLevel(result.characterSkills.skills),
+          ),
           nextTurnForecast: appendLoanToForecast(
             result.nextTurnForecast,
             applied.bankSummary.paymentPerTurn,
@@ -545,19 +578,31 @@ export const useGameStore = create<GameState>((set, get) => {
       }
     },
 
-    payOffLoan: async (loanId) => {
+    payOffLoan: async (loanId, payPercent) => {
       const { bankLoans, balance, gameId } = get();
       const loan = bankLoans.find((item) => item.id === loanId);
-      if (!loan || balance < loan.remainingAmount || !gameId) return;
+      if (!loan || !gameId) return;
+
+      const paymentAmount = calcInstallmentEarlyPayAmount(
+        loan.remainingAmount,
+        payPercent,
+        balance,
+      );
+      if (paymentAmount <= 0) return;
 
       set({ payingOffLoanId: loanId });
       try {
-        const result = await payOffInstallment(gameId, loanId);
+        const result = await payOffInstallment(gameId, loanId, payPercent);
+        const state = get();
+        const newsForBank = result.news
+          ? appendNewsItem(state, result.news).news
+          : state.news;
         const applied = applyCharacterSkillsState(
           result.character,
           get().characterSkills.length > 0
             ? { skills: get().characterSkills, stats: get().characterStats }
             : EMPTY_CHARACTER_SKILLS_STATE,
+          newsForBank,
         );
         const balanceDelta = result.balance - result.previousBalance;
 
@@ -595,7 +640,7 @@ export const useGameStore = create<GameState>((set, get) => {
 
       try {
         const result = await endGameTurn(gameId, stepAtClick);
-        const applied = applyCharacterSkillsState(result.character, result.characterSkills);
+        const applied = applyCharacterSkillsState(result.character, result.characterSkills, get().news);
         const netDelta = result.passiveIncome.netChange;
 
         set((state) => ({

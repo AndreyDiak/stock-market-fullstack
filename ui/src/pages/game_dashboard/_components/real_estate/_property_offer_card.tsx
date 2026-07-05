@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type {
   AcceptPropertyOfferResponse,
   NegotiatePropertyOfferResponse,
 } from "../../../../api/propertyOffers";
 import { MoneyValue } from "../../../../components/money/money_value";
-import { getRealEstateImage } from "../../../../constants/realEstateImages";
 import { DealArrowIcon } from "../../../../shared/icons";
+import { AssetImageFrame } from "../../../../shared/components";
 import { useGameStore } from "../../../../stores/game.store";
 import type { PropertyOffer } from "../../_model/types";
 import { format_turns_left_label, format_turns_remaining_label } from "../../_model/utils";
@@ -34,6 +34,10 @@ import {
   calcPurchaseProposedPrice,
   getMaxNegotiateDiscountPercent,
 } from "./_negotiate_utils";
+import {
+  applyBankingLevelToPropertyOffer,
+  getPlayerBankingLevel,
+} from "./_property_offer_access";
 
 function getBlockReason(
   offer: PropertyOffer,
@@ -61,7 +65,7 @@ function getBlockReason(
 }
 
 export function PropertyOfferCard({
-  offer,
+  offer: offerProp,
   highlighted,
   busy,
   onAccept,
@@ -91,9 +95,17 @@ export function PropertyOfferCard({
   const propertySlots = useGameStore((state) => state.propertySlots);
   const inventoryItems = useGameStore((state) => state.inventoryItems);
   const balance = useGameStore((state) => state.balance);
+  const characterSkills = useGameStore((state) => state.characterSkills);
   const tradingLevel = useGameStore((state) => state.characterProfile.tradingLevel) || 1;
   const bankBaseRatePercent = useGameStore((state) => state.characterStats.bankBaseRatePercent);
-  const image = getRealEstateImage(offer.assetId);
+  const offer = useMemo(
+    () =>
+      applyBankingLevelToPropertyOffer(
+        offerProp,
+        getPlayerBankingLevel(characterSkills),
+      ),
+    [offerProp, characterSkills],
+  );
   const dealType = getPlayerDealType(offer.type);
   const isPurchase = dealType === "buy";
   const installmentPlan = isPurchase
@@ -207,21 +219,12 @@ export function PropertyOfferCard({
 
           <div className="asset-market-card__main">
             <div className="asset-market-card__visual">
-              <div className="asset-market-card__visual-glow" aria-hidden />
-              <div className="asset-market-card__visual-floor" aria-hidden />
-              <div className="asset-market-card__image-wrap">
-                {image ? (
-                  <img
-                    src={image}
-                    alt={offer.itemName}
-                    className="asset-market-card__image"
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center text-3xl">
-                    🏠
-                  </div>
-                )}
-              </div>
+              <AssetImageFrame
+                assetId={offer.assetId}
+                alt={offer.itemName}
+                size="fill"
+                fallback={<span className="text-3xl">🏠</span>}
+              />
             </div>
 
             <div className="asset-market-card__content">

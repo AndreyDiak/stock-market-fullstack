@@ -7,6 +7,7 @@ import { GameService } from './_service.js';
 import { upgradeSkillParamsSchema } from '../../schemas/character_skills.schema.js';
 import { negotiatePropertyOfferBodySchema, acceptPropertyOfferBodySchema } from '../../schemas/property_offer.schema.js';
 import { acceptOtcDealBodySchema } from '../../schemas/otc_deal.schema.js';
+import { payOffInstallmentBodySchema } from '../../schemas/property_loan.schema.js';
 
 export async function gameRoutes(fastify: FastifyInstance) {
   const gameService = new GameService(fastify.prisma);
@@ -311,6 +312,7 @@ export async function gameRoutes(fastify: FastifyInstance) {
             itemId: { type: 'string', format: 'uuid' },
           },
         },
+        body: { $ref: 'PayOffInstallmentBody#' },
         response: {
           200: { $ref: 'PayOffInstallmentResponse#' },
           ...errorResponses,
@@ -319,7 +321,8 @@ export async function gameRoutes(fastify: FastifyInstance) {
     },
     async (request) => {
       const { id, itemId } = request.params as { id: string; itemId: string };
-      return gameService.payOffInstallment(request.user.sub, id, itemId);
+      const { payPercent } = payOffInstallmentBodySchema.parse(request.body ?? {});
+      return gameService.payOffInstallment(request.user.sub, id, itemId, payPercent);
     },
   );
 }

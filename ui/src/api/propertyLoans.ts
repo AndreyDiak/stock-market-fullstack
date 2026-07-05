@@ -11,8 +11,10 @@ export interface PayOffInstallmentResponse {
   nextTurnForecast: NextTurnForecast;
 }
 
-export async function payOffInstallment(gameId: string, itemId: string) {
+export async function payOffInstallment(gameId: string, itemId: string, payPercent: number) {
   return http
-    .post(`saves/${gameId}/inventory/${itemId}/pay-off-installment`)
+    .post(`saves/${gameId}/inventory/${itemId}/pay-off-installment`, {
+      json: { payPercent },
+    })
     .json<PayOffInstallmentResponse>();
 }

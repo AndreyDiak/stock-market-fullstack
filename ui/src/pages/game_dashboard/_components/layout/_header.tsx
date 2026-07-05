@@ -8,6 +8,7 @@ import { gameAudio } from '../../../../lib/audio/game_audio'
 import { useGameStore } from '../../../../stores/game.store'
 import { useDashboardTheme } from '../../_model/use_dashboard_theme'
 import { HeaderStats } from './_header_stats'
+import { HeaderNextNewsPreview } from './_header_next_news'
 import './_header.css'
 
 export function Header() {
@@ -40,6 +41,10 @@ export function Header() {
       </div>
 
       <div className="header__session">
+        <HeaderNextNewsPreview />
+
+        <div className={`header__divider ${theme.headerDivider}`} aria-hidden />
+
         <div className="header__balance-group">
           <span className={`text-xs font-medium ${theme.secondaryText}`}>Баланс</span>
           <div className="relative">

@@ -3,6 +3,10 @@ import { COMPANIES, type CompanyData } from '../../assets/companies.js';
 import type { StaticNewsKind, StaticNewsTemplate } from '../../assets/news.js';
 import { ensureCompanyByTicker } from '../market/company_catalog.js';
 import {
+  formatPropertySaleNewsBody,
+  type PropertySaleNewsFinance,
+} from '../property_offers/_deal.js';
+import {
   fillNewsTemplate,
   pickInsiderTurnsUntilImpact,
   pickStaticNews,
@@ -172,6 +176,7 @@ export class NewsGenerationService {
     assetId: string;
     price: number;
     profitAmount: number;
+    saleFinance?: PropertySaleNewsFinance;
   }) {
     const isPurchase = input.action === 'purchased';
     const title = isPurchase ? `Покупка: ${input.itemName}` : `Продажа: ${input.itemName}`;
@@ -184,14 +189,30 @@ export class NewsGenerationService {
           ? `Отклонение от рынка: ${input.profitAmount.toLocaleString('ru-RU')}.`
           : 'Сделка закрыта по рыночной цене.';
 
+    const body =
+      !isPurchase && input.saleFinance
+        ? formatPropertySaleNewsBody(input.itemName, input.saleFinance)
+        : `Вы ${verb} «${input.itemName}» за ${priceLabel}. ${profitLabel}`;
+
+    const sentiment = !isPurchase && input.saleFinance
+      ? input.saleFinance.priceDelta > 0
+        ? 'POSITIVE'
+        : input.saleFinance.priceDelta < 0
+          ? 'NEGATIVE'
+          : 'NEUTRAL'
+      : input.profitAmount > 0
+        ? 'POSITIVE'
+        : input.profitAmount < 0
+          ? 'NEGATIVE'
+          : 'NEUTRAL';
+
     return this.#persistNews({
       gameId: input.gameId,
       gameStep: input.gameStep,
       kind: 'PROPERTY_DEAL',
       title,
-      body: `Вы ${verb} «${input.itemName}» за ${priceLabel}. ${profitLabel}`,
-      sentiment:
-        input.profitAmount > 0 ? 'POSITIVE' : input.profitAmount < 0 ? 'NEGATIVE' : 'NEUTRAL',
+      body,
+      sentiment,
       impact: 0,
       payload: {
         assetId: input.assetId,
@@ -199,6 +220,7 @@ export class NewsGenerationService {
         action: input.action,
         price: input.price,
         profitAmount: input.profitAmount,
+        saleFinance: input.saleFinance ?? null,
       },
     });
   }

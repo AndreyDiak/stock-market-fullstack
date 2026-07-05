@@ -1,13 +1,12 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { MoneyValue } from '../../../../components/money/money_value';
 import { GameButton } from '../../../../components/game_ui/game_button';
-import { getRealEstateImage } from '../../../../constants/realEstateImages';
+import { AssetImageFrame } from '../../../../shared/components';
 import { gameAudio } from '../../../../lib/audio/game_audio';
 import type { AcceptPropertyOfferResponse } from '../../../../api/propertyOffers';
 import type { NegotiatePropertyOfferResponse } from '../../../../api/propertyOffers';
 import type { PropertyOffer } from '../../_model/types';
 import { calcDownPaymentAmount, calcInstallmentSaleBreakdown, calcSaleBalanceCredit, canAffordPurchase, getDefaultPurchasePaymentMode, type PropertyOfferPaymentMode } from './_accept_deal_utils';
-import { InstallmentPlanCaption } from './_installment_plan_caption';
 import { PropertyPaymentModePicker } from './_property_payment_mode';
 import { ReputationChangeBlock } from './_reputation_change_block';
 import { SaleBalanceBreakdown } from './_sale_balance_breakdown';
@@ -37,7 +36,6 @@ export function NegotiatePendingAcceptView({
   const inventoryItems = useGameStore((state) => state.inventoryItems);
   const bankBaseRatePercent = useGameStore((state) => state.characterStats.bankBaseRatePercent);
   const negotiatedPrice = outcome.negotiatedPrice ?? offer.pendingNegotiatedPrice ?? offer.offerPrice;
-  const image = getRealEstateImage(offer.assetId);
   const [paymentMode, setPaymentMode] = useState<PropertyOfferPaymentMode>('installment');
 
   useEffect(() => {
@@ -150,17 +148,18 @@ export function NegotiatePendingAcceptView({
           }
         >
           <div className="negotiate-outcome__visual-media">
-            {image ? (
-              <img src={image} alt={offer.itemName} className="negotiate-outcome__visual-image" />
-            ) : (
-              <div className="negotiate-outcome__visual-placeholder" aria-hidden>
-                🏠
+            <AssetImageFrame
+              assetId={offer.assetId}
+              alt={offer.itemName}
+              size="fill"
+              decorations={false}
+              fallback={<div className="negotiate-outcome__visual-placeholder" aria-hidden>🏠</div>}
+            >
+              <div className="negotiate-outcome__visual-overlay">
+                <span className="negotiate-outcome__visual-name">{offer.itemName}</span>
+                <span className="negotiate-outcome__visual-grade">Категория {offer.profitGrade}</span>
               </div>
-            )}
-            <div className="negotiate-outcome__visual-overlay">
-              <span className="negotiate-outcome__visual-name">{offer.itemName}</span>
-              <span className="negotiate-outcome__visual-grade">Категория {offer.profitGrade}</span>
-            </div>
+            </AssetImageFrame>
           </div>
         </aside>
 
@@ -186,16 +185,16 @@ export function NegotiatePendingAcceptView({
 
             {payNowAmount !== null ? (
               <div
-                className={`negotiate-outcome__metric${
-                  installmentBreakdown ? ' negotiate-outcome__metric--balance-detail' : ''
-                }`}
+                className={[
+                  'negotiate-outcome__metric',
+                  'negotiate-outcome__metric--pay-now',
+                  installmentBreakdown ? 'negotiate-outcome__metric--balance-detail' : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
               >
-                <span className="negotiate-outcome__metric-label">
-                  {isPurchase
-                    ? paymentMode === 'full'
-                      ? 'К оплате сейчас'
-                      : 'Первый взнос'
-                    : 'На баланс'}
+                <span className="negotiate-outcome__metric-label negotiate-outcome__metric-label--pay-now">
+                  {isPurchase ? 'К оплате сейчас' : 'На баланс'}
                 </span>
                 <MoneyValue
                   amount={payNowAmount}
@@ -204,14 +203,6 @@ export function NegotiatePendingAcceptView({
                 />
                 {installmentBreakdown ? (
                   <SaleBalanceBreakdown breakdown={installmentBreakdown} />
-                ) : null}
-                {isPurchase && paymentMode === 'installment' ? (
-                  <InstallmentPlanCaption
-                    assetId={offer.assetId}
-                    purchasePrice={negotiatedPrice}
-                    downPaymentPercent={offer.downPaymentPercent}
-                    className="mt-0.5"
-                  />
                 ) : null}
               </div>
             ) : null}
@@ -287,7 +278,6 @@ export function NegotiateDealSuccessView({
   rollOutcome = null,
 }: NegotiateDealSuccessViewProps) {
   const deal = result.deal;
-  const image = getRealEstateImage(deal.assetId);
   const isPurchase = deal.action === 'purchased';
   const balanceDelta = result.balance - result.previousBalance;
   const displayAmount = Math.abs(balanceDelta) || result.deal.price;
@@ -305,13 +295,13 @@ export function NegotiateDealSuccessView({
 
       <article className="w-full overflow-hidden rounded-2xl border border-emerald-500/20 bg-slate-800/50">
         <div className="relative h-36 w-full overflow-hidden bg-slate-950/60">
-          {image ? (
-            <img
-              src={image}
-              alt={deal.itemName}
-              className="h-full w-full object-cover opacity-90"
-            />
-          ) : null}
+          <AssetImageFrame
+            assetId={deal.assetId}
+            alt={deal.itemName}
+            size="fill"
+            decorations={false}
+            imageClassName="opacity-90"
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent" />
           <span className="absolute bottom-3 left-3 rounded-lg border border-emerald-400/30 bg-emerald-500/15 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-200">
             {isPurchase ? 'Куплено' : 'Продано'}

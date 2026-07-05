@@ -12,7 +12,10 @@ import {
   normalizeNegotiatePercent,
 } from './_negotiate_discount.js';
 import {
+  applyEarlyInstallmentPayment,
+  buildPropertySaleNewsFinance,
   calcDealProfitAmount,
+  calcInstallmentEarlyPayAmount,
   calcInstallmentSaleBreakdown,
   calcPaidLoanAmount,
   calcReputationAfterSuccessfulTrade,
@@ -317,6 +320,10 @@ export class PropertyOffersService {
     });
 
     const dealAction = type === 'SELL' ? 'purchased' : 'sold';
+    const saleFinance =
+      dealAction === 'sold' && owned
+        ? buildPropertySaleNewsFinance(owned, offer.offerPrice)
+        : undefined;
     const news = await this.#newsService.createPropertyDealNews({
       gameId,
       gameStep: currentStep,
@@ -325,6 +332,7 @@ export class PropertyOffersService {
       assetId: offer.assetId,
       price: offer.offerPrice,
       profitAmount,
+      saleFinance,
     });
 
     return {
@@ -542,6 +550,10 @@ export class PropertyOffersService {
     });
 
     const dealAction = type === 'SELL' ? 'purchased' : 'sold';
+    const saleFinance =
+      dealAction === 'sold' && owned
+        ? buildPropertySaleNewsFinance(owned, negotiatedPrice)
+        : undefined;
     const news = await this.#newsService.createPropertyDealNews({
       gameId,
       gameStep: currentStep,
@@ -550,6 +562,7 @@ export class PropertyOffersService {
       assetId: offer.assetId,
       price: negotiatedPrice,
       profitAmount,
+      saleFinance,
     });
 
     return {
@@ -724,7 +737,12 @@ export class PropertyOffersService {
     }
   }
 
-  async payOffInstallment(userId: string, gameId: string, itemId: string) {
+  async payOffInstallment(
+    userId: string,
+    gameId: string,
+    itemId: string,
+    payPercent: number,
+  ) {
     const game = await this.#prisma.game.findFirst({
       where: { id: gameId, userId },
       include: {
@@ -750,27 +768,34 @@ export class PropertyOffersService {
     }
 
     const remaining = calcInstallmentTotalOwed(item) - calcPaidLoanAmount(item);
-    if (game.character.balance < remaining) {
+    const paymentAmount = calcInstallmentEarlyPayAmount(
+      remaining,
+      payPercent,
+      game.character.balance,
+    );
+
+    if (paymentAmount <= 0) {
       throw new AppError(400, 'INSUFFICIENT_FUNDS', 'Недостаточно средств для досрочного погашения');
     }
 
+    const applied = applyEarlyInstallmentPayment(item, paymentAmount);
     const previousBalance = game.character.balance;
-    const installmentsTotal = item.installmentsTotal ?? item.installmentsPaid;
 
     await this.#prisma.$transaction(async (tx) => {
       await tx.character.update({
         where: { id: game.character!.id },
         data: {
-          balance: { decrement: remaining },
-          totalSpent: { increment: remaining },
+          balance: { decrement: applied.paymentAmount },
+          totalSpent: { increment: applied.paymentAmount },
         },
       });
 
       await tx.inventoryItem.update({
         where: { id: itemId },
         data: {
-          isPaidOff: true,
-          installmentsPaid: installmentsTotal,
+          isPaidOff: applied.isPaidOff,
+          installmentsPaid: applied.installmentsPaid,
+          installmentPrepay: applied.installmentPrepay,
         },
       });
     });
@@ -780,9 +805,9 @@ export class PropertyOffersService {
       gameStep: game.step,
       itemRef: item.itemRef,
       itemName: item.name,
-      amount: remaining,
-      paidOff: true,
-      installmentsPaidAfter: installmentsTotal,
+      amount: applied.paymentAmount,
+      paidOff: applied.isPaidOff,
+      installmentsPaidAfter: applied.installmentsPaid,
       installmentsTotal: item.installmentsTotal,
     });
 

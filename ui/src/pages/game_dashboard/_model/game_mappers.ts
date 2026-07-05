@@ -17,6 +17,7 @@ export interface InventoryItemDto {
   monthlyPayment: number | null
   installmentsTotal: number | null
   installmentsPaid: number
+  installmentPrepay?: number
   isInstallment: boolean
   isPaidOff: boolean
   purchasedAt: string

@@ -1,0 +1,1 @@
+ALTER TABLE "inventory_items" ADD COLUMN "installmentPrepay" DOUBLE PRECISION NOT NULL DEFAULT 0;

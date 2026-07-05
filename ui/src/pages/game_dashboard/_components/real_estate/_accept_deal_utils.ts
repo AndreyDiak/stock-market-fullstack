@@ -256,7 +256,11 @@ export function calcPaidLoanAmount(item: InventoryItemDto): number {
 
   const monthlyPayment = item.monthlyPayment ?? 0;
 
-  return getDownPaymentAmount(item) + item.installmentsPaid * monthlyPayment;
+  return (
+    getDownPaymentAmount(item) +
+    item.installmentsPaid * monthlyPayment +
+    (item.installmentPrepay ?? 0)
+  );
 
 }
 

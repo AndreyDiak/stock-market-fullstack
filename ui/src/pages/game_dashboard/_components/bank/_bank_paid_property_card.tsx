@@ -1,73 +1,84 @@
+import { useState } from 'react'
 import { MoneyValue } from '../../../../components/money/money_value'
-import { getRealEstateImage } from '../../../../constants/realEstateImages'
-import { REAL_ESTATE_CATALOG } from '../../../../constants/realEstate'
 import { CategoryChip, DashboardCard, StatusBadge } from '../shared'
+import { BankCommercialBadge, BankCommercialIncomeHighlight } from './_bank_commercial_income_highlight'
+import { BankPaidPropertyModal } from './_bank_paid_property_modal'
+import { BankPropertyOpenHint } from './_bank_property_open_hint'
+import { BankPropertyPreview } from './_bank_property_preview'
 import type { PaidProperty } from './index'
 
-const SECONDARY_TEXT = 'text-[var(--text-secondary,#94a3b8)]'
-
-function parsePassiveIncome(special: string | undefined) {
-  if (!special) return 0
-  const match = special.match(/(\d+)\/ход/)
-  return match ? Number(match[1]) : 0
-}
-
 export function BankPaidPropertyCard({ property }: { property: PaidProperty }) {
-  const image = getRealEstateImage(property.itemRef)
-  const catalog = REAL_ESTATE_CATALOG.find((entry) => entry.id === property.itemRef)
-  const passiveIncome = parsePassiveIncome(catalog?.special)
+  const [detailsOpen, setDetailsOpen] = useState(false)
+  const isCommercial = property.passiveIncome > 0
 
   return (
-    <DashboardCard as="article" className="bank-paid-card overflow-visible p-4">
-      <div className="flex min-w-0 items-start gap-3">
-        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-slate-900 ring-1 ring-[var(--border-subtle)]">
-          {image ? (
-            <img src={image} alt={property.name} className="h-full w-full object-cover" />
-          ) : (
-            <div className={`flex h-full items-center justify-center text-[10px] ${SECONDARY_TEXT}`}>
-              {property.name}
-            </div>
-          )}
-        </div>
+    <>
+      <DashboardCard
+        as="article"
+        className={`bank-paid-card overflow-visible${isCommercial ? ' bank-paid-card--commercial' : ''}`}
+      >
+        <div className="bank-paid-card__body">
+          <BankPropertyPreview itemRef={property.itemRef} name={property.name} size="paid" />
 
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <h4 className="text-sm font-bold text-white">{property.name}</h4>
-            <StatusBadge tone="emerald">В собственности</StatusBadge>
-          </div>
-
-          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
-            <div>
-              <p className={`text-[10px] font-bold uppercase tracking-wider ${SECONDARY_TEXT}`}>
-                Цена покупки
-              </p>
-              <MoneyValue amount={property.purchasePrice} size="sm" color="amber" className="mt-0.5" />
+          <div className="bank-paid-card__main">
+            <div className="bank-paid-card__title-row">
+              <h4 className="bank-paid-card__title">{property.name}</h4>
+              <button
+                type="button"
+                className="bank-paid-card__open"
+                onClick={() => setDetailsOpen(true)}
+                aria-label={`Подробнее: ${property.name}`}
+              >
+                <BankPropertyOpenHint />
+              </button>
             </div>
 
-            {property.wasInstallment ? (
-              <div>
-                <p className={`text-[10px] font-bold uppercase tracking-wider ${SECONDARY_TEXT}`}>
-                  Всего выплачено
-                </p>
-                <MoneyValue amount={property.totalPaid} size="sm" className="mt-0.5" />
-              </div>
-            ) : (
-              <CategoryChip>Оплачено сразу</CategoryChip>
-            )}
+            <div className="bank-mortgage-card__badges bank-paid-card__status">
+              <StatusBadge tone="emerald">Куплено</StatusBadge>
+              {isCommercial ? <BankCommercialBadge /> : null}
+            </div>
 
-            {passiveIncome > 0 ? (
-              <div>
-                <p className={`text-[10px] font-bold uppercase tracking-wider ${SECONDARY_TEXT}`}>
-                  Доход
-                </p>
-                <p className="mt-0.5 text-sm font-bold text-emerald-400">
-                  +<MoneyValue amount={passiveIncome} size="sm" color="emerald" className="inline-flex" /> / ход
-                </p>
-              </div>
+            {property.description ? (
+              <p className="bank-paid-card__description">{property.description}</p>
             ) : null}
+
+            <BankCommercialIncomeHighlight amount={property.passiveIncome} />
+
+            <div className="bank-paid-card__stats">
+              <div>
+                <p className="bank-paid-card__stat-label">Цена покупки</p>
+                <MoneyValue
+                  amount={property.purchasePrice}
+                  size="sm"
+                  color="amber"
+                  className="bank-paid-card__stat-value"
+                />
+              </div>
+
+              <div>
+                <p className="bank-paid-card__stat-label">Способ оплаты</p>
+                <div className="bank-paid-card__stat-value">
+                  <CategoryChip>{property.paymentLabel}</CategoryChip>
+                </div>
+              </div>
+
+              {property.wasInstallment ? (
+                <div>
+                  <p className="bank-paid-card__stat-label">Всего выплачено</p>
+                  <MoneyValue amount={property.totalPaid} size="sm" className="bank-paid-card__stat-value" />
+                </div>
+              ) : null}
+
+              <div>
+                <p className="bank-paid-card__stat-label">Ход покупки</p>
+                <span className="bank-paid-card__stat-text">{property.purchasedAtLabel}</span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </DashboardCard>
+      </DashboardCard>
+
+      <BankPaidPropertyModal property={detailsOpen ? property : null} onClose={() => setDetailsOpen(false)} />
+    </>
   )
 }

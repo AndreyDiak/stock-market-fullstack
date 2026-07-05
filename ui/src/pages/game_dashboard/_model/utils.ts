@@ -190,6 +190,10 @@ export function format_turns_left_label(turnsLeft: number) {
   return `${turnsLeft} ходов`
 }
 
+export function format_turn_step_label(step: number) {
+  return `ход ${step}`
+}
+
 export function format_turns_remaining_label(turnsLeft: number) {
   return `ещё ${format_turns_left_label(turnsLeft)}`
 }

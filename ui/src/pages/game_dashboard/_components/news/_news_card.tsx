@@ -10,6 +10,7 @@ import {
   getNewsCategoryForItem,
   NEWS_CATEGORY_CONFIG,
 } from './_news_category'
+import { AssetImageFrame } from '../../../../shared/components'
 import { getNewsPropertyAlt, getNewsPropertyImage } from './_news_asset_image'
 import './_news.css'
 import type { GameDashboardThemeTokens } from '../shared'
@@ -88,7 +89,12 @@ function NewsPropertyThumbnail({
 
   return (
     <div className={`news-card__thumbnail news-card__thumbnail--${variant}`}>
-      <img src={image} alt={alt} />
+      <AssetImageFrame
+        src={image}
+        alt={alt}
+        size="fill"
+        decorations={false}
+      />
       <span className="news-card__thumbnail-vignette" aria-hidden />
     </div>
   )

@@ -1,6 +1,16 @@
 import type { InventoryItemDto } from '../../_model/game_mappers'
+import type { news_item } from '../../_model/types'
+import { REAL_ESTATE_CATALOG } from '../../../../constants/realEstate'
 import { calcPaidLoanAmount } from '../real_estate/_accept_deal_utils'
 import { calcInstallmentTotalOwed } from '../real_estate/_installment_purchase'
+import { buildInventoryItemFinanceDetails } from './_bank_operation_details'
+import {
+  buildPropertyPurchaseStepLookup,
+  formatPropertyPaymentLabel,
+  formatPropertyPurchaseTurnLabel,
+  parseCatalogPassiveIncome,
+  resolvePropertyPurchaseStep,
+} from './_bank_operation_history'
 import type { ActiveLoan, BankSummary, PaidProperty } from './index'
 
 function hasActiveInstallmentDebt(item: InventoryItemDto): boolean {
@@ -56,9 +66,17 @@ function mapActiveLoan(item: InventoryItemDto): ActiveLoan {
   }
 }
 
-function mapPaidProperty(item: InventoryItemDto): PaidProperty {
+function mapPaidProperty(
+  item: InventoryItemDto,
+  news: news_item[],
+  bankBaseRatePercent: number,
+): PaidProperty {
   const wasInstallment = item.isInstallment
   const totalPaid = wasInstallment ? calcInstallmentTotalOwed(item) : item.purchasePrice
+  const catalog = REAL_ESTATE_CATALOG.find((entry) => entry.id === item.itemRef)
+  const passiveIncome = parseCatalogPassiveIncome(item.itemRef)
+  const lookup = buildPropertyPurchaseStepLookup(news)
+  const purchaseTurn = resolvePropertyPurchaseStep(item.itemRef, item.purchasePrice, lookup)
 
   return {
     id: item.id,
@@ -67,10 +85,21 @@ function mapPaidProperty(item: InventoryItemDto): PaidProperty {
     purchasePrice: item.purchasePrice,
     totalPaid,
     wasInstallment,
+    purchasedAt: item.purchasedAt,
+    purchasedAtLabel: formatPropertyPurchaseTurnLabel(item.itemRef, item.purchasePrice, news),
+    paymentLabel: formatPropertyPaymentLabel(item.isInstallment),
+    passiveIncome,
+    description: catalog?.description ?? null,
+    purchaseTurn,
+    details: buildInventoryItemFinanceDetails(item, news, bankBaseRatePercent),
   }
 }
 
-export function mapInventoryToBankState(items: InventoryItemDto[]): {
+export function mapInventoryToBankState(
+  items: InventoryItemDto[],
+  news: news_item[] = [],
+  bankBaseRatePercent = 0,
+): {
   activeLoans: ActiveLoan[]
   paidProperties: PaidProperty[]
   summary: BankSummary
@@ -78,7 +107,7 @@ export function mapInventoryToBankState(items: InventoryItemDto[]): {
   const activeLoans = items.filter(hasActiveInstallmentDebt).map(mapActiveLoan)
   const paidProperties = items
     .filter((item) => item.isPaidOff && !hasActiveInstallmentDebt(item))
-    .map(mapPaidProperty)
+    .map((item) => mapPaidProperty(item, news, bankBaseRatePercent))
 
   const totalDebt = activeLoans.reduce((sum, loan) => sum + loan.remainingAmount, 0)
   const paymentPerTurn = activeLoans.reduce((sum, loan) => sum + loan.paymentPerTurn, 0)

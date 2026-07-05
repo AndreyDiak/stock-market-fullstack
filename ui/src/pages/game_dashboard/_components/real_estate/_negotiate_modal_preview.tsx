@@ -4,6 +4,7 @@ import {
   MoneyValue,
 } from "../../../../components/money/money_value";
 import { ChatBubbleIcon, LockOutlineIcon } from "../../../../shared/icons";
+import { AssetImageFrame } from "../../../../shared/components";
 import type { profit_grade, PropertyOffer } from "../../_model/types";
 import "./_accept_deal_modal.css";
 import "./_negotiate_modal.css";
@@ -42,7 +43,6 @@ function getConfirmButtonLabel(): string {
 
 export function NegotiatePreviewView({
   offer,
-  image,
   isPurchase,
   negotiatePercent,
   maxPercent,
@@ -57,7 +57,6 @@ export function NegotiatePreviewView({
   onConfirm,
 }: {
   offer: PropertyOffer;
-  image: string | undefined;
   isPurchase: boolean;
   negotiatePercent: number;
   maxPercent: number;
@@ -128,15 +127,13 @@ export function NegotiatePreviewView({
           <aside className="trade-modal__asset" aria-label="Объект сделки">
             <div className="trade-modal__asset-card property-sale-modal__visual-card">
               <div className="trade-modal__asset-media">
-                {image ? (
-                  <img
-                    src={image}
-                    alt={offer.itemName}
-                    className="trade-modal__asset-image"
-                  />
-                ) : (
-                  <div className="trade-modal__asset-placeholder">🏠</div>
-                )}
+                <AssetImageFrame
+                  assetId={offer.assetId}
+                  alt={offer.itemName}
+                  size="fill"
+                  decorations={false}
+                  fallback={<span className="trade-modal__asset-placeholder">🏠</span>}
+                />
               </div>
 
               <h2 id="negotiate-title" className="trade-modal__asset-title">

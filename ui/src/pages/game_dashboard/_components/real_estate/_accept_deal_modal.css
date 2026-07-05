@@ -198,13 +198,9 @@
 .property-sale-modal__visual-stage {
   position: relative;
   z-index: 1;
-  display: flex;
   flex: 1;
   min-height: 0;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 0.75rem 0.5rem 0.5rem;
-  transform-style: preserve-3d;
+  overflow: hidden;
 }
 
 .property-sale-modal__asset-floor {
@@ -590,26 +586,28 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
+  align-items: stretch;
 }
 
 .property-sale-modal__payment-mode-option {
   display: flex;
-  min-height: 4.5rem;
+  min-height: 4.75rem;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
-  gap: 0.25rem;
+  justify-content: flex-start;
+  gap: 0.35rem;
   border-radius: 0.75rem;
   border: 1px solid rgba(148, 163, 184, 0.2);
   background: rgba(15, 23, 42, 0.55);
   padding: 0.75rem;
   text-align: left;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .property-sale-modal__payment-mode-option--active {
   border-color: rgba(52, 211, 153, 0.45);
   background: rgba(16, 185, 129, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(52, 211, 153, 0.12);
 }
 
 .property-sale-modal__payment-mode-option--disabled {
@@ -621,6 +619,34 @@
   font-size: 0.75rem;
   font-weight: 700;
   color: #e2e8f0;
+}
+
+.property-sale-modal__payment-mode-details {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.property-sale-modal__payment-mode-line {
+  display: flex;
+  min-height: 1.125rem;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.6875rem;
+  line-height: 1.25;
+  color: #e2e8f0;
+}
+
+.property-sale-modal__payment-mode-line--muted {
+  color: rgba(148, 163, 184, 0.92);
+}
+
+.property-sale-modal__payment-mode-line--placeholder {
+  visibility: hidden;
+  pointer-events: none;
+  user-select: none;
 }
 
 .property-sale-modal__payment-mode-subtitle {

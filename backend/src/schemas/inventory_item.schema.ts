@@ -11,6 +11,7 @@ export const inventoryItemSchema = z.object({
   monthlyPayment: z.number().nullable(),
   installmentsTotal: z.number().int().nullable(),
   installmentsPaid: z.number().int(),
+  installmentPrepay: z.number().default(0),
   special: z.string().nullable(),
   isPaidOff: z.boolean(),
   purchasedAt: z.string().datetime(),

@@ -9,6 +9,7 @@ import {
   DashboardCard,
   EffectChip,
   SkillProgressControl,
+  StatusBadge,
 } from '../shared'
 import type { SkillInfographicChip } from './_character_skills'
 
@@ -33,15 +34,14 @@ function mapEffectChip(chip: SkillInfographicChip) {
 export function SkillCard({ skill, balance, onRequestUpgrade }: SkillCardProps) {
   const price = skill.upgradePrice
   const maxed = skill.level >= skill.maxLevel
+  const effectChips = getSkillEffectChips(skill)
+  const showBottom = effectChips.length > 0 || !maxed
   const canAfford = price != null && balance >= price
-  const disabledReason =
-    maxed || price == null
-      ? undefined
-      : !skill.canUpgrade
-        ? 'Улучшение недоступно'
-        : !canAfford
-          ? 'Недостаточно средств'
-          : undefined
+  const disabledReason = !skill.canUpgrade
+    ? 'Улучшение недоступно'
+    : !canAfford
+      ? 'Недостаточно средств'
+      : undefined
 
   return (
     <DashboardCard as="article" className="overflow-visible p-4">
@@ -65,33 +65,38 @@ export function SkillCard({ skill, balance, onRequestUpgrade }: SkillCardProps) 
         </div>
       </div>
 
-      <div className="skill-card__bottom mt-4 flex min-w-0 flex-col gap-3 border-t border-[var(--border-subtle)] pt-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="skill-card__effects flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
-          {getSkillEffectChips(skill).map((chip) => mapEffectChip(chip))}
-        </div>
-
-        <div className="skill-card__action flex shrink-0 items-center justify-end gap-2.5">
-          {maxed || price == null ? (
-            <span className="text-xs font-semibold text-emerald-400">Макс.</span>
-          ) : (
-            <MoneyValue amount={price} size="sm" color="amber" />
+      {showBottom && (
+        <div className="skill-card__bottom mt-4 flex min-w-0 flex-col gap-3 border-t border-[var(--border-subtle)] pt-3 sm:flex-row sm:items-center sm:justify-between">
+          {effectChips.length > 0 && (
+            <div className="skill-card__effects flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
+              {effectChips.map((chip) => mapEffectChip(chip))}
+            </div>
           )}
 
-          <GameButton
-            variant="emerald"
-            size="sm"
-            disabled={maxed || !skill.canUpgrade || !canAfford}
-            title={disabledReason}
-            onClick={() => {
-              gameAudio.playSfx('buttonClick')
-              onRequestUpgrade(skill.id)
-            }}
-            className="shadow-[0_3px_0_#047857,inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_3px_0_#047857,0_0_14px_rgba(16,185,129,0.3),inset_0_1px_0_rgba(255,255,255,0.25)] disabled:shadow-[0_3px_0_#0f172a] disabled:hover:shadow-[0_3px_0_#0f172a]"
-          >
-            {maxed ? 'Куплено' : 'Улучшить'}
-          </GameButton>
+          {maxed ? (
+            <div className="skill-card__action flex shrink-0 items-center justify-end">
+              <StatusBadge tone="emerald">Макс.</StatusBadge>
+            </div>
+          ) : (
+            <div className="skill-card__action flex shrink-0 items-center justify-end gap-2.5 sm:ml-auto">
+              {price != null && <MoneyValue amount={price} size="sm" color="amber" />}
+              <GameButton
+                variant="emerald"
+                size="sm"
+                disabled={!skill.canUpgrade || !canAfford}
+                title={disabledReason}
+                onClick={() => {
+                  gameAudio.playSfx('buttonClick')
+                  onRequestUpgrade(skill.id)
+                }}
+                className="shadow-[0_3px_0_#047857,inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_3px_0_#047857,0_0_14px_rgba(16,185,129,0.3),inset_0_1px_0_rgba(255,255,255,0.25)] disabled:shadow-[0_3px_0_#0f172a] disabled:hover:shadow-[0_3px_0_#0f172a]"
+              >
+                Улучшить
+              </GameButton>
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </DashboardCard>
   )
 }

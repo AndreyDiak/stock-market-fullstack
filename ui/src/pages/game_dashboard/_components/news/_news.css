@@ -357,13 +357,6 @@
   height: 46px;
 }
 
-.news-card__thumbnail img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
 .news-card__thumbnail-vignette {
   pointer-events: none;
   position: absolute;

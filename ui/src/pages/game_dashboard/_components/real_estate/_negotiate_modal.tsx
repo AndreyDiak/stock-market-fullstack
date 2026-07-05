@@ -3,7 +3,6 @@ import type { AcceptPropertyOfferResponse } from '../../../../api/propertyOffers
 import type { NegotiatePropertyOfferResponse, PropertyOfferPaymentMode } from '../../../../api/propertyOffers';
 import { getApiErrorMessage } from '../../../../api/auth';
 import { GameModal } from '../../../../components/game_ui/floating';
-import { getRealEstateImage } from '../../../../constants/realEstateImages';
 import { gameAudio } from '../../../../lib/audio/game_audio';
 import { useGameStore } from '../../../../stores/game.store';
 import type { PropertyOffer } from '../../_model/types';
@@ -154,7 +153,6 @@ export function NegotiateModal({
   }, [clampedPercent, isPurchase, maxDiscountPercent, offer.offerPrice]);
 
   const controlsLocked = phase !== 'negotiate' || busy;
-  const image = getRealEstateImage(offer.assetId);
   const repBonus = Math.floor(reputation);
 
   const runRoll = useCallback(async () => {
@@ -308,7 +306,6 @@ export function NegotiateModal({
       {phase === 'negotiate' ? (
         <NegotiatePreviewView
           offer={offer}
-          image={image}
           isPurchase={isPurchase}
           negotiatePercent={clampedPercent}
           maxPercent={maxDiscountPercent}

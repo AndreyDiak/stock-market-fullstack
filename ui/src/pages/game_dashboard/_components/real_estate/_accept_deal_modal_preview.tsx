@@ -1,13 +1,13 @@
 import { GameButton } from "../../../../components/game_ui/game_button";
 import { MoneyValue } from "../../../../components/money/money_value";
 import { DealArrowIcon, StarIcon } from "../../../../shared/icons";
+import { AssetImageFrame } from "../../../../shared/components";
 import type { profit_grade, PropertyOffer } from "../../_model/types";
 import { SkillSegmentBar } from "../character/_skill_segment_bar";
 import type { AcceptDealPreview, PropertyOfferPaymentMode } from "./_accept_deal_utils";
 import { PROFIT_GRADE_STYLES } from "./_offer_styles";
 import { PropertyPaymentModePicker } from "./_property_payment_mode";
 import { calcDownPaymentAmount } from "./_accept_deal_utils";
-import { InstallmentPlanCaption } from "./_installment_plan_caption";
 import { useGameStore } from "../../../../stores/game.store";
 
 type DealOutcome = "positive" | "negative" | "neutral";
@@ -218,7 +218,6 @@ export function AcceptDealPreviewView({
   offer,
   preview,
   reputation,
-  image,
   balance,
   paymentMode,
   onPaymentModeChange,
@@ -230,7 +229,6 @@ export function AcceptDealPreviewView({
   offer: PropertyOffer;
   preview: AcceptDealPreview;
   reputation: number;
-  image: string | undefined;
   balance: number;
   paymentMode: PropertyOfferPaymentMode;
   onPaymentModeChange: (mode: PropertyOfferPaymentMode) => void;
@@ -279,18 +277,13 @@ export function AcceptDealPreviewView({
       <div className="property-sale-modal__body">
         <div className="property-sale-modal__visual-card">
           <div className="property-sale-modal__visual-stage">
-            <div className="property-sale-modal__asset-floor" aria-hidden />
-            {image ? (
-              <img
-                src={image}
-                alt={offer.itemName}
-                className="property-sale-modal__asset-image"
-              />
-            ) : (
-              <div className="flex h-full min-h-[12rem] items-center justify-center text-5xl">
-                🏠
-              </div>
-            )}
+            <AssetImageFrame
+              assetId={offer.assetId}
+              alt={offer.itemName}
+              size="fill"
+              decorations={false}
+              fallback={<span className="text-5xl">🏠</span>}
+            />
           </div>
           <div className="property-sale-modal__visual-meta">
             Категория {offer.profitGrade}
@@ -343,26 +336,6 @@ export function AcceptDealPreviewView({
                 className="inline-flex font-semibold"
               />
               )
-            </div>
-          ) : null}
-
-          {isPurchase && paymentMode === "installment" && preview.downPaymentAmount !== null ? (
-            <div className="property-sale-modal__note">
-              <span>
-                Первоначальный взнос:{" "}
-                <MoneyValue
-                  amount={preview.downPaymentAmount}
-                  size="sm"
-                  color="white"
-                  className="inline-flex font-semibold"
-                />
-              </span>
-              <InstallmentPlanCaption
-                assetId={offer.assetId}
-                purchasePrice={offer.offerPrice}
-                downPaymentPercent={offer.downPaymentPercent}
-                className="mt-1"
-              />
             </div>
           ) : null}
 

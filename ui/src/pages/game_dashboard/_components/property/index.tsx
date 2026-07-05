@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { MoneyValue } from "../../../../components/money/money_value";
-import { getRealEstateImage } from "../../../../constants/realEstateImages";
-import { LockIcon } from "../../../../shared/icons";
+import { AssetImageFrame } from "../../../../shared/components";
+import { LockIcon, PropertySlotIcon } from "../../../../shared/icons";
 import { useGameStore } from "../../../../stores/game.store";
 import { useDashboardTheme } from "../../_model/use_dashboard_theme";
 import type { GameDashboardThemeTokens } from "../shared";
@@ -121,8 +121,6 @@ function OccupiedPropertySlot({
   item: PropertyItem;
   theme: GameDashboardThemeTokens;
 }) {
-  const image = getRealEstateImage(item.itemRef);
-
   return (
     <article
       className={`group relative aspect-square overflow-hidden rounded-xl border transition hover:border-emerald-400/25 ${
@@ -131,15 +129,13 @@ function OccupiedPropertySlot({
           : "border-slate-700/40 bg-slate-800/60"
       }`}
     >
-      {image ? (
-        <img
-          src={image}
-          alt={item.name}
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-      ) : (
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-900" />
-      )}
+      <AssetImageFrame
+        assetId={item.itemRef}
+        alt={item.name}
+        size="fill"
+        decorations={false}
+        className="absolute inset-0 rounded-xl"
+      />
 
       <span
         className={`absolute right-2 top-2 rounded-md border px-1.5 py-0.5 text-[10px] font-bold backdrop-blur-md ${
@@ -151,24 +147,29 @@ function OccupiedPropertySlot({
         {item.isOwned ? "КУПЛЕНО" : `${item.paybackPct}%`}
       </span>
 
+      {item.income > 0 ? (
+        <span className="absolute left-2 top-2 rounded-md border border-emerald-400/35 bg-emerald-500/25 px-1.5 py-0.5 backdrop-blur-md">
+          <MoneyValue
+            amount={item.income}
+            size="xs"
+            prefix="+"
+            suffix="/ход"
+            tone="overlay"
+            className="gap-1 font-extrabold"
+          />
+        </span>
+      ) : null}
+
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-2.5 pb-2.5 pt-10">
         <p className="truncate text-sm font-bold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
           {item.name}
         </p>
         <div className="mt-0.5">
-          {item.income > 0 ? (
-            <MoneyValue
-              amount={item.income}
-              size="xs"
-              prefix="+"
-              suffix="/мес"
-              tone="overlay"
-            />
-          ) : !item.isOwned && item.monthlyPayment ? (
+          {!item.isOwned && item.monthlyPayment && item.income <= 0 ? (
             <MoneyValue
               amount={item.monthlyPayment}
               size="xs"
-              suffix="/мес"
+              suffix="/ход"
               tone="overlay"
             />
           ) : null}
@@ -181,15 +182,37 @@ function OccupiedPropertySlot({
 function EmptyPropertySlot({ theme }: { theme: GameDashboardThemeTokens }) {
   return (
     <article
-      className={`relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border border-dashed ${
+      className={`relative flex aspect-square flex-col items-center justify-center gap-2 overflow-hidden rounded-xl border border-dashed p-3 text-center ${
         theme.isLight
           ? "border-emerald-500/30 bg-emerald-50/50"
           : "border-emerald-400/25 bg-slate-800/40"
       }`}
     >
-      <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-400/60">
-        Пустой слот
-      </p>
+      <div
+        className={`flex h-10 w-10 items-center justify-center rounded-lg border border-dashed ${
+          theme.isLight
+            ? "border-emerald-500/25 bg-emerald-500/5"
+            : "border-emerald-400/20 bg-emerald-400/5"
+        }`}
+      >
+        <PropertySlotIcon
+          className={`h-5 w-5 ${
+            theme.isLight ? "text-emerald-500/70" : "text-emerald-400/65"
+          }`}
+        />
+      </div>
+      <div>
+        <p
+          className={`text-[10px] font-bold uppercase tracking-wider ${
+            theme.isLight ? "text-emerald-600/80" : "text-emerald-400/75"
+          }`}
+        >
+          Свободный слот
+        </p>
+        <p className={`mt-0.5 text-[9px] leading-snug ${theme.secondaryText}`}>
+          Купите на рынке
+        </p>
+      </div>
     </article>
   );
 }

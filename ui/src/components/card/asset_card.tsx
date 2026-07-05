@@ -1,4 +1,5 @@
 import { MoneyValue } from '../money/money_value'
+import { AssetImageFrame } from '../../shared/components'
 
 interface AssetCardProps {
   name: string
@@ -31,22 +32,26 @@ export function AssetCard({
   if (isThumb) {
     return (
       <article className="relative aspect-square overflow-hidden rounded-2xl shadow-[0_6px_20px_rgba(0,0,0,0.35)] ring-1 ring-emerald-400/10">
-        {image ? (
-          <img src={image} alt={name} className="absolute inset-0 h-full w-full object-cover" />
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-900" />
-        )}
+        <AssetImageFrame
+          src={image}
+          alt={name}
+          size="fill"
+          decorations={false}
+          className="absolute inset-0 rounded-2xl"
+        />
       </article>
     )
   }
 
   return (
     <article className="relative aspect-square overflow-hidden rounded-2xl shadow-[0_6px_20px_rgba(0,0,0,0.35)] ring-1 ring-emerald-400/10">
-      {image ? (
-        <img src={image} alt={name} className="absolute inset-0 h-full w-full object-cover" />
-      ) : (
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-900" />
-      )}
+      <AssetImageFrame
+        src={image}
+        alt={name}
+        size="fill"
+        decorations={false}
+        className="absolute inset-0 rounded-2xl"
+      />
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
 

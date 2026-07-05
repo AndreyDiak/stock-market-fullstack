@@ -10,6 +10,7 @@ import {
 } from '../../_model/real_estate_panel_animation'
 import { useGameStore } from '../../../../stores/game.store'
 import { PanelSectionHeading } from '../shared'
+import { applyBankingLevelToPropertyOffers, getPlayerBankingLevel } from './_property_offer_access'
 import { PropertyOfferCard } from './_property_offer_card'
 import { sortPropertyOffersByTtl } from './_property_offers_sort'
 
@@ -21,10 +22,13 @@ function PropertyOffersSection({
   highlightedOfferId?: string | null
 }) {
   const propertyOffers = useGameStore((state) => state.propertyOffers)
-  const sortedOffers = useMemo(
-    () => sortPropertyOffersByTtl(propertyOffers),
-    [propertyOffers],
-  )
+  const characterSkills = useGameStore((state) => state.characterSkills)
+  const sortedOffers = useMemo(() => {
+    const bankingLevel = getPlayerBankingLevel(characterSkills)
+    return sortPropertyOffersByTtl(
+      applyBankingLevelToPropertyOffers(propertyOffers, bankingLevel),
+    )
+  }, [propertyOffers, characterSkills])
   const propertyOfferBusy = useGameStore((state) => state.propertyOfferBusy)
   const acceptOffer = useGameStore((state) => state.acceptPropertyOffer)
   const negotiateOffer = useGameStore((state) => state.negotiatePropertyOffer)

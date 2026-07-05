@@ -53,7 +53,17 @@ export function PropertyPaymentModePicker({
           onClick={() => onChange('full')}
         >
           <span className="property-sale-modal__payment-mode-title">Полная оплата</span>
-          <MoneyValue amount={price} size="sm" color="white" />
+          <div className="property-sale-modal__payment-mode-details">
+            <span className="property-sale-modal__payment-mode-line">
+              <MoneyValue amount={price} size="sm" color="white" className="inline-flex" />
+            </span>
+            <span
+              className="property-sale-modal__payment-mode-line property-sale-modal__payment-mode-line--placeholder"
+              aria-hidden
+            >
+              &nbsp;
+            </span>
+          </div>
         </button>
 
         <button
@@ -69,12 +79,13 @@ export function PropertyPaymentModePicker({
           onClick={() => onChange('installment')}
         >
           <span className="property-sale-modal__payment-mode-title">Ипотека</span>
-          <span className="property-sale-modal__payment-mode-subtitle">
-            Взнос{' '}
-            <MoneyValue amount={downPayment} size="sm" color="amber" className="inline-flex" />
+          <div className="property-sale-modal__payment-mode-details">
+            <span className="property-sale-modal__payment-mode-line">
+              Взнос{' '}
+              <MoneyValue amount={downPayment} size="sm" color="amber" className="inline-flex" />
+            </span>
             {installmentPlan ? (
-              <>
-                {' · '}
+              <span className="property-sale-modal__payment-mode-line property-sale-modal__payment-mode-line--muted">
                 {format_turns_left_label(installmentPlan.installmentsTotal)} по{' '}
                 <MoneyValue
                   amount={installmentPlan.monthlyPayment}
@@ -83,9 +94,16 @@ export function PropertyPaymentModePicker({
                   suffix="/ход"
                   className="inline-flex"
                 />
-              </>
-            ) : null}
-          </span>
+              </span>
+            ) : (
+              <span
+                className="property-sale-modal__payment-mode-line property-sale-modal__payment-mode-line--placeholder"
+                aria-hidden
+              >
+                &nbsp;
+              </span>
+            )}
+          </div>
         </button>
       </div>
     </div>

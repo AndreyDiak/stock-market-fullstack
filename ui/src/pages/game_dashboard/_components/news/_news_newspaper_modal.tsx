@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { GameModal } from '../../../../components/game_ui/floating'
 import { GameButton } from '../../../../components/game_ui/game_button'
-import { getRealEstateImage } from '../../../../constants/realEstateImages'
+import { AssetImageFrame } from '../../../../shared/components'
 import { useDashboardUi } from '../../_model/dashboard_ui_context'
 import type { news_item } from '../../_model/types'
 import {
@@ -72,15 +72,15 @@ function PropertyOfferNewsExtras({
   const payload = item.payload as { offerId?: string; assetId?: string } | undefined
   if (!payload?.offerId) return null
 
-  const image = payload.assetId ? getRealEstateImage(payload.assetId) : undefined
-
   return (
     <div className="mt-5 flex flex-col items-center gap-4 border-t border-[#3d4a30]/15 pt-5">
-      {image ? (
-        <img
-          src={image}
+      {payload.assetId ? (
+        <AssetImageFrame
+          assetId={payload.assetId}
           alt=""
-          className="h-16 w-16 rounded-lg object-cover ring-2 ring-[#3d4a30]/25"
+          width="4rem"
+          height="4rem"
+          className="ring-2 ring-[#3d4a30]/25"
         />
       ) : null}
       <GameButton size="sm" onClick={() => onGoToOffer(payload.offerId!)}>

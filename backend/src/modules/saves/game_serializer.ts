@@ -17,6 +17,7 @@ function serializeInventoryItem(item: InventoryItem) {
     monthlyPayment: item.monthlyPayment,
     installmentsTotal: item.installmentsTotal,
     installmentsPaid: item.installmentsPaid,
+    installmentPrepay: item.installmentPrepay,
     special: item.special,
     isPaidOff: item.isPaidOff,
     purchasedAt: item.purchasedAt.toISOString(),
