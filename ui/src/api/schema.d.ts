@@ -1827,6 +1827,929 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/saves/{id}/inventory/{itemId}/pay-off-installment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    itemId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["PayOffInstallmentBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PayOffInstallmentResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/stocks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["StockListResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/stocks/{listingId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    listingId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["StockDetailResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/stocks/{listingId}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    limit?: number;
+                };
+                header?: never;
+                path: {
+                    id: string;
+                    listingId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["StockHistoryResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/stocks/{listingId}/buy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    listingId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["BuyStockBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BuyStockResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/portfolio": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PortfolioResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/market/sentiment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MarketSentiment"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/market/sectors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            sectors?: components["schemas"]["SectorMomentum"][];
+                        };
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/ipo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["IpoListResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/ipo/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["IpoListResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/ipo/{ipoId}/subscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    ipoId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["IpoSubscribeBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["IpoSubscribeResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -1913,6 +2836,8 @@ export interface components {
                 monthlyPayment: number | null;
                 installmentsTotal: number | null;
                 installmentsPaid: number;
+                /** @default 0 */
+                installmentPrepay: number;
                 special: string | null;
                 isPaidOff: boolean;
                 /** Format: date-time */
@@ -2036,6 +2961,8 @@ export interface components {
                         monthlyPayment: number | null;
                         installmentsTotal: number | null;
                         installmentsPaid: number;
+                        /** @default 0 */
+                        installmentPrepay: number;
                         special: string | null;
                         isPaidOff: boolean;
                         /** Format: date-time */
@@ -2191,6 +3118,8 @@ export interface components {
                     monthlyPayment: number | null;
                     installmentsTotal: number | null;
                     installmentsPaid: number;
+                    /** @default 0 */
+                    installmentPrepay: number;
                     special: string | null;
                     isPaidOff: boolean;
                     /** Format: date-time */
@@ -2252,6 +3181,8 @@ export interface components {
                     monthlyPayment: number | null;
                     installmentsTotal: number | null;
                     installmentsPaid: number;
+                    /** @default 0 */
+                    installmentPrepay: number;
                     special: string | null;
                     isPaidOff: boolean;
                     /** Format: date-time */
@@ -2313,6 +3244,8 @@ export interface components {
                     monthlyPayment: number | null;
                     installmentsTotal: number | null;
                     installmentsPaid: number;
+                    /** @default 0 */
+                    installmentPrepay: number;
                     special: string | null;
                     isPaidOff: boolean;
                     /** Format: date-time */
@@ -2343,7 +3276,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -2473,7 +3406,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -2555,6 +3488,8 @@ export interface components {
                         monthlyPayment: number | null;
                         installmentsTotal: number | null;
                         installmentsPaid: number;
+                        /** @default 0 */
+                        installmentPrepay: number;
                         special: string | null;
                         isPaidOff: boolean;
                         /** Format: date-time */
@@ -2566,7 +3501,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -2675,6 +3610,67 @@ export interface components {
                 pendingNegotiatedPrice: number | null;
                 pendingNegotiatedPercent: number | null;
             }[];
+            stocks?: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                companyId: string;
+                ticker: string;
+                name: string;
+                sector: string;
+                /** @enum {string} */
+                grade: "F" | "E" | "D" | "C" | "B" | "A";
+                currentPrice: number;
+                previousPrice: number;
+                dayChange: number;
+                availableOnExchange: boolean;
+                isLocked: boolean;
+                hasInsiderPressure: boolean;
+                history: {
+                    turn: number;
+                    price: number;
+                }[];
+            }[];
+            portfolio?: {
+                ticker: string;
+                name: string;
+                qty: number;
+                price: number;
+                purchasePrice: number;
+                changePct: number;
+                pnl: number;
+                listingId: string;
+            }[];
+            marketSentiment?: {
+                value: number;
+                /** @enum {string} */
+                indicator: "bearish" | "neutral" | "bullish";
+            };
+            sectorMomentum?: {
+                sector: string;
+                value: number;
+                duration: number;
+                /** @enum {string} */
+                trend: "rising" | "falling" | "neutral";
+            }[];
+            ipos?: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                companyId: string;
+                ticker: string;
+                companyName: string;
+                /** @enum {string} */
+                targetGrade: "F" | "E" | "D" | "C" | "B" | "A";
+                ipoPrice: number;
+                ipoShares: number;
+                announcedAtTurn: number;
+                ipoAtTurn: number;
+                minSubscription: number;
+                maxSubscription: number;
+                isCompleted: boolean;
+                totalSubscribed?: number;
+            }[];
         };
         AcceptPropertyOfferResponse: {
             balance: number;
@@ -2736,6 +3732,8 @@ export interface components {
                     monthlyPayment: number | null;
                     installmentsTotal: number | null;
                     installmentsPaid: number;
+                    /** @default 0 */
+                    installmentPrepay: number;
                     special: string | null;
                     isPaidOff: boolean;
                     /** Format: date-time */
@@ -2767,7 +3765,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -2874,6 +3872,8 @@ export interface components {
                     monthlyPayment: number | null;
                     installmentsTotal: number | null;
                     installmentsPaid: number;
+                    /** @default 0 */
+                    installmentPrepay: number;
                     special: string | null;
                     isPaidOff: boolean;
                     /** Format: date-time */
@@ -2884,7 +3884,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -2983,6 +3983,8 @@ export interface components {
                     monthlyPayment: number | null;
                     installmentsTotal: number | null;
                     installmentsPaid: number;
+                    /** @default 0 */
+                    installmentPrepay: number;
                     special: string | null;
                     isPaidOff: boolean;
                     /** Format: date-time */
@@ -2993,7 +3995,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -3009,6 +4011,268 @@ export interface components {
                 publishedStep?: number;
                 payload?: unknown;
             };
+        };
+        PayOffInstallmentResponse: {
+            balance: number;
+            previousBalance: number;
+            character: {
+                /** Format: uuid */
+                id: string;
+                gameId: string | null;
+                name: string;
+                balance: number;
+                /** @enum {string} */
+                profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
+                professionLevel: number;
+                salary: number;
+                reputation: number;
+                tradingLevel: number;
+                bankingLevel: number;
+                propertySlotLevel: number;
+                isNpc: boolean;
+                dreamItemRefs: string[];
+                totalEarned: number;
+                totalSpent: number;
+                totalTrades: number;
+                successfulTrades: number;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date-time */
+                updatedAt: string;
+                inventoryItems?: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    characterId: string;
+                    itemRef: string;
+                    name: string;
+                    purchasePrice: number;
+                    downPaymentAmount: number | null;
+                    isInstallment: boolean;
+                    monthlyPayment: number | null;
+                    installmentsTotal: number | null;
+                    installmentsPaid: number;
+                    /** @default 0 */
+                    installmentPrepay: number;
+                    special: string | null;
+                    isPaidOff: boolean;
+                    /** Format: date-time */
+                    purchasedAt: string;
+                }[];
+            };
+            news: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
+                title: string;
+                body: string;
+                excerpt: string;
+                /** @enum {string} */
+                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+                impact: number;
+                sector?: string | null;
+                companyId?: string | null;
+                ticker?: string;
+                hot?: boolean;
+                /** Format: date-time */
+                publishedAt: string;
+                publishedStep?: number;
+                payload?: unknown;
+            };
+            nextTurnForecast: {
+                lines: {
+                    id: string;
+                    label: string;
+                    amount: number;
+                }[];
+                incomeTotal: number;
+                expenseTotal: number;
+                netChange: number;
+            };
+        };
+        PayOffInstallmentBody: {
+            payPercent: number;
+        };
+        StockListing: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            companyId: string;
+            ticker: string;
+            name: string;
+            sector: string;
+            /** @enum {string} */
+            grade: "F" | "E" | "D" | "C" | "B" | "A";
+            currentPrice: number;
+            previousPrice: number;
+            dayChange: number;
+            availableOnExchange: boolean;
+            isLocked: boolean;
+            hasInsiderPressure: boolean;
+            history: {
+                turn: number;
+                price: number;
+            }[];
+        };
+        StockListResponse: {
+            stocks: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                companyId: string;
+                ticker: string;
+                name: string;
+                sector: string;
+                /** @enum {string} */
+                grade: "F" | "E" | "D" | "C" | "B" | "A";
+                currentPrice: number;
+                previousPrice: number;
+                dayChange: number;
+                availableOnExchange: boolean;
+                isLocked: boolean;
+                hasInsiderPressure: boolean;
+                history: {
+                    turn: number;
+                    price: number;
+                }[];
+            }[];
+        };
+        StockDetailResponse: {
+            listing: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                companyId: string;
+                ticker: string;
+                name: string;
+                sector: string;
+                /** @enum {string} */
+                grade: "F" | "E" | "D" | "C" | "B" | "A";
+                currentPrice: number;
+                previousPrice: number;
+                dayChange: number;
+                availableOnExchange: boolean;
+                isLocked: boolean;
+                hasInsiderPressure: boolean;
+                history: {
+                    turn: number;
+                    price: number;
+                }[];
+            };
+            history: {
+                turn: number;
+                price: number;
+            }[];
+        };
+        StockHistoryResponse: {
+            history: {
+                turn: number;
+                price: number;
+            }[];
+        };
+        BuyStockBody: {
+            quantity: number;
+        };
+        BuyStockResponse: {
+            balance: number;
+            portfolio: {
+                ticker: string;
+                name: string;
+                qty: number;
+                price: number;
+                purchasePrice: number;
+                changePct: number;
+                pnl: number;
+                listingId: string;
+            }[];
+            news: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
+                title: string;
+                body: string;
+                excerpt: string;
+                /** @enum {string} */
+                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+                impact: number;
+                sector?: string | null;
+                companyId?: string | null;
+                ticker?: string;
+                hot?: boolean;
+                /** Format: date-time */
+                publishedAt: string;
+                publishedStep?: number;
+                payload?: unknown;
+            };
+        };
+        PortfolioResponse: {
+            portfolio: {
+                ticker: string;
+                name: string;
+                qty: number;
+                price: number;
+                purchasePrice: number;
+                changePct: number;
+                pnl: number;
+                listingId: string;
+            }[];
+        };
+        MarketSentiment: {
+            value: number;
+            /** @enum {string} */
+            indicator: "bearish" | "neutral" | "bullish";
+        };
+        SectorMomentum: {
+            sector: string;
+            value: number;
+            duration: number;
+            /** @enum {string} */
+            trend: "rising" | "falling" | "neutral";
+        };
+        IpoListResponse: {
+            ipos: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                companyId: string;
+                ticker: string;
+                companyName: string;
+                /** @enum {string} */
+                targetGrade: "F" | "E" | "D" | "C" | "B" | "A";
+                ipoPrice: number;
+                ipoShares: number;
+                announcedAtTurn: number;
+                ipoAtTurn: number;
+                minSubscription: number;
+                maxSubscription: number;
+                isCompleted: boolean;
+                totalSubscribed?: number;
+            }[];
+        };
+        IpoSubscribeBody: {
+            amount: number;
+        };
+        IpoSubscribeResponse: {
+            ipos: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                companyId: string;
+                ticker: string;
+                companyName: string;
+                /** @enum {string} */
+                targetGrade: "F" | "E" | "D" | "C" | "B" | "A";
+                ipoPrice: number;
+                ipoShares: number;
+                announcedAtTurn: number;
+                ipoAtTurn: number;
+                minSubscription: number;
+                maxSubscription: number;
+                isCompleted: boolean;
+                totalSubscribed?: number;
+            }[];
         };
         User: {
             /** Format: uuid */

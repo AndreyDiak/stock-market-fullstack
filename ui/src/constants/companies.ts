@@ -31,4 +31,14 @@ export const COMPANY_TICKERS = [
   'AERO',
   'ATOM',
   'VOLT',
-] as const
+  'NVFS',
+  'SYNB',
+  'LEND',
+  'HARV',
+  'GRID',
+  'DATA',
+  'CARE',
+  'FUND',
+  'SOIL',
+  'HYDR',
+] as const;

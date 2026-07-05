@@ -21,6 +21,15 @@ import {
 } from '../api/propertyOffers';
 import { acceptOtcDeal as acceptOtcDealApi } from '../api/otcDeals';
 import { payOffInstallment } from '../api/propertyLoans';
+import {
+  buyStock as buyStockApi,
+  fetchStockHistory,
+  mapApiPortfolioRow,
+  subscribeToIpo as subscribeToIpoApi,
+  type IpoListing,
+  type MarketSentiment,
+  type StockListing,
+} from '../api/stocks';
 import type { GeneratedNewsItem } from '../api/gameTurn';
 import type { Game } from '../api/types';
 import type { ActiveLoan, BankSummary, PaidProperty } from '../pages/game_dashboard/_components/bank';
@@ -86,6 +95,10 @@ interface GameState {
   propertyOffers: PropertyOffer[];
   propertyOfferBusy: boolean;
   portfolio: portfolio_row[];
+  stockListings: StockListing[];
+  marketSentiment: MarketSentiment | null;
+  ipos: IpoListing[];
+  stockBusy: boolean;
   characterProfile: CharacterProfile;
   characterSkills: CharacterSkill[];
   characterStats: CharacterStats;
@@ -120,6 +133,10 @@ interface GameState {
   payOffLoan: (loanId: string, payPercent: number) => Promise<void>;
   endTurn: () => Promise<void>;
   loadNews: () => Promise<void>;
+  loadExchangeData: () => Promise<void>;
+  fetchStockHistory: (listingId: string) => Promise<{ turn: number; price: number }[]>;
+  buyStock: (listingId: string, quantity: number) => Promise<void>;
+  subscribeToIpo: (ipoId: string, amount: number) => Promise<void>;
   clearEnteringNews: () => void;
   clearBalanceFx: () => void;
 }
@@ -139,6 +156,10 @@ function getInitialState(): Omit<
   | 'payOffLoan'
   | 'endTurn'
   | 'loadNews'
+  | 'loadExchangeData'
+  | 'fetchStockHistory'
+  | 'buyStock'
+  | 'subscribeToIpo'
   | 'clearEnteringNews'
   | 'clearBalanceFx'
 > {
@@ -156,6 +177,10 @@ function getInitialState(): Omit<
     propertyOffers: [],
     propertyOfferBusy: false,
     portfolio: [],
+    stockListings: [],
+    marketSentiment: null,
+    ipos: [],
+    stockBusy: false,
     characterProfile: EMPTY_CHARACTER_PROFILE,
     characterSkills: [],
     characterStats: EMPTY_CHARACTER_STATS,
@@ -221,12 +246,20 @@ export const useGameStore = create<GameState>((set, get) => {
     characterSkills: CharacterSkillsState = get().characterSkills.length > 0
       ? { skills: get().characterSkills, stats: get().characterStats }
       : EMPTY_CHARACTER_SKILLS_STATE,
+    preserveMarket = false,
   ) => {
     const applied = applyCharacterSkillsState(character, characterSkills, get().news);
     set({
       turn: step,
       ...spreadCharacterBankState(applied),
-      portfolio: [],
+      ...(preserveMarket
+        ? {}
+        : {
+            portfolio: [],
+            stockListings: [],
+            marketSentiment: null,
+            ipos: [],
+          }),
       otcDeals: [],
     });
     return applied;
@@ -239,8 +272,12 @@ export const useGameStore = create<GameState>((set, get) => {
     forecast: NextTurnForecast,
     characterSkills: CharacterSkillsState,
     propertyOffers: PropertyOffer[] = [],
+    stocks: StockListing[] = [],
+    portfolio: portfolio_row[] = [],
+    marketSentiment: MarketSentiment | null = null,
+    ipos: IpoListing[] = [],
   ) => {
-    const applied = applyGameSnapshot(character, step, characterSkills);
+    const applied = applyGameSnapshot(character, step, characterSkills, true);
     set({
       news: mapApiNewsList(newsItems, step),
       nextTurnForecast: resolveNextTurnForecast(
@@ -256,6 +293,10 @@ export const useGameStore = create<GameState>((set, get) => {
         propertyOffers,
         getPlayerBankingLevel(characterSkills.skills),
       ),
+      stockListings: stocks,
+      portfolio,
+      marketSentiment,
+      ipos,
     });
   };
 
@@ -271,6 +312,10 @@ export const useGameStore = create<GameState>((set, get) => {
         dashboard.nextTurnForecast,
         dashboard.characterSkills,
         dashboard.propertyOffers,
+        dashboard.stocks ?? [],
+        (dashboard.portfolio ?? []).map(mapApiPortfolioRow),
+        dashboard.marketSentiment ?? null,
+        dashboard.ipos ?? [],
       );
       return;
     } catch {
@@ -702,6 +747,7 @@ export const useGameStore = create<GameState>((set, get) => {
         }
 
         set({ propertyOffers: result.propertyOffers });
+        await get().loadExchangeData();
       } catch {
         if (gameId) {
           try {
@@ -714,6 +760,10 @@ export const useGameStore = create<GameState>((set, get) => {
                 dashboard.nextTurnForecast,
                 dashboard.characterSkills,
                 dashboard.propertyOffers,
+                dashboard.stocks ?? [],
+                (dashboard.portfolio ?? []).map(mapApiPortfolioRow),
+                dashboard.marketSentiment ?? null,
+                dashboard.ipos ?? [],
               );
             }
           } catch {
@@ -735,6 +785,63 @@ export const useGameStore = create<GameState>((set, get) => {
         set({ news: mapApiNewsList(news, turn) });
       } catch {
         // оставляем текущую ленту
+      }
+    },
+
+    loadExchangeData: async () => {
+      const { gameId } = get();
+      if (!gameId) return;
+
+      try {
+        const dashboard = await fetchGameDashboard(gameId);
+        set({
+          stockListings: dashboard.stocks ?? [],
+          portfolio: (dashboard.portfolio ?? []).map(mapApiPortfolioRow),
+          marketSentiment: dashboard.marketSentiment ?? null,
+          ipos: dashboard.ipos ?? [],
+        });
+      } catch {
+        // оставляем текущие биржевые данные
+      }
+    },
+
+    fetchStockHistory: async (listingId) => {
+      const { gameId } = get();
+      if (!gameId) return [];
+      const { history } = await fetchStockHistory(gameId, listingId);
+      return history;
+    },
+
+    buyStock: async (listingId, quantity) => {
+      const { gameId, turn } = get();
+      if (!gameId) return;
+
+      set({ stockBusy: true });
+      try {
+        const result = await buyStockApi(gameId, listingId, quantity);
+        const newsUpdate = appendNewsItem({ news: get().news, turn }, result.news);
+        set({
+          balance: result.balance,
+          portfolio: result.portfolio.map(mapApiPortfolioRow),
+          ...newsUpdate,
+        });
+        await get().loadExchangeData();
+      } finally {
+        set({ stockBusy: false });
+      }
+    },
+
+    subscribeToIpo: async (ipoId, amount) => {
+      const { gameId } = get();
+      if (!gameId) return;
+
+      set({ stockBusy: true });
+      try {
+        const result = await subscribeToIpoApi(gameId, ipoId, amount);
+        set({ ipos: result.ipos });
+        await get().loadExchangeData();
+      } finally {
+        set({ stockBusy: false });
       }
     },
 

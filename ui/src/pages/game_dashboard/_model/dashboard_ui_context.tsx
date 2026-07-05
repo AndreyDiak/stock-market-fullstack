@@ -8,8 +8,11 @@ export interface DashboardUiContextValue {
   openExitModal: () => void
   openNewsTab: () => void
   openRealEstateTab: (offerId?: string) => void
+  openExchangeTab: (listingId?: string) => void
   highlightPropertyOfferId: string | null
   clearHighlightPropertyOffer: () => void
+  highlightStockListingId: string | null
+  clearHighlightStockListing: () => void
 }
 
 const DashboardUiContext = createContext<DashboardUiContextValue | null>(null)

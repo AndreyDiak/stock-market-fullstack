@@ -1,0 +1,35 @@
+model IPO {
+  id               String   @id @default(uuid())
+  gameId           String
+  companyId        String
+  targetGrade      StockGrade
+  ipoPrice         Float
+  ipoShares        Int
+  announcedAtTurn  Int
+  ipoAtTurn        Int
+  minSubscription  Int      @default(10)
+  maxSubscription  Int      @default(500)
+  isCompleted      Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  game          Game              @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  company       Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  subscriptions IPOSubscription[]
+
+  @@map("ipos")
+  @@index([gameId, isCompleted])
+}
+
+model IPOSubscription {
+  id        String   @id @default(uuid())
+  ipoId     String
+  playerId  String
+  amount    Int
+  createdAt DateTime @default(now())
+
+  ipo IPO @relation(fields: [ipoId], references: [id], onDelete: Cascade)
+
+  @@unique([ipoId, playerId])
+  @@map("ipo_subscriptions")
+  @@index([ipoId])
+}

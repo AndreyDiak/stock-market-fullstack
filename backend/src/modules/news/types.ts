@@ -9,7 +9,9 @@ export type GeneratedNewsKind =
   | 'PROPERTY_OFFER'
   | 'PROPERTY_DEAL'
   | 'PROPERTY_INSTALLMENT'
-  | 'STOCK_TRADE';
+  | 'STOCK_TRADE'
+  | 'IPO_ANNOUNCE'
+  | 'IPO_COMPLETE';
 
 export const TURN_CYCLE_NEWS_KINDS = [
   'MARKET',

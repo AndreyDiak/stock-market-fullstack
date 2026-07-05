@@ -27,8 +27,13 @@ model Game {
   propertyOffers PropertyOffer[]
 
   scheduledPriceImpacts ScheduledPriceImpact[]
-  gameCompanyQuotes     GameCompanyQuote[]
+  gameStockListings     GameStockListing[]
   priceHistory          PriceHistory[]
+  newsPressures         NewsPressure[]
+  marketSentiment       MarketSentiment?
+  sectorMomentums       SectorMomentum[]
+  portfolioStocks       Stock[]
+  ipos                  IPO[]
 
   @@unique([userId, slot])
   @@map("games")

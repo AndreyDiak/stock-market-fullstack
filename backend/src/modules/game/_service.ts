@@ -6,6 +6,7 @@ import { AppError } from '../../utils/errors.js';
 import { CharacterSkillsService } from '../character_skills/character_skills.service.js';
 import { serializeCharacter, serializeGame } from '../saves/game_serializer.js';
 import { SavesService } from '../saves/saves.service.js';
+import { MarketService } from '../market/market.service.js';
 import { PassiveIncomeService } from './_passive_income.service.js';
 import { createGamePipeline } from './_phases/index.js';
 import { GamePipeline } from './_pipeline.js';
@@ -36,6 +37,7 @@ export class GameService {
   readonly #otcDealsService: OtcDealsService;
   readonly #passiveIncomeService: PassiveIncomeService;
   readonly #savesService: SavesService;
+  readonly #marketService: MarketService;
   readonly #characterSkillsService: CharacterSkillsService;
   readonly #prisma: PrismaClient;
 
@@ -47,6 +49,7 @@ export class GameService {
     this.#otcDealsService = new OtcDealsService(prisma);
     this.#passiveIncomeService = new PassiveIncomeService(prisma);
     this.#savesService = new SavesService(prisma);
+    this.#marketService = new MarketService(prisma);
     this.#characterSkillsService = new CharacterSkillsService(prisma);
   }
 
@@ -81,7 +84,10 @@ export class GameService {
       userId,
       gameId: saveId,
       game,
-      playerPortfolioTickers: [],
+      playerPortfolioTickers: await this.#marketService.getPlayerPortfolioTickers(
+        game.character.id,
+        saveId,
+      ),
     };
     const state = createInitialTurnState(game.character.professionLevel);
 
@@ -115,7 +121,6 @@ export class GameService {
       news: state.news,
       otcDeal: state.otcDeal,
       propertyOffers,
-      appliedPriceImpacts: state.appliedPriceImpacts,
       characterSkills: this.#characterSkillsService.buildState(character),
     };
   }
@@ -346,6 +351,8 @@ export class GameService {
       bootstrapped.step,
       inventoryItems,
     );
+    const marketData = await this.#marketService.getDashboardMarketData(saveId, character);
+    const ipos = await this.#marketService.ipo.listActive(saveId);
 
     return {
       game: serializeGame({ ...bootstrapped, character }),
@@ -353,6 +360,25 @@ export class GameService {
       nextTurnForecast,
       characterSkills: this.#characterSkillsService.buildState(character),
       propertyOffers,
+      stocks: marketData.stocks,
+      portfolio: marketData.portfolio,
+      marketSentiment: marketData.marketSentiment,
+      sectorMomentum: marketData.sectorMomentum,
+      ipos: ipos.map((ipo) => ({
+        id: ipo.id,
+        companyId: ipo.companyId,
+        ticker: ipo.company.ticker,
+        companyName: ipo.company.name,
+        targetGrade: ipo.targetGrade,
+        ipoPrice: ipo.ipoPrice,
+        ipoShares: ipo.ipoShares,
+        announcedAtTurn: ipo.announcedAtTurn,
+        ipoAtTurn: ipo.ipoAtTurn,
+        minSubscription: ipo.minSubscription,
+        maxSubscription: ipo.maxSubscription,
+        isCompleted: ipo.isCompleted,
+        totalSubscribed: ipo.subscriptions.reduce((sum, sub) => sum + sub.amount, 0),
+      })),
     };
   }
 

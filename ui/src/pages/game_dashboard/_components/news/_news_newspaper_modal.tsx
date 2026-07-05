@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { GameModal } from '../../../../components/game_ui/floating'
 import { GameButton } from '../../../../components/game_ui/game_button'
 import { AssetImageFrame } from '../../../../shared/components'
+import { useGameStore } from '../../../../stores/game.store'
 import { useDashboardUi } from '../../_model/dashboard_ui_context'
 import type { news_item } from '../../_model/types'
 import {
@@ -20,6 +21,8 @@ const KIND_LABELS: Record<NonNullable<news_item['kind']>, string> = {
   PROPERTY_DEAL: 'Сделка',
   PROPERTY_INSTALLMENT: 'Ипотека',
   STOCK_TRADE: 'Биржа',
+  IPO_ANNOUNCE: 'IPO',
+  IPO_COMPLETE: 'IPO',
 }
 
 function formatIssueDate(publishedAt: string) {
@@ -91,7 +94,8 @@ function PropertyOfferNewsExtras({
 }
 
 export function NewsNewspaperModal({ item, onClose }: NewsNewspaperModalProps) {
-  const { openRealEstateTab } = useDashboardUi()
+  const { openRealEstateTab, openExchangeTab } = useDashboardUi()
+  const stockListings = useGameStore((state) => state.stockListings)
   const layout = useMemo(() => {
     if (!item) return null
 
@@ -205,6 +209,21 @@ export function NewsNewspaperModal({ item, onClose }: NewsNewspaperModalProps) {
                   openRealEstateTab(offerId)
                 }}
               />
+            ) : null}
+
+            {item.kind === 'INSIDER' && item.ticker ? (
+              <div className="mt-5 flex justify-center border-t border-[#3d4a30]/15 pt-5">
+                <GameButton
+                  size="sm"
+                  onClick={() => {
+                    const listing = stockListings.find((row) => row.ticker === item.ticker)
+                    onClose()
+                    openExchangeTab(listing?.id)
+                  }}
+                >
+                  Открыть на бирже
+                </GameButton>
+              </div>
             ) : null}
           </div>
 

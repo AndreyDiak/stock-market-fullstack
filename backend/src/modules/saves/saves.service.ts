@@ -1,6 +1,7 @@
 import { NPCS } from '@/assets/npcs.js';
 import { REAL_ESTATE } from '@/assets/real_estate.js';
 import { NewsGenerationService } from '@/modules/news/news_generation.service.js';
+import { MarketService } from '@/modules/market/market.service.js';
 import { buildInstallmentInventoryFields } from '@/modules/property_offers/_installment_purchase.js';
 import { PropertyOffersService } from '@/modules/property_offers/property_offers.service.js';
 import { AppError } from '@/utils/errors.js';
@@ -22,12 +23,14 @@ type GameWithCharacter = Game & {
 export class SavesService {
   readonly #newsService: NewsGenerationService;
   readonly #propertyOffersService: PropertyOffersService;
+  readonly #marketService: MarketService;
   readonly #prisma: PrismaClient;
 
   constructor(prisma: PrismaClient) {
     this.#prisma = prisma;
     this.#newsService = new NewsGenerationService(prisma);
     this.#propertyOffersService = new PropertyOffersService(prisma);
+    this.#marketService = new MarketService(prisma);
   }
 
   async listSaves(userId: string) {
@@ -93,6 +96,7 @@ export class SavesService {
     });
 
     await this.#newsService.createWelcomeNews(game.id, character.name, 1);
+    await this.#marketService.initializeMarket(game.id);
 
     const saved = await this.#prisma.game.findUniqueOrThrow({
       where: { id: game.id },
@@ -132,6 +136,8 @@ export class SavesService {
         character.tradingLevel,
       );
     }
+
+    await this.#marketService.ensureMarketInitialized(game.id);
 
     return game;
   }

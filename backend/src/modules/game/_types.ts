@@ -7,7 +7,6 @@ import type { PropertyOfferDto } from '../property_offers/_types.js';
 import type { CharacterDto } from '../../schemas/character.schema.js';
 import type { CharacterSkillsState } from '../../schemas/character_skills.schema.js';
 import type { PassiveResult, TurnForecast } from './_passive_income.service.js';
-import type { AppliedPriceImpact } from '../market/price_impact.service.js';
 import { calcInsiderChance } from '../character_skills/_calculations.js';
 
 export type CharacterWithInventory = Character & { inventoryItems: InventoryItem[] };
@@ -32,7 +31,6 @@ export interface TurnState {
   news: PersistedNewsItem[];
   otcDeal?: GeneratedOtcDeal;
   propertyOffersCreated?: boolean;
-  appliedPriceImpacts?: AppliedPriceImpact[];
 }
 
 export function createInitialTurnState(professionLevel: number): TurnState {
@@ -54,7 +52,6 @@ export interface EndTurnResult {
   news: PersistedNewsItem[];
   otcDeal?: GeneratedOtcDeal;
   propertyOffers: PropertyOfferDto[];
-  appliedPriceImpacts?: AppliedPriceImpact[];
   characterSkills: CharacterSkillsState;
 }
 

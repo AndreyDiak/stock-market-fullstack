@@ -33,18 +33,3 @@ model ScheduledPriceImpact {
   @@index([gameId, status, triggerAtStep])
   @@index([companyId])
 }
-
-/// Котировка компании в рамках конкретной игры.
-model GameCompanyQuote {
-  id           String @id @default(uuid())
-  gameId       String
-  companyId    String
-  currentPrice Float
-
-  game    Game    @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  @@unique([gameId, companyId])
-  @@map("game_company_quotes")
-  @@index([gameId])
-}

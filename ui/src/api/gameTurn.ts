@@ -2,12 +2,13 @@ import { http } from '../lib/http';
 import type { NextTurnForecast } from '../pages/game_dashboard/_components/sidebar/_next_turn_forecast';
 import type { CharacterSkillsState } from '../pages/game_dashboard/_components/character/_character_skills';
 import type { PropertyOffer } from '../pages/game_dashboard/_model/types';
+import type { IpoListing, MarketSentiment, PortfolioRow, StockListing } from './stocks';
 import { format_news_age_label, resolve_published_step } from '../pages/game_dashboard/_model/utils';
 import type { Game } from './types';
 
 export interface GeneratedNewsItem {
   id: string;
-  kind: 'WELCOME' | 'MARKET' | 'INSIDER' | 'RUMOR' | 'OTC_DEAL' | 'PROPERTY_OFFER' | 'PROPERTY_DEAL' | 'PROPERTY_INSTALLMENT' | 'STOCK_TRADE';
+  kind: 'WELCOME' | 'MARKET' | 'INSIDER' | 'RUMOR' | 'OTC_DEAL' | 'PROPERTY_OFFER' | 'PROPERTY_DEAL' | 'PROPERTY_INSTALLMENT' | 'STOCK_TRADE' | 'IPO_ANNOUNCE' | 'IPO_COMPLETE';
   title: string;
   body: string;
   excerpt: string;
@@ -58,6 +59,11 @@ export interface GameDashboardResponse {
   nextTurnForecast: NextTurnForecast;
   characterSkills: CharacterSkillsState;
   propertyOffers: PropertyOffer[];
+  stocks?: StockListing[];
+  portfolio?: PortfolioRow[];
+  marketSentiment?: MarketSentiment;
+  sectorMomentum?: unknown[];
+  ipos?: IpoListing[];
 }
 
 export async function fetchGameDashboard(gameId: string) {

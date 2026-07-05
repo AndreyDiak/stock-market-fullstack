@@ -4,9 +4,17 @@ config();
 process.env.NODE_ENV = 'test';
 
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { beforeAll, afterAll, afterEach } from 'vitest';
 
-const prisma = new PrismaClient();
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  throw new Error('DATABASE_URL is required for tests');
+}
+
+const prisma = new PrismaClient({
+  adapter: new PrismaPg({ connectionString }),
+});
 
 async function truncateTables() {
   await prisma.$executeRawUnsafe(`

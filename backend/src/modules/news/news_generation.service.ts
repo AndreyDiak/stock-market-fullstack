@@ -2,6 +2,7 @@ import type { MarketSector, PrismaClient, Sentiment } from '@prisma/client';
 import { COMPANIES, type CompanyData } from '../../assets/companies.js';
 import type { StaticNewsKind, StaticNewsTemplate } from '../../assets/news.js';
 import { ensureCompanyByTicker } from '../market/company_catalog.js';
+import { NewsImpactService } from '../market/news_impact.service.js';
 import {
   formatPropertySaleNewsBody,
   type PropertySaleNewsFinance,
@@ -11,7 +12,6 @@ import {
   pickInsiderTurnsUntilImpact,
   pickStaticNews,
 } from './news_picker.js';
-import { ScheduledPriceImpactService } from '../market/scheduled_price_impact.service.js';
 import {
   formatInsiderLead,
   resolveInsiderParams,
@@ -23,7 +23,6 @@ import {
   impactFromScore,
   sentimentFromScore,
   type GeneratedNewsKind,
-  type InsiderScheduledImpactPayload,
   type PersistedNewsItem,
   TURN_CYCLE_NEWS_KINDS,
 } from './types.js';
@@ -74,12 +73,12 @@ type StaticNewsConfig<TExtra = undefined> = {
 };
 
 export class NewsGenerationService {
-  readonly #scheduledPriceImpactService: ScheduledPriceImpactService;
+  readonly #newsImpactService: NewsImpactService;
   readonly #prisma: PrismaClient;
 
   constructor(prisma: PrismaClient) {
     this.#prisma = prisma;
-    this.#scheduledPriceImpactService = new ScheduledPriceImpactService(prisma);
+    this.#newsImpactService = new NewsImpactService(prisma);
   }
 
   async generateTurnNews(input: {
@@ -358,6 +357,56 @@ export class NewsGenerationService {
     });
   }
 
+  async createIpoAnnounceNews(input: {
+    gameId: string;
+    gameStep: number;
+    ticker: string;
+    companyName: string;
+    ipoPrice: number;
+    ipoAtTurn: number;
+  }) {
+    const priceLabel = input.ipoPrice.toLocaleString('ru-RU');
+    return this.#persistNews({
+      gameId: input.gameId,
+      gameStep: input.gameStep,
+      kind: 'IPO_ANNOUNCE',
+      title: `IPO: ${input.ticker}`,
+      body: `${input.companyName} (${input.ticker}) готовится к размещению по ${priceLabel} за акцию. Подписка открыта до хода ${input.ipoAtTurn}.`,
+      sentiment: 'POSITIVE',
+      impact: 0.4,
+      ticker: input.ticker,
+      payload: {
+        ticker: input.ticker,
+        ipoPrice: input.ipoPrice,
+        ipoAtTurn: input.ipoAtTurn,
+      },
+    });
+  }
+
+  async createIpoCompleteNews(input: {
+    gameId: string;
+    gameStep: number;
+    ticker: string;
+    companyName: string;
+    ipoPrice: number;
+  }) {
+    const priceLabel = input.ipoPrice.toLocaleString('ru-RU');
+    return this.#persistNews({
+      gameId: input.gameId,
+      gameStep: input.gameStep,
+      kind: 'IPO_COMPLETE',
+      title: `IPO завершено: ${input.ticker}`,
+      body: `${input.companyName} (${input.ticker}) вышла на биржу по цене ${priceLabel}. Акции доступны для торговли.`,
+      sentiment: 'POSITIVE',
+      impact: 0.3,
+      ticker: input.ticker,
+      payload: {
+        ticker: input.ticker,
+        ipoPrice: input.ipoPrice,
+      },
+    });
+  }
+
   async listGameNews(gameId: string, limit = 20): Promise<PersistedNewsItem[]> {
     const rows = await this.#prisma.news.findMany({
       where: { gameId },
@@ -423,23 +472,14 @@ export class NewsGenerationService {
         turnsUntilImpact: insider.turnsUntilImpact,
       }),
       finalize: async (item, template, ctx, insider) => {
-        const scheduled = await this.#scheduledPriceImpactService.schedule({
+        await this.#newsImpactService.createInsiderPressure({
           gameId: ctx.gameId,
-          ticker: ctx.company.ticker,
           newsId: item.id,
+          ticker: ctx.company.ticker,
           direction: insider.direction,
           movePercent: insider.movePercent,
-          createdAtStep: ctx.gameStep,
-          turnsUntilImpact: insider.turnsUntilImpact,
+          remainingTurns: insider.turnsUntilImpact,
         });
-
-        const scheduledPayload: InsiderScheduledImpactPayload = {
-          turnsUntilImpact: insider.turnsUntilImpact,
-          triggerAtStep: scheduled.triggerAtStep,
-          direction: insider.direction,
-          movePercent: insider.movePercent,
-          scheduledImpactId: scheduled.id,
-        };
 
         return {
           ...item,
@@ -447,7 +487,9 @@ export class NewsGenerationService {
             templateId: template.id,
             expectedMovePercent: insider.expectedMovePercent,
             turnsUntilImpact: insider.turnsUntilImpact,
-            scheduledImpact: scheduledPayload,
+            triggerAtStep: ctx.gameStep + insider.turnsUntilImpact,
+            direction: insider.direction,
+            movePercent: insider.movePercent,
           },
         };
       },
@@ -515,6 +557,18 @@ export class NewsGenerationService {
       },
       include: { company: true },
     });
+
+    if (input.kind === 'MARKET' || input.kind === 'RUMOR') {
+      await this.#newsImpactService.applyNews({
+        id: row.id,
+        gameId: input.gameId,
+        kind: input.kind,
+        impact: input.impact,
+        sentiment: input.sentiment,
+        sector: row.sector,
+        companyId: row.companyId,
+      });
+    }
 
     return toPersistedNewsItem(row, {
       kind: input.kind,

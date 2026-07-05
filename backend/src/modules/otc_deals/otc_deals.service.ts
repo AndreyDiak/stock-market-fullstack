@@ -35,7 +35,7 @@ export class OtcDealsService {
         }
 
         const existing = await tx.stock.findFirst({
-          where: { ownerId: character.id, companyId: company.id },
+          where: { ownerId: character.id, companyId: company.id, gameId },
         });
 
         if (existing) {
@@ -54,6 +54,7 @@ export class OtcDealsService {
             data: {
               ownerId: character.id,
               companyId: company.id,
+              gameId,
               purchasePrice: deal.price,
               quantity: deal.qty,
             },
@@ -71,7 +72,7 @@ export class OtcDealsService {
         });
       } else {
         const holding = await tx.stock.findFirst({
-          where: { ownerId: character.id, companyId: company.id },
+          where: { ownerId: character.id, companyId: company.id, gameId },
         });
 
         if (!holding || holding.quantity < deal.qty) {

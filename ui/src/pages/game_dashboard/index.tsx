@@ -48,6 +48,7 @@ export function GameDashboardPage() {
   const [exitModalOpen, setExitModalOpen] = useState(false)
   const [selectedNews, setSelectedNews] = useState<news_item | null>(null)
   const [highlightPropertyOfferId, setHighlightPropertyOfferId] = useState<string | null>(null)
+  const [highlightStockListingId, setHighlightStockListingId] = useState<string | null>(null)
 
   const dashboardUi = useMemo(
     () => ({
@@ -60,10 +61,16 @@ export function GameDashboardPage() {
         setActiveTab('real-estate')
         setHighlightPropertyOfferId(offerId ?? null)
       },
+      openExchangeTab: (listingId?: string) => {
+        setActiveTab('exchange')
+        setHighlightStockListingId(listingId ?? null)
+      },
       highlightPropertyOfferId,
       clearHighlightPropertyOffer: () => setHighlightPropertyOfferId(null),
+      highlightStockListingId,
+      clearHighlightStockListing: () => setHighlightStockListingId(null),
     }),
-    [activeTab, highlightPropertyOfferId, setActiveTab],
+    [activeTab, highlightPropertyOfferId, highlightStockListingId, setActiveTab],
   )
 
   useEffect(() => {

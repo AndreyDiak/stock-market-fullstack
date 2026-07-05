@@ -171,6 +171,10 @@
                 "installmentsPaid": {
                   "type": "integer"
                 },
+                "installmentPrepay": {
+                  "type": "number",
+                  "default": 0
+                },
                 "special": {
                   "type": [
                     "string",
@@ -697,6 +701,10 @@
                             },
                             "installmentsPaid": {
                               "type": "integer"
+                            },
+                            "installmentPrepay": {
+                              "type": "number",
+                              "default": 0
                             },
                             "special": {
                               "type": [
@@ -1395,6 +1403,10 @@
                         "installmentsPaid": {
                           "type": "integer"
                         },
+                        "installmentPrepay": {
+                          "type": "number",
+                          "default": 0
+                        },
                         "special": {
                           "type": [
                             "string",
@@ -1670,6 +1682,10 @@
                           },
                           "installmentsPaid": {
                             "type": "integer"
+                          },
+                          "installmentPrepay": {
+                            "type": "number",
+                            "default": 0
                           },
                           "special": {
                             "type": [
@@ -1955,6 +1971,10 @@
                     "installmentsPaid": {
                       "type": "integer"
                     },
+                    "installmentPrepay": {
+                      "type": "number",
+                      "default": 0
+                    },
                     "special": {
                       "type": [
                         "string",
@@ -2116,7 +2136,9 @@
                     "PROPERTY_OFFER",
                     "PROPERTY_DEAL",
                     "PROPERTY_INSTALLMENT",
-                    "STOCK_TRADE"
+                    "STOCK_TRADE",
+                    "IPO_ANNOUNCE",
+                    "IPO_COMPLETE"
                   ]
                 },
                 "title": {
@@ -2702,7 +2724,9 @@
                     "PROPERTY_OFFER",
                     "PROPERTY_DEAL",
                     "PROPERTY_INSTALLMENT",
-                    "STOCK_TRADE"
+                    "STOCK_TRADE",
+                    "IPO_ANNOUNCE",
+                    "IPO_COMPLETE"
                   ]
                 },
                 "title": {
@@ -3020,6 +3044,10 @@
                             "installmentsPaid": {
                               "type": "integer"
                             },
+                            "installmentPrepay": {
+                              "type": "number",
+                              "default": 0
+                            },
                             "special": {
                               "type": [
                                 "string",
@@ -3118,7 +3146,9 @@
                     "PROPERTY_OFFER",
                     "PROPERTY_DEAL",
                     "PROPERTY_INSTALLMENT",
-                    "STOCK_TRADE"
+                    "STOCK_TRADE",
+                    "IPO_ANNOUNCE",
+                    "IPO_COMPLETE"
                   ]
                 },
                 "title": {
@@ -3608,6 +3638,263 @@
               ],
               "additionalProperties": false
             }
+          },
+          "stocks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "companyId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "ticker": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "sector": {
+                  "type": "string"
+                },
+                "grade": {
+                  "type": "string",
+                  "enum": [
+                    "F",
+                    "E",
+                    "D",
+                    "C",
+                    "B",
+                    "A"
+                  ]
+                },
+                "currentPrice": {
+                  "type": "number"
+                },
+                "previousPrice": {
+                  "type": "number"
+                },
+                "dayChange": {
+                  "type": "number"
+                },
+                "availableOnExchange": {
+                  "type": "boolean"
+                },
+                "isLocked": {
+                  "type": "boolean"
+                },
+                "hasInsiderPressure": {
+                  "type": "boolean"
+                },
+                "history": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "turn": {
+                        "type": "integer"
+                      },
+                      "price": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "turn",
+                      "price"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "companyId",
+                "ticker",
+                "name",
+                "sector",
+                "grade",
+                "currentPrice",
+                "previousPrice",
+                "dayChange",
+                "availableOnExchange",
+                "isLocked",
+                "hasInsiderPressure",
+                "history"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "portfolio": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ticker": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "qty": {
+                  "type": "integer"
+                },
+                "price": {
+                  "type": "number"
+                },
+                "purchasePrice": {
+                  "type": "number"
+                },
+                "changePct": {
+                  "type": "number"
+                },
+                "pnl": {
+                  "type": "number"
+                },
+                "listingId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ticker",
+                "name",
+                "qty",
+                "price",
+                "purchasePrice",
+                "changePct",
+                "pnl",
+                "listingId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "marketSentiment": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "number"
+              },
+              "indicator": {
+                "type": "string",
+                "enum": [
+                  "bearish",
+                  "neutral",
+                  "bullish"
+                ]
+              }
+            },
+            "required": [
+              "value",
+              "indicator"
+            ],
+            "additionalProperties": false
+          },
+          "sectorMomentum": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "sector": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "number"
+                },
+                "duration": {
+                  "type": "integer"
+                },
+                "trend": {
+                  "type": "string",
+                  "enum": [
+                    "rising",
+                    "falling",
+                    "neutral"
+                  ]
+                }
+              },
+              "required": [
+                "sector",
+                "value",
+                "duration",
+                "trend"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "ipos": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "companyId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "ticker": {
+                  "type": "string"
+                },
+                "companyName": {
+                  "type": "string"
+                },
+                "targetGrade": {
+                  "type": "string",
+                  "enum": [
+                    "F",
+                    "E",
+                    "D",
+                    "C",
+                    "B",
+                    "A"
+                  ]
+                },
+                "ipoPrice": {
+                  "type": "number"
+                },
+                "ipoShares": {
+                  "type": "integer"
+                },
+                "announcedAtTurn": {
+                  "type": "integer"
+                },
+                "ipoAtTurn": {
+                  "type": "integer"
+                },
+                "minSubscription": {
+                  "type": "integer"
+                },
+                "maxSubscription": {
+                  "type": "integer"
+                },
+                "isCompleted": {
+                  "type": "boolean"
+                },
+                "totalSubscribed": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "id",
+                "companyId",
+                "ticker",
+                "companyName",
+                "targetGrade",
+                "ipoPrice",
+                "ipoShares",
+                "announcedAtTurn",
+                "ipoAtTurn",
+                "minSubscription",
+                "maxSubscription",
+                "isCompleted"
+              ],
+              "additionalProperties": false
+            }
           }
         },
         "required": [
@@ -3844,6 +4131,10 @@
                     "installmentsPaid": {
                       "type": "integer"
                     },
+                    "installmentPrepay": {
+                      "type": "number",
+                      "default": 0
+                    },
                     "special": {
                       "type": [
                         "string",
@@ -4024,7 +4315,9 @@
                   "PROPERTY_OFFER",
                   "PROPERTY_DEAL",
                   "PROPERTY_INSTALLMENT",
-                  "STOCK_TRADE"
+                  "STOCK_TRADE",
+                  "IPO_ANNOUNCE",
+                  "IPO_COMPLETE"
                 ]
               },
               "title": {
@@ -4478,6 +4771,10 @@
                     "installmentsPaid": {
                       "type": "integer"
                     },
+                    "installmentPrepay": {
+                      "type": "number",
+                      "default": 0
+                    },
                     "special": {
                       "type": [
                         "string",
@@ -4554,7 +4851,9 @@
                       "PROPERTY_OFFER",
                       "PROPERTY_DEAL",
                       "PROPERTY_INSTALLMENT",
-                      "STOCK_TRADE"
+                      "STOCK_TRADE",
+                      "IPO_ANNOUNCE",
+                      "IPO_COMPLETE"
                     ]
                   },
                   "title": {
@@ -4960,6 +5259,10 @@
                     "installmentsPaid": {
                       "type": "integer"
                     },
+                    "installmentPrepay": {
+                      "type": "number",
+                      "default": 0
+                    },
                     "special": {
                       "type": [
                         "string",
@@ -5034,7 +5337,9 @@
                   "PROPERTY_OFFER",
                   "PROPERTY_DEAL",
                   "PROPERTY_INSTALLMENT",
-                  "STOCK_TRADE"
+                  "STOCK_TRADE",
+                  "IPO_ANNOUNCE",
+                  "IPO_COMPLETE"
                 ]
               },
               "title": {
@@ -5107,6 +5412,1125 @@
           "balance",
           "character",
           "news"
+        ],
+        "additionalProperties": false
+      },
+      "PayOffInstallmentResponse": {
+        "type": "object",
+        "properties": {
+          "balance": {
+            "type": "number"
+          },
+          "previousBalance": {
+            "type": "number"
+          },
+          "character": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "gameId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "name": {
+                "type": "string"
+              },
+              "balance": {
+                "type": "number"
+              },
+              "profession": {
+                "type": "string",
+                "enum": [
+                  "DOCTOR",
+                  "DEVELOPER",
+                  "FINANCIER",
+                  "FARMER",
+                  "ENGINEER",
+                  "STREET_CLEANER"
+                ]
+              },
+              "professionLevel": {
+                "type": "integer"
+              },
+              "salary": {
+                "type": "number"
+              },
+              "reputation": {
+                "type": "number"
+              },
+              "tradingLevel": {
+                "type": "integer"
+              },
+              "bankingLevel": {
+                "type": "integer"
+              },
+              "propertySlotLevel": {
+                "type": "integer"
+              },
+              "isNpc": {
+                "type": "boolean"
+              },
+              "dreamItemRefs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "totalEarned": {
+                "type": "number"
+              },
+              "totalSpent": {
+                "type": "number"
+              },
+              "totalTrades": {
+                "type": "integer"
+              },
+              "successfulTrades": {
+                "type": "integer"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "inventoryItems": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "characterId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "itemRef": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "purchasePrice": {
+                      "type": "number"
+                    },
+                    "downPaymentAmount": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "isInstallment": {
+                      "type": "boolean"
+                    },
+                    "monthlyPayment": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "installmentsTotal": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "installmentsPaid": {
+                      "type": "integer"
+                    },
+                    "installmentPrepay": {
+                      "type": "number",
+                      "default": 0
+                    },
+                    "special": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "isPaidOff": {
+                      "type": "boolean"
+                    },
+                    "purchasedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "characterId",
+                    "itemRef",
+                    "name",
+                    "purchasePrice",
+                    "downPaymentAmount",
+                    "isInstallment",
+                    "monthlyPayment",
+                    "installmentsTotal",
+                    "installmentsPaid",
+                    "special",
+                    "isPaidOff",
+                    "purchasedAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id",
+              "gameId",
+              "name",
+              "balance",
+              "profession",
+              "professionLevel",
+              "salary",
+              "reputation",
+              "tradingLevel",
+              "bankingLevel",
+              "propertySlotLevel",
+              "isNpc",
+              "dreamItemRefs",
+              "totalEarned",
+              "totalSpent",
+              "totalTrades",
+              "successfulTrades",
+              "createdAt",
+              "updatedAt"
+            ],
+            "additionalProperties": false
+          },
+          "news": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "WELCOME",
+                  "MARKET",
+                  "INSIDER",
+                  "RUMOR",
+                  "OTC_DEAL",
+                  "PROPERTY_OFFER",
+                  "PROPERTY_DEAL",
+                  "PROPERTY_INSTALLMENT",
+                  "STOCK_TRADE",
+                  "IPO_ANNOUNCE",
+                  "IPO_COMPLETE"
+                ]
+              },
+              "title": {
+                "type": "string"
+              },
+              "body": {
+                "type": "string"
+              },
+              "excerpt": {
+                "type": "string"
+              },
+              "sentiment": {
+                "type": "string",
+                "enum": [
+                  "POSITIVE",
+                  "NEGATIVE",
+                  "NEUTRAL"
+                ]
+              },
+              "impact": {
+                "type": "number"
+              },
+              "sector": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "companyId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "ticker": {
+                "type": "string"
+              },
+              "hot": {
+                "type": "boolean"
+              },
+              "publishedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "publishedStep": {
+                "type": "integer",
+                "exclusiveMinimum": 0
+              },
+              "payload": {}
+            },
+            "required": [
+              "id",
+              "kind",
+              "title",
+              "body",
+              "excerpt",
+              "sentiment",
+              "impact",
+              "publishedAt"
+            ],
+            "additionalProperties": false
+          },
+          "nextTurnForecast": {
+            "type": "object",
+            "properties": {
+              "lines": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "amount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "label",
+                    "amount"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "incomeTotal": {
+                "type": "number"
+              },
+              "expenseTotal": {
+                "type": "number"
+              },
+              "netChange": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "lines",
+              "incomeTotal",
+              "expenseTotal",
+              "netChange"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "balance",
+          "previousBalance",
+          "character",
+          "news",
+          "nextTurnForecast"
+        ],
+        "additionalProperties": false
+      },
+      "PayOffInstallmentBody": {
+        "type": "object",
+        "properties": {
+          "payPercent": {
+            "type": "integer",
+            "minimum": 5,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "payPercent"
+        ],
+        "additionalProperties": false
+      },
+      "StockListing": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "companyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ticker": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "sector": {
+            "type": "string"
+          },
+          "grade": {
+            "type": "string",
+            "enum": [
+              "F",
+              "E",
+              "D",
+              "C",
+              "B",
+              "A"
+            ]
+          },
+          "currentPrice": {
+            "type": "number"
+          },
+          "previousPrice": {
+            "type": "number"
+          },
+          "dayChange": {
+            "type": "number"
+          },
+          "availableOnExchange": {
+            "type": "boolean"
+          },
+          "isLocked": {
+            "type": "boolean"
+          },
+          "hasInsiderPressure": {
+            "type": "boolean"
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "turn": {
+                  "type": "integer"
+                },
+                "price": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "turn",
+                "price"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "id",
+          "companyId",
+          "ticker",
+          "name",
+          "sector",
+          "grade",
+          "currentPrice",
+          "previousPrice",
+          "dayChange",
+          "availableOnExchange",
+          "isLocked",
+          "hasInsiderPressure",
+          "history"
+        ],
+        "additionalProperties": false
+      },
+      "StockListResponse": {
+        "type": "object",
+        "properties": {
+          "stocks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "companyId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "ticker": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "sector": {
+                  "type": "string"
+                },
+                "grade": {
+                  "type": "string",
+                  "enum": [
+                    "F",
+                    "E",
+                    "D",
+                    "C",
+                    "B",
+                    "A"
+                  ]
+                },
+                "currentPrice": {
+                  "type": "number"
+                },
+                "previousPrice": {
+                  "type": "number"
+                },
+                "dayChange": {
+                  "type": "number"
+                },
+                "availableOnExchange": {
+                  "type": "boolean"
+                },
+                "isLocked": {
+                  "type": "boolean"
+                },
+                "hasInsiderPressure": {
+                  "type": "boolean"
+                },
+                "history": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "turn": {
+                        "type": "integer"
+                      },
+                      "price": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "turn",
+                      "price"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "companyId",
+                "ticker",
+                "name",
+                "sector",
+                "grade",
+                "currentPrice",
+                "previousPrice",
+                "dayChange",
+                "availableOnExchange",
+                "isLocked",
+                "hasInsiderPressure",
+                "history"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "stocks"
+        ],
+        "additionalProperties": false
+      },
+      "StockDetailResponse": {
+        "type": "object",
+        "properties": {
+          "listing": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "companyId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "ticker": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "sector": {
+                "type": "string"
+              },
+              "grade": {
+                "type": "string",
+                "enum": [
+                  "F",
+                  "E",
+                  "D",
+                  "C",
+                  "B",
+                  "A"
+                ]
+              },
+              "currentPrice": {
+                "type": "number"
+              },
+              "previousPrice": {
+                "type": "number"
+              },
+              "dayChange": {
+                "type": "number"
+              },
+              "availableOnExchange": {
+                "type": "boolean"
+              },
+              "isLocked": {
+                "type": "boolean"
+              },
+              "hasInsiderPressure": {
+                "type": "boolean"
+              },
+              "history": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "turn": {
+                      "type": "integer"
+                    },
+                    "price": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "turn",
+                    "price"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id",
+              "companyId",
+              "ticker",
+              "name",
+              "sector",
+              "grade",
+              "currentPrice",
+              "previousPrice",
+              "dayChange",
+              "availableOnExchange",
+              "isLocked",
+              "hasInsiderPressure",
+              "history"
+            ],
+            "additionalProperties": false
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "turn": {
+                  "type": "integer"
+                },
+                "price": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "turn",
+                "price"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "listing",
+          "history"
+        ],
+        "additionalProperties": false
+      },
+      "StockHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "history": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "turn": {
+                  "type": "integer"
+                },
+                "price": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "turn",
+                "price"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "history"
+        ],
+        "additionalProperties": false
+      },
+      "BuyStockBody": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "quantity"
+        ],
+        "additionalProperties": false
+      },
+      "BuyStockResponse": {
+        "type": "object",
+        "properties": {
+          "balance": {
+            "type": "number"
+          },
+          "portfolio": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ticker": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "qty": {
+                  "type": "integer"
+                },
+                "price": {
+                  "type": "number"
+                },
+                "purchasePrice": {
+                  "type": "number"
+                },
+                "changePct": {
+                  "type": "number"
+                },
+                "pnl": {
+                  "type": "number"
+                },
+                "listingId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ticker",
+                "name",
+                "qty",
+                "price",
+                "purchasePrice",
+                "changePct",
+                "pnl",
+                "listingId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "news": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "WELCOME",
+                  "MARKET",
+                  "INSIDER",
+                  "RUMOR",
+                  "OTC_DEAL",
+                  "PROPERTY_OFFER",
+                  "PROPERTY_DEAL",
+                  "PROPERTY_INSTALLMENT",
+                  "STOCK_TRADE",
+                  "IPO_ANNOUNCE",
+                  "IPO_COMPLETE"
+                ]
+              },
+              "title": {
+                "type": "string"
+              },
+              "body": {
+                "type": "string"
+              },
+              "excerpt": {
+                "type": "string"
+              },
+              "sentiment": {
+                "type": "string",
+                "enum": [
+                  "POSITIVE",
+                  "NEGATIVE",
+                  "NEUTRAL"
+                ]
+              },
+              "impact": {
+                "type": "number"
+              },
+              "sector": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "companyId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "ticker": {
+                "type": "string"
+              },
+              "hot": {
+                "type": "boolean"
+              },
+              "publishedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "publishedStep": {
+                "type": "integer",
+                "exclusiveMinimum": 0
+              },
+              "payload": {}
+            },
+            "required": [
+              "id",
+              "kind",
+              "title",
+              "body",
+              "excerpt",
+              "sentiment",
+              "impact",
+              "publishedAt"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "balance",
+          "portfolio",
+          "news"
+        ],
+        "additionalProperties": false
+      },
+      "PortfolioResponse": {
+        "type": "object",
+        "properties": {
+          "portfolio": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ticker": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "qty": {
+                  "type": "integer"
+                },
+                "price": {
+                  "type": "number"
+                },
+                "purchasePrice": {
+                  "type": "number"
+                },
+                "changePct": {
+                  "type": "number"
+                },
+                "pnl": {
+                  "type": "number"
+                },
+                "listingId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ticker",
+                "name",
+                "qty",
+                "price",
+                "purchasePrice",
+                "changePct",
+                "pnl",
+                "listingId"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "portfolio"
+        ],
+        "additionalProperties": false
+      },
+      "MarketSentiment": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number"
+          },
+          "indicator": {
+            "type": "string",
+            "enum": [
+              "bearish",
+              "neutral",
+              "bullish"
+            ]
+          }
+        },
+        "required": [
+          "value",
+          "indicator"
+        ],
+        "additionalProperties": false
+      },
+      "SectorMomentum": {
+        "type": "object",
+        "properties": {
+          "sector": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          },
+          "duration": {
+            "type": "integer"
+          },
+          "trend": {
+            "type": "string",
+            "enum": [
+              "rising",
+              "falling",
+              "neutral"
+            ]
+          }
+        },
+        "required": [
+          "sector",
+          "value",
+          "duration",
+          "trend"
+        ],
+        "additionalProperties": false
+      },
+      "IpoListResponse": {
+        "type": "object",
+        "properties": {
+          "ipos": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "companyId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "ticker": {
+                  "type": "string"
+                },
+                "companyName": {
+                  "type": "string"
+                },
+                "targetGrade": {
+                  "type": "string",
+                  "enum": [
+                    "F",
+                    "E",
+                    "D",
+                    "C",
+                    "B",
+                    "A"
+                  ]
+                },
+                "ipoPrice": {
+                  "type": "number"
+                },
+                "ipoShares": {
+                  "type": "integer"
+                },
+                "announcedAtTurn": {
+                  "type": "integer"
+                },
+                "ipoAtTurn": {
+                  "type": "integer"
+                },
+                "minSubscription": {
+                  "type": "integer"
+                },
+                "maxSubscription": {
+                  "type": "integer"
+                },
+                "isCompleted": {
+                  "type": "boolean"
+                },
+                "totalSubscribed": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "id",
+                "companyId",
+                "ticker",
+                "companyName",
+                "targetGrade",
+                "ipoPrice",
+                "ipoShares",
+                "announcedAtTurn",
+                "ipoAtTurn",
+                "minSubscription",
+                "maxSubscription",
+                "isCompleted"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "ipos"
+        ],
+        "additionalProperties": false
+      },
+      "IpoSubscribeBody": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "amount"
+        ],
+        "additionalProperties": false
+      },
+      "IpoSubscribeResponse": {
+        "type": "object",
+        "properties": {
+          "ipos": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "companyId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "ticker": {
+                  "type": "string"
+                },
+                "companyName": {
+                  "type": "string"
+                },
+                "targetGrade": {
+                  "type": "string",
+                  "enum": [
+                    "F",
+                    "E",
+                    "D",
+                    "C",
+                    "B",
+                    "A"
+                  ]
+                },
+                "ipoPrice": {
+                  "type": "number"
+                },
+                "ipoShares": {
+                  "type": "integer"
+                },
+                "announcedAtTurn": {
+                  "type": "integer"
+                },
+                "ipoAtTurn": {
+                  "type": "integer"
+                },
+                "minSubscription": {
+                  "type": "integer"
+                },
+                "maxSubscription": {
+                  "type": "integer"
+                },
+                "isCompleted": {
+                  "type": "boolean"
+                },
+                "totalSubscribed": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "id",
+                "companyId",
+                "ticker",
+                "companyName",
+                "targetGrade",
+                "ipoPrice",
+                "ipoShares",
+                "announcedAtTurn",
+                "ipoAtTurn",
+                "minSubscription",
+                "maxSubscription",
+                "isCompleted"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "ipos"
         ],
         "additionalProperties": false
       },
@@ -7071,6 +8495,1032 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NextTurnForecastResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/inventory/{itemId}/pay-off-installment": {
+      "post": {
+        "tags": [
+          "game"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PayOffInstallmentBody"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "itemId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayOffInstallmentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/stocks": {
+      "get": {
+        "tags": [
+          "market"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/stocks/{listingId}": {
+      "get": {
+        "tags": [
+          "market"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "listingId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/stocks/{listingId}/history": {
+      "get": {
+        "tags": [
+          "market"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20,
+              "default": 20
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "listingId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockHistoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/stocks/{listingId}/buy": {
+      "post": {
+        "tags": [
+          "market"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BuyStockBody"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "listingId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuyStockResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/portfolio": {
+      "get": {
+        "tags": [
+          "market"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortfolioResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/market/sentiment": {
+      "get": {
+        "tags": [
+          "market"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketSentiment"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/market/sectors": {
+      "get": {
+        "tags": [
+          "market"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sectors": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SectorMomentum"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/ipo": {
+      "get": {
+        "tags": [
+          "market"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IpoListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/ipo/history": {
+      "get": {
+        "tags": [
+          "market"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IpoListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/ipo/{ipoId}/subscribe": {
+      "post": {
+        "tags": [
+          "market"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IpoSubscribeBody"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "ipoId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IpoSubscribeResponse"
                 }
               }
             }
