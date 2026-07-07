@@ -1,4 +1,6 @@
 import type { MarketSector, PrismaClient, Sentiment } from '@prisma/client';
+import type { SectorImpactWeight } from '../../assets/sector_spillover.js';
+import { buildAffectedSectors } from '../../assets/sector_spillover.js';
 import type { StockGrade } from '../../assets/stock_grade.js';
 import { shiftSentiment } from './market_sentiment.engine.js';
 import { shiftSectorMomentum, getSectorTrend } from './sector_momentum.engine.js';
@@ -11,6 +13,7 @@ export interface NewsImpactInput {
   sentiment: Sentiment;
   sector?: MarketSector | null;
   companyId?: string | null;
+  affectedSectors?: SectorImpactWeight[];
 }
 
 export class NewsImpactService {
@@ -27,8 +30,24 @@ export class NewsImpactService {
       const strength = news.kind === 'RUMOR' ? 0.6 : 1;
       const signedImpact = this.#signedImpact(news);
 
+      if (news.affectedSectors && news.affectedSectors.length > 0) {
+        await this.#applyMultiSectorNews(
+          news.gameId,
+          news.id,
+          news.affectedSectors,
+          signedImpact * strength,
+        );
+        return;
+      }
+
       if (news.sector) {
-        await this.#applySectorNews(news.gameId, news.id, news.sector, signedImpact * strength);
+        const affectedSectors = buildAffectedSectors(news.sector);
+        await this.#applyMultiSectorNews(
+          news.gameId,
+          news.id,
+          affectedSectors,
+          signedImpact * strength,
+        );
         return;
       }
 
@@ -67,6 +86,17 @@ export class NewsImpactService {
         decayRate: 0.15,
       },
     });
+  }
+
+  async #applyMultiSectorNews(
+    gameId: string,
+    newsId: string,
+    affectedSectors: SectorImpactWeight[],
+    impact: number,
+  ) {
+    for (const entry of affectedSectors) {
+      await this.#applySectorNews(gameId, newsId, entry.sector, impact * entry.weight);
+    }
   }
 
   async #applySectorNews(

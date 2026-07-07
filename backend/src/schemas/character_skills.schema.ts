@@ -63,6 +63,7 @@ export const characterStatsSchema = z.object({
   insiderChancePercent: z.number(),
   bankBaseRatePercent: z.number(),
   tradingGrade: z.string(),
+  sellCommissionPercent: z.number(),
   propertySlotsUnlocked: z.number().int(),
   salaryBonus: z.number(),
   qualificationBonusPercent: z.number().int(),

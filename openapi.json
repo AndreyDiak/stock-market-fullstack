@@ -474,6 +474,9 @@
               "tradingGrade": {
                 "type": "string"
               },
+              "sellCommissionPercent": {
+                "type": "number"
+              },
               "propertySlotsUnlocked": {
                 "type": "integer"
               },
@@ -490,6 +493,7 @@
               "insiderChancePercent",
               "bankBaseRatePercent",
               "tradingGrade",
+              "sellCommissionPercent",
               "propertySlotsUnlocked",
               "salaryBonus",
               "qualificationBonusPercent"
@@ -1027,6 +1031,9 @@
                   "tradingGrade": {
                     "type": "string"
                   },
+                  "sellCommissionPercent": {
+                    "type": "number"
+                  },
                   "propertySlotsUnlocked": {
                     "type": "integer"
                   },
@@ -1043,6 +1050,7 @@
                   "insiderChancePercent",
                   "bankBaseRatePercent",
                   "tradingGrade",
+                  "sellCommissionPercent",
                   "propertySlotsUnlocked",
                   "salaryBonus",
                   "qualificationBonusPercent"
@@ -2137,6 +2145,7 @@
                     "PROPERTY_DEAL",
                     "PROPERTY_INSTALLMENT",
                     "STOCK_TRADE",
+                    "STOCK_DIVIDEND",
                     "IPO_ANNOUNCE",
                     "IPO_COMPLETE"
                   ]
@@ -2401,6 +2410,34 @@
               "additionalProperties": false
             }
           },
+          "dividendPayouts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "listingId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "ticker": {
+                  "type": "string"
+                },
+                "companyName": {
+                  "type": "string"
+                },
+                "totalPaid": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "listingId",
+                "ticker",
+                "companyName",
+                "totalPaid"
+              ],
+              "additionalProperties": false
+            }
+          },
           "characterSkills": {
             "type": "object",
             "properties": {
@@ -2644,6 +2681,9 @@
                   "tradingGrade": {
                     "type": "string"
                   },
+                  "sellCommissionPercent": {
+                    "type": "number"
+                  },
                   "propertySlotsUnlocked": {
                     "type": "integer"
                   },
@@ -2660,6 +2700,7 @@
                   "insiderChancePercent",
                   "bankBaseRatePercent",
                   "tradingGrade",
+                  "sellCommissionPercent",
                   "propertySlotsUnlocked",
                   "salaryBonus",
                   "qualificationBonusPercent"
@@ -2725,6 +2766,7 @@
                     "PROPERTY_DEAL",
                     "PROPERTY_INSTALLMENT",
                     "STOCK_TRADE",
+                    "STOCK_DIVIDEND",
                     "IPO_ANNOUNCE",
                     "IPO_COMPLETE"
                   ]
@@ -3147,6 +3189,7 @@
                     "PROPERTY_DEAL",
                     "PROPERTY_INSTALLMENT",
                     "STOCK_TRADE",
+                    "STOCK_DIVIDEND",
                     "IPO_ANNOUNCE",
                     "IPO_COMPLETE"
                   ]
@@ -3504,6 +3547,9 @@
                   "tradingGrade": {
                     "type": "string"
                   },
+                  "sellCommissionPercent": {
+                    "type": "number"
+                  },
                   "propertySlotsUnlocked": {
                     "type": "integer"
                   },
@@ -3520,6 +3566,7 @@
                   "insiderChancePercent",
                   "bankBaseRatePercent",
                   "tradingGrade",
+                  "sellCommissionPercent",
                   "propertySlotsUnlocked",
                   "salaryBonus",
                   "qualificationBonusPercent"
@@ -3690,6 +3737,44 @@
                 "hasInsiderPressure": {
                   "type": "boolean"
                 },
+                "hasNewsPressure": {
+                  "type": "boolean"
+                },
+                "archetype": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "growth",
+                        "dividend",
+                        "speculative",
+                        "defensive"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "archetypeLabel": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "paysDividends": {
+                  "type": "boolean"
+                },
+                "turnsUntilDividend": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
                 "history": {
                   "type": "array",
                   "items": {
@@ -3723,6 +3808,11 @@
                 "availableOnExchange",
                 "isLocked",
                 "hasInsiderPressure",
+                "hasNewsPressure",
+                "archetype",
+                "archetypeLabel",
+                "paysDividends",
+                "turnsUntilDividend",
                 "history"
               ],
               "additionalProperties": false
@@ -3756,6 +3846,22 @@
                 },
                 "listingId": {
                   "type": "string"
+                },
+                "paysDividends": {
+                  "type": "boolean"
+                },
+                "turnsUntilDividend": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "turnsHeldInCycle": {
+                  "type": "integer"
                 }
               },
               "required": [
@@ -3766,7 +3872,10 @@
                 "purchasePrice",
                 "changePct",
                 "pnl",
-                "listingId"
+                "listingId",
+                "paysDividends",
+                "turnsUntilDividend",
+                "turnsHeldInCycle"
               ],
               "additionalProperties": false
             }
@@ -4316,6 +4425,7 @@
                   "PROPERTY_DEAL",
                   "PROPERTY_INSTALLMENT",
                   "STOCK_TRADE",
+                  "STOCK_DIVIDEND",
                   "IPO_ANNOUNCE",
                   "IPO_COMPLETE"
                 ]
@@ -4852,6 +4962,7 @@
                       "PROPERTY_DEAL",
                       "PROPERTY_INSTALLMENT",
                       "STOCK_TRADE",
+                      "STOCK_DIVIDEND",
                       "IPO_ANNOUNCE",
                       "IPO_COMPLETE"
                     ]
@@ -5338,6 +5449,7 @@
                   "PROPERTY_DEAL",
                   "PROPERTY_INSTALLMENT",
                   "STOCK_TRADE",
+                  "STOCK_DIVIDEND",
                   "IPO_ANNOUNCE",
                   "IPO_COMPLETE"
                 ]
@@ -5635,6 +5747,7 @@
                   "PROPERTY_DEAL",
                   "PROPERTY_INSTALLMENT",
                   "STOCK_TRADE",
+                  "STOCK_DIVIDEND",
                   "IPO_ANNOUNCE",
                   "IPO_COMPLETE"
                 ]
@@ -5821,6 +5934,44 @@
           "hasInsiderPressure": {
             "type": "boolean"
           },
+          "hasNewsPressure": {
+            "type": "boolean"
+          },
+          "archetype": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "growth",
+                  "dividend",
+                  "speculative",
+                  "defensive"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "archetypeLabel": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "paysDividends": {
+            "type": "boolean"
+          },
+          "turnsUntilDividend": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "history": {
             "type": "array",
             "items": {
@@ -5854,6 +6005,11 @@
           "availableOnExchange",
           "isLocked",
           "hasInsiderPressure",
+          "hasNewsPressure",
+          "archetype",
+          "archetypeLabel",
+          "paysDividends",
+          "turnsUntilDividend",
           "history"
         ],
         "additionalProperties": false
@@ -5912,6 +6068,44 @@
                 "hasInsiderPressure": {
                   "type": "boolean"
                 },
+                "hasNewsPressure": {
+                  "type": "boolean"
+                },
+                "archetype": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "growth",
+                        "dividend",
+                        "speculative",
+                        "defensive"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "archetypeLabel": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "paysDividends": {
+                  "type": "boolean"
+                },
+                "turnsUntilDividend": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
                 "history": {
                   "type": "array",
                   "items": {
@@ -5945,6 +6139,11 @@
                 "availableOnExchange",
                 "isLocked",
                 "hasInsiderPressure",
+                "hasNewsPressure",
+                "archetype",
+                "archetypeLabel",
+                "paysDividends",
+                "turnsUntilDividend",
                 "history"
               ],
               "additionalProperties": false
@@ -6008,6 +6207,44 @@
               "hasInsiderPressure": {
                 "type": "boolean"
               },
+              "hasNewsPressure": {
+                "type": "boolean"
+              },
+              "archetype": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "growth",
+                      "dividend",
+                      "speculative",
+                      "defensive"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "archetypeLabel": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "paysDividends": {
+                "type": "boolean"
+              },
+              "turnsUntilDividend": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "history": {
                 "type": "array",
                 "items": {
@@ -6041,6 +6278,11 @@
               "availableOnExchange",
               "isLocked",
               "hasInsiderPressure",
+              "hasNewsPressure",
+              "archetype",
+              "archetypeLabel",
+              "paysDividends",
+              "turnsUntilDividend",
               "history"
             ],
             "additionalProperties": false
@@ -6146,6 +6388,22 @@
                 },
                 "listingId": {
                   "type": "string"
+                },
+                "paysDividends": {
+                  "type": "boolean"
+                },
+                "turnsUntilDividend": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "turnsHeldInCycle": {
+                  "type": "integer"
                 }
               },
               "required": [
@@ -6156,7 +6414,10 @@
                 "purchasePrice",
                 "changePct",
                 "pnl",
-                "listingId"
+                "listingId",
+                "paysDividends",
+                "turnsUntilDividend",
+                "turnsHeldInCycle"
               ],
               "additionalProperties": false
             }
@@ -6180,6 +6441,7 @@
                   "PROPERTY_DEAL",
                   "PROPERTY_INSTALLMENT",
                   "STOCK_TRADE",
+                  "STOCK_DIVIDEND",
                   "IPO_ANNOUNCE",
                   "IPO_COMPLETE"
                 ]
@@ -6257,6 +6519,200 @@
         ],
         "additionalProperties": false
       },
+      "SellStockBody": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "quantity"
+        ],
+        "additionalProperties": false
+      },
+      "SellStockResponse": {
+        "type": "object",
+        "properties": {
+          "balance": {
+            "type": "number"
+          },
+          "portfolio": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ticker": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "qty": {
+                  "type": "integer"
+                },
+                "price": {
+                  "type": "number"
+                },
+                "purchasePrice": {
+                  "type": "number"
+                },
+                "changePct": {
+                  "type": "number"
+                },
+                "pnl": {
+                  "type": "number"
+                },
+                "listingId": {
+                  "type": "string"
+                },
+                "paysDividends": {
+                  "type": "boolean"
+                },
+                "turnsUntilDividend": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "turnsHeldInCycle": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "ticker",
+                "name",
+                "qty",
+                "price",
+                "purchasePrice",
+                "changePct",
+                "pnl",
+                "listingId",
+                "paysDividends",
+                "turnsUntilDividend",
+                "turnsHeldInCycle"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "news": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "WELCOME",
+                  "MARKET",
+                  "INSIDER",
+                  "RUMOR",
+                  "OTC_DEAL",
+                  "PROPERTY_OFFER",
+                  "PROPERTY_DEAL",
+                  "PROPERTY_INSTALLMENT",
+                  "STOCK_TRADE",
+                  "STOCK_DIVIDEND",
+                  "IPO_ANNOUNCE",
+                  "IPO_COMPLETE"
+                ]
+              },
+              "title": {
+                "type": "string"
+              },
+              "body": {
+                "type": "string"
+              },
+              "excerpt": {
+                "type": "string"
+              },
+              "sentiment": {
+                "type": "string",
+                "enum": [
+                  "POSITIVE",
+                  "NEGATIVE",
+                  "NEUTRAL"
+                ]
+              },
+              "impact": {
+                "type": "number"
+              },
+              "sector": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "companyId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "ticker": {
+                "type": "string"
+              },
+              "hot": {
+                "type": "boolean"
+              },
+              "publishedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "publishedStep": {
+                "type": "integer",
+                "exclusiveMinimum": 0
+              },
+              "payload": {}
+            },
+            "required": [
+              "id",
+              "kind",
+              "title",
+              "body",
+              "excerpt",
+              "sentiment",
+              "impact",
+              "publishedAt"
+            ],
+            "additionalProperties": false
+          },
+          "gross": {
+            "type": "number"
+          },
+          "commissionPercent": {
+            "type": "number"
+          },
+          "commissionAmount": {
+            "type": "number"
+          },
+          "net": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "balance",
+          "portfolio",
+          "news",
+          "gross",
+          "commissionPercent",
+          "commissionAmount",
+          "net"
+        ],
+        "additionalProperties": false
+      },
       "PortfolioResponse": {
         "type": "object",
         "properties": {
@@ -6288,6 +6744,22 @@
                 },
                 "listingId": {
                   "type": "string"
+                },
+                "paysDividends": {
+                  "type": "boolean"
+                },
+                "turnsUntilDividend": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "turnsHeldInCycle": {
+                  "type": "integer"
                 }
               },
               "required": [
@@ -6298,7 +6770,10 @@
                 "purchasePrice",
                 "changePct",
                 "pnl",
-                "listingId"
+                "listingId",
+                "paysDividends",
+                "turnsUntilDividend",
+                "turnsHeldInCycle"
               ],
               "additionalProperties": false
             }
@@ -8985,6 +9460,109 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/BuyStockResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/stocks/{listingId}/sell": {
+      "post": {
+        "tags": [
+          "market"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SellStockBody"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "listingId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SellStockResponse"
                 }
               }
             }

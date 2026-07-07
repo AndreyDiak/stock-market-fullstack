@@ -1,5 +1,6 @@
 import type { Character } from '@prisma/client';
 import { getMaxNegotiateDiscountPercent } from '../property_offers/_negotiate_discount.js';
+import { calcSellCommissionPercent } from '../market/sell_commission.js';
 import { TRADING_GRADES } from './_definitions.js';
 
 export function getSkillUpgradeTier(_skillId: string, level: number) {
@@ -277,9 +278,9 @@ export function buildSkillCurrentInfographic(
           tone: 'amber',
         },
         {
-          id: 'property-bargain',
-          label: 'Торг',
-          value: `${getMaxNegotiateDiscountPercent(level)}%`,
+          id: 'sell-commission',
+          label: 'Комиссия при продаже',
+          value: `${calcSellCommissionPercent(level)}%`,
           tone: 'emerald',
         },
       ];
@@ -311,8 +312,8 @@ export function getSkillLevelTooltip(
       return {
         title: `Грейд ${grade}`,
         lines: [
-          `Доступные акции: ${grade}`,
-          `Макс. скидка при торге: ${getMaxNegotiateDiscountPercent(tradingLevel)}%`,
+          `Комиссия при продаже акций: ${calcSellCommissionPercent(tradingLevel)}%`,
+          `Макс. скидка при торге по имуществу: ${getMaxNegotiateDiscountPercent(tradingLevel)}%`,
         ],
       };
     }
@@ -359,6 +360,7 @@ export function buildCharacterStats(character: Character) {
     insiderChancePercent: calcInsiderChance(qualificationLevel),
     bankBaseRatePercent: calcBankBaseRate(bankingLevel),
     tradingGrade: getTradingGrade(tradingLevel),
+    sellCommissionPercent: calcSellCommissionPercent(tradingLevel),
     propertySlotsUnlocked: countUnlockedPropertySlots(propertySlotLevel),
     salaryBonus: calcSalaryBonus(character.salary, qualificationLevel),
     qualificationBonusPercent: Math.max(0, qualificationLevel - 1) * 10,

@@ -105,6 +105,21 @@ export function sort_news_for_panel(news: news_item[], currentStep: number) {
   return [pinned, ...sorted.filter((item) => item.id !== pinned.id)]
 }
 
+export function find_latest_market_news(
+  news: news_item[],
+  currentStep?: number,
+): news_item | null {
+  const visible = currentStep != null ? filter_visible_news(news, currentStep) : news
+
+  return (
+    [...visible]
+      .filter((item) => item.kind === 'MARKET')
+      .sort(
+        (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
+      )[0] ?? null
+  )
+}
+
 export function get_latest_news(news: news_item[], count = 2, currentStep?: number) {
   const visible =
     currentStep != null ? filter_visible_news(news, currentStep) : news

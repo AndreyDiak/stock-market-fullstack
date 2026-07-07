@@ -1,5 +1,10 @@
-import type { MarketSector, PrismaClient, Sentiment } from '@prisma/client';
+import type { MarketSector, PrismaClient, Profession, Sentiment } from '@prisma/client';
 import { COMPANIES, type CompanyData } from '../../assets/companies.js';
+import { buildAffectedSectors } from '../../assets/sector_spillover.js';
+import {
+  getInsiderSectorForProfession,
+  professionHasInsiderAccess,
+} from '../../assets/profession_sector.js';
 import type { StaticNewsKind, StaticNewsTemplate } from '../../assets/news.js';
 import { ensureCompanyByTicker } from '../market/company_catalog.js';
 import { NewsImpactService } from '../market/news_impact.service.js';
@@ -17,6 +22,7 @@ import {
   resolveInsiderParams,
   templatePayload,
   toPersistedNewsItem,
+  sanitizePersistedNewsItem,
 } from './news_generation.utils.js';
 import {
   calcInsiderNewsChancePercent,
@@ -29,6 +35,22 @@ import {
 
 function pickRandom<T>(items: T[]): T {
   return items[Math.floor(Math.random() * items.length)]!;
+}
+
+function pickCompanyForSector(sector: MarketSector): CompanyData {
+  const pool = COMPANIES.filter((company) => company.sector === sector);
+  if (pool.length === 0) {
+    return pickRandom(COMPANIES);
+  }
+  return pickRandom(pool);
+}
+
+function mapImpactStrengthToNewsLevel(strength: number): number {
+  if (strength <= 3) return 1;
+  if (strength <= 4) return 2;
+  if (strength <= 6) return 3;
+  if (strength <= 7) return 4;
+  return 5;
 }
 
 type TurnNewsContext = {
@@ -49,6 +71,7 @@ type PersistNewsInput = {
   ticker?: string;
   hot?: boolean;
   payload?: unknown;
+  affectedSectors?: ReturnType<typeof buildAffectedSectors>;
 };
 
 type StaticNewsConfig<TExtra = undefined> = {
@@ -85,17 +108,26 @@ export class NewsGenerationService {
     gameId: string;
     gameStep: number;
     professionLevel: number;
+    profession: Profession;
   }): Promise<{
     news: PersistedNewsItem[];
     insiderRolled: boolean;
     insiderChancePercent: number;
   }> {
     const insiderChancePercent = calcInsiderNewsChancePercent(input.professionLevel);
-    const insiderRolled = Math.random() * 100 < insiderChancePercent;
+    const canRollInsider = professionHasInsiderAccess(input.profession);
+    const insiderRolled =
+      canRollInsider && Math.random() * 100 < insiderChancePercent;
+
+    const insiderSector = getInsiderSectorForProfession(input.profession);
+    const company = insiderRolled && insiderSector
+      ? pickCompanyForSector(insiderSector)
+      : pickRandom(COMPANIES);
+
     const baseCtx = {
       gameId: input.gameId,
       gameStep: input.gameStep,
-      company: pickRandom(COMPANIES),
+      company,
     };
 
     let item: PersistedNewsItem;
@@ -145,11 +177,17 @@ export class NewsGenerationService {
   async generateInsiderNews(input: {
     gameId: string;
     gameStep: number;
+    profession: Profession;
   }): Promise<{ news: PersistedNewsItem; insiderRolled: true }> {
+    const sector = getInsiderSectorForProfession(input.profession);
+    if (!sector) {
+      throw new Error('Profession has no insider sector');
+    }
+
     const baseCtx = {
       gameId: input.gameId,
       gameStep: input.gameStep,
-      company: pickRandom(COMPANIES),
+      company: pickCompanyForSector(sector),
     };
     const item = await this.#generateStaticNews(baseCtx, this.#insiderNewsConfig());
     return { news: item, insiderRolled: true };
@@ -273,6 +311,9 @@ export class NewsGenerationService {
     qty: number;
     price: number;
     botName?: string;
+    commissionPercent?: number;
+    commissionAmount?: number;
+    netProceeds?: number;
   }) {
     const total = input.qty * input.price;
     const totalLabel = total.toLocaleString('ru-RU');
@@ -280,9 +321,15 @@ export class NewsGenerationService {
     const isBuy = input.playerAction === 'buy';
     const title = isBuy ? `Покупка акций: ${input.ticker}` : `Продажа акций: ${input.ticker}`;
     const counterparty = input.botName ? ` у ${input.botName}` : '';
-    const body = isBuy
+    let body = isBuy
       ? `Купили ${input.qty} акций ${input.companyName} (${input.ticker})${counterparty} по ${priceLabel} за штуку. Итого: ${totalLabel}.`
       : `Продали ${input.qty} акций ${input.companyName} (${input.ticker})${counterparty} по ${priceLabel} за штуку. Итого: ${totalLabel}.`;
+
+    if (!isBuy && input.commissionPercent != null && input.commissionAmount != null && input.netProceeds != null) {
+      const commissionLabel = input.commissionAmount.toLocaleString('ru-RU');
+      const netLabel = input.netProceeds.toLocaleString('ru-RU');
+      body += ` Комиссия (${input.commissionPercent}%): −${commissionLabel}. На баланс: +${netLabel}.`;
+    }
 
     return this.#persistNews({
       gameId: input.gameId,
@@ -308,23 +355,48 @@ export class NewsGenerationService {
   async generateStockNews(input: {
     gameId: string;
     gameStep: number;
+    profession: Profession;
+    professionLevel: number;
   }): Promise<{ news: PersistedNewsItem; insiderRolled: boolean }> {
-    if (Math.random() < 0.15) {
-      const { news } = await this.generateInsiderNews(input);
+    const insiderChancePercent = calcInsiderNewsChancePercent(input.professionLevel);
+    const canRollInsider = professionHasInsiderAccess(input.profession);
+    const insiderRolled =
+      canRollInsider && Math.random() * 100 < insiderChancePercent;
+
+    if (insiderRolled) {
+      const { news } = await this.generateInsiderNews({
+        gameId: input.gameId,
+        gameStep: input.gameStep,
+        profession: input.profession,
+      });
       return { news, insiderRolled: true };
     }
-    const news = await this.generateJunkNews(input);
+
+    const news = await this.generateJunkNews({
+      gameId: input.gameId,
+      gameStep: input.gameStep,
+      profession: input.profession,
+    });
     return { news, insiderRolled: false };
   }
 
   async generateJunkNews(input: {
     gameId: string;
     gameStep: number;
+    profession?: Profession;
   }): Promise<PersistedNewsItem> {
+    const insiderSector = input.profession
+      ? getInsiderSectorForProfession(input.profession)
+      : null;
+    const company =
+      insiderSector && Math.random() < 0.35
+        ? pickCompanyForSector(insiderSector)
+        : pickRandom(COMPANIES);
+
     const baseCtx = {
       gameId: input.gameId,
       gameStep: input.gameStep,
-      company: pickRandom(COMPANIES),
+      company,
     };
     if (Math.random() < 0.35) {
       return this.#generateStaticNews(baseCtx, this.#rumorNewsConfig());
@@ -354,6 +426,24 @@ export class NewsGenerationService {
         price: input.deal.price,
         turnsLeft: input.deal.turnsLeft,
       },
+    });
+  }
+
+  async createStockDividendNews(input: {
+    gameId: string;
+    gameStep: number;
+    ticker: string;
+    companyName: string;
+  }) {
+    return this.#persistNews({
+      gameId: input.gameId,
+      gameStep: input.gameStep,
+      kind: 'STOCK_DIVIDEND',
+      title: `Дивиденды: ${input.ticker}`,
+      body: `${input.companyName} (${input.ticker}) выплатила дивиденды акционерам.`,
+      sentiment: 'POSITIVE',
+      impact: 0,
+      ticker: input.ticker,
     });
   }
 
@@ -415,7 +505,7 @@ export class NewsGenerationService {
       take: limit,
     });
 
-    return rows.map((row) => toPersistedNewsItem(row));
+    return rows.map((row) => sanitizePersistedNewsItem(toPersistedNewsItem(row)));
   }
 
   #marketNewsConfig(): StaticNewsConfig {
@@ -509,6 +599,11 @@ export class NewsGenerationService {
     );
     const extra = config.prepare?.(template, ctx) as TExtra;
 
+    const affectedSectors = buildAffectedSectors(
+      ctx.company.sector,
+      template.secondarySectors,
+    );
+
     const newsItem = await this.#persistNews({
       gameId: ctx.gameId,
       gameStep: ctx.gameStep,
@@ -520,7 +615,13 @@ export class NewsGenerationService {
       sector: ctx.company.sector,
       ticker: ctx.company.ticker,
       hot: config.hot,
-      payload: config.buildPayload(template, ctx, extra),
+      payload: {
+        ...config.buildPayload(template, ctx, extra),
+        primarySector: ctx.company.sector,
+        affectedSectors,
+        newsLevel: mapImpactStrengthToNewsLevel(config.impactStrength),
+      },
+      affectedSectors,
     });
 
     return config.finalize ? config.finalize(newsItem, template, ctx, extra) : newsItem;
@@ -567,14 +668,17 @@ export class NewsGenerationService {
         sentiment: input.sentiment,
         sector: row.sector,
         companyId: row.companyId,
+        affectedSectors: input.affectedSectors,
       });
     }
 
-    return toPersistedNewsItem(row, {
-      kind: input.kind,
-      hot: input.hot,
-      ticker: input.ticker,
-      payload,
-    });
+    return sanitizePersistedNewsItem(
+      toPersistedNewsItem(row, {
+        kind: input.kind,
+        hot: input.hot,
+        ticker: input.ticker,
+        payload,
+      }),
+    );
   }
 }

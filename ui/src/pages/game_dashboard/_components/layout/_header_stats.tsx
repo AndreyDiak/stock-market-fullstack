@@ -24,6 +24,7 @@ import {
 import { useGameStore } from '../../../../stores/game.store'
 import { formatReputation } from '../../_model/utils'
 import {
+  calcSellCommissionPercent,
   getMaxNegotiateDiscountPercent,
   getSkillLevel,
   type CharacterSkill,
@@ -131,6 +132,7 @@ export function HeaderStats() {
   }, [skills])
 
   const tradingLevel = useMemo(() => getSkillLevel(skills, 'trading'), [skills])
+  const sellCommissionPercent = stats.sellCommissionPercent ?? calcSellCommissionPercent(tradingLevel)
   const negotiateDiscountPercent = useMemo(
     () => getMaxNegotiateDiscountPercent(tradingLevel),
     [tradingLevel],
@@ -176,9 +178,9 @@ export function HeaderStats() {
     {
       variant: 'trading',
       icon: <TradingChartIcon className="h-3.5 w-3.5 text-cyan-400" />,
-      value: `${stats.tradingGrade}/${negotiateDiscountPercent}%`,
+      value: `${stats.tradingGrade}/${sellCommissionPercent}%`,
       title: 'Трейдинг',
-      description: `Лучшие доступные акции: грейд ${stats.tradingGrade}. Максимальный торг: ${negotiateDiscountPercent}%.`,
+      description: `Грейд акций: ${stats.tradingGrade}. Комиссия при продаже: ${sellCommissionPercent}%. Торг по имуществу: до ${negotiateDiscountPercent}%.`,
       badgeClassName: 'border-cyan-500/30 bg-cyan-500/12 text-cyan-200',
     },
     {

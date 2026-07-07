@@ -59,6 +59,38 @@ export function templatePayload(template: StaticNewsTemplate) {
   };
 }
 
+const INTERNAL_PAYLOAD_KEYS = new Set([
+  'affectedSectors',
+  'primarySector',
+  'marketImpact',
+  'sentimentScore',
+  'templateId',
+]);
+
+export function sanitizeNewsPayloadForClient(payload: unknown): unknown {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    return payload;
+  }
+
+  const record = payload as Record<string, unknown>;
+  const sanitized: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(record)) {
+    if (!INTERNAL_PAYLOAD_KEYS.has(key)) {
+      sanitized[key] = value;
+    }
+  }
+
+  return sanitized;
+}
+
+export function sanitizePersistedNewsItem(item: PersistedNewsItem): PersistedNewsItem {
+  return {
+    ...item,
+    payload: sanitizeNewsPayloadForClient(item.payload),
+  };
+}
+
 export function insiderDirection(expectedMovePercent: number): PriceDirection {
   return expectedMovePercent < 0 ? 'DOWN' : 'UP';
 }

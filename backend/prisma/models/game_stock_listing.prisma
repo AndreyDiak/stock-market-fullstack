@@ -23,6 +23,10 @@ model GameStockListing {
   previousPrice        Float      @default(0)
   dayChange            Float      @default(0)
   availableOnExchange  Boolean    @default(true)
+  paysDividends        Boolean    @default(false)
+  dividendInterval     Int?
+  dividendYieldPct     Float?
+  turnsUntilDividend   Int?
   createdAt            DateTime   @default(now())
   updatedAt            DateTime   @updatedAt
 

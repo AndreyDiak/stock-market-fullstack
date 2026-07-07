@@ -56,15 +56,17 @@ export async function authRoutes(fastify: FastifyInstance) {
     const query = request.query as { error?: string };
 
     if (query.error) {
+      fastify.log.warn({ error: query.error }, 'Yandex OAuth denied by user');
       return redirectOAuthError(reply, query.error);
     }
 
     try {
       const { token } = await fastify.yandexOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
       const profile = await fetchYandexProfile(token.access_token as string);
+      fastify.log.info({ email: profile.email }, 'Yandex OAuth login succeeded');
       return completeOAuthLogin(authService, reply, profile);
     } catch (error) {
-      fastify.log.error(error);
+      fastify.log.error(error, 'Yandex OAuth callback failed');
       return redirectOAuthError(reply, 'authentication_failed');
     }
   });

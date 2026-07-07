@@ -147,8 +147,13 @@
   border-color: rgba(255, 255, 255, 0.09);
 }
 
-.news-card--latest.news-card--stock {
+.news-card--latest.news-card--stock,
+.news-card--market-highlight {
   border-color: rgba(56, 189, 248, 0.22);
+}
+
+.news-card--market-highlight {
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.08);
 }
 
 .news-card--latest.news-card--deal {

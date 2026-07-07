@@ -46,6 +46,8 @@ export class TurnContentPhase implements TurnPhase {
           const stock = await this.#newsService.generateStockNews({
             gameId: context.gameId,
             gameStep: context.game.step,
+            profession: context.game.character.profession,
+            professionLevel: context.game.character.professionLevel,
           });
           if (stock.insiderRolled) state.insiderRolled = true;
           state.news.push(stock.news);
@@ -70,6 +72,8 @@ export class TurnContentPhase implements TurnPhase {
           const stock = await this.#newsService.generateStockNews({
             gameId: context.gameId,
             gameStep: context.game.step,
+            profession: context.game.character.profession,
+            professionLevel: context.game.character.professionLevel,
           });
           if (stock.insiderRolled) state.insiderRolled = true;
           state.news.push(stock.news);
@@ -81,6 +85,8 @@ export class TurnContentPhase implements TurnPhase {
         const stock = await this.#newsService.generateStockNews({
           gameId: context.gameId,
           gameStep: context.game.step,
+          profession: context.game.character.profession,
+          professionLevel: context.game.character.professionLevel,
         });
         if (stock.insiderRolled) state.insiderRolled = true;
         state.news.push(stock.news);

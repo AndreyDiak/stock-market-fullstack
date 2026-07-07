@@ -58,6 +58,7 @@ export interface CharacterStats {
   insiderChancePercent: number
   bankBaseRatePercent: number
   tradingGrade: string
+  sellCommissionPercent: number
   propertySlotsUnlocked: number
   salaryBonus: number
   qualificationBonusPercent: number
@@ -74,6 +75,7 @@ export const EMPTY_CHARACTER_STATS: CharacterStats = {
   insiderChancePercent: 2,
   bankBaseRatePercent: 20,
   tradingGrade: 'F',
+  sellCommissionPercent: 10,
   propertySlotsUnlocked: 1,
   salaryBonus: 0,
   qualificationBonusPercent: 0,
@@ -86,6 +88,12 @@ export const EMPTY_CHARACTER_SKILLS_STATE: CharacterSkillsState = {
 
 export function getSkillLevel(skills: CharacterSkill[], skillId: string) {
   return skills.find((skill) => skill.id === skillId)?.level ?? 1
+}
+
+/** Комиссия при продаже акций для уровня трейдинга (F→10% … A→5%). */
+export function calcSellCommissionPercent(tradingLevel: number): number {
+  const level = Math.max(1, Math.min(tradingLevel, 6))
+  return 10 - (level - 1)
 }
 
 /** Макс. скидка при торге по имуществу для уровня курса трейдинга (F→25% … A→50%). */
@@ -113,9 +121,9 @@ export function getSkillEffectChips(skill: CharacterSkill): SkillInfographicChip
         tone: 'amber',
       },
       {
-        id: 'property-bargain',
-        label: 'Доступный торг',
-        value: `${getMaxNegotiateDiscountPercent(skill.level)}%`,
+        id: 'sell-commission',
+        label: 'Комиссия при продаже',
+        value: `${calcSellCommissionPercent(skill.level)}%`,
         tone: 'emerald',
       },
     ]

@@ -7,13 +7,18 @@ import {
   realEstateCardsContainerVariants,
   realEstateOfferCardVariants,
 } from '../../_model/real_estate_panel_animation';
-import type { StockListing } from '../../../../api/stocks';
+import type { PortfolioRow, StockListing } from '../../../../api/stocks';
+import type { portfolio_row } from '../../_model/types';
 import { StockCard } from './_stock_card';
 import { StockChartModal } from './_stock_chart_modal';
 import { StockBuyModal } from './_stock_buy_modal';
+import { StockSellModal } from './_stock_sell_modal';
+import { MarketSentimentBar } from './_market_sentiment_bar';
+import { GameButton } from '../../../../components/game_ui/game_button';
 import { PortfolioSummary } from './_portfolio_summary';
 import { format_change } from '../../_model/utils';
 import { MoneyValue } from '../../../../components/money/money_value';
+import { DividendBadge } from './_dividend_badge';
 import { TrendArrow } from './_trend_arrow';
 import { PanelSectionHeading } from '../shared';
 import { ExchangeStockFilters } from './_exchange_stock_filters';
@@ -37,12 +42,16 @@ export function ExchangeTable() {
   const availableCash = useGameStore((state) => state.balance);
   const turn = useGameStore((state) => state.turn);
   const stockBusy = useGameStore((state) => state.stockBusy);
+  const marketSentiment = useGameStore((state) => state.marketSentiment);
+  const characterStats = useGameStore((state) => state.characterStats);
   const buyStock = useGameStore((state) => state.buyStock);
+  const sellStock = useGameStore((state) => state.sellStock);
   const subscribeToIpo = useGameStore((state) => state.subscribeToIpo);
   const loadExchangeData = useGameStore((state) => state.loadExchangeData);
 
   const [chartListing, setChartListing] = useState<StockListing | null>(null);
   const [buyListing, setBuyListing] = useState<StockListing | null>(null);
+  const [sellRow, setSellRow] = useState<portfolio_row | null>(null);
   const [chartHistory, setChartHistory] = useState<{ turn: number; price: number }[]>([]);
   const [filters, setFilters] = useState<StockExchangeFilters>(DEFAULT_STOCK_EXCHANGE_FILTERS);
   const [activeTab, setActiveTab] = useState<ExchangeTabId>('market');
@@ -97,6 +106,8 @@ export function ExchangeTable() {
       </header>
 
       <div className={`min-h-0 flex-1 overflow-auto px-1 pb-2 ${theme.scrollArea}`}>
+        <MarketSentimentBar sentiment={marketSentiment} />
+
         <ExchangeMarketSpotlight
           ipos={ipos}
           insiderListings={listingGroups.insider}
@@ -170,7 +181,10 @@ export function ExchangeTable() {
                     <th className="px-4 py-3 font-bold">Компания</th>
                     <th className="px-4 py-3 text-right font-bold">Кол-во</th>
                     <th className="px-4 py-3 text-right font-bold">Цена</th>
+                    <th className="px-4 py-3 text-right font-bold">Див</th>
+                    <th className="px-4 py-3 text-right font-bold">Цикл</th>
                     <th className="px-4 py-3 text-right font-bold">Доходность</th>
+                    <th className="px-4 py-3 text-right font-bold" />
                   </tr>
                 </thead>
                 <tbody>
@@ -187,6 +201,24 @@ export function ExchangeTable() {
                           <MoneyValue amount={row.price} size="sm" color="white" />
                         </div>
                       </td>
+                      <td className="px-4 py-3 text-right">
+                        {row.paysDividends ? (
+                          <div className="flex justify-end">
+                            <DividendBadge turnsUntilDividend={row.turnsUntilDividend ?? null} />
+                          </div>
+                        ) : (
+                          <span className={theme.secondaryText}>—</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        {row.paysDividends ? (
+                          <span className="font-mono text-xs text-slate-300">
+                            {row.turnsHeldInCycle ?? 0}/10
+                          </span>
+                        ) : (
+                          <span className={theme.secondaryText}>—</span>
+                        )}
+                      </td>
                       <td
                         className={`px-4 py-3 text-right font-bold ${
                           row.changePct >= 0 ? 'text-emerald-400' : 'text-red-400'
@@ -196,6 +228,18 @@ export function ExchangeTable() {
                           {format_change(row.changePct)}
                           <TrendArrow up={row.changePct >= 0} />
                         </span>
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        {row.listingId ? (
+                          <GameButton
+                            size="sm"
+                            variant="muted"
+                            disabled={stockBusy}
+                            onClick={() => setSellRow(row)}
+                          >
+                            Продать
+                          </GameButton>
+                        ) : null}
                       </td>
                     </tr>
                   ))}
@@ -231,6 +275,29 @@ export function ExchangeTable() {
           if (!buyListing) return;
           await buyStock(buyListing.id, quantity);
           setBuyListing(null);
+        }}
+      />
+
+      <StockSellModal
+        open={Boolean(sellRow)}
+        row={
+          sellRow && sellRow.listingId
+            ? ({
+                ...sellRow,
+                listingId: sellRow.listingId,
+                purchasePrice: 0,
+                pnl: 0,
+                turnsHeldInCycle: sellRow.turnsHeldInCycle ?? 0,
+              } satisfies PortfolioRow)
+            : null
+        }
+        commissionPercent={characterStats.sellCommissionPercent}
+        busy={stockBusy}
+        onClose={() => setSellRow(null)}
+        onConfirm={async (quantity) => {
+          if (!sellRow?.listingId) return;
+          await sellStock(sellRow.listingId, quantity);
+          setSellRow(null);
         }}
       />
     </div>

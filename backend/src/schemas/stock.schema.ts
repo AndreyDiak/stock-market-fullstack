@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { generatedNewsItemSchema } from './news.schema.js';
 
+export const stockArchetypeSchema = z.enum(['growth', 'dividend', 'speculative', 'defensive']);
+
 export const stockGradeSchema = z.enum(['F', 'E', 'D', 'C', 'B', 'A']);
 
 export const priceHistoryPointSchema = z.object({
@@ -21,6 +23,11 @@ export const stockListingSchema = z.object({
   availableOnExchange: z.boolean(),
   isLocked: z.boolean(),
   hasInsiderPressure: z.boolean(),
+  hasNewsPressure: z.boolean(),
+  archetype: stockArchetypeSchema.nullable(),
+  archetypeLabel: z.string().nullable(),
+  paysDividends: z.boolean(),
+  turnsUntilDividend: z.number().int().nullable(),
   history: z.array(priceHistoryPointSchema),
 });
 
@@ -33,6 +40,9 @@ export const portfolioRowSchema = z.object({
   changePct: z.number(),
   pnl: z.number(),
   listingId: z.string(),
+  paysDividends: z.boolean(),
+  turnsUntilDividend: z.number().int().nullable(),
+  turnsHeldInCycle: z.number().int(),
 });
 
 export const marketSentimentSchema = z.object({
@@ -70,6 +80,20 @@ export const buyStockResponseSchema = z.object({
   news: generatedNewsItemSchema,
 });
 
+export const sellStockBodySchema = z.object({
+  quantity: z.number().int().min(1),
+});
+
+export const sellStockResponseSchema = z.object({
+  balance: z.number(),
+  portfolio: z.array(portfolioRowSchema),
+  news: generatedNewsItemSchema,
+  gross: z.number(),
+  commissionPercent: z.number(),
+  commissionAmount: z.number(),
+  net: z.number(),
+});
+
 export const portfolioResponseSchema = z.object({
   portfolio: z.array(portfolioRowSchema),
 });
@@ -103,3 +127,4 @@ export const ipoSubscribeResponseSchema = z.object({
 });
 
 export type BuyStockBody = z.infer<typeof buyStockBodySchema>;
+export type SellStockBody = z.infer<typeof sellStockBodySchema>;

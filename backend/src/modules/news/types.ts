@@ -10,6 +10,7 @@ export type GeneratedNewsKind =
   | 'PROPERTY_DEAL'
   | 'PROPERTY_INSTALLMENT'
   | 'STOCK_TRADE'
+  | 'STOCK_DIVIDEND'
   | 'IPO_ANNOUNCE'
   | 'IPO_COMPLETE';
 

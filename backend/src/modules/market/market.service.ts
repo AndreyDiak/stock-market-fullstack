@@ -15,6 +15,7 @@ import { AppError } from '../../utils/errors.js';
 import { ensureCompanyByTicker } from './company_catalog.js';
 import {
   calculateNextPrice,
+  calculateVolatilityBoost,
   decayNewsPressureImpact,
   sumNewsPressures,
 } from './market_engine.js';
@@ -23,6 +24,15 @@ import { decaySectorMomentum, getSectorStatus } from './sector_momentum.engine.j
 import { NewsGenerationService } from '../news/news_generation.service.js';
 import { IPOManager } from './ipo.manager.js';
 import { buildWarmupHistoryRecords } from './sparkline_seed.js';
+import { DividendService, rollDividendProfile, type DividendPayoutEvent } from './dividend.service.js';
+import { calcNetSellProceeds } from './sell_commission.js';
+import {
+  resolveStockArchetype,
+  STOCK_ARCHETYPE_LABELS,
+  type StockArchetype,
+} from './stock_archetype.js';
+import type { PersistedNewsItem } from '../news/types.js';
+import type { TurnForecast } from '../game/_passive_income.service.js';
 
 const ALL_SECTORS: MarketSector[] = [
   'TECHNOLOGY',
@@ -45,6 +55,11 @@ export interface StockListingDto {
   availableOnExchange: boolean;
   isLocked: boolean;
   hasInsiderPressure: boolean;
+  hasNewsPressure: boolean;
+  archetype: StockArchetype | null;
+  archetypeLabel: string | null;
+  paysDividends: boolean;
+  turnsUntilDividend: number | null;
   history: PriceHistoryPointDto[];
 }
 
@@ -57,6 +72,9 @@ export interface PortfolioRowDto {
   changePct: number;
   pnl: number;
   listingId: string;
+  paysDividends: boolean;
+  turnsUntilDividend: number | null;
+  turnsHeldInCycle: number;
 }
 
 export interface PriceHistoryPointDto {
@@ -64,15 +82,22 @@ export interface PriceHistoryPointDto {
   price: number;
 }
 
+export interface MarketTurnResult {
+  dividendPayouts: DividendPayoutEvent[];
+  dividendNews: PersistedNewsItem[];
+}
+
 export class MarketService {
   readonly #prisma: PrismaClient;
   readonly #newsService: NewsGenerationService;
   readonly #ipoManager: IPOManager;
+  readonly #dividendService: DividendService;
 
   constructor(prisma: PrismaClient) {
     this.#prisma = prisma;
     this.#newsService = new NewsGenerationService(prisma);
     this.#ipoManager = new IPOManager(prisma);
+    this.#dividendService = new DividendService(prisma);
   }
 
   get ipo() {
@@ -91,6 +116,7 @@ export class MarketService {
       const grade = pickInitialListingGrade(rng);
       const config = STOCK_GRADE_CONFIG[grade];
       const currentPrice = randomPriceInGradeRange(grade, rng);
+      const dividendProfile = rollDividendProfile(grade, rng);
 
       const listing = await this.#prisma.gameStockListing.upsert({
         where: { gameId_companyId: { gameId, companyId: dbCompany.id } },
@@ -102,6 +128,7 @@ export class MarketService {
           previousPrice: currentPrice,
           dayChange: 0,
           availableOnExchange: config.availableOnExchange,
+          ...dividendProfile,
         },
         update: {},
       });
@@ -137,7 +164,11 @@ export class MarketService {
     }
   }
 
-  async processTurn(gameId: string, turn: number): Promise<void> {
+  async processTurn(
+    gameId: string,
+    turn: number,
+    characterId: string,
+  ): Promise<MarketTurnResult> {
     await this.ensureMarketInitialized(gameId);
 
     const sentimentRow = await this.#prisma.marketSentiment.findUnique({ where: { gameId } });
@@ -168,23 +199,32 @@ export class MarketService {
       where: { gameId },
       include: {
         company: true,
-        newsPressures: { where: { remainingTurns: { gt: 0 } } },
+        newsPressures: {
+          where: { remainingTurns: { gt: 0 } },
+          include: { news: { select: { kind: true } } },
+        },
       },
     });
 
     const sentiment = (await this.#prisma.marketSentiment.findUnique({ where: { gameId } }))?.value ?? 0;
-    const sectorMap = new Map(
-      (await this.#prisma.sectorMomentum.findMany({ where: { gameId } })).map((row) => [
-        row.sector,
-        row.value,
-      ]),
-    );
+    const sectorRows = await this.#prisma.sectorMomentum.findMany({ where: { gameId } });
+    const sectorMap = new Map(sectorRows.map((row) => [row.sector, row.value]));
+    const sectorDurationMap = new Map(sectorRows.map((row) => [row.sector, row.duration]));
 
     for (const listing of listings) {
+      const sector = listing.company.sector;
+      const newsPressureTotal = sumNewsPressures(listing.newsPressures);
+      const sectorMomentum = sectorMap.get(sector) ?? 0;
       const forces = {
-        newsPressureTotal: sumNewsPressures(listing.newsPressures),
-        sectorMomentum: sectorMap.get(listing.company.sector) ?? 0,
+        newsPressureTotal,
+        sectorMomentum,
         marketSentiment: sentiment,
+        volatilityBoost: calculateVolatilityBoost({
+          newsPressureTotal,
+          sectorMomentum,
+          sectorDuration: sectorDurationMap.get(sector) ?? 0,
+          marketSentiment: sentiment,
+        }),
       };
 
       const { newPrice, dayChangePct } = calculateNextPrice(
@@ -214,6 +254,40 @@ export class MarketService {
     }
 
     await this.#ipoManager.processTurn(gameId, turn);
+
+    const dividendPayouts = await this.#dividendService.processTurn(gameId, turn, characterId);
+    const dividendNews: PersistedNewsItem[] = [];
+
+    for (const payout of dividendPayouts) {
+      const news = await this.#newsService.createStockDividendNews({
+        gameId,
+        gameStep: turn,
+        ticker: payout.ticker,
+        companyName: payout.companyName,
+      });
+      dividendNews.push(news);
+    }
+
+    return { dividendPayouts, dividendNews };
+  }
+
+  async enrichForecastWithDividends(
+    forecast: TurnForecast,
+    gameId: string,
+    characterId: string,
+  ): Promise<TurnForecast> {
+    const dividendLine = await this.#dividendService.estimateNextTurnDividends(gameId, characterId);
+    if (!dividendLine) return forecast;
+
+    const lines = [...forecast.lines, { id: 'dividends', label: dividendLine.label, amount: dividendLine.amount }];
+    const incomeTotal = forecast.incomeTotal + dividendLine.amount;
+
+    return {
+      lines,
+      incomeTotal,
+      expenseTotal: forecast.expenseTotal,
+      netChange: incomeTotal - forecast.expenseTotal,
+    };
   }
 
   async listStocks(gameId: string, character: Character): Promise<StockListingDto[]> {
@@ -223,7 +297,10 @@ export class MarketService {
       where: { gameId },
       include: {
         company: true,
-        newsPressures: { where: { remainingTurns: { gt: 0 } } },
+        newsPressures: {
+          where: { remainingTurns: { gt: 0 } },
+          include: { news: { select: { kind: true } } },
+        },
       },
       orderBy: { company: { ticker: 'asc' } },
     });
@@ -349,6 +426,86 @@ export class MarketService {
     };
   }
 
+  async sellStock(
+    gameId: string,
+    listingId: string,
+    character: Character,
+    quantity: number,
+    gameStep: number,
+  ) {
+    if (!Number.isInteger(quantity) || quantity < 1) {
+      throw new AppError(400, 'INVALID_QUANTITY', 'Quantity must be a positive integer');
+    }
+
+    const listing = await this.#loadListing(gameId, listingId);
+
+    if (!listing.availableOnExchange) {
+      throw new AppError(400, 'STOCK_LOCKED', 'This stock is not available on the exchange');
+    }
+
+    const holding = await this.#prisma.stock.findFirst({
+      where: { ownerId: character.id, companyId: listing.companyId, gameId },
+    });
+
+    if (!holding || holding.quantity < quantity) {
+      throw new AppError(400, 'INSUFFICIENT_SHARES', 'Not enough shares to sell');
+    }
+
+    const gross = listing.currentPrice * quantity;
+    const { net, commissionPercent, commissionAmount } = calcNetSellProceeds(
+      gross,
+      character.tradingLevel,
+    );
+
+    const updated = await this.#prisma.$transaction(async (tx) => {
+      if (nextQty === 0) {
+        await tx.stock.delete({ where: { id: holding.id } });
+      } else {
+        await tx.stock.update({
+          where: { id: holding.id },
+          data: { quantity: nextQty },
+        });
+      }
+
+      return tx.character.update({
+        where: { id: character.id },
+        data: {
+          balance: { increment: net },
+          totalEarned: { increment: net },
+          totalTrades: { increment: 1 },
+          successfulTrades: { increment: 1 },
+        },
+        include: { inventoryItems: { orderBy: { purchasedAt: 'asc' } } },
+      });
+    });
+
+    const news = await this.#newsService.createStockTradeNews({
+      gameId,
+      gameStep,
+      ticker: listing.company.ticker,
+      companyName: listing.company.name,
+      playerAction: 'sell',
+      qty: quantity,
+      price: listing.currentPrice,
+      commissionPercent,
+      commissionAmount,
+      netProceeds: net,
+    });
+
+    const portfolio = await this.getPortfolio(gameId, updated);
+
+    return {
+      balance: updated.balance,
+      character: updated,
+      news,
+      portfolio,
+      gross,
+      commissionPercent,
+      commissionAmount,
+      net,
+    };
+  }
+
   async getPortfolio(gameId: string, character: Character): Promise<PortfolioRowDto[]> {
     const holdings = await this.#prisma.stock.findMany({
       where: { ownerId: character.id, gameId },
@@ -380,6 +537,9 @@ export class MarketService {
         changePct,
         pnl: Number(pnl.toFixed(2)),
         listingId: listing?.id ?? '',
+        paysDividends: listing?.paysDividends ?? false,
+        turnsUntilDividend: listing?.turnsUntilDividend ?? null,
+        turnsHeldInCycle: holding.turnsHeldInCycle,
       };
     });
   }
@@ -441,7 +601,10 @@ export class MarketService {
       where: { id: listingId, gameId },
       include: {
         company: true,
-        newsPressures: { where: { remainingTurns: { gt: 0 } } },
+        newsPressures: {
+          where: { remainingTurns: { gt: 0 } },
+          include: { news: { select: { kind: true } } },
+        },
       },
     });
 
@@ -509,7 +672,10 @@ export class MarketService {
     listing: Prisma.GameStockListingGetPayload<{
       include: {
         company: true;
-        newsPressures: { where: { remainingTurns: { gt: 0 } } };
+        newsPressures: {
+          where: { remainingTurns: { gt: 0 } };
+          include: { news: { select: { kind: true } } };
+        };
       };
     }>,
     character: Character,
@@ -519,6 +685,18 @@ export class MarketService {
     const bankingLocked = character.bankingLevel < gradeConfig.minBankingLevel;
     const reputationLocked = character.reputation < gradeConfig.minReputation;
     const exchangeLocked = !listing.availableOnExchange;
+    const archetype = resolveStockArchetype({
+      sector: listing.company.sector,
+      grade: listing.grade,
+      paysDividends: listing.paysDividends,
+    });
+
+    const hasInsiderPressure = listing.newsPressures.some(
+      (pressure) => pressure.news?.kind === 'INSIDER',
+    );
+    const hasNewsPressure = listing.newsPressures.some(
+      (pressure) => pressure.news?.kind !== 'INSIDER',
+    );
 
     return {
       id: listing.id,
@@ -532,7 +710,12 @@ export class MarketService {
       dayChange: listing.dayChange,
       availableOnExchange: listing.availableOnExchange,
       isLocked: exchangeLocked || bankingLocked || reputationLocked,
-      hasInsiderPressure: listing.newsPressures.length > 0,
+      hasInsiderPressure,
+      hasNewsPressure,
+      archetype,
+      archetypeLabel: archetype ? STOCK_ARCHETYPE_LABELS[archetype] : null,
+      paysDividends: listing.paysDividends,
+      turnsUntilDividend: listing.turnsUntilDividend,
       history,
     };
   }

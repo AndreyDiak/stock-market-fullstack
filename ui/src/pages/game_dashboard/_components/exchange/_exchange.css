@@ -14,24 +14,6 @@
   min-height: 16.5rem;
 }
 
-.stock-card__header-sector {
-  display: inline-flex;
-  align-items: center;
-  max-width: 100%;
-  border-radius: 0.55rem;
-  border: 1px solid rgba(125, 211, 252, 0.24);
-  background: rgba(14, 165, 233, 0.1);
-  padding: 0.12rem 0.45rem;
-  font-size: 0.625rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgb(186, 230, 253);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .stock-card__header-insider {
   font-size: 0.75rem;
   line-height: 1;
@@ -603,10 +585,3 @@
   color: rgba(248, 250, 252, 0.92);
 }
 
-.exchange-spotlight__preipo-sector {
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.9);
-}

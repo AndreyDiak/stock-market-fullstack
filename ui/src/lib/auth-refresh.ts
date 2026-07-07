@@ -1,4 +1,4 @@
-import { API_URL } from '../config';
+import { authHttp } from './auth-http';
 import { useAuthStore } from '../stores/auth.store';
 
 let refreshPromise: Promise<boolean> | null = null
@@ -17,16 +17,10 @@ export async function tryRefreshAccessToken(): Promise<boolean> {
   const { setToken } = useAuthStore.getState()
 
   if (!refreshPromise) {
-    refreshPromise = fetch(`${API_URL}/auth/refresh`, {
-      method: 'POST',
-      credentials: 'include',
-    })
-      .then(async (response) => {
-        if (!response.ok)  {
-          return false
-        }
-
-        const { accessToken } = (await response.json()) as { accessToken: string }
+    refreshPromise = authHttp
+      .post('auth/refresh')
+      .json<{ accessToken: string }>()
+      .then(({ accessToken }) => {
         setToken(accessToken)
         return true
       })

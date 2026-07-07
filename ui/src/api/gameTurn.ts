@@ -6,9 +6,16 @@ import type { IpoListing, MarketSentiment, PortfolioRow, StockListing } from './
 import { format_news_age_label, resolve_published_step } from '../pages/game_dashboard/_model/utils';
 import type { Game } from './types';
 
+export interface DividendPayoutEvent {
+  listingId: string;
+  ticker: string;
+  companyName: string;
+  totalPaid: number;
+}
+
 export interface GeneratedNewsItem {
   id: string;
-  kind: 'WELCOME' | 'MARKET' | 'INSIDER' | 'RUMOR' | 'OTC_DEAL' | 'PROPERTY_OFFER' | 'PROPERTY_DEAL' | 'PROPERTY_INSTALLMENT' | 'STOCK_TRADE' | 'IPO_ANNOUNCE' | 'IPO_COMPLETE';
+  kind: 'WELCOME' | 'MARKET' | 'INSIDER' | 'RUMOR' | 'OTC_DEAL' | 'PROPERTY_OFFER' | 'PROPERTY_DEAL' | 'PROPERTY_INSTALLMENT' | 'STOCK_TRADE' | 'STOCK_DIVIDEND' | 'IPO_ANNOUNCE' | 'IPO_COMPLETE';
   title: string;
   body: string;
   excerpt: string;
@@ -51,6 +58,7 @@ export interface EndTurnResponse {
   otcDeal?: OtcDealPayload;
   propertyOffers: PropertyOffer[];
   characterSkills: CharacterSkillsState;
+  dividendPayouts?: DividendPayoutEvent[];
 }
 
 export interface GameDashboardResponse {
@@ -125,6 +133,20 @@ export interface InsiderNewsPayload {
   }
 }
 
+function sanitizeNewsPayload(payload: unknown): unknown {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    return payload
+  }
+
+  const record = { ...(payload as Record<string, unknown>) }
+  delete record.affectedSectors
+  delete record.primarySector
+  delete record.marketImpact
+  delete record.sentimentScore
+  delete record.templateId
+  return record
+}
+
 export function mapApiNewsToFeedItem(
   item: GeneratedNewsItem,
   _index: number,
@@ -137,7 +159,7 @@ export function mapApiNewsToFeedItem(
         ? 'negative'
         : 'neutral';
 
-  const payload = item.payload as InsiderNewsPayload | undefined
+  const payload = item.payload as (InsiderNewsPayload & { newsLevel?: number }) | undefined
   const publishedStep = resolve_published_step(item)
   const triggerAtStep = payload?.scheduledImpact?.triggerAtStep
   const turnsLeft =
@@ -160,8 +182,9 @@ export function mapApiNewsToFeedItem(
     ticker: item.ticker,
     publishedAt: item.publishedAt,
     publishedStep,
-    payload: item.payload,
+    payload: sanitizeNewsPayload(item.payload),
     turnsLeft: turnsLeft && turnsLeft > 0 ? turnsLeft : undefined,
+    newsLevel: payload?.newsLevel,
   };
 }
 

@@ -35,6 +35,7 @@ export function AuthPage() {
       setIsWaitingOAuth(false)
 
       if (event.data.accessToken) {
+        setFormError(null)
         setToken(event.data.accessToken)
         navigate('/menu')
         return
@@ -57,11 +58,20 @@ export function AuthPage() {
 
     const popup = window.open(YANDEX_AUTH_URL, 'yandex-oauth', POPUP_FEATURES)
     if (!popup) {
-      setSearchParams({ error: 'popup_blocked' }, { replace: true })
+      window.location.href = YANDEX_AUTH_URL
       return
     }
 
     setIsWaitingOAuth(true)
+
+    const poll = window.setInterval(() => {
+      if (!popup.closed) return
+      window.clearInterval(poll)
+      setIsWaitingOAuth(false)
+      if (!useAuthStore.getState().isAuthenticated) {
+        setFormError('Окно входа закрыто до завершения. Попробуйте снова.')
+      }
+    }, 500)
   }
 
   async function handleLogin(login: string, password: string) {

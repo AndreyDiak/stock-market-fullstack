@@ -1,10 +1,12 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { NewsImpactService } from '../../../src/modules/market/news_impact.service.js';
+import { sanitizeNewsPayloadForClient } from '../../../src/modules/news/news_generation.utils.js';
 
 function createMockPrisma() {
   const listings = [
     { id: 'listing-tech', company: { sector: 'TECHNOLOGY' } },
     { id: 'listing-health', company: { sector: 'HEALTHCARE' } },
+    { id: 'listing-finance', company: { sector: 'FINANCE' } },
   ];
 
   return {
@@ -58,9 +60,27 @@ describe('news_impact.service', () => {
     expect(payload?.data).toHaveLength(1);
   });
 
-  it('applies company-specific news to one listing', async () => {
+  it('applies multi-sector news to each affected sector', async () => {
     await service.applyNews({
       id: 'news-2',
+      gameId: 'game-1',
+      kind: 'MARKET',
+      impact: 0.8,
+      sentiment: 'POSITIVE',
+      sector: 'TECHNOLOGY',
+      affectedSectors: [
+        { sector: 'TECHNOLOGY', weight: 1 },
+        { sector: 'FINANCE', weight: 0.3 },
+      ],
+    });
+
+    expect(prisma.sectorMomentum.upsert).toHaveBeenCalledTimes(2);
+    expect(prisma.newsPressure.createMany).toHaveBeenCalledTimes(2);
+  });
+
+  it('applies company-specific news to one listing', async () => {
+    await service.applyNews({
+      id: 'news-3',
       gameId: 'game-1',
       kind: 'RUMOR',
       impact: 0.5,
@@ -73,7 +93,7 @@ describe('news_impact.service', () => {
 
   it('shifts market sentiment for broad market news', async () => {
     await service.applyNews({
-      id: 'news-3',
+      id: 'news-4',
       gameId: 'game-1',
       kind: 'MARKET',
       impact: 0.9,
@@ -87,7 +107,7 @@ describe('news_impact.service', () => {
   it('creates insider pressure with direction sign', async () => {
     const pressure = await service.createInsiderPressure({
       gameId: 'game-1',
-      newsId: 'news-4',
+      newsId: 'news-5',
       ticker: 'ORCH',
       direction: 'DOWN',
       movePercent: 12,
@@ -96,5 +116,21 @@ describe('news_impact.service', () => {
 
     expect(pressure?.impact).toBeLessThan(0);
     expect(prisma.newsPressure.create).toHaveBeenCalled();
+  });
+
+  it('strips internal market impact fields from client payload', () => {
+    const sanitized = sanitizeNewsPayloadForClient({
+      publishedStep: 3,
+      affectedSectors: [{ sector: 'TECHNOLOGY', weight: 1 }],
+      primarySector: 'TECHNOLOGY',
+      sentimentScore: 0.5,
+      templateId: 'tech_market_01',
+    }) as Record<string, unknown>;
+
+    expect(sanitized.publishedStep).toBe(3);
+    expect(sanitized.affectedSectors).toBeUndefined();
+    expect(sanitized.primarySector).toBeUndefined();
+    expect(sanitized.sentimentScore).toBeUndefined();
+    expect(sanitized.templateId).toBeUndefined();
   });
 });

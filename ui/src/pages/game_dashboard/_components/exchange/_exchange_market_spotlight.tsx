@@ -7,7 +7,7 @@ import {
   realEstateOfferCardVariants,
 } from '../../_model/real_estate_panel_animation';
 import { ProfitGradeBadge } from '../real_estate/_profit_grade_badge';
-import { formatSectorLabel } from './_stock_grade_config';
+import { SectorBadge } from './_sector_badge';
 
 export function ExchangeMarketSpotlight({
   ipos,
@@ -109,9 +109,7 @@ export function ExchangeMarketSpotlight({
                 <div className="exchange-spotlight__preipo-main">
                   <span className="exchange-spotlight__preipo-ticker">{listing.ticker}</span>
                   <span className="exchange-spotlight__preipo-name">{listing.name}</span>
-                  <span className="exchange-spotlight__preipo-sector">
-                    {formatSectorLabel(listing.sector)}
-                  </span>
+                  <SectorBadge sector={listing.sector} size="md" />
                 </div>
                 <ProfitGradeBadge grade={listing.grade} embedded />
               </li>

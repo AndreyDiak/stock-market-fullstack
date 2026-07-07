@@ -53,9 +53,9 @@ export function ProfileWorkCard({
           </p>
         ) : null}
 
-        <p className="text-xs leading-relaxed text-[var(--text-secondary,#94a3b8)]">
+        <p className="mt-2 text-xs leading-relaxed text-[var(--text-secondary,#94a3b8)]">
           Начисляется каждые 5 ходов. Прокачивайте квалификацию, чтобы увеличить
-          доход.
+          доход. Шанс инсайда: {stats.insiderChancePercent}% за ход.
         </p>
       </div>
     </DashboardCard>

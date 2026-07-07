@@ -41,6 +41,13 @@ export const appliedPriceImpactSchema = z.object({
   triggerAtStep: z.number().int(),
 });
 
+export const dividendPayoutEventSchema = z.object({
+  listingId: z.string().uuid(),
+  ticker: z.string(),
+  companyName: z.string(),
+  totalPaid: z.number(),
+});
+
 export const endTurnResponseSchema = z.object({
   step: z.number().int(),
   balance: z.number(),
@@ -53,6 +60,7 @@ export const endTurnResponseSchema = z.object({
   otcDeal: otcDealSchema.optional(),
   propertyOffers: z.array(propertyOfferSchema),
   appliedPriceImpacts: z.array(appliedPriceImpactSchema).optional(),
+  dividendPayouts: z.array(dividendPayoutEventSchema).optional(),
   characterSkills: characterSkillsStateSchema,
 });
 

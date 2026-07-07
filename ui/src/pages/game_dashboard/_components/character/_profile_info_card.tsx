@@ -1,9 +1,10 @@
 import type { CharacterProfile } from ".";
 import type { CreateGameBody } from "../../../../api/types";
 import { getProfessionAvatar } from "../../../../constants/professionImages";
-import { PROFESSION_LABELS } from "../../../../constants/professions";
+import { PROFESSION_INSIDER_SECTOR, PROFESSION_LABELS } from "../../../../constants/professions";
+import { formatSectorLabel } from "../exchange/_stock_grade_config";
 import { formatReputation } from "../../_model/utils";
-import { DashboardCard, StatusBadge } from "../shared";
+import { DashboardCard } from "../shared";
 import type { CharacterStats } from "./_character_skills";
 
 interface ProfileInfoCardProps {
@@ -49,6 +50,8 @@ export function ProfileInfoCard({
   className = "",
 }: ProfileInfoCardProps) {
   const professionLabel = PROFESSION_LABELS[profile.profession];
+  const insiderSector = PROFESSION_INSIDER_SECTOR[profile.profession];
+  const insiderSectorLabel = insiderSector ? formatSectorLabel(insiderSector) : null;
 
   const statColumns = [
     {
@@ -66,7 +69,9 @@ export function ProfileInfoCard({
     {
       label: "Инсайд",
       value: `${stats.insiderChancePercent}%`,
-      tooltip: "Вероятность получить инсайдерскую новость.",
+      tooltip: insiderSectorLabel
+        ? `Вероятность получить инсайдерскую новость по сектору «${insiderSectorLabel}».`
+        : "Ваша профессия не даёт доступа к инсайдерским новостям.",
     },
   ];
 
@@ -91,9 +96,6 @@ export function ProfileInfoCard({
           <p className="mt-0.5 text-xs font-medium text-[var(--text-secondary,#94a3b8)]">
             {professionLabel}
           </p>
-          <StatusBadge className="mt-2">
-            Карьера · Уровень {stats.workLevel}
-          </StatusBadge>
         </div>
       </div>
 

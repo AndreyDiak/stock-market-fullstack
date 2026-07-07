@@ -21,6 +21,7 @@ const KIND_LABELS: Record<NonNullable<news_item['kind']>, string> = {
   PROPERTY_DEAL: 'Сделка',
   PROPERTY_INSTALLMENT: 'Ипотека',
   STOCK_TRADE: 'Биржа',
+  STOCK_DIVIDEND: 'Дивиденды',
   IPO_ANNOUNCE: 'IPO',
   IPO_COMPLETE: 'IPO',
 }

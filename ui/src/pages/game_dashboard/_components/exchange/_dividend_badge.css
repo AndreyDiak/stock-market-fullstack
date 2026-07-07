@@ -1,0 +1,37 @@
+.dividend-badge {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.45rem;
+  border: 1px solid rgba(250, 204, 21, 0.28);
+  background: rgba(234, 179, 8, 0.12);
+  padding: 0.1rem 0.35rem;
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(253, 224, 71, 0.95);
+  cursor: help;
+  outline: none;
+}
+
+.dividend-badge:hover,
+.dividend-badge:focus-visible {
+  border-color: rgba(250, 204, 21, 0.45);
+  background: rgba(234, 179, 8, 0.18);
+}
+
+.dividend-badge__tooltip {
+  z-index: 80;
+  max-width: 12rem;
+  border-radius: 0.55rem;
+  border: 1px solid rgba(250, 204, 21, 0.28);
+  background: rgba(2, 8, 23, 0.96);
+  padding: 0.35rem 0.55rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: rgba(226, 232, 240, 0.96);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}

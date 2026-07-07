@@ -15,6 +15,11 @@ export interface StockListing {
   availableOnExchange: boolean;
   isLocked: boolean;
   hasInsiderPressure: boolean;
+  hasNewsPressure: boolean;
+  archetype: 'growth' | 'dividend' | 'speculative' | 'defensive' | null;
+  archetypeLabel: string | null;
+  paysDividends: boolean;
+  turnsUntilDividend: number | null;
   history?: PriceHistoryPoint[];
 }
 
@@ -55,6 +60,7 @@ export interface PortfolioRow extends portfolio_row {
   purchasePrice: number;
   pnl: number;
   listingId: string;
+  turnsHeldInCycle: number;
 }
 
 export function mapApiStockListing(row: StockListing): StockListing {
@@ -68,6 +74,10 @@ export function mapApiPortfolioRow(row: PortfolioRow): portfolio_row {
     qty: row.qty,
     price: row.price,
     changePct: row.changePct,
+    paysDividends: row.paysDividends,
+    turnsUntilDividend: row.turnsUntilDividend,
+    listingId: row.listingId,
+    turnsHeldInCycle: row.turnsHeldInCycle,
   };
 }
 
@@ -93,6 +103,20 @@ export async function buyStock(gameId: string, listingId: string, quantity: numb
   return http
     .post(`saves/${gameId}/stocks/${listingId}/buy`, { json: { quantity } })
     .json<{ balance: number; portfolio: PortfolioRow[]; news: GeneratedNewsItem }>();
+}
+
+export async function sellStock(gameId: string, listingId: string, quantity: number) {
+  return http
+    .post(`saves/${gameId}/stocks/${listingId}/sell`, { json: { quantity } })
+    .json<{
+      balance: number;
+      portfolio: PortfolioRow[];
+      news: GeneratedNewsItem;
+      gross: number;
+      commissionPercent: number;
+      commissionAmount: number;
+      net: number;
+    }>();
 }
 
 export async function fetchPortfolio(gameId: string) {

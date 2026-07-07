@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import { authenticate } from '../../middleware/authenticate.js';
 import { errorResponses } from '../../schemas/register.js';
 import { saveIdParamSchema } from '../saves/saves.schema.js';
-import { buyStockBodySchema } from '../../schemas/stock.schema.js';
+import { buyStockBodySchema, sellStockBodySchema } from '../../schemas/stock.schema.js';
 import { ipoSubscribeBodySchema } from '../../schemas/stock.schema.js';
 import { MarketService } from './market.service.js';
 import { AppError } from '../../utils/errors.js';
@@ -186,6 +186,52 @@ export async function marketRoutes(fastify: FastifyInstance) {
         balance: result.balance,
         portfolio: result.portfolio,
         news: result.news,
+      };
+    },
+  );
+
+  fastify.post(
+    '/saves/:id/stocks/:listingId/sell',
+    {
+      preHandler: authenticate,
+      schema: {
+        tags: ['market'],
+        security: [{ bearerAuth: [] }],
+        params: {
+          type: 'object',
+          required: ['id', 'listingId'],
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            listingId: { type: 'string', format: 'uuid' },
+          },
+        },
+        body: { $ref: 'SellStockBody#' },
+        response: {
+          200: { $ref: 'SellStockResponse#' },
+          ...errorResponses,
+        },
+      },
+    },
+    async (request) => {
+      const { id, listingId } = request.params as { id: string; listingId: string };
+      const { quantity } = sellStockBodySchema.parse(request.body);
+      const game = await loadGame(request.user.sub, id);
+      const result = await marketService.sellStock(
+        id,
+        listingId,
+        game.character,
+        quantity,
+        game.step,
+      );
+
+      return {
+        balance: result.balance,
+        portfolio: result.portfolio,
+        news: result.news,
+        gross: result.gross,
+        commissionPercent: result.commissionPercent,
+        commissionAmount: result.commissionAmount,
+        net: result.net,
       };
     },
   );

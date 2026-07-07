@@ -3,7 +3,10 @@ import { MoneyValue } from '../../../../components/money/money_value';
 import type { StockListing } from '../../../../api/stocks';
 import { ProfitGradeBadge } from '../real_estate/_profit_grade_badge';
 import { formatBankingRequiredLabel } from '../real_estate/_offer_styles';
-import { STOCK_GRADE_CONFIG, formatSectorLabel } from './_stock_grade_config';
+import { STOCK_GRADE_CONFIG } from './_stock_grade_config';
+import { SectorBadge } from './_sector_badge';
+import { DividendBadge } from './_dividend_badge';
+import { StockArchetypeBadge } from './_stock_archetype_badge';
 import { StockSparkline } from './_stock_sparkline';
 import { getHistoryWindowMeta, getSparklineDisplayHistory, resolveListingHistory } from './_stock_sparkline_utils';
 import { StockChangeBadge } from './_stock_change_badge';
@@ -66,13 +69,26 @@ export function StockCard({
               aria-hidden
             />
 
-            <span className="stock-card__header-sector">{formatSectorLabel(listing.sector)}</span>
+            <SectorBadge sector={listing.sector} />
+
+            {listing.paysDividends ? (
+              <DividendBadge turnsUntilDividend={listing.turnsUntilDividend} />
+            ) : null}
 
             {listing.hasInsiderPressure ? (
               <span className="stock-card__header-insider" aria-label="Активный инсайд">
                 🔥
               </span>
+            ) : listing.hasNewsPressure ? (
+              <span
+                className="rounded-lg border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-sky-200"
+                title="Под новостью"
+              >
+                Под новостью
+              </span>
             ) : null}
+
+            <StockArchetypeBadge listing={listing} />
           </div>
 
           <ProfitGradeBadge grade={listing.grade} embedded />

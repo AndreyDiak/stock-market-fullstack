@@ -12,10 +12,9 @@ import {
 
   filter_visible_news,
 
+  find_latest_market_news,
   find_pinned_insider,
-
   sort_news_for_panel,
-
 } from '../../_model/utils'
 
 import { NewsCard } from './_news_card'
@@ -51,6 +50,7 @@ export function NewsPanel() {
   const visibleNews = filter_visible_news(news, turn)
 
   const pinned = find_pinned_insider(visibleNews, turn)
+  const latestMarketNews = find_latest_market_news(visibleNews, turn)
 
   const feed = sort_news_for_panel(visibleNews, turn).filter(
 
@@ -116,26 +116,16 @@ export function NewsPanel() {
 
         ) : (
 
-          feed.map((item, index) => (
-
+          feed.map((item) => (
             <NewsCard
-
               key={item.id}
-
               item={item}
-
               theme={theme}
-
               variant="full"
-
-              latest={index === 0}
-
+              latest={latestMarketNews?.id === item.id}
               turn={turn}
-
               onSelect={selectNews}
-
             />
-
           ))
 
         )}

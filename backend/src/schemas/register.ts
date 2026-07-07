@@ -22,6 +22,8 @@ import { gameDashboardResponseSchema } from './dashboard.schema.js';
 import {
   buyStockBodySchema,
   buyStockResponseSchema,
+  sellStockBodySchema,
+  sellStockResponseSchema,
   ipoListResponseSchema,
   ipoSubscribeBodySchema,
   ipoSubscribeResponseSchema,
@@ -78,6 +80,8 @@ const schemaEntries = {
   StockHistoryResponse: stockHistoryResponseSchema,
   BuyStockBody: buyStockBodySchema,
   BuyStockResponse: buyStockResponseSchema,
+  SellStockBody: sellStockBodySchema,
+  SellStockResponse: sellStockResponseSchema,
   PortfolioResponse: portfolioResponseSchema,
   MarketSentiment: marketSentimentSchema,
   SectorMomentum: sectorMomentumSchema,

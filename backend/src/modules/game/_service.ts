@@ -98,10 +98,15 @@ export class GameService {
     }
 
     const character = context.game.character;
-    const nextTurnForecast = this.#passiveIncomeService.buildForecast(
+    const baseForecast = this.#passiveIncomeService.buildForecast(
       character,
       context.game.step,
       saveId,
+    );
+    const nextTurnForecast = await this.#marketService.enrichForecastWithDividends(
+      baseForecast,
+      saveId,
+      character.id,
     );
     const propertyOffers = await this.#propertyOffersService.listActive(
       saveId,
@@ -122,6 +127,7 @@ export class GameService {
       otcDeal: state.otcDeal,
       propertyOffers,
       characterSkills: this.#characterSkillsService.buildState(character),
+      dividendPayouts: state.dividendPayouts,
     };
   }
 
@@ -325,7 +331,7 @@ export class GameService {
       game.character.inventoryItems,
     );
 
-    return this.#passiveIncomeService.buildForecast(
+    return this.#buildEnrichedForecast(
       { ...game.character, inventoryItems },
       game.step,
       game.id,
@@ -340,7 +346,7 @@ export class GameService {
     );
     const character = { ...bootstrapped.character, inventoryItems };
     const news = await this.#newsService.listGameNews(saveId);
-    const nextTurnForecast = this.#passiveIncomeService.buildForecast(
+    const nextTurnForecast = await this.#buildEnrichedForecast(
       character,
       bootstrapped.step,
       bootstrapped.id,
@@ -456,6 +462,15 @@ export class GameService {
     }
 
     return game as GameWithCharacter;
+  }
+
+  async #buildEnrichedForecast(
+    character: GameWithCharacter['character'],
+    step: number,
+    gameId: string,
+  ) {
+    const baseForecast = this.#passiveIncomeService.buildForecast(character, step, gameId);
+    return this.#marketService.enrichForecastWithDividends(baseForecast, gameId, character.id);
   }
 
   async #assertGameAccess(userId: string, saveId: string) {

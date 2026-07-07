@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { useGameStore } from '../../../../stores/game.store'
 import { useDashboardUi } from '../../_model/dashboard_ui_context'
 import { useDashboardTheme } from '../../_model/use_dashboard_theme'
-import { get_latest_news } from '../../_model/utils'
+import { find_latest_market_news, get_latest_news } from '../../_model/utils'
 import { newsBlockItemVariants, newsBlockLayoutTransition } from '../../_model/news_animation'
 import { NewsCard } from './_news_card'
 import { SidebarSection } from '../shared'
@@ -14,6 +14,7 @@ export function NewsBlock() {
   const news = useGameStore((state) => state.news)
   const turn = useGameStore((state) => state.turn)
   const latest = get_latest_news(news, 5, turn)
+  const latestMarketNews = find_latest_market_news(news, turn)
   const enteringNewsIds = useGameStore((state) => state.enteringNewsIds)
   const clearEnteringNews = useGameStore((state) => state.clearEnteringNews)
 
@@ -46,7 +47,7 @@ export function NewsBlock() {
       ) : (
         <div className="space-y-2.5 overflow-x-hidden">
           <AnimatePresence initial={false}>
-            {latest.map((item, index) => {
+            {latest.map((item) => {
               const isEntering = enteringNewsIds.includes(item.id)
 
               return (
@@ -63,7 +64,7 @@ export function NewsBlock() {
                     item={item}
                     theme={theme}
                     variant="compact"
-                    latest={index === 0}
+                    latest={latestMarketNews?.id === item.id}
                     turn={turn}
                     onSelect={selectNews}
                   />

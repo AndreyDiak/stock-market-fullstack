@@ -2251,6 +2251,93 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/saves/{id}/stocks/{listingId}/sell": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    listingId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["SellStockBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SellStockResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/saves/{id}/portfolio": {
         parameters: {
             query?: never;
@@ -2901,6 +2988,7 @@ export interface components {
                 insiderChancePercent: number;
                 bankBaseRatePercent: number;
                 tradingGrade: string;
+                sellCommissionPercent: number;
                 propertySlotsUnlocked: number;
                 salaryBonus: number;
                 qualificationBonusPercent: number;
@@ -3027,6 +3115,7 @@ export interface components {
                     insiderChancePercent: number;
                     bankBaseRatePercent: number;
                     tradingGrade: string;
+                    sellCommissionPercent: number;
                     propertySlotsUnlocked: number;
                     salaryBonus: number;
                     qualificationBonusPercent: number;
@@ -3276,7 +3365,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -3335,6 +3424,13 @@ export interface components {
                 newPrice: number;
                 triggerAtStep: number;
             }[];
+            dividendPayouts?: {
+                /** Format: uuid */
+                listingId: string;
+                ticker: string;
+                companyName: string;
+                totalPaid: number;
+            }[];
             characterSkills: {
                 skills: {
                     id: string;
@@ -3392,6 +3488,7 @@ export interface components {
                     insiderChancePercent: number;
                     bankBaseRatePercent: number;
                     tradingGrade: string;
+                    sellCommissionPercent: number;
                     propertySlotsUnlocked: number;
                     salaryBonus: number;
                     qualificationBonusPercent: number;
@@ -3406,7 +3503,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -3501,7 +3598,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -3584,6 +3681,7 @@ export interface components {
                     insiderChancePercent: number;
                     bankBaseRatePercent: number;
                     tradingGrade: string;
+                    sellCommissionPercent: number;
                     propertySlotsUnlocked: number;
                     salaryBonus: number;
                     qualificationBonusPercent: number;
@@ -3626,6 +3724,11 @@ export interface components {
                 availableOnExchange: boolean;
                 isLocked: boolean;
                 hasInsiderPressure: boolean;
+                hasNewsPressure: boolean;
+                archetype: ("growth" | "dividend" | "speculative" | "defensive") | null;
+                archetypeLabel: string | null;
+                paysDividends: boolean;
+                turnsUntilDividend: number | null;
                 history: {
                     turn: number;
                     price: number;
@@ -3640,6 +3743,9 @@ export interface components {
                 changePct: number;
                 pnl: number;
                 listingId: string;
+                paysDividends: boolean;
+                turnsUntilDividend: number | null;
+                turnsHeldInCycle: number;
             }[];
             marketSentiment?: {
                 value: number;
@@ -3765,7 +3871,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -3884,7 +3990,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -3995,7 +4101,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -4064,7 +4170,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -4110,6 +4216,11 @@ export interface components {
             availableOnExchange: boolean;
             isLocked: boolean;
             hasInsiderPressure: boolean;
+            hasNewsPressure: boolean;
+            archetype: ("growth" | "dividend" | "speculative" | "defensive") | null;
+            archetypeLabel: string | null;
+            paysDividends: boolean;
+            turnsUntilDividend: number | null;
             history: {
                 turn: number;
                 price: number;
@@ -4132,6 +4243,11 @@ export interface components {
                 availableOnExchange: boolean;
                 isLocked: boolean;
                 hasInsiderPressure: boolean;
+                hasNewsPressure: boolean;
+                archetype: ("growth" | "dividend" | "speculative" | "defensive") | null;
+                archetypeLabel: string | null;
+                paysDividends: boolean;
+                turnsUntilDividend: number | null;
                 history: {
                     turn: number;
                     price: number;
@@ -4155,6 +4271,11 @@ export interface components {
                 availableOnExchange: boolean;
                 isLocked: boolean;
                 hasInsiderPressure: boolean;
+                hasNewsPressure: boolean;
+                archetype: ("growth" | "dividend" | "speculative" | "defensive") | null;
+                archetypeLabel: string | null;
+                paysDividends: boolean;
+                turnsUntilDividend: number | null;
                 history: {
                     turn: number;
                     price: number;
@@ -4185,12 +4306,15 @@ export interface components {
                 changePct: number;
                 pnl: number;
                 listingId: string;
+                paysDividends: boolean;
+                turnsUntilDividend: number | null;
+                turnsHeldInCycle: number;
             }[];
             news: {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -4207,6 +4331,49 @@ export interface components {
                 payload?: unknown;
             };
         };
+        SellStockBody: {
+            quantity: number;
+        };
+        SellStockResponse: {
+            balance: number;
+            portfolio: {
+                ticker: string;
+                name: string;
+                qty: number;
+                price: number;
+                purchasePrice: number;
+                changePct: number;
+                pnl: number;
+                listingId: string;
+                paysDividends: boolean;
+                turnsUntilDividend: number | null;
+                turnsHeldInCycle: number;
+            }[];
+            news: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
+                title: string;
+                body: string;
+                excerpt: string;
+                /** @enum {string} */
+                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+                impact: number;
+                sector?: string | null;
+                companyId?: string | null;
+                ticker?: string;
+                hot?: boolean;
+                /** Format: date-time */
+                publishedAt: string;
+                publishedStep?: number;
+                payload?: unknown;
+            };
+            gross: number;
+            commissionPercent: number;
+            commissionAmount: number;
+            net: number;
+        };
         PortfolioResponse: {
             portfolio: {
                 ticker: string;
@@ -4217,6 +4384,9 @@ export interface components {
                 changePct: number;
                 pnl: number;
                 listingId: string;
+                paysDividends: boolean;
+                turnsUntilDividend: number | null;
+                turnsHeldInCycle: number;
             }[];
         };
         MarketSentiment: {

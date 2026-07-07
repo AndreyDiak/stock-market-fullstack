@@ -60,6 +60,26 @@ function ReadIssueOverlay({
   )
 }
 
+function NewsTensionBadge({ level }: { level: number }) {
+  const clamped = Math.max(1, Math.min(5, level))
+  const tones = [
+    'border-slate-500/40 bg-slate-500/10 text-slate-300',
+    'border-sky-500/35 bg-sky-500/10 text-sky-200',
+    'border-amber-500/35 bg-amber-500/10 text-amber-200',
+    'border-orange-500/35 bg-orange-500/10 text-orange-200',
+    'border-rose-500/40 bg-rose-500/12 text-rose-200',
+  ]
+
+  return (
+    <span
+      className={`inline-flex items-center rounded-md border px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] ${tones[clamped - 1]}`}
+      title={`Напряжение новости: ${clamped}/5`}
+    >
+      Ур. {clamped}
+    </span>
+  )
+}
+
 function NewsTypeChip({ item }: { item: news_item }) {
   const category = getNewsCategoryForItem(item)
   const config = NEWS_CATEGORY_CONFIG[category]
@@ -132,6 +152,7 @@ export function NewsCard({
     isCompact ? 'news-card--compact' : '',
     interactive ? 'news-card--interactive' : '',
     latest ? 'news-card--latest' : '',
+    latest && item.kind === 'MARKET' ? 'news-card--market-highlight' : '',
     useInsiderFrame ? 'news-card--insider' : '',
     pinned ? 'sticky top-0 z-10' : '',
     theme.isLight ? 'news-card--light' : '',
@@ -168,6 +189,7 @@ export function NewsCard({
       <div className="news-card__meta">
         <div className="news-card__meta-left">
           <NewsTypeChip item={item} />
+          {item.newsLevel ? <NewsTensionBadge level={item.newsLevel} /> : null}
           {insider ? <InsiderNewsBadge /> : null}
           {pinned ? (
             <span className="inline-flex items-center gap-1 rounded-md border border-amber-300/50 bg-amber-400/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-amber-100">

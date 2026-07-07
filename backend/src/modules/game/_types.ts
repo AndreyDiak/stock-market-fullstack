@@ -3,6 +3,7 @@ import type {
   GeneratedOtcDeal,
   PersistedNewsItem,
 } from '../news/types.js';
+import type { DividendPayoutEvent } from '../market/dividend.service.js';
 import type { PropertyOfferDto } from '../property_offers/_types.js';
 import type { CharacterDto } from '../../schemas/character.schema.js';
 import type { CharacterSkillsState } from '../../schemas/character_skills.schema.js';
@@ -31,6 +32,7 @@ export interface TurnState {
   news: PersistedNewsItem[];
   otcDeal?: GeneratedOtcDeal;
   propertyOffersCreated?: boolean;
+  dividendPayouts?: DividendPayoutEvent[];
 }
 
 export function createInitialTurnState(professionLevel: number): TurnState {
@@ -53,6 +55,7 @@ export interface EndTurnResult {
   otcDeal?: GeneratedOtcDeal;
   propertyOffers: PropertyOfferDto[];
   characterSkills: CharacterSkillsState;
+  dividendPayouts?: DividendPayoutEvent[];
 }
 
 export interface TurnPhase {

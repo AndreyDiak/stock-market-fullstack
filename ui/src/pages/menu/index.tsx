@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { GameButton } from '../../components/game_ui/game_button'
 import { GameShell } from '../../components/game_ui/game_shell'
 import { SessionCard } from '../../components/game_ui/session_card'
-import { http } from '../../lib/http'
+import { authHttp } from '../../lib/auth-http'
 import { useAuthStore } from '../../stores/auth.store'
 import { useUsersStore } from '../../stores/users.store'
 import { ProfilePanel } from './_components/_profile_panel'
@@ -21,7 +21,7 @@ export function MenuPage() {
 
   async function handleLogout() {
     try {
-      await http.post('auth/logout')
+      await authHttp.post('auth/logout')
     } catch {
       // ignore
     }

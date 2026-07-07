@@ -65,6 +65,7 @@ export function getNewsCategory(kind?: GeneratedNewsItem['kind']): NewsCategory 
     case 'PROPERTY_INSTALLMENT':
       return 'realty';
     case 'STOCK_TRADE':
+    case 'STOCK_DIVIDEND':
       return 'stock';
     case 'WELCOME':
     case 'MARKET':

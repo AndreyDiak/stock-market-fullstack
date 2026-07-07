@@ -25,6 +25,7 @@ import {
   buyStock as buyStockApi,
   fetchStockHistory,
   mapApiPortfolioRow,
+  sellStock as sellStockApi,
   subscribeToIpo as subscribeToIpoApi,
   type IpoListing,
   type MarketSentiment,
@@ -136,6 +137,7 @@ interface GameState {
   loadExchangeData: () => Promise<void>;
   fetchStockHistory: (listingId: string) => Promise<{ turn: number; price: number }[]>;
   buyStock: (listingId: string, quantity: number) => Promise<void>;
+  sellStock: (listingId: string, quantity: number) => Promise<void>;
   subscribeToIpo: (ipoId: string, amount: number) => Promise<void>;
   clearEnteringNews: () => void;
   clearBalanceFx: () => void;
@@ -159,6 +161,7 @@ function getInitialState(): Omit<
   | 'loadExchangeData'
   | 'fetchStockHistory'
   | 'buyStock'
+  | 'sellStock'
   | 'subscribeToIpo'
   | 'clearEnteringNews'
   | 'clearBalanceFx'
@@ -709,7 +712,9 @@ export const useGameStore = create<GameState>((set, get) => {
       try {
         const result = await endGameTurn(gameId, stepAtClick);
         const applied = applyCharacterSkillsState(result.character, result.characterSkills, get().news);
-        const netDelta = result.passiveIncome.netChange;
+        const dividendTotal =
+          result.dividendPayouts?.reduce((sum, payout) => sum + payout.totalPaid, 0) ?? 0;
+        const netDelta = result.passiveIncome.netChange + dividendTotal;
 
         set((state) => ({
           turn: result.step,
@@ -819,6 +824,25 @@ export const useGameStore = create<GameState>((set, get) => {
       set({ stockBusy: true });
       try {
         const result = await buyStockApi(gameId, listingId, quantity);
+        const newsUpdate = appendNewsItem({ news: get().news, turn }, result.news);
+        set({
+          balance: result.balance,
+          portfolio: result.portfolio.map(mapApiPortfolioRow),
+          ...newsUpdate,
+        });
+        await get().loadExchangeData();
+      } finally {
+        set({ stockBusy: false });
+      }
+    },
+
+    sellStock: async (listingId, quantity) => {
+      const { gameId, turn } = get();
+      if (!gameId) return;
+
+      set({ stockBusy: true });
+      try {
+        const result = await sellStockApi(gameId, listingId, quantity);
         const newsUpdate = appendNewsItem({ news: get().news, turn }, result.news);
         set({
           balance: result.balance,

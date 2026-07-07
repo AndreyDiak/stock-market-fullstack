@@ -1,5 +1,5 @@
 import { HTTPError } from 'ky'
-import { http } from '../lib/http'
+import { authHttp } from '../lib/auth-http'
 
 export interface AuthTokenResponse {
   accessToken: string
@@ -13,7 +13,7 @@ interface ApiErrorBody {
 }
 
 export async function loginWithPassword(login: string, password: string): Promise<AuthTokenResponse> {
-  return http.post('auth/login', { json: { login, password } }).json<AuthTokenResponse>()
+  return authHttp.post('auth/login', { json: { login, password } }).json<AuthTokenResponse>()
 }
 
 export async function registerWithPassword(
@@ -21,11 +21,11 @@ export async function registerWithPassword(
   email: string,
   password: string,
 ): Promise<AuthTokenResponse> {
-  return http.post('auth/register', { json: { username, email, password } }).json<AuthTokenResponse>()
+  return authHttp.post('auth/register', { json: { username, email, password } }).json<AuthTokenResponse>()
 }
 
 export async function refreshAccessToken(): Promise<AuthTokenResponse> {
-  return http.post('auth/refresh').json<AuthTokenResponse>()
+  return authHttp.post('auth/refresh').json<AuthTokenResponse>()
 }
 
 export async function getApiErrorMessage(error: unknown, fallback = 'Произошла ошибка'): Promise<string> {
