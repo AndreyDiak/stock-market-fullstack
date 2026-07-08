@@ -104,37 +104,58 @@ export function SlotCard({
             onNewGame?.()
           }
         }}
-        className="group flex h-full min-h-[22rem] cursor-pointer flex-col transition-shadow duration-200 hover:shadow-[0_0_28px_rgba(16,185,129,0.14)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400/50"
+        className="group flex h-full min-h-[24rem] cursor-pointer flex-col transition-shadow duration-200 hover:shadow-[0_0_28px_rgba(16,185,129,0.14)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400/50"
         style={emptyFrameStyle}
       >
         <div className="flex flex-1 flex-col p-2.5">
           <SlotChrome slot={slot} active={false} />
 
           <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-white/5 bg-gradient-to-b from-[#0a1218] to-[#060a0e] transition-colors duration-200 group-hover:border-emerald-400/25">
-            <div className="flex flex-1 flex-col items-center justify-center gap-3 p-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full border border-dashed border-emerald-400/30 bg-emerald-400/5 transition-colors duration-200 group-hover:border-emerald-400/50 group-hover:bg-emerald-400/10">
-                <PlusIcon className="h-7 w-7 text-emerald-400/70 transition-colors duration-200 group-hover:text-emerald-300" />
+            <div className="absolute inset-0 opacity-[0.06] [background-image:linear-gradient(rgba(255,255,255,0.4)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.4)_1px,transparent_1px)] [background-size:16px_16px]" />
+
+            <div className="relative z-10 flex flex-1 flex-col items-center justify-center gap-3 p-4">
+              <div className="flex h-24 w-24 items-center justify-center rounded-full border border-dashed border-emerald-400/25 bg-emerald-400/5 transition-colors duration-200 group-hover:border-emerald-400/45 group-hover:bg-emerald-400/10">
+                <PlusIcon className="h-9 w-9 text-emerald-400/60 transition-colors duration-200 group-hover:text-emerald-300" />
               </div>
               <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500 transition-colors duration-200 group-hover:text-slate-400">
                 Пустой слот
               </span>
             </div>
-            <div className="h-1 bg-black/40">
+
+            <div className="relative z-10 bg-gradient-to-t from-black/80 via-black/30 to-transparent px-3 py-4">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-sm font-semibold text-slate-600">Баланс</span>
+                <span className="text-base font-bold text-slate-600">—</span>
+              </div>
+              <div className="mt-2 flex items-center justify-between gap-3">
+                <span className="text-sm font-semibold text-slate-600">Ход</span>
+                <span className="text-lg font-bold tabular-nums text-slate-600">1</span>
+              </div>
+            </div>
+
+            <div className="relative z-10 h-1 bg-black/40">
               <div className="h-full w-0 bg-slate-700/50" />
             </div>
           </div>
 
-          <div className="mt-2 shrink-0 px-1 text-center">
-            <div className="text-sm font-bold text-slate-500 transition-colors duration-200 group-hover:text-slate-400">
-              Слот {slot}
-            </div>
-            <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600 transition-colors duration-200 group-hover:text-emerald-500/70">
-              Свободен
+          <div className="mt-2.5 shrink-0 px-0.5">
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0 text-left">
+                <div className="truncate text-sm font-bold text-slate-500 transition-colors duration-200 group-hover:text-slate-400">
+                  Слот {slot}
+                </div>
+                <div className="mt-0.5 truncate text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600 transition-colors duration-200 group-hover:text-emerald-500/70">
+                  Свободен
+                </div>
+              </div>
+              <span className="shrink-0 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">
+                —
+              </span>
             </div>
           </div>
         </div>
 
-        <div className="pointer-events-none px-2.5 pb-2.5">
+        <div className="px-2.5 pb-2.5">
           <GameButton fullWidth variant="muted">
             Новая игра
           </GameButton>
@@ -146,7 +167,7 @@ export function SlotCard({
   return (
     <motion.div
       variants={slotCardVariants}
-      className="flex h-full min-h-[22rem] flex-col shadow-[0_8px_28px_rgba(0,0,0,0.35)]"
+      className="flex h-full min-h-[24rem] flex-col shadow-[0_8px_28px_rgba(0,0,0,0.35)]"
       style={frameStyle}
     >
       <div className="flex flex-1 flex-col p-2.5">

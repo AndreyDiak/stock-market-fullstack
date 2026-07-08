@@ -1,4 +1,490 @@
-.asset-market-card--stock-highlighted .stock-card__shell,
+/* ── Analytics tab ── */
+
+.analytics-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.analytics-tab__top {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.analytics-tab__mapping {
+  flex: 1;
+  min-width: 0;
+}
+
+.analytics-tab__section-title {
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.85);
+  margin-bottom: 0.65rem;
+}
+
+.analytics-tab__sector-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+/* ── Summary ── */
+
+.analytics-tab__summary {
+  margin: 0 0 0.65rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: rgba(148, 163, 184, 0.75);
+}
+
+/* ── Accordion ── */
+
+.analytics-tab__accordion {
+  border-radius: 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(15, 23, 42, 0.35);
+  overflow: hidden;
+}
+
+.analytics-tab__accordion-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  transition: background 120ms ease;
+}
+
+.analytics-tab__accordion-header:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.analytics-tab__sector-dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.analytics-tab__sector-icon {
+  width: 0.9rem;
+  height: 0.9rem;
+  opacity: 0.75;
+  flex-shrink: 0;
+}
+
+.analytics-tab__sector-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: rgba(248, 250, 252, 0.95);
+  white-space: nowrap;
+}
+
+.analytics-tab__sector-meta {
+  margin-left: auto;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  color: rgba(148, 163, 184, 0.8);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.analytics-tab__sector-chip {
+  display: inline-flex;
+  padding: 0.08rem 0.35rem;
+  border-radius: 0.3rem;
+  font-size: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.analytics-tab__sector-chip--news {
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  background: rgba(56, 189, 248, 0.12);
+  color: #7dd3fc;
+}
+
+.analytics-tab__sector-chip--insider {
+  border: 1px solid rgba(251, 113, 133, 0.35);
+  background: rgba(251, 113, 133, 0.12);
+  color: #fda4af;
+}
+
+.analytics-tab__accordion-arrow {
+  font-size: 0.65rem;
+  color: rgba(148, 163, 184, 0.45);
+  transition: transform 180ms ease;
+  margin-left: 0.15rem;
+}
+
+.analytics-tab__accordion-arrow--open {
+  transform: rotate(90deg);
+}
+
+.analytics-tab__accordion-body {
+  overflow: hidden;
+}
+
+/* ── Sector table ── */
+
+.analytics-tab__sector-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  font-size: 0.625rem;
+}
+
+.analytics-tab__sector-table thead th {
+  padding: 0.35rem 0.5rem;
+  font-size: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.5);
+  text-align: right;
+}
+
+.analytics-tab__sector-table thead th:first-child {
+  text-align: left;
+}
+
+.analytics-tab__sector-table tbody tr {
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  transition: background 100ms ease;
+}
+
+.analytics-tab__sector-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.analytics-tab__sector-table tbody td {
+  padding: 0.3rem 0.5rem;
+  vertical-align: middle;
+}
+
+.analytics-tab__sector-table-ticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(110, 231, 183, 0.9);
+}
+
+.analytics-tab__chip-d {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 0.2rem;
+  background: rgba(16, 185, 129, 0.18);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  font-size: 0.45rem;
+  font-weight: 800;
+  color: #6ee7b7;
+  line-height: 1;
+}
+
+.analytics-tab__chip-i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 0.2rem;
+  background: rgba(251, 113, 133, 0.18);
+  border: 1px solid rgba(251, 113, 133, 0.35);
+  font-size: 0.45rem;
+  font-weight: 800;
+  color: #fda4af;
+  line-height: 1;
+}
+
+.analytics-tab__sector-table-name {
+  font-weight: 600;
+  color: rgba(226, 232, 240, 0.85);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 8rem;
+}
+
+.analytics-tab__sector-table-num {
+  text-align: right;
+  font-family: ui-monospace, monospace;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  color: rgba(248, 250, 252, 0.9);
+  font-variant-numeric: tabular-nums;
+}
+
+.analytics-tab__sector-table-pct {
+  text-align: right;
+  font-family: ui-monospace, monospace;
+  font-size: 0.5625rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.analytics-tab__sector-table-pct--up {
+  color: #6ee7b7;
+}
+
+.analytics-tab__sector-table-pct--down {
+  color: #fb7185;
+}
+
+/* ── Chart ── */
+
+.analytics-tab__chart {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.analytics-tab__chart-title {
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.85);
+  margin: 0;
+}
+
+.analytics-tab__pie-svg {
+  width: 280px;
+  height: 280px;
+  overflow: visible;
+}
+
+.analytics-tab__pie-segment {
+  transition: opacity 150ms ease;
+  cursor: default;
+}
+
+.analytics-tab__pie-segment:hover {
+  opacity: 1;
+}
+
+.analytics-tab__chart-empty {
+  width: 280px;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6875rem;
+  color: rgba(148, 163, 184, 0.6);
+  border-radius: 50%;
+  border: 2px dashed rgba(148, 163, 184, 0.15);
+}
+
+.analytics-tab__chart-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  max-width: 280px;
+}
+
+.analytics-tab__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.85);
+}
+
+.analytics-tab__legend-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.analytics-tab__legend-label {
+  color: rgba(248, 250, 252, 0.92);
+}
+
+.analytics-tab__legend-sep {
+  color: rgba(148, 163, 184, 0.35);
+}
+
+.analytics-tab__legend-count {
+  font-weight: 800;
+  color: rgba(226, 232, 240, 0.95);
+}
+
+.analytics-tab__legend-pct {
+  font-weight: 800;
+  color: rgba(148, 163, 184, 0.85);
+}
+
+.analytics-tab__chart-total {
+  margin: 0;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: rgba(148, 163, 184, 0.55);
+  text-align: center;
+}
+
+/* ── Spotlight ── */
+
+.analytics-tab__spotlight {
+  border-radius: 0.75rem;
+  border-left: 4px solid rgba(56, 189, 248, 0.6);
+  background:
+    linear-gradient(180deg, rgba(30, 41, 59, 0.5), rgba(2, 6, 23, 0.75));
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 0 24px rgba(56, 189, 248, 0.06);
+  padding: 1.25rem;
+}
+
+.analytics-tab__spotlight-label {
+  display: block;
+  font-size: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(56, 189, 248, 0.7);
+  margin-bottom: 0.65rem;
+}
+
+.analytics-tab__spotlight-sectors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.analytics-tab__spotlight-sector-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 0.5rem;
+  border: 1px solid;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.analytics-tab__spotlight-sector-icon {
+  width: 0.7rem;
+  height: 0.7rem;
+  opacity: 0.85;
+}
+
+.analytics-tab__spotlight-sector-all {
+  display: inline-flex;
+  margin-bottom: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.4rem;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(148, 163, 184, 0.08);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.7);
+}
+
+.analytics-tab__spotlight-title {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #f8fafc;
+  margin: 0 0 0.45rem;
+}
+
+.analytics-tab__spotlight-body {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: rgba(203, 213, 225, 0.9);
+  margin: 0 0 0.75rem;
+}
+
+.analytics-tab__spotlight-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.analytics-tab__spotlight-ticker-link {
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 0.45rem;
+  background: rgba(56, 189, 248, 0.08);
+  padding: 0.25rem 0.55rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  color: #7dd3fc;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+
+.analytics-tab__spotlight-ticker-link:hover {
+  background: rgba(56, 189, 248, 0.18);
+}
+
+.analytics-tab__spotlight-cta {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.3rem 0.75rem;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(226, 232, 240, 0.9);
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.analytics-tab__spotlight-cta:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+@media (max-width: 640px) {
+  .analytics-tab__top {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .analytics-tab__chart {
+    align-items: center;
+  }
+
+  .analytics-tab__pie-svg {
+    width: 200px;
+    height: 200px;
+  }
+}
+
 .stock-card--highlighted .asset-market-card__shell {
   border-color: rgba(52, 211, 153, 0.55);
   box-shadow:

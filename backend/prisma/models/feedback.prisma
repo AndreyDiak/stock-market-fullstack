@@ -1,0 +1,10 @@
+model Feedback {
+  id          String   @id @default(uuid())
+  userId      String
+  saveId      String
+  messageType String
+  comment     String
+  createdAt   DateTime @default(now())
+
+  @@map("feedback")
+}

@@ -620,6 +620,7 @@ export class NewsGenerationService {
         primarySector: ctx.company.sector,
         affectedSectors,
         newsLevel: mapImpactStrengthToNewsLevel(config.impactStrength),
+        visibleSectors: affectedSectors.map((s) => s.sector),
       },
       affectedSectors,
     });

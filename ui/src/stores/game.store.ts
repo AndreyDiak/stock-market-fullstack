@@ -837,17 +837,15 @@ export const useGameStore = create<GameState>((set, get) => {
     },
 
     sellStock: async (listingId, quantity) => {
-      const { gameId, turn } = get();
+      const { gameId } = get();
       if (!gameId) return;
 
       set({ stockBusy: true });
       try {
         const result = await sellStockApi(gameId, listingId, quantity);
-        const newsUpdate = appendNewsItem({ news: get().news, turn }, result.news);
         set({
           balance: result.balance,
           portfolio: result.portfolio.map(mapApiPortfolioRow),
-          ...newsUpdate,
         });
         await get().loadExchangeData();
       } finally {

@@ -28,11 +28,13 @@ export function calc_passive_income(slots: PropertySlot[]) {
 
 export function calc_portfolio_stats(portfolio: portfolio_row[]) {
   const totalValue = portfolio.reduce((sum, row) => sum + row.qty * row.price, 0)
-  const todayProfit = portfolio.reduce(
-    (sum, row) => sum + row.qty * row.price * (row.changePct / 100),
+
+  const totalPnl = portfolio.reduce(
+    (sum, row) => sum + (row.pnl ?? row.qty * row.price * (row.changePct / 100)),
     0,
   )
-  return { totalValue, todayProfit }
+
+  return { totalValue, totalPnl }
 }
 
 export function news_border_class(sentiment: news_item['sentiment']) {

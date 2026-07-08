@@ -18,6 +18,7 @@ export function ExchangeMarketSpotlight({
   highlightStockListingId,
   onSubscribe,
   onOpenChart,
+  onInsiderClick,
 }: {
   ipos: IpoListing[];
   insiderListings: StockListing[];
@@ -27,6 +28,7 @@ export function ExchangeMarketSpotlight({
   highlightStockListingId?: string | null;
   onSubscribe: (ipoId: string, amount: number) => Promise<void>;
   onOpenChart: (listing: StockListing) => void;
+  onInsiderClick?: (ticker: string) => void;
 }) {
   const hasContent =
     ipos.length > 0 || insiderListings.length > 0 || ipoTrackListings.length > 0;
@@ -82,6 +84,7 @@ export function ExchangeMarketSpotlight({
                   listing={listing}
                   highlighted={listing.id === highlightStockListingId}
                   onOpenChart={() => onOpenChart(listing)}
+                  onInsiderClick={() => onInsiderClick?.(listing.ticker)}
                 />
               </motion.div>
             ))}

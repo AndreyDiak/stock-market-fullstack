@@ -49,6 +49,7 @@ export function GameDashboardPage() {
   const [selectedNews, setSelectedNews] = useState<news_item | null>(null)
   const [highlightPropertyOfferId, setHighlightPropertyOfferId] = useState<string | null>(null)
   const [highlightStockListingId, setHighlightStockListingId] = useState<string | null>(null)
+  const [highlightNewsId, setHighlightNewsId] = useState<string | null>(null)
 
   const dashboardUi = useMemo(
     () => ({
@@ -69,8 +70,11 @@ export function GameDashboardPage() {
       clearHighlightPropertyOffer: () => setHighlightPropertyOfferId(null),
       highlightStockListingId,
       clearHighlightStockListing: () => setHighlightStockListingId(null),
+      highlightNewsId,
+      setHighlightNewsId,
+      clearHighlightNews: () => setHighlightNewsId(null),
     }),
-    [activeTab, highlightPropertyOfferId, highlightStockListingId, setActiveTab],
+    [activeTab, highlightPropertyOfferId, highlightStockListingId, highlightNewsId, setActiveTab],
   )
 
   useEffect(() => {

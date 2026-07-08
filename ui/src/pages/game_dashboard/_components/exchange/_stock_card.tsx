@@ -6,7 +6,6 @@ import { formatBankingRequiredLabel } from '../real_estate/_offer_styles';
 import { STOCK_GRADE_CONFIG } from './_stock_grade_config';
 import { SectorBadge } from './_sector_badge';
 import { DividendBadge } from './_dividend_badge';
-import { StockArchetypeBadge } from './_stock_archetype_badge';
 import { StockSparkline } from './_stock_sparkline';
 import { getHistoryWindowMeta, getSparklineDisplayHistory, resolveListingHistory } from './_stock_sparkline_utils';
 import { StockChangeBadge } from './_stock_change_badge';
@@ -24,10 +23,12 @@ export function StockCard({
   listing,
   highlighted,
   onOpenChart,
+  onInsiderClick,
 }: {
   listing: StockListing;
   highlighted?: boolean;
   onOpenChart: () => void;
+  onInsiderClick?: () => void;
 }) {
   const turnUp = listing.dayChange >= 0;
   const locked = listing.isLocked || !listing.availableOnExchange;
@@ -45,6 +46,13 @@ export function StockCard({
     gameAudio.playSfx('buttonClick');
     onOpenChart();
   };
+
+  const handleInsiderClick = () => {
+    gameAudio.playSfx('buttonClick');
+    onInsiderClick?.();
+  };
+
+  const showNewsBadge = listing.hasNewsPressure && !listing.hasInsiderPressure;
 
   return (
     <article
@@ -71,24 +79,27 @@ export function StockCard({
 
             <SectorBadge sector={listing.sector} />
 
+            {listing.hasInsiderPressure ? (
+              <button
+                type="button"
+                onClick={handleInsiderClick}
+                className="cursor-pointer rounded-lg border border-rose-500/40 bg-rose-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-rose-200 transition-colors hover:border-rose-400/60 hover:bg-rose-500/25"
+                title="Перейти к инсайдерской новости"
+              >
+                Инсайд
+              </button>
+            ) : showNewsBadge ? (
+              <span
+                className="rounded-lg border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-sky-200"
+                title="Активные новости в секторе"
+              >
+                Есть новости
+              </span>
+            ) : null}
+
             {listing.paysDividends ? (
               <DividendBadge turnsUntilDividend={listing.turnsUntilDividend} />
             ) : null}
-
-            {listing.hasInsiderPressure ? (
-              <span className="stock-card__header-insider" aria-label="Активный инсайд">
-                🔥
-              </span>
-            ) : listing.hasNewsPressure ? (
-              <span
-                className="rounded-lg border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-sky-200"
-                title="Под новостью"
-              >
-                Под новостью
-              </span>
-            ) : null}
-
-            <StockArchetypeBadge listing={listing} />
           </div>
 
           <ProfitGradeBadge grade={listing.grade} embedded />

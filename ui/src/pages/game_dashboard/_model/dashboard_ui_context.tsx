@@ -13,6 +13,9 @@ export interface DashboardUiContextValue {
   clearHighlightPropertyOffer: () => void
   highlightStockListingId: string | null
   clearHighlightStockListing: () => void
+  highlightNewsId: string | null
+  setHighlightNewsId: (id: string) => void
+  clearHighlightNews: () => void
 }
 
 const DashboardUiContext = createContext<DashboardUiContextValue | null>(null)

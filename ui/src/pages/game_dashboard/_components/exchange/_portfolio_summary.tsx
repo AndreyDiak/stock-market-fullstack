@@ -5,13 +5,11 @@ import { calc_portfolio_stats } from "../../_model/utils";
 
 export function PortfolioSummary({
   portfolio,
-  availableCash,
 }: {
   portfolio: portfolio_row[];
-  availableCash: number;
 }) {
-  const { totalValue, todayProfit } = calc_portfolio_stats(portfolio);
-  const profitPositive = todayProfit >= 0;
+  const { totalValue, totalPnl } = calc_portfolio_stats(portfolio);
+  const profitPositive = totalPnl >= 0;
 
   const metrics = [
     {
@@ -19,24 +17,20 @@ export function PortfolioSummary({
       value: <MoneyValue amount={totalValue} size="lg" color="white" />,
     },
     {
-      label: "Прибыль за сегодня",
+      label: "Прибыль / убыток",
       value: (
         <MoneyValue
-          amount={Math.abs(Math.round(todayProfit))}
+          amount={Math.abs(Math.round(totalPnl))}
           size="lg"
           prefix={profitPositive ? "+" : "−"}
           color={profitPositive ? "emerald" : "red"}
         />
       ),
     },
-    {
-      label: "Доступно денег",
-      value: <MoneyValue amount={availableCash} size="lg" color="cyan" />,
-    },
   ];
 
   return (
-    <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+    <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
       {metrics.map((metric) => (
         <div
           key={metric.label}

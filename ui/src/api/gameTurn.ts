@@ -147,6 +147,23 @@ function sanitizeNewsPayload(payload: unknown): unknown {
   return record
 }
 
+function extractVisibleSectors(payload: unknown): string[] | undefined {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return undefined
+  const sectors = (payload as Record<string, unknown>).visibleSectors
+  if (Array.isArray(sectors) && sectors.every((s) => typeof s === 'string')) {
+    return sectors as string[]
+  }
+  return undefined
+}
+
+function simplifyMultiSectorBody(
+  body: string,
+  sectors: string[],
+): string {
+  if (sectors.length < 2) return body
+  return 'Заметна активность в нескольких секторах экономики. Рыночные условия создают предпосылки для изменения стоимости широкого круга бумаг.'
+}
+
 export function mapApiNewsToFeedItem(
   item: GeneratedNewsItem,
   _index: number,
@@ -167,10 +184,12 @@ export function mapApiNewsToFeedItem(
       ? Math.max(0, triggerAtStep - currentStep)
       : undefined
 
+  const visibleSectors = extractVisibleSectors(item.payload)
+
   return {
     id: item.id,
     title: item.title,
-    body: item.body,
+    body: simplifyMultiSectorBody(item.body, visibleSectors ?? []),
     excerpt: item.excerpt || item.body,
     timeLabel:
       currentStep != null
@@ -185,6 +204,7 @@ export function mapApiNewsToFeedItem(
     payload: sanitizeNewsPayload(item.payload),
     turnsLeft: turnsLeft && turnsLeft > 0 ? turnsLeft : undefined,
     newsLevel: payload?.newsLevel,
+    visibleSectors,
   };
 }
 

@@ -24,6 +24,7 @@ import {
   buyStockResponseSchema,
   sellStockBodySchema,
   sellStockResponseSchema,
+  stockTradeListResponseSchema,
   ipoListResponseSchema,
   ipoSubscribeBodySchema,
   ipoSubscribeResponseSchema,
@@ -45,6 +46,10 @@ import {
 } from './property_offer.schema.js';
 import { acceptOtcDealBodySchema, acceptOtcDealResponseSchema } from './otc_deal.schema.js';
 import { payOffInstallmentBodySchema, payOffInstallmentResponseSchema } from './property_loan.schema.js';
+import {
+  createFeedbackBodySchema,
+  createFeedbackResponseSchema,
+} from './feedback.schema.js';
 import { updateUserBodySchema, userSchema } from './user.schema.js';
 import { logoutResponseSchema, refreshTokenResponseSchema, authTokenResponseSchema, registerBodySchema, loginBodySchema } from './auth.schema.js';
 
@@ -82,6 +87,7 @@ const schemaEntries = {
   BuyStockResponse: buyStockResponseSchema,
   SellStockBody: sellStockBodySchema,
   SellStockResponse: sellStockResponseSchema,
+  StockTradeListResponse: stockTradeListResponseSchema,
   PortfolioResponse: portfolioResponseSchema,
   MarketSentiment: marketSentimentSchema,
   SectorMomentum: sectorMomentumSchema,
@@ -95,6 +101,8 @@ const schemaEntries = {
   AuthTokenResponse: authTokenResponseSchema,
   RegisterBody: registerBodySchema,
   LoginBody: loginBodySchema,
+  CreateFeedbackBody: createFeedbackBodySchema,
+  CreateFeedbackResponse: createFeedbackResponseSchema,
 } as const;
 
 export const fastifyDefMap = Object.fromEntries(

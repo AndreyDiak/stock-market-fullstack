@@ -78,6 +78,18 @@ export function MenuPage() {
               </motion.div>
 
               <motion.div variants={menuItemVariants}>
+                <GameButton fullWidth size="lg" variant="muted" onClick={() => navigate('/roadmap')}>
+                  Дорожная карта
+                </GameButton>
+              </motion.div>
+
+              <motion.div variants={menuItemVariants}>
+                <GameButton fullWidth size="lg" variant="emerald" onClick={() => navigate('/feedback')}>
+                  Обратная связь
+                </GameButton>
+              </motion.div>
+
+              <motion.div variants={menuItemVariants}>
                 <GameButton fullWidth variant="ghost" onClick={() => void handleLogout()}>
                   Выйти из аккаунта
                 </GameButton>

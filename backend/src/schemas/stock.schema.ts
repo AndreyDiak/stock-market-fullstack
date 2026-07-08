@@ -84,14 +84,32 @@ export const sellStockBodySchema = z.object({
   quantity: z.number().int().min(1),
 });
 
+export const stockTradeSchema = z.object({
+  id: z.string().uuid(),
+  ticker: z.string(),
+  companyName: z.string(),
+  sector: z.string(),
+  operationType: z.string(),
+  quantity: z.number().int(),
+  price: z.number(),
+  total: z.number(),
+  netTotal: z.number().nullable(),
+  commission: z.number().nullable(),
+  turn: z.number().int(),
+  createdAt: z.string(),
+});
+
 export const sellStockResponseSchema = z.object({
   balance: z.number(),
   portfolio: z.array(portfolioRowSchema),
-  news: generatedNewsItemSchema,
   gross: z.number(),
   commissionPercent: z.number(),
   commissionAmount: z.number(),
   net: z.number(),
+});
+
+export const stockTradeListResponseSchema = z.object({
+  trades: z.array(stockTradeSchema),
 });
 
 export const portfolioResponseSchema = z.object({
@@ -128,3 +146,4 @@ export const ipoSubscribeResponseSchema = z.object({
 
 export type BuyStockBody = z.infer<typeof buyStockBodySchema>;
 export type SellStockBody = z.infer<typeof sellStockBodySchema>;
+export type StockTrade = z.infer<typeof stockTradeSchema>;

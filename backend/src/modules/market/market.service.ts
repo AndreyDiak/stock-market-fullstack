@@ -416,6 +416,21 @@ export class MarketService {
       price: listing.currentPrice,
     });
 
+    await this.#prisma.stockTrade.create({
+      data: {
+        gameId,
+        characterId: character.id,
+        ticker: listing.company.ticker,
+        companyName: listing.company.name,
+        sector: listing.company.sector,
+        operationType: 'buy',
+        quantity,
+        price: listing.currentPrice,
+        total,
+        turn: gameStep,
+      },
+    });
+
     const portfolio = await this.getPortfolio(gameId, updated);
 
     return {
@@ -457,6 +472,8 @@ export class MarketService {
       character.tradingLevel,
     );
 
+    const nextQty = holding.quantity - quantity;
+
     const updated = await this.#prisma.$transaction(async (tx) => {
       if (nextQty === 0) {
         await tx.stock.delete({ where: { id: holding.id } });
@@ -479,17 +496,21 @@ export class MarketService {
       });
     });
 
-    const news = await this.#newsService.createStockTradeNews({
-      gameId,
-      gameStep,
-      ticker: listing.company.ticker,
-      companyName: listing.company.name,
-      playerAction: 'sell',
-      qty: quantity,
-      price: listing.currentPrice,
-      commissionPercent,
-      commissionAmount,
-      netProceeds: net,
+    await this.#prisma.stockTrade.create({
+      data: {
+        gameId,
+        characterId: character.id,
+        ticker: listing.company.ticker,
+        companyName: listing.company.name,
+        sector: listing.company.sector,
+        operationType: 'sell',
+        quantity,
+        price: listing.currentPrice,
+        total: gross,
+        netTotal: net,
+        commission: commissionAmount,
+        turn: gameStep,
+      },
     });
 
     const portfolio = await this.getPortfolio(gameId, updated);
@@ -497,7 +518,6 @@ export class MarketService {
     return {
       balance: updated.balance,
       character: updated,
-      news,
       portfolio,
       gross,
       commissionPercent,

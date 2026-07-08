@@ -47,8 +47,7 @@ export function GameModal({
   })
 
   const dismiss = useDismiss(context, {
-    outsidePress: true,
-    outsidePressEvent: 'mousedown',
+    outsidePress: false,
     escapeKey: true,
   })
   const role = useRole(context, { role: 'dialog' })

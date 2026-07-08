@@ -78,6 +78,7 @@ export function mapApiPortfolioRow(row: PortfolioRow): portfolio_row {
     turnsUntilDividend: row.turnsUntilDividend,
     listingId: row.listingId,
     turnsHeldInCycle: row.turnsHeldInCycle,
+    pnl: row.pnl,
   };
 }
 
@@ -105,18 +106,36 @@ export async function buyStock(gameId: string, listingId: string, quantity: numb
     .json<{ balance: number; portfolio: PortfolioRow[]; news: GeneratedNewsItem }>();
 }
 
+export interface StockTrade {
+  id: string;
+  ticker: string;
+  companyName: string;
+  sector: string;
+  operationType: string;
+  quantity: number;
+  price: number;
+  total: number;
+  netTotal: number | null;
+  commission: number | null;
+  turn: number;
+  createdAt: string;
+}
+
 export async function sellStock(gameId: string, listingId: string, quantity: number) {
   return http
     .post(`saves/${gameId}/stocks/${listingId}/sell`, { json: { quantity } })
     .json<{
       balance: number;
       portfolio: PortfolioRow[];
-      news: GeneratedNewsItem;
       gross: number;
       commissionPercent: number;
       commissionAmount: number;
       net: number;
     }>();
+}
+
+export async function fetchTradeHistory(gameId: string) {
+  return http.get(`saves/${gameId}/stocks/trades`).json<{ trades: StockTrade[] }>();
 }
 
 export async function fetchPortfolio(gameId: string) {

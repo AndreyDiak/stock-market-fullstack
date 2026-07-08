@@ -16,6 +16,7 @@ import { usersRoutes } from './modules/users/users.routes.js';
 import { savesRoutes } from './modules/saves/saves.routes.js';
 import { gameRoutes } from './modules/game/routes.js';
 import { marketRoutes } from './modules/market/market.routes.js';
+import { feedbackRoutes } from './modules/feedback/feedback.routes.js';
 
 export interface BuildAppOptions {
   openapiExport?: boolean;
@@ -59,6 +60,7 @@ export async function buildApp(options: BuildAppOptions = {}) {
   await fastify.register(savesRoutes);
   await fastify.register(gameRoutes);
   await fastify.register(marketRoutes);
+  await fastify.register(feedbackRoutes);
 
   fastify.get('/health', {
     schema: {

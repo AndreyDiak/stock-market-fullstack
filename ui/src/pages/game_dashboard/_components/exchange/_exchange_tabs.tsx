@@ -1,8 +1,10 @@
-export type ExchangeTabId = 'market' | 'portfolio';
+export type ExchangeTabId = 'market' | 'portfolio' | 'analytics' | 'history';
 
 const TAB_ITEMS: { id: ExchangeTabId; label: string }[] = [
   { id: 'market', label: 'Рынок' },
   { id: 'portfolio', label: 'Портфель' },
+  { id: 'analytics', label: 'Аналитика' },
+  { id: 'history', label: 'История' },
 ];
 
 export function ExchangeTabs({

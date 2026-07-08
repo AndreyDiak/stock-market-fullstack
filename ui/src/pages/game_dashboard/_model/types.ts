@@ -22,6 +22,7 @@ export interface portfolio_row {
   turnsUntilDividend?: number | null
   listingId?: string
   turnsHeldInCycle?: number
+  pnl?: number
 }
 
 export interface news_item {
@@ -39,6 +40,7 @@ export interface news_item {
   payload?: unknown
   turnsLeft?: number
   newsLevel?: number
+  visibleSectors?: string[]
 }
 
 export type bot_deal_side = 'buy' | 'sell'

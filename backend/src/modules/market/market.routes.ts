@@ -227,12 +227,41 @@ export async function marketRoutes(fastify: FastifyInstance) {
       return {
         balance: result.balance,
         portfolio: result.portfolio,
-        news: result.news,
         gross: result.gross,
         commissionPercent: result.commissionPercent,
         commissionAmount: result.commissionAmount,
         net: result.net,
       };
+    },
+  );
+
+  fastify.get(
+    '/saves/:id/stocks/trades',
+    {
+      preHandler: authenticate,
+      schema: {
+        tags: ['market'],
+        security: [{ bearerAuth: [] }],
+        params: {
+          type: 'object',
+          required: ['id'],
+          properties: { id: { type: 'string', format: 'uuid' } },
+        },
+        response: {
+          200: { $ref: 'StockTradeListResponse#' },
+          ...errorResponses,
+        },
+      },
+    },
+    async (request) => {
+      const { id } = saveIdParamSchema.parse(request.params);
+      const game = await loadGame(request.user.sub, id);
+      const trades = await fastify.prisma.stockTrade.findMany({
+        where: { gameId: id, characterId: game.character.id },
+        orderBy: { createdAt: 'desc' },
+        take: 100,
+      });
+      return { trades: trades.map((t) => ({ ...t, createdAt: t.createdAt.toISOString() })) };
     },
   );
 

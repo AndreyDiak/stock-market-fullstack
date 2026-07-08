@@ -1,4 +1,4 @@
-import ky, { HTTPError } from 'ky';
+import ky from 'ky';
 import { API_URL } from '../config';
 import { useAuthStore } from '../stores/auth.store';
 import { isAuthEndpoint, tryRefreshAccessToken } from './auth-refresh';
@@ -8,9 +8,7 @@ export const http = ky.create({
   prefix: API_URL,
   credentials: 'include',
   retry: {
-    limit: 1,
-    statusCodes: [401],
-    methods: ['get', 'post', 'put', 'patch', 'delete'],
+    limit: 0,
   },
   hooks: {
     beforeRequest: [
@@ -21,19 +19,14 @@ export const http = ky.create({
         }
       },
     ],
-    beforeRetry: [
-      async ({ request, error }) => {
-        if (!(error instanceof HTTPError) || error.response.status !== 401) {
-          throw error
-        }
-
-        if (isAuthEndpoint(request.url)) {
-          throw error
-        }
+    afterResponse: [
+      async ({ request, response }) => {
+        if (response.status !== 401) return
+        if (isAuthEndpoint(request.url)) return
 
         if (request.headers.get('x-auth-retried')) {
           runHttpUnauthorizedMiddleware()
-          throw error
+          return
         }
 
         request.headers.set('x-auth-retried', '1')
@@ -41,13 +34,22 @@ export const http = ky.create({
         const refreshed = await tryRefreshAccessToken()
         if (!refreshed) {
           runHttpUnauthorizedMiddleware()
-          throw error
+          return
         }
 
         const { accessToken } = useAuthStore.getState()
-        if (accessToken) {
-          request.headers.set('Authorization', `Bearer ${accessToken}`)
+        if (!accessToken) {
+          runHttpUnauthorizedMiddleware()
+          return
         }
+
+        const headers = new Headers(request.headers)
+        headers.set('Authorization', `Bearer ${accessToken}`)
+
+        return ky.retry({
+          request: new Request(request, { headers }),
+          code: 'TOKEN_REFRESHED',
+        })
       },
     ],
   },

@@ -1,0 +1,18 @@
+model StockTrade {
+  id            String      @id @default(uuid())
+  gameId        String
+  characterId   String
+  ticker        String
+  companyName   String
+  sector        MarketSector
+  operationType String
+  quantity      Int
+  price         Float
+  total         Float
+  netTotal      Float?
+  commission    Float?
+  turn          Int
+  createdAt     DateTime    @default(now())
+
+  @@map("stock_trades")
+}
