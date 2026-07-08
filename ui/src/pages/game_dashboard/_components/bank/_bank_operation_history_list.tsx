@@ -2,10 +2,11 @@ import { useState } from 'react'
 
 import { MoneyValue } from '../../../../components/money/money_value'
 import { EyeIcon } from '../../../../shared/icons'
+import { gameAudio } from '../../../../lib/audio/game_audio'
 import { CategoryChip, StatusBadge } from '../shared'
 import { BankOperationHistoryModal } from './_bank_operation_history_modal'
 import type { PropertyOperation } from './_bank_operation_history'
-import { formatOperationPriceDiff } from './_bank_operation_price_diff'
+import { formatOperationPriceDiff, resolvePriceDiffTone } from './_bank_operation_price_diff'
 import { BankPropertyPreview } from './_bank_property_preview'
 
 function HistoryOpenHint() {
@@ -32,6 +33,22 @@ function HistoryPriceDiff({ operation }: { operation: PropertyOperation }) {
   )
 }
 
+function HistoryProfitLossValue({ operation }: { operation: PropertyOperation }) {
+  const diff = operation.priceDiff?.amount
+  if (diff == null || diff === 0) return null
+
+  const isProfit = resolvePriceDiffTone(operation.type, diff) === 'profit'
+
+  return (
+    <MoneyValue
+      amount={Math.abs(diff)}
+      size="sm"
+      color={isProfit ? 'emerald' : 'red'}
+      prefix={isProfit ? '+' : '−'}
+    />
+  )
+}
+
 export function BankOperationHistoryList({ operations }: { operations: PropertyOperation[] }) {
   const [selectedOperation, setSelectedOperation] = useState<PropertyOperation | null>(null)
 
@@ -51,7 +68,7 @@ export function BankOperationHistoryList({ operations }: { operations: PropertyO
             <button
               type="button"
               className="bank-history__item"
-              onClick={() => setSelectedOperation(operation)}
+              onClick={() => { gameAudio.playSfx('buttonClick'); setSelectedOperation(operation) }}
               aria-label={`Подробнее: ${operation.type === 'buy' ? 'покупка' : 'продажа'} ${operation.itemName}`}
             >
               <BankPropertyPreview
@@ -81,6 +98,12 @@ export function BankOperationHistoryList({ operations }: { operations: PropertyO
                   <HistoryPriceDiff operation={operation} />
                 </div>
               </div>
+
+              {operation.priceDiff?.amount != null && operation.priceDiff.amount !== 0 && (
+                <span className="bank-history__pl-block">
+                  <HistoryProfitLossValue operation={operation} />
+                </span>
+              )}
 
               <div className="bank-history__aside">
                 <span className="bank-history__time">{operation.timeLabel}</span>

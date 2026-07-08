@@ -1,3 +1,5 @@
+import { gameAudio } from '../../../../lib/audio/game_audio'
+
 export type BankTabId = 'property' | 'history'
 
 const TAB_ITEMS: { id: BankTabId; labelKey: 'property' | 'history' }[] = [
@@ -28,7 +30,7 @@ export function BankTabs({
           role="tab"
           aria-selected={active === tab.id}
           className={`bank-tabs__item${active === tab.id ? ' bank-tabs__item--active' : ''}`}
-          onClick={() => onChange(tab.id)}
+          onClick={() => { gameAudio.playSfx('buttonClick'); onChange(tab.id) }}
         >
           {labels[tab.labelKey]}
         </button>

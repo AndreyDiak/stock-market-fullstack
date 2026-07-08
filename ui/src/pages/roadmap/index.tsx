@@ -55,6 +55,18 @@ const stages: Stage[] = [
     ),
   },
   {
+    title: 'Релиз 1.2',
+    badge: 'Позже',
+    badgeColor: 'bg-sky-500/15 text-sky-400',
+    content: (
+      <ul className="space-y-1">
+        {[
+          'IPO акций — первичное размещение на бирже',
+        ].map(bullet)}
+      </ul>
+    ),
+  },
+  {
     title: 'TBD',
     badge: 'Позже',
     badgeColor: 'bg-slate-500/15 text-slate-400',

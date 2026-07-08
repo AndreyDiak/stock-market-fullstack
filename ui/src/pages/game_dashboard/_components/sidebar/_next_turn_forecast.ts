@@ -183,5 +183,5 @@ export function resolveNextTurnForecast(
     replacePassiveIncomeLines(base.lines, input.propertySlots),
   )
 
-  return appendLoanToForecast(withPropertyIncomeLabels, input.loanPaymentPerTurn)
+  return withPropertyIncomeLabels
 }

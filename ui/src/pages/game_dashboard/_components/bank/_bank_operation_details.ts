@@ -24,7 +24,10 @@ interface PropertyDealPayload {
 interface PropertyInstallmentPayload {
   assetId?: string
   itemName?: string
+  amount?: number
   paidOff?: boolean
+  installmentsPaid?: number
+  installmentsTotal?: number | null
 }
 
 const DEFAULT_DOWN_PAYMENT_PERCENT = 15

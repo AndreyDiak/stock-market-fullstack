@@ -13,6 +13,8 @@ export function BankLoansSection({
   payingOffLoanId: string | null
   onOpenPayoff: (loanId: string) => void
 }) {
+  if (loans.length === 0) return null
+
   return (
     <section className="bank-loans-section">
       <div className="bank-section-header">
@@ -21,24 +23,18 @@ export function BankLoansSection({
         <div className="bank-section-header__divider bank-section-header__divider--reverse" aria-hidden />
       </div>
 
-      {loans.length > 0 ? (
-        <div className="space-y-2.5">
-          {loans.map((loan) => (
-            <BankPropertyLoanCard
-              key={loan.id}
-              loan={loan}
-              balance={balance}
-              busy={payingOffLoanId === loan.id}
-              canOpenPayoff={balance >= calcMinPayoffAmount(loan.remainingAmount)}
-              onOpenPayoff={() => onOpenPayoff(loan.id)}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="bank-empty-state bank-empty-state--compact">
-          <p className="bank-empty-state__text">Нет активных кредитов</p>
-        </div>
-      )}
+      <div className="space-y-2.5">
+        {loans.map((loan) => (
+          <BankPropertyLoanCard
+            key={loan.id}
+            loan={loan}
+            balance={balance}
+            busy={payingOffLoanId === loan.id}
+            canOpenPayoff={balance >= calcMinPayoffAmount(loan.remainingAmount)}
+            onOpenPayoff={() => onOpenPayoff(loan.id)}
+          />
+        ))}
+      </div>
     </section>
   )
 }

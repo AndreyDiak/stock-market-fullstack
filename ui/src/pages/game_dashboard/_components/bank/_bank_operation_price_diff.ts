@@ -68,7 +68,7 @@ export function resolveCatalogMarketPrice(itemRef: string) {
   return REAL_ESTATE_CATALOG.find((entry) => entry.id === itemRef)?.basePrice ?? 0
 }
 
-function resolvePriceDiffTone(
+export function resolvePriceDiffTone(
   type: PropertyOperationType,
   amount: number,
 ): PropertyOperationPriceDiffTone {
@@ -115,8 +115,6 @@ export function enrichPropertyOperationPriceDiff<T extends OperationWithPriceDif
     .sort((a, b) => a.turnStep - b.turnStep)
 
   return operations.map((operation) => {
-    if (operation.priceDiff) return operation
-
     if (operation.type === 'buy') {
       const marketPrice = resolveCatalogMarketPrice(operation.itemRef)
       return {
@@ -124,6 +122,8 @@ export function enrichPropertyOperationPriceDiff<T extends OperationWithPriceDif
         priceDiff: buildBuyMarketPriceDiff(operation.price, marketPrice),
       }
     }
+
+    if (operation.priceDiff) return operation
 
     const matchedBuy = [...buys]
       .filter(

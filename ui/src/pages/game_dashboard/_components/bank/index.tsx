@@ -1,4 +1,5 @@
 import { useMemo, useState, type ReactNode } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 
 import { MoneyValue } from '../../../../components/money/money_value'
 import { useGameStore } from '../../../../stores/game.store'
@@ -11,6 +12,10 @@ import { BankLoansSection } from './_bank_loans_section'
 import { BankPayoffModal } from './_bank_payoff_modal'
 import { BankPropertyTab } from './_bank_property_tab'
 import { BankTabs, type BankTabId } from './_bank_tabs'
+import {
+  sessionStaggerContainerVariants,
+  sessionStaggerItemVariants,
+} from '../../../../components/game_ui/session_animations'
 import './_bank.css'
 
 export interface ActiveLoan {
@@ -148,55 +153,94 @@ export function BankView({
 
   return (
     <div className="bank-page flex min-h-0 flex-1 flex-col overflow-hidden">
-      <header className="bank-page-header">
-        <div className="bank-page-header__divider" aria-hidden />
-        <div className="bank-page-header__content">
-          <h2 className="bank-page-header__title">Банк</h2>
-        </div>
-        <div className="bank-page-header__divider bank-page-header__divider--reverse" aria-hidden />
-      </header>
+      <motion.div
+        className="flex min-h-0 flex-1 flex-col gap-3"
+        variants={sessionStaggerContainerVariants}
+        initial="hidden"
+        animate="show"
+      >
+        <motion.div variants={sessionStaggerItemVariants}>
+          <header className="bank-page-header">
+            <div className="bank-page-header__divider" aria-hidden />
+            <div className="bank-page-header__content">
+              <h2 className="bank-page-header__title">Банк</h2>
+            </div>
+            <div className="bank-page-header__divider bank-page-header__divider--reverse" aria-hidden />
+          </header>
+        </motion.div>
 
-      <div className="bank-summary-grid">
-        <SummaryCard
-          label="Общий долг"
-          value={<MoneyValue amount={summary.totalDebt} size="md" color="red" className="inline-flex" />}
-        />
-        <SummaryCard
-          label="Платёж / ход"
-          value={<MoneyValue amount={summary.paymentPerTurn} size="md" color="white" className="inline-flex" />}
-        />
-        <SummaryCard
-          label="Процент кредита"
-          value={<span className="text-sky-300">{bankBaseRatePercent}%</span>}
-        />
-        <SummaryCard
-          label="Сделки с имуществом"
-          value={<span className="text-amber-300">{propertyDealGrade}</span>}
-        />
-      </div>
+        <motion.div variants={sessionStaggerItemVariants}>
+          <div className="bank-summary-grid">
+            <SummaryCard
+              label="Общий долг"
+              value={<MoneyValue amount={summary.totalDebt} size="md" color="red" className="inline-flex" />}
+            />
+            <SummaryCard
+              label="Платёж / ход"
+              value={<MoneyValue amount={summary.paymentPerTurn} size="md" color="white" className="inline-flex" />}
+            />
+            <SummaryCard
+              label="Процент кредита"
+              value={<span className="text-sky-300">{bankBaseRatePercent}%</span>}
+            />
+            <SummaryCard
+              label="Сделки с имуществом"
+              value={<span className="text-amber-300">{propertyDealGrade}</span>}
+            />
+          </div>
+        </motion.div>
 
-      <BankLoansSection
-        loans={loans}
-        balance={balance}
-        payingOffLoanId={payingOffLoanId}
-        onOpenPayoff={setPayoffLoanId}
-      />
+        {loans.length > 0 && (
+          <motion.div variants={sessionStaggerItemVariants}>
+            <BankLoansSection
+              loans={loans}
+              balance={balance}
+              payingOffLoanId={payingOffLoanId}
+              onOpenPayoff={setPayoffLoanId}
+            />
+          </motion.div>
+        )}
 
-      <BankTabs active={activeTab} onChange={setActiveTab} propertyLabel={propertyTabLabel} />
+        <motion.div variants={sessionStaggerItemVariants}>
+          <BankTabs active={activeTab} onChange={setActiveTab} propertyLabel={propertyTabLabel} />
+        </motion.div>
 
-      <div className="bank-tab-panel" role="tabpanel">
-        {activeTab === 'property' ? (
-          <BankPropertyTab
-            hasUnlockedPropertySlots={hasUnlockedPropertySlots}
-            propertySlots={propertySlots}
-            inventoryItems={inventoryItems}
-            paidProperties={paidProperties}
-            loans={loans}
-          />
-        ) : null}
+        <motion.div variants={sessionStaggerItemVariants}>
+          <div className="bank-tab-panel" role="tabpanel">
+            <AnimatePresence mode="wait">
+              {activeTab === 'property' ? (
+                <motion.div
+                  key="property"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ type: 'spring', stiffness: 320, damping: 26 }}
+                >
+                  <BankPropertyTab
+                    hasUnlockedPropertySlots={hasUnlockedPropertySlots}
+                    propertySlots={propertySlots}
+                    inventoryItems={inventoryItems}
+                    paidProperties={paidProperties}
+                    loans={loans}
+                  />
+                </motion.div>
+              ) : null}
 
-        {activeTab === 'history' ? <BankHistoryTab operations={operationHistory} /> : null}
-      </div>
+              {activeTab === 'history' ? (
+                <motion.div
+                  key="history"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ type: 'spring', stiffness: 320, damping: 26 }}
+                >
+                  <BankHistoryTab operations={operationHistory} />
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+      </motion.div>
 
       <BankPayoffModal
         open={payoffLoan != null}

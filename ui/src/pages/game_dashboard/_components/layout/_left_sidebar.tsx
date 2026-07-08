@@ -203,8 +203,10 @@ export function LeftSidebar() {
   const { activeTab, setActiveTab, openExitModal } = useDashboardUi()
   const news = useGameStore((state) => state.news)
   const turn = useGameStore((state) => state.turn)
+  const portfolio = useGameStore((state) => state.portfolio)
   const propertyOfferCount = useGameStore((state) => state.propertyOffers.length)
   const activeLoanCount = useGameStore((state) => state.bankLoans.length)
+  const stockCount = useMemo(() => portfolio.filter((r) => r.qty > 0).length, [portfolio])
 
   const showNewsInsiderAlert = useMemo(
     () => has_active_insider_alert(news, turn),
@@ -243,7 +245,7 @@ export function LeftSidebar() {
               active={activeTab === item.id}
               onSelect={go(item.id)}
               notify={item.id === 'news' && showNewsInsiderAlert && activeTab !== 'news'}
-              badgeCount={item.id === 'real-estate' ? propertyOfferCount : undefined}
+              badgeCount={item.id === 'exchange' ? stockCount : item.id === 'real-estate' ? propertyOfferCount : undefined}
             />
           ))}
         </div>

@@ -49,14 +49,14 @@ export function ExchangeTable() {
     useDashboardUi();
   const portfolio = useGameStore((state) => state.portfolio);
   const stockListings = useGameStore((state) => state.stockListings);
-  const ipos = useGameStore((state) => state.ipos);
+
   const availableCash = useGameStore((state) => state.balance);
   const turn = useGameStore((state) => state.turn);
   const stockBusy = useGameStore((state) => state.stockBusy);
   const characterStats = useGameStore((state) => state.characterStats);
   const buyStock = useGameStore((state) => state.buyStock);
   const sellStock = useGameStore((state) => state.sellStock);
-  const subscribeToIpo = useGameStore((state) => state.subscribeToIpo);
+
   const loadExchangeData = useGameStore((state) => state.loadExchangeData);
 
   const [chartListing, setChartListing] = useState<StockListing | null>(null);
@@ -170,13 +170,8 @@ export function ExchangeTable() {
         </div>
 
         <ExchangeMarketSpotlight
-          ipos={ipos}
           insiderListings={listingGroups.insider}
-          ipoTrackListings={listingGroups.ipoTrack}
-          currentTurn={turn}
-          stockBusy={stockBusy}
           highlightStockListingId={highlightStockListingId}
-          onSubscribe={subscribeToIpo}
           onOpenChart={(listing) => void openChart(listing)}
           onInsiderClick={handleInsiderClick}
         />

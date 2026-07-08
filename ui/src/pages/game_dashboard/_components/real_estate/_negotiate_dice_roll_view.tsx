@@ -3,7 +3,7 @@ import Dice3D from 'react-3d-dice';
 import { gameAudio } from '../../../../lib/audio/game_audio';
 
 const D20_COLOR = 0x334155;
-const DICE_HEIGHT_PX = 280;
+const DICE_HEIGHT_PX = 364;
 /** Минимальное время вращения d20 перед показом результата. */
 export const DICE_SPIN_MIN_MS = 2400;
 /** Длительность анимации остановки на грани (react-3d-dice settle ≈ 600ms). */

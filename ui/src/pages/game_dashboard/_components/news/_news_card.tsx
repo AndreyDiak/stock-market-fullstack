@@ -101,9 +101,8 @@ export function NewsCard({
         <div className="news-card__meta">
           <div className="news-card__meta-left">
             <NewsTypeChip item={item} />
-            {category === 'stock' && item.visibleSectors && item.visibleSectors.length > 0 ? (
-              <span className="news-card__sectors">
-                {item.visibleSectors.map((sector) => {
+            {category === 'stock' && item.visibleSectors && item.visibleSectors.length > 0
+              ? item.visibleSectors.map((sector) => {
                   const Icon = getSectorIcon(sector)
                   const color = SECTOR_COLORS[sector] ?? '#94a3b8'
                   return (
@@ -120,9 +119,8 @@ export function NewsCard({
                       {formatSectorLabel(sector)}
                     </span>
                   )
-                })}
-              </span>
-            ) : null}
+                })
+              : null}
             {insider ? <InsiderNewsBadge /> : null}
             {pinned ? (
               <span className="inline-flex items-center gap-1 rounded-md border border-amber-300/50 bg-amber-400/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-amber-100">

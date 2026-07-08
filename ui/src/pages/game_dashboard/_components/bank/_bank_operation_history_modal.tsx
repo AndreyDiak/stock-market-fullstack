@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { GameModal } from '../../../../components/game_ui/floating'
 import { GameButton } from '../../../../components/game_ui/game_button'
 import { MoneyValue } from '../../../../components/money/money_value'
@@ -8,6 +10,7 @@ import { PairList, PairListGroup, PairListRow } from './_bank_pair_list'
 import { buildPropertyFinanceSummary } from './_bank_property_finance_summary'
 import { BankPropertyFinanceSummaryBlock } from './_bank_property_finance_summary_block'
 import { BankPropertyModalHeader } from './_bank_property_modal_header'
+import { InstallmentPaymentHistoryModal } from './_bank_installment_payment_history_modal'
 import './_bank_operation_history_modal.css'
 
 function SellFinanceSummary({ operation }: { operation: PropertyOperation }) {
@@ -66,6 +69,8 @@ export function BankOperationHistoryModal({
   operation: PropertyOperation | null
   onClose: () => void
 }) {
+  const [showPaymentHistory, setShowPaymentHistory] = useState(false)
+
   if (!operation) return null
 
   const isBuy = operation.type === 'buy'
@@ -115,10 +120,24 @@ export function BankOperationHistoryModal({
         )}
 
         <footer className="bank-operation-modal__footer">
-          <GameButton variant="muted" size="sm" onClick={onClose}>
-            Закрыть
-          </GameButton>
+          <div className="flex w-full items-center justify-between gap-2">
+            {wasInstallment ? (
+              <GameButton variant="teal" size="sm" onClick={() => setShowPaymentHistory(true)}>
+                История платежей
+              </GameButton>
+            ) : <span />}
+            <GameButton variant="muted" size="sm" onClick={onClose}>
+              Закрыть
+            </GameButton>
+          </div>
         </footer>
+
+        {showPaymentHistory ? (
+          <InstallmentPaymentHistoryModal
+            operation={operation}
+            onClose={() => setShowPaymentHistory(false)}
+          />
+        ) : null}
       </div>
     </GameModal>
   )

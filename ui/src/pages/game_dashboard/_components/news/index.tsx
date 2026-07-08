@@ -6,6 +6,8 @@ import { useDashboardUi } from '../../_model/dashboard_ui_context'
 
 import { useDashboardTheme } from '../../_model/use_dashboard_theme'
 
+import { gameAudio } from '../../../../lib/audio/game_audio'
+
 import { PanelSectionHeading } from '../shared'
 
 import {
@@ -107,7 +109,7 @@ export function NewsPanel() {
               ]
                 .filter(Boolean)
                 .join(' ')}
-              onClick={() => setActiveFilter(opt.value)}
+              onClick={() => { gameAudio.playSfx('buttonClick'); setActiveFilter(opt.value) }}
             >
               {opt.label}
               <span className="news-filter-count">{count}</span>
