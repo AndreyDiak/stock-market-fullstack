@@ -20,6 +20,7 @@ export interface StockListing {
   archetypeLabel: string | null;
   paysDividends: boolean;
   turnsUntilDividend: number | null;
+  dividendPerShare: number | null;
   history?: PriceHistoryPoint[];
 }
 

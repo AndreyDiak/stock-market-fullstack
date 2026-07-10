@@ -1663,6 +1663,92 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/saves/{id}/deals/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AcceptDealBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AcceptDealResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/saves/{id}/news": {
         parameters: {
             query?: never;
@@ -1821,6 +1907,262 @@ export interface paths {
         };
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/dream": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Dream"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/dream/complete-stage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["CompleteStageBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Dream"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/dream/fulfill": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["FulfillDreamBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            success: boolean;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;
@@ -2338,6 +2680,88 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/saves/{id}/stocks/trades": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["StockTradeListResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/saves/{id}/portfolio": {
         parameters: {
             query?: never;
@@ -2837,6 +3261,90 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["CreateFeedbackBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CreateFeedbackResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -3152,6 +3660,41 @@ export interface components {
                 description: string;
                 basePrice: number;
             }[];
+            dreamStages: {
+                dreamType: string;
+                title: string;
+                description: string;
+                stages: {
+                    description: string;
+                    minBalance?: number;
+                    minPortfolioValue?: number;
+                    minPassiveIncome?: number;
+                    minReputation?: number;
+                    minProfessionLevel?: number;
+                    minTradingLevel?: number;
+                    minBankingLevel?: number;
+                    requiredItems?: string[];
+                    requireItemFullyOwned?: string[];
+                    noActiveInstallments?: boolean;
+                }[];
+            };
+            dreamPreview: {
+                title: string;
+                description: string;
+                stageCount: number;
+                pathHint: string;
+                stages: {
+                    order: number;
+                    title: string;
+                    description: string;
+                    requirementsPreview: {
+                        /** @enum {string} */
+                        kind: "balance" | "profession" | "portfolio" | "banking" | "trading" | "passive" | "reputation" | "property" | "no_installments";
+                        label: string;
+                    }[];
+                    isFinal?: boolean;
+                }[];
+            };
         }[];
         Game: {
             /** Format: uuid */
@@ -3365,7 +3908,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "DEAL_OFFER" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -3392,6 +3935,60 @@ export interface components {
                 turnsLeft: number;
                 flavorText: string;
             };
+            dealOffers: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                botCharacterId: string;
+                botName: string;
+                botProfession: string;
+                botAvatarSrc?: string;
+                /**
+                 * @default VALUE_EXCHANGE
+                 * @enum {string}
+                 */
+                purpose: "VALUE_EXCHANGE" | "LIQUIDITY" | "DREAM_HELPER" | "STOCK_PACKAGE";
+                botGives: {
+                    assets: {
+                        /** @enum {string} */
+                        type: "CASH" | "STOCK" | "PROPERTY";
+                        cashAmount?: number;
+                        stockListingId?: string;
+                        ticker?: string;
+                        companyName?: string;
+                        shares?: number;
+                        propertyId?: string;
+                        propertyName?: string;
+                        estimatedValue: number;
+                    }[];
+                    totalEstimatedValue: number;
+                };
+                playerGives: {
+                    assets: {
+                        /** @enum {string} */
+                        type: "CASH" | "STOCK" | "PROPERTY";
+                        cashAmount?: number;
+                        stockListingId?: string;
+                        ticker?: string;
+                        companyName?: string;
+                        shares?: number;
+                        propertyId?: string;
+                        propertyName?: string;
+                        estimatedValue: number;
+                    }[];
+                    totalEstimatedValue: number;
+                };
+                requiredReputation: number;
+                requiredTradingLevel: number;
+                reputationPenalty: number;
+                playerBenefitValue: number;
+                playerBenefitPercent: number;
+                /** @enum {string} */
+                status: "ACTIVE" | "ACCEPTED" | "REJECTED" | "EXPIRED" | "NEGOTIATED";
+                turnCreated: number;
+                expiresTurn: number;
+                expiresInTurns: number;
+            }[];
             propertyOffers: {
                 /** Format: uuid */
                 id: string;
@@ -3494,6 +4091,7 @@ export interface components {
                     qualificationBonusPercent: number;
                 };
             };
+            gameOver: boolean;
         };
         EndTurnBody: {
             expectedStep: number;
@@ -3503,7 +4101,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "DEAL_OFFER" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -3598,7 +4196,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "DEAL_OFFER" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -3708,6 +4306,60 @@ export interface components {
                 pendingNegotiatedPrice: number | null;
                 pendingNegotiatedPercent: number | null;
             }[];
+            dealOffers: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                botCharacterId: string;
+                botName: string;
+                botProfession: string;
+                botAvatarSrc?: string;
+                /**
+                 * @default VALUE_EXCHANGE
+                 * @enum {string}
+                 */
+                purpose: "VALUE_EXCHANGE" | "LIQUIDITY" | "DREAM_HELPER" | "STOCK_PACKAGE";
+                botGives: {
+                    assets: {
+                        /** @enum {string} */
+                        type: "CASH" | "STOCK" | "PROPERTY";
+                        cashAmount?: number;
+                        stockListingId?: string;
+                        ticker?: string;
+                        companyName?: string;
+                        shares?: number;
+                        propertyId?: string;
+                        propertyName?: string;
+                        estimatedValue: number;
+                    }[];
+                    totalEstimatedValue: number;
+                };
+                playerGives: {
+                    assets: {
+                        /** @enum {string} */
+                        type: "CASH" | "STOCK" | "PROPERTY";
+                        cashAmount?: number;
+                        stockListingId?: string;
+                        ticker?: string;
+                        companyName?: string;
+                        shares?: number;
+                        propertyId?: string;
+                        propertyName?: string;
+                        estimatedValue: number;
+                    }[];
+                    totalEstimatedValue: number;
+                };
+                requiredReputation: number;
+                requiredTradingLevel: number;
+                reputationPenalty: number;
+                playerBenefitValue: number;
+                playerBenefitPercent: number;
+                /** @enum {string} */
+                status: "ACTIVE" | "ACCEPTED" | "REJECTED" | "EXPIRED" | "NEGOTIATED";
+                turnCreated: number;
+                expiresTurn: number;
+                expiresInTurns: number;
+            }[];
             stocks?: {
                 /** Format: uuid */
                 id: string;
@@ -3729,6 +4381,7 @@ export interface components {
                 archetypeLabel: string | null;
                 paysDividends: boolean;
                 turnsUntilDividend: number | null;
+                dividendPerShare: number | null;
                 history: {
                     turn: number;
                     price: number;
@@ -3871,7 +4524,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "DEAL_OFFER" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -3990,7 +4643,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "DEAL_OFFER" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -4101,7 +4754,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "DEAL_OFFER" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -4170,7 +4823,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "DEAL_OFFER" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -4200,6 +4853,132 @@ export interface components {
         PayOffInstallmentBody: {
             payPercent: number;
         };
+        DealOffer: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            botCharacterId: string;
+            botName: string;
+            botProfession: string;
+            botAvatarSrc?: string;
+            /**
+             * @default VALUE_EXCHANGE
+             * @enum {string}
+             */
+            purpose: "VALUE_EXCHANGE" | "LIQUIDITY" | "DREAM_HELPER" | "STOCK_PACKAGE";
+            botGives: {
+                assets: {
+                    /** @enum {string} */
+                    type: "CASH" | "STOCK" | "PROPERTY";
+                    cashAmount?: number;
+                    stockListingId?: string;
+                    ticker?: string;
+                    companyName?: string;
+                    shares?: number;
+                    propertyId?: string;
+                    propertyName?: string;
+                    estimatedValue: number;
+                }[];
+                totalEstimatedValue: number;
+            };
+            playerGives: {
+                assets: {
+                    /** @enum {string} */
+                    type: "CASH" | "STOCK" | "PROPERTY";
+                    cashAmount?: number;
+                    stockListingId?: string;
+                    ticker?: string;
+                    companyName?: string;
+                    shares?: number;
+                    propertyId?: string;
+                    propertyName?: string;
+                    estimatedValue: number;
+                }[];
+                totalEstimatedValue: number;
+            };
+            requiredReputation: number;
+            requiredTradingLevel: number;
+            reputationPenalty: number;
+            playerBenefitValue: number;
+            playerBenefitPercent: number;
+            /** @enum {string} */
+            status: "ACTIVE" | "ACCEPTED" | "REJECTED" | "EXPIRED" | "NEGOTIATED";
+            turnCreated: number;
+            expiresTurn: number;
+            expiresInTurns: number;
+        };
+        AcceptDealBody: {
+            /** Format: uuid */
+            dealId: string;
+        };
+        AcceptDealResponse: {
+            balance: number;
+            character: {
+                /** Format: uuid */
+                id: string;
+                gameId: string | null;
+                name: string;
+                balance: number;
+                /** @enum {string} */
+                profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
+                professionLevel: number;
+                salary: number;
+                reputation: number;
+                tradingLevel: number;
+                bankingLevel: number;
+                propertySlotLevel: number;
+                isNpc: boolean;
+                dreamItemRefs: string[];
+                totalEarned: number;
+                totalSpent: number;
+                totalTrades: number;
+                successfulTrades: number;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date-time */
+                updatedAt: string;
+                inventoryItems?: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    characterId: string;
+                    itemRef: string;
+                    name: string;
+                    purchasePrice: number;
+                    downPaymentAmount: number | null;
+                    isInstallment: boolean;
+                    monthlyPayment: number | null;
+                    installmentsTotal: number | null;
+                    installmentsPaid: number;
+                    /** @default 0 */
+                    installmentPrepay: number;
+                    special: string | null;
+                    isPaidOff: boolean;
+                    /** Format: date-time */
+                    purchasedAt: string;
+                }[];
+            };
+            news: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "DEAL_OFFER" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND";
+                title: string;
+                body: string;
+                excerpt: string;
+                /** @enum {string} */
+                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+                impact: number;
+                sector?: string | null;
+                companyId?: string | null;
+                ticker?: string;
+                hot?: boolean;
+                /** Format: date-time */
+                publishedAt: string;
+                publishedStep?: number;
+                payload?: unknown;
+            };
+        };
         StockListing: {
             /** Format: uuid */
             id: string;
@@ -4221,6 +5000,7 @@ export interface components {
             archetypeLabel: string | null;
             paysDividends: boolean;
             turnsUntilDividend: number | null;
+            dividendPerShare: number | null;
             history: {
                 turn: number;
                 price: number;
@@ -4248,6 +5028,7 @@ export interface components {
                 archetypeLabel: string | null;
                 paysDividends: boolean;
                 turnsUntilDividend: number | null;
+                dividendPerShare: number | null;
                 history: {
                     turn: number;
                     price: number;
@@ -4276,6 +5057,7 @@ export interface components {
                 archetypeLabel: string | null;
                 paysDividends: boolean;
                 turnsUntilDividend: number | null;
+                dividendPerShare: number | null;
                 history: {
                     turn: number;
                     price: number;
@@ -4314,7 +5096,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "DEAL_OFFER" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND";
                 title: string;
                 body: string;
                 excerpt: string;
@@ -4349,30 +5131,27 @@ export interface components {
                 turnsUntilDividend: number | null;
                 turnsHeldInCycle: number;
             }[];
-            news: {
-                /** Format: uuid */
-                id: string;
-                /** @enum {string} */
-                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND" | "IPO_ANNOUNCE" | "IPO_COMPLETE";
-                title: string;
-                body: string;
-                excerpt: string;
-                /** @enum {string} */
-                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
-                impact: number;
-                sector?: string | null;
-                companyId?: string | null;
-                ticker?: string;
-                hot?: boolean;
-                /** Format: date-time */
-                publishedAt: string;
-                publishedStep?: number;
-                payload?: unknown;
-            };
             gross: number;
             commissionPercent: number;
             commissionAmount: number;
             net: number;
+        };
+        StockTradeListResponse: {
+            trades: {
+                /** Format: uuid */
+                id: string;
+                ticker: string;
+                companyName: string;
+                sector: string;
+                operationType: string;
+                quantity: number;
+                price: number;
+                total: number;
+                netTotal: number | null;
+                commission: number | null;
+                turn: number;
+                createdAt: string;
+            }[];
         };
         PortfolioResponse: {
             portfolio: {
@@ -4480,6 +5259,54 @@ export interface components {
         LoginBody: {
             login: string;
             password: string;
+        };
+        CreateFeedbackBody: {
+            saveId: string;
+            /** @enum {string} */
+            messageType: "error" | "suggestion" | "feedback" | "other";
+            comment: string;
+        };
+        CreateFeedbackResponse: {
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        Dream: {
+            /** Format: uuid */
+            id: string;
+            dreamType: string;
+            title: string;
+            description: string;
+            currentStage: number;
+            stages: {
+                stageIndex: number;
+                /** @enum {string} */
+                status: "LOCKED" | "ACTIVE" | "READY_TO_COMPLETE" | "COMPLETED";
+                requirement: {
+                    description: string;
+                    minBalance?: number;
+                    minPortfolioValue?: number;
+                    minPassiveIncome?: number;
+                    minReputation?: number;
+                    minProfessionLevel?: number;
+                    minTradingLevel?: number;
+                    minBankingLevel?: number;
+                    requiredItems?: string[];
+                    requireItemFullyOwned?: string[];
+                    noActiveInstallments?: boolean;
+                };
+                completedAt: string | null;
+                completedTurn: number | null;
+            }[];
+        };
+        CompleteStageBody: {
+            /** Format: uuid */
+            dreamId: string;
+        };
+        FulfillDreamBody: {
+            /** Format: uuid */
+            dreamId: string;
         };
     };
     responses: never;

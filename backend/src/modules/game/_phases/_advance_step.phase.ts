@@ -25,6 +25,15 @@ export class AdvanceStepPhase implements TurnPhase {
       throw new Error('Character missing after step advance');
     }
 
+    await this.#prisma.dealOffer.updateMany({
+      where: {
+        gameId: context.gameId,
+        status: 'ACTIVE',
+        expiresTurn: { lt: updated.step },
+      },
+      data: { status: 'EXPIRED' },
+    });
+
     context.game = updated as TurnContext['game'];
   }
 }

@@ -474,6 +474,7 @@ export class NewsGenerationService {
       payload: {
         dealId: deal.id,
         botName: deal.botName,
+        purpose: deal.purpose,
         botGives: deal.botGives,
         playerGives: deal.playerGives,
         playerBenefitPercent: deal.playerBenefitPercent,

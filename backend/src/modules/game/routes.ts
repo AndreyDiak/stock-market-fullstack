@@ -278,36 +278,6 @@ export async function gameRoutes(fastify: FastifyInstance) {
     },
   );
 
-  fastify.post(
-    '/saves/:id/deals/reject',
-    {
-      preHandler: authenticate,
-      schema: {
-        tags: ['game'],
-        security: [{ bearerAuth: [] }],
-        params: {
-          type: 'object',
-          required: ['id'],
-          properties: { id: { type: 'string', format: 'uuid' } },
-        },
-        body: { $ref: 'AcceptDealBody#' },
-        response: {
-          200: {
-            type: 'object',
-            required: ['success'],
-            properties: { success: { type: 'boolean' } },
-          },
-          ...errorResponses,
-        },
-      },
-    },
-    async (request) => {
-      const { id } = saveIdParamSchema.parse(request.params);
-      const { dealId } = acceptDealBodySchema.parse(request.body);
-      return gameService.rejectDeal(request.user.sub, id, dealId);
-    },
-  );
-
   fastify.get(
     '/saves/:id/news',
     {

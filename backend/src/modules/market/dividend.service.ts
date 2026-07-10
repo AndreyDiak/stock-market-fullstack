@@ -42,6 +42,14 @@ export function rollDividendProfile(
   };
 }
 
+export function calcDividendPerShare(
+  currentPrice: number,
+  dividendYieldPct: number | null | undefined,
+): number | null {
+  if (dividendYieldPct == null || dividendYieldPct <= 0) return null;
+  return Number((currentPrice * (dividendYieldPct / 100)).toFixed(2));
+}
+
 export function calcProportionalDividend(
   fullPayout: number,
   turnsHeldInCycle: number,

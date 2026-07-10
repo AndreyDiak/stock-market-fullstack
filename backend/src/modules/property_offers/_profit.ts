@@ -6,7 +6,7 @@ const GRADE_RANGES: { grade: ProfitGrade; min: number; max: number; banking: num
   { grade: 'D', min: 20, max: 30, banking: 3 },
   { grade: 'C', min: 30, max: 40, banking: 4 },
   { grade: 'B', min: 40, max: 50, banking: 5 },
-  { grade: 'A', min: 50, max: 100, banking: 6 },
+  { grade: 'A', min: 50, max: 60, banking: 6 },
 ];
 
 export function gradeFromPercent(percent: number, profitable: boolean): ProfitGrade {

@@ -28,6 +28,7 @@ export const stockListingSchema = z.object({
   archetypeLabel: z.string().nullable(),
   paysDividends: z.boolean(),
   turnsUntilDividend: z.number().int().nullable(),
+  dividendPerShare: z.number().nullable(),
   history: z.array(priceHistoryPointSchema),
 });
 

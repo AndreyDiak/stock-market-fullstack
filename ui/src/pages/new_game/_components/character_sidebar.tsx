@@ -1,20 +1,20 @@
-import { AnimatePresence, motion } from 'framer-motion'
-import { GameButton } from '../../../components/game_ui/game_button'
-import { AssetCard } from '../../../components/card/asset_card'
-import { InstallmentBar } from './installment_bar'
-import { StatRow } from './stat_row'
-import { DreamPathPreview } from './dream_path_preview'
-import { getProfessionAvatar } from '../../../constants/professionImages'
-import type { CharacterRosterItem } from '../../../stores/characters.store'
+import { AnimatePresence, motion } from "framer-motion";
+import { AssetCard } from "../../../components/card/asset_card";
+import { GameButton } from "../../../components/game_ui/game_button";
+import { getProfessionAvatar } from "../../../constants/professionImages";
+import type { CharacterRosterItem } from "../../../stores/characters.store";
+import { DreamPathPreview } from "./dream_path_preview";
+import { InstallmentBar } from "./installment_bar";
+import { StatRow } from "./stat_row";
 
 interface CharacterSidebarProps {
-  character: CharacterRosterItem
-  professionLabel: string
-  netMonthlyIncome: number
-  getItemImage: (itemRef: string) => string | undefined
-  creating: boolean
-  onBack: () => void
-  onStart: () => void
+  character: CharacterRosterItem;
+  professionLabel: string;
+  netMonthlyIncome: number;
+  getItemImage: (itemRef: string) => string | undefined;
+  creating: boolean;
+  onBack: () => void;
+  onStart: () => void;
 }
 
 const sidebarVariants = {
@@ -32,38 +32,58 @@ const sidebarVariants = {
   exit: {
     opacity: 0,
     x: -14,
-    transition: { duration: 0.18, ease: 'easeIn' },
+    transition: { duration: 0.18, ease: "easeIn" },
   },
-}
+};
 
 const blockVariants = {
   hidden: { opacity: 0, y: 14 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { type: 'spring', stiffness: 340, damping: 28 },
+    transition: { type: "spring", stiffness: 340, damping: 28 },
   },
-}
+};
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.92 },
   show: {
     opacity: 1,
     scale: 1,
-    transition: { type: 'spring', stiffness: 380, damping: 26 },
+    transition: { type: "spring", stiffness: 380, damping: 26 },
   },
-}
+};
 
 function SectionTitle({ children }: { children: string }) {
   return (
     <h3 className="min-h-5 text-xs font-bold uppercase tracking-[0.22em] text-emerald-400/80">
       {children}
     </h3>
-  )
+  );
+}
+
+function SectionHint({ tooltip }: { tooltip: string }) {
+  return (
+    <span
+      tabIndex={0}
+      className="group/hint relative -mt-px inline-flex cursor-help items-center justify-center outline-none"
+      aria-label={tooltip}
+    >
+      <span className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-slate-600/55 bg-slate-900/70 text-[10px] font-bold leading-none text-slate-500 transition-colors group-hover/hint:border-slate-500/70 group-hover/hint:text-slate-300 group-focus-visible/hint:border-slate-500/70 group-focus-visible/hint:text-slate-300">
+        ?
+      </span>
+      <span
+        role="tooltip"
+        className="pointer-events-none absolute bottom-[calc(100%+6px)] left-1/2 z-30 w-[min(14rem,calc(100vw-2rem))] -translate-x-1/2 rounded-lg border border-slate-600/55 bg-slate-950/95 px-2.5 py-2 text-left text-[11px] font-normal normal-case leading-snug tracking-normal text-slate-300 opacity-0 shadow-lg transition-opacity group-hover/hint:opacity-100 group-focus-visible/hint:opacity-100"
+      >
+        {tooltip}
+      </span>
+    </span>
+  );
 }
 
 const compactPanelClass =
-  'rounded-2xl border border-emerald-400/10 bg-slate-800/80 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]'
+  "rounded-2xl border border-emerald-400/10 bg-slate-800/80 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]";
 
 export function CharacterSidebar({
   character,
@@ -74,7 +94,7 @@ export function CharacterSidebar({
   onBack,
   onStart,
 }: CharacterSidebarProps) {
-  const starterProperty = character.items[0]
+  const starterProperty = character.items[0];
 
   return (
     <aside className="flex min-h-0 flex-col overflow-hidden">
@@ -102,12 +122,24 @@ export function CharacterSidebar({
                   className="relative h-14 w-14 shrink-0"
                   initial={{ scale: 0.75, rotate: -8 }}
                   animate={{ scale: 1, rotate: 0 }}
-                  transition={{ type: 'spring', stiffness: 420, damping: 22, delay: 0.05 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 420,
+                    damping: 22,
+                    delay: 0.05,
+                  }}
                 >
                   <motion.div
                     className="absolute inset-0 rounded-full bg-emerald-400/20 blur-md"
-                    animate={{ opacity: [0.35, 0.65, 0.35], scale: [0.9, 1.08, 0.9] }}
-                    transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
+                    animate={{
+                      opacity: [0.35, 0.65, 0.35],
+                      scale: [0.9, 1.08, 0.9],
+                    }}
+                    transition={{
+                      duration: 2.8,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
                   />
                   <div className="relative h-full w-full overflow-hidden rounded-full bg-gradient-to-b from-[#0c1824] to-[#0a2a1f] ring-2 ring-emerald-400/30 ring-offset-1 ring-offset-slate-900/80">
                     <img
@@ -118,7 +150,10 @@ export function CharacterSidebar({
                   </div>
                 </motion.div>
                 <div className="min-w-0 flex-1">
-                  <motion.h2 className="truncate text-2xl font-bold text-white" layout>
+                  <motion.h2
+                    className="truncate text-2xl font-bold text-white"
+                    layout
+                  >
                     {character.name}
                   </motion.h2>
                   <p className="mt-0.5 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
@@ -127,12 +162,14 @@ export function CharacterSidebar({
                 </div>
               </motion.header>
 
-              <motion.section variants={blockVariants} className={`space-y-2 ${compactPanelClass}`}>
-                <StatRow label="Зарплата" amount={character.salary} suffix="/мес" />
+              <motion.section
+                variants={blockVariants}
+                className={`space-y-2 ${compactPanelClass}`}
+              >
+                <StatRow label="Зарплата" amount={character.salary} />
                 <StatRow
                   label="После выплат"
                   amount={netMonthlyIncome}
-                  suffix="/мес"
                   negative={netMonthlyIncome < 0}
                   bordered
                 />
@@ -141,12 +178,14 @@ export function CharacterSidebar({
             </div>
 
             <motion.section variants={blockVariants} className="shrink-0">
-              <SectionTitle>Стартовое имущество</SectionTitle>
+              <div className="flex items-center gap-1.5">
+                <SectionTitle>Стартовое имущество</SectionTitle>
+                {starterProperty ? (
+                  <SectionHint tooltip="Куплено в кредит — платёж списывается каждый ход из зарплаты" />
+                ) : null}
+              </div>
               {starterProperty ? (
                 <>
-                  <p className="mt-1 text-[10px] leading-snug text-slate-500">
-                    Куплено в кредит — платёж списывается каждый ход из зарплаты
-                  </p>
                   <motion.div
                     variants={cardVariants}
                     className="mt-2 flex items-center gap-2.5 rounded-xl border border-amber-500/15 bg-slate-800/55 px-2.5 py-2"
@@ -160,22 +199,24 @@ export function CharacterSidebar({
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex min-w-0 items-center gap-1.5">
-                        <p className="truncate text-xs font-bold text-white">{starterProperty.name}</p>
+                        <p className="truncate text-xs font-bold text-white">
+                          {starterProperty.name}
+                        </p>
                         <span className="shrink-0 rounded bg-amber-500/12 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-amber-300/90">
                           В кредите
                         </span>
                       </div>
                       <InstallmentBar
-                      name={starterProperty.name}
-                      basePrice={starterProperty.basePrice}
-                      monthlyPayment={starterProperty.monthlyPayment}
-                      installmentsPaid={starterProperty.installmentsPaid}
-                      installmentsTotal={starterProperty.installmentsTotal}
-                      animateProgress
-                      compact
-                    />
-                  </div>
-                </motion.div>
+                        name={starterProperty.name}
+                        basePrice={starterProperty.basePrice}
+                        monthlyPayment={starterProperty.monthlyPayment}
+                        installmentsPaid={starterProperty.installmentsPaid}
+                        installmentsTotal={starterProperty.installmentsTotal}
+                        animateProgress
+                        compact
+                      />
+                    </div>
+                  </motion.div>
                 </>
               ) : (
                 <motion.div className="mt-2 h-11" variants={cardVariants}>
@@ -184,8 +225,14 @@ export function CharacterSidebar({
               )}
             </motion.section>
 
-            <motion.div variants={blockVariants} className="flex min-h-0 flex-1 flex-col">
-              <DreamPathPreview preview={character.dreamPreview} dreamStages={character.dreamStages} />
+            <motion.div
+              variants={blockVariants}
+              className="flex min-h-0 flex-1 flex-col"
+            >
+              <DreamPathPreview
+                preview={character.dreamPreview}
+                dreamStages={character.dreamStages}
+              />
             </motion.div>
 
             <motion.footer
@@ -201,12 +248,12 @@ export function CharacterSidebar({
                 disabled={creating}
                 onClick={onStart}
               >
-                {creating ? 'Создание...' : 'Начать игру'}
+                {creating ? "Создание..." : "Начать игру"}
               </GameButton>
             </motion.footer>
           </motion.div>
         </AnimatePresence>
       </motion.div>
     </aside>
-  )
+  );
 }

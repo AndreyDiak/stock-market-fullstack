@@ -345,13 +345,14 @@ export function AnalyticsTab({ stockListings, portfolio, news, turn, openNewsTab
         show: { transition: { staggerChildren: 0.1 } },
       }}
     >
-      <motion.div
-        className="analytics-tab__top"
-        variants={{
-          hidden: { opacity: 0, y: 16 },
-          show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 320, damping: 28 } },
-        }}
-      >
+      {total > 0 ? (
+        <motion.div
+          className="analytics-tab__top"
+          variants={{
+            hidden: { opacity: 0, y: 16 },
+            show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 320, damping: 28 } },
+          }}
+        >
         <motion.div
           className="analytics-tab__mapping"
           variants={{
@@ -397,11 +398,7 @@ export function AnalyticsTab({ stockListings, portfolio, news, turn, openNewsTab
             show: { opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 260, damping: 24 } },
           }}
         >
-          {total > 0 ? (
-            <PieChart sectorData={sectorData} total={total} />
-          ) : (
-            <div className="analytics-tab__chart-empty">Нет данных</div>
-          )}
+          <PieChart sectorData={sectorData} total={total} />
           <div className="analytics-tab__chart-legend">
             {sectorData.map(({ sector, count }) => {
               const color = SECTOR_COLORS[sector] ?? '#94a3b8'
@@ -423,6 +420,7 @@ export function AnalyticsTab({ stockListings, portfolio, news, turn, openNewsTab
           </p>
         </motion.div>
       </motion.div>
+      ) : null}
 
       {displayNews ? (
         <motion.div

@@ -8,6 +8,7 @@ export const newsKindSchema = z.enum([
   'INSIDER',
   'RUMOR',
   'OTC_DEAL',
+  'DEAL_OFFER',
   'PROPERTY_OFFER',
   'PROPERTY_DEAL',
   'PROPERTY_INSTALLMENT',

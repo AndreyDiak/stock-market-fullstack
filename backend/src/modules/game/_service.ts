@@ -241,6 +241,7 @@ export class GameService {
 
     const deal = {
       id: dealRow.id,
+      purpose: dealRow.purpose ?? 'VALUE_EXCHANGE',
       botCharacterId: dealRow.botCharacterId,
       botName: '',
       botProfession: '',
@@ -279,44 +280,6 @@ export class GameService {
       character: serializeCharacter(result.character),
       news: result.news,
     };
-  }
-
-  async rejectDeal(
-    userId: string,
-    saveId: string,
-    dealId: string,
-  ) {
-    const game = await this.#loadGame(userId, saveId);
-
-    const dealRow = await this.#prisma.dealOffer.findFirst({
-      where: { id: dealId, gameId: saveId, status: 'ACTIVE' },
-    });
-
-    if (!dealRow) {
-      throw new AppError(404, 'DEAL_NOT_FOUND', 'Deal offer not found or not active');
-    }
-
-    const deal = {
-      id: dealRow.id,
-      botCharacterId: dealRow.botCharacterId,
-      botName: '',
-      botProfession: '',
-      botGives: dealRow.botGives as unknown as import('../deals/deal.types.js').DealBundle,
-      playerGives: dealRow.playerGives as unknown as import('../deals/deal.types.js').DealBundle,
-      requiredReputation: dealRow.requiredReputation,
-      requiredTradingLevel: dealRow.requiredTradingLevel,
-      reputationPenalty: dealRow.reputationPenalty,
-      playerBenefitValue: dealRow.playerBenefitValue,
-      playerBenefitPercent: dealRow.playerBenefitPercent,
-      status: dealRow.status as import('../deals/deal.types.js').DealOfferStatus,
-      turnCreated: dealRow.turnCreated,
-      expiresTurn: dealRow.expiresTurn,
-      expiresInTurns: Math.max(0, dealRow.expiresTurn - game.step),
-    };
-
-    await this.#dealService.reject(saveId, deal);
-
-    return { success: true };
   }
 
   async negotiatePropertyOffer(
@@ -622,6 +585,7 @@ export class GameService {
       const bot = botMap.get(row.botCharacterId);
       return {
         id: row.id,
+        purpose: row.purpose ?? 'VALUE_EXCHANGE',
         botCharacterId: row.botCharacterId,
         botName: bot?.name ?? '',
         botProfession: bot?.profession ?? '',

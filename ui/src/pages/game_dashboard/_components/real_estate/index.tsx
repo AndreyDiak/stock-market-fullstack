@@ -11,6 +11,7 @@ import {
 import { useGameStore } from '../../../../stores/game.store'
 import { PanelSectionHeading } from '../shared'
 import { applyBankingLevelToPropertyOffers, getPlayerBankingLevel } from './_property_offer_access'
+import { isMarketOfferAsset, REAL_ESTATE_CATALOG } from '../../../../constants/realEstate'
 import { PropertyOfferCard } from './_property_offer_card'
 import { sortPropertyOffersByTtl } from './_property_offers_sort'
 
@@ -25,8 +26,12 @@ function PropertyOffersSection({
   const characterSkills = useGameStore((state) => state.characterSkills)
   const sortedOffers = useMemo(() => {
     const bankingLevel = getPlayerBankingLevel(characterSkills)
+    const marketOffers = propertyOffers.filter((offer) => {
+      const asset = REAL_ESTATE_CATALOG.find((entry) => entry.id === offer.assetId)
+      return isMarketOfferAsset(asset)
+    })
     return sortPropertyOffersByTtl(
-      applyBankingLevelToPropertyOffers(propertyOffers, bankingLevel),
+      applyBankingLevelToPropertyOffers(marketOffers, bankingLevel),
     )
   }, [propertyOffers, characterSkills])
   const propertyOfferBusy = useGameStore((state) => state.propertyOfferBusy)

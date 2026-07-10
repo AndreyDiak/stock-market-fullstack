@@ -1,7 +1,8 @@
-import { useMemo } from 'react'
+import { useMemo, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { GameModal } from '../../../../components/game_ui/floating'
 import { GameButton } from '../../../../components/game_ui/game_button'
+import { gameAudio } from '../../../../lib/audio/game_audio'
 import { AssetImageFrame } from '../../../../shared/components'
 import { useGameStore } from '../../../../stores/game.store'
 import { useDashboardUi } from '../../_model/dashboard_ui_context'
@@ -96,6 +97,10 @@ function PropertyOfferNewsExtras({
 export function NewsNewspaperModal({ item, onClose }: NewsNewspaperModalProps) {
   const { openRealEstateTab, openExchangeTab } = useDashboardUi()
   const stockListings = useGameStore((state) => state.stockListings)
+  const handleClose = useCallback(() => {
+    gameAudio.playSfx('buttonClick')
+    onClose()
+  }, [onClose])
   const layout = useMemo(() => {
     if (!item) return null
 
@@ -114,7 +119,7 @@ export function NewsNewspaperModal({ item, onClose }: NewsNewspaperModalProps) {
   return (
     <GameModal
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       labelledBy="news-newspaper-title"
       zIndex={60}
       overlayClassName="bg-[#0d2818]/72 backdrop-blur-md"
@@ -148,7 +153,7 @@ export function NewsNewspaperModal({ item, onClose }: NewsNewspaperModalProps) {
 
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-[#3d4a30]/20 bg-[#f5f0e0]/80 font-serif text-lg leading-none text-[#3d3a32] transition hover:border-[#3d4a30]/40 hover:bg-[#ebe4d0]"
             aria-label="Закрыть выпуск"
           >

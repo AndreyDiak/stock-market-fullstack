@@ -6,7 +6,25 @@ export interface RealEstateData {
   monthlyPayment: number;
   installmentMonths: number;
   isTradable: boolean;
+  /** Только через сделки (DREAM_HELPER), не на рынке недвижимости. */
+  dealOnly?: boolean;
   special?: string;
+}
+
+export function isMarketOfferAsset(asset: RealEstateData | undefined): boolean {
+  return !!asset?.isTradable && !asset.dealOnly;
+}
+
+export function isLuxuryAsset(asset: RealEstateData | undefined): boolean {
+  return !!asset?.dealOnly;
+}
+
+export function getMarketOfferAssets(): RealEstateData[] {
+  return REAL_ESTATE.filter(isMarketOfferAsset);
+}
+
+export function getLuxuryAssets(): RealEstateData[] {
+  return REAL_ESTATE.filter(isLuxuryAsset);
 }
 
 export const REAL_ESTATE: RealEstateData[] = [
@@ -68,6 +86,7 @@ export const REAL_ESTATE: RealEstateData[] = [
     monthlyPayment: 8000,
     installmentMonths: 84,
     isTradable: true,
+    dealOnly: true,
   },
 
   // ========== КОММЕРЧЕСКАЯ ==========
@@ -100,6 +119,7 @@ export const REAL_ESTATE: RealEstateData[] = [
     installmentMonths: 72,
     isTradable: true,
     special: 'Приносит пассивный доход 750/ход',
+    dealOnly: true,
   },
 
   // ========== РОСКОШЬ / МЕЧТЫ ==========
@@ -120,6 +140,7 @@ export const REAL_ESTATE: RealEstateData[] = [
     monthlyPayment: 3500,
     installmentMonths: 72,
     isTradable: true,
+    dealOnly: true,
   },
   {
     id: 'yacht',
@@ -129,6 +150,7 @@ export const REAL_ESTATE: RealEstateData[] = [
     monthlyPayment: 12000,
     installmentMonths: 96,
     isTradable: true,
+    dealOnly: true,
   },
   {
     id: 'tractor',
@@ -138,6 +160,7 @@ export const REAL_ESTATE: RealEstateData[] = [
     monthlyPayment: 900,
     installmentMonths: 60,
     isTradable: true,
+    dealOnly: true,
   },
   {
     id: 'combine_harvester',
@@ -147,6 +170,7 @@ export const REAL_ESTATE: RealEstateData[] = [
     monthlyPayment: 3500,
     installmentMonths: 72,
     isTradable: true,
+    dealOnly: true,
   },
   {
     id: 'trip',

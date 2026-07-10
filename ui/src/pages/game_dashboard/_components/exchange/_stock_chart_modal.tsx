@@ -7,12 +7,13 @@ import type { portfolio_row } from '../../_model/types';
 import { StockSparkline } from './_stock_sparkline';
 import { getHistoryWindowMeta, getSparklineDisplayHistory, resolveListingHistory } from './_stock_sparkline_utils';
 import { StockChangeBadge } from './_stock_change_badge';
-import { format_change } from '../../_model/utils';
+import { format_change, format_turns_left_label } from '../../_model/utils';
 import { SectorBadge } from './_sector_badge';
 import { ProfitGradeBadge } from '../real_estate/_profit_grade_badge';
 import { STOCK_GRADE_CONFIG, formatSectorLabel } from './_stock_grade_config';
 import { formatBankingRequiredLabel } from '../real_estate/_offer_styles';
 import { gameAudio } from '../../../../lib/audio/game_audio';
+import { calcFullDividendPayout } from './_dividend_utils';
 
 interface StockChartModalProps {
   open: boolean;
@@ -59,6 +60,15 @@ export function StockChartModal({
   const totalCost = listing ? listing.currentPrice * quantity : 0;
   const canAfford = totalCost <= balance;
   const locked = listing ? listing.isLocked || !listing.availableOnExchange : true;
+  const totalQtyAfterBuy = (position?.qty ?? 0) + quantity;
+  const projectedDividendPayout = useMemo(
+    () => calcFullDividendPayout(listing?.dividendPerShare, totalQtyAfterBuy),
+    [listing?.dividendPerShare, totalQtyAfterBuy],
+  );
+  const currentPositionDividendPayout = useMemo(
+    () => calcFullDividendPayout(listing?.dividendPerShare, position?.qty ?? 0),
+    [listing?.dividendPerShare, position?.qty],
+  );
 
   const gradeConfig = listing ? STOCK_GRADE_CONFIG[listing.grade] : null;
 
@@ -241,17 +251,18 @@ export function StockChartModal({
                           </span>,
                         )
                       : null}
-                    {position
+                    {listing.dividendPerShare != null
+                      ? detailRow(
+                          'Дивиденд за акцию',
+                          <MoneyValue amount={listing.dividendPerShare} size="sm" color="emerald" />,
+                        )
+                      : null}
+                    {currentPositionDividendPayout != null
                       ? detailRow(
                           'Ожидаемая выплата',
-                          <span className="text-xs text-emerald-400">От {position.qty} акций</span>,
+                          <MoneyValue amount={currentPositionDividendPayout} size="sm" color="emerald" />,
                         )
-                      : quantity > 0
-                        ? detailRow(
-                            'При покупке',
-                            <span className="text-xs text-slate-300">От {quantity} акций</span>,
-                          )
-                        : null}
+                      : null}
                   </div>
                 </>
               ) : null}
@@ -364,6 +375,20 @@ export function StockChartModal({
                         color={canAfford ? 'emerald' : 'red'}
                       />,
                     )}
+                    {projectedDividendPayout != null ? (
+                      detailRow(
+                        'Выплата дивидендов',
+                        <div className="text-right">
+                          <MoneyValue amount={projectedDividendPayout} size="sm" color="emerald" />
+                          <p className="mt-0.5 text-[10px] font-medium leading-tight text-slate-500">
+                            за {totalQtyAfterBuy} акций
+                            {listing.turnsUntilDividend != null
+                              ? ` · через ${format_turns_left_label(listing.turnsUntilDividend)}`
+                              : ''}
+                          </p>
+                        </div>,
+                      )
+                    ) : null}
                   </div>
 
                   {!canAfford && (

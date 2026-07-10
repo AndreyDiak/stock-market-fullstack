@@ -62,24 +62,13 @@ export class TurnContentPhase implements TurnPhase {
       }
       case 'deal': {
         const deal = await this.#generateDealOffer(context);
-        if (deal) {
-          state.dealOffer = deal;
-          const news = await this.#newsService.createDealNews({
-            gameId: context.gameId,
-            gameStep: context.game.step,
-            deal,
-          });
-          state.news.push(news);
-        } else {
-          const stock = await this.#newsService.generateStockNews({
-            gameId: context.gameId,
-            gameStep: context.game.step,
-            profession: context.game.character.profession,
-            professionLevel: context.game.character.professionLevel,
-          });
-          if (stock.insiderRolled) state.insiderRolled = true;
-          state.news.push(stock.news);
-        }
+        state.dealOffer = deal;
+        const news = await this.#newsService.createDealNews({
+          gameId: context.gameId,
+          gameStep: context.game.step,
+          deal,
+        });
+        state.news.push(news);
         break;
       }
       case 'stock':
@@ -161,9 +150,13 @@ export class TurnContentPhase implements TurnPhase {
 
     const playerName = context.game.character.name;
     const availableNpcs = npcs.filter((n) => n.name !== playerName);
-    if (availableNpcs.length === 0) return null;
+    const npc = availableNpcs.length > 0
+      ? availableNpcs[Math.floor(Math.random() * availableNpcs.length)]!
+      : npcs[0];
 
-    const npc = availableNpcs[Math.floor(Math.random() * availableNpcs.length)]!;
+    if (!npc) {
+      throw new Error('Deal turn requires at least one NPC character');
+    }
 
     const availableStocks = await this.#prisma.gameStockListing.findMany({
       where: { gameId: context.gameId, availableOnExchange: true },
@@ -198,12 +191,12 @@ export class TurnContentPhase implements TurnPhase {
         }),
     });
 
-    if (!deal) return null;
-
     await this.#prisma.dealOffer.create({
       data: {
+        id: deal.id,
         gameId: context.gameId,
         botCharacterId: npc.id,
+        purpose: deal.purpose,
         botGives: deal.botGives as object,
         playerGives: deal.playerGives as object,
         requiredReputation: deal.requiredReputation,

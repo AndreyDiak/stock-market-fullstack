@@ -1,4 +1,4 @@
-import { REAL_ESTATE } from '../../assets/real_estate.js';
+import { REAL_ESTATE, getMarketOfferAssets, isMarketOfferAsset } from '../../assets/real_estate.js';
 import type { InventoryItem } from '@prisma/client';
 import {
   calcOfferPrice,
@@ -9,15 +9,15 @@ import {
 } from './_profit.js';
 import type { GeneratedOfferParams, PropertyOfferType, ProfitGrade } from './_types.js';
 
-const TRADABLE_ASSETS = REAL_ESTATE.filter((r) => r.isTradable);
+const MARKET_OFFER_ASSETS = getMarketOfferAssets();
 
 function pickRandom<T>(items: T[], random: () => number): T {
   return items[Math.floor(random() * items.length)]!;
 }
 
-function isTradableInventoryItem(item: InventoryItem): boolean {
+function isMarketInventoryItem(item: InventoryItem): boolean {
   const asset = REAL_ESTATE.find((r) => r.id === item.itemRef);
-  return asset?.isTradable ?? false;
+  return isMarketOfferAsset(asset);
 }
 
 export function buildOfferParams(input: {
@@ -38,7 +38,7 @@ export function buildOfferParams(input: {
   let assetId: string;
   let inventoryItemId: string | null = null;
 
-  const tradableOwned = input.inventoryItems.filter(isTradableInventoryItem);
+  const tradableOwned = input.inventoryItems.filter(isMarketInventoryItem);
   const sellableOwned = tradableOwned.filter(
     (item) => !excludeAssets.has(item.itemRef) && !excludeInventoryItems.has(item.id),
   );
@@ -54,7 +54,7 @@ export function buildOfferParams(input: {
   }
 
   if (type === 'SELL') {
-    const pool = TRADABLE_ASSETS.filter((asset) => !excludeAssets.has(asset.id));
+    const pool = MARKET_OFFER_ASSETS.filter((asset) => !excludeAssets.has(asset.id));
     if (pool.length === 0) return null;
     assetId = pickRandom(pool, random).id;
   } else {
@@ -62,7 +62,7 @@ export function buildOfferParams(input: {
   }
 
   const asset = REAL_ESTATE.find((r) => r.id === assetId);
-  if (!asset) return null;
+  if (!asset || !isMarketOfferAsset(asset)) return null;
 
   const marketPrice = asset.basePrice;
   const isHot = input.forcedGrade ? false : (input.forceHot ?? random() < 0.05);

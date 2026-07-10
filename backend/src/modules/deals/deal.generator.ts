@@ -1,8 +1,12 @@
-import type { Character, GameStockListing } from '@prisma/client';
-import { buildDealWithRetries } from './deal.builder.js';
+import type { Character, GameStockListing, InventoryItem } from '@prisma/client';
+import { buildDealWithRetries, buildGuaranteedDeal } from './deal.builder.js';
 import type { GeneratedDealOffer } from './deal.types.js';
 import type { PlayerPropertyRef, PlayerStockRef } from './deal.types.js';
-import { validateDeal } from './deal.validator.js';
+import type { BuiltDeal } from './deal.builder.js';
+import {
+  maxStockRequiredTradingLevel,
+  validateDealForGeneration,
+} from './deal.validator.js';
 
 function randomInt(min: number, max: number): number {
   return min + Math.floor(Math.random() * (max - min + 1));
@@ -19,25 +23,42 @@ interface GameStockListingWithCompany extends GameStockListing {
 export interface DealGenContext {
   gameId: string;
   gameStep: number;
-  playerCharacter: Character;
+  playerCharacter: Character & { inventoryItems?: InventoryItem[] };
   npcCharacter: Character;
   availableStocks: GameStockListingWithCompany[];
   playerStocks: PlayerStockRef[];
   playerProperties: PlayerPropertyRef[];
 }
 
+function getRequiredTradingLevel(
+  purpose: GeneratedDealOffer['purpose'],
+  botGives: GeneratedDealOffer['botGives'],
+  availableStocks: GameStockListingWithCompany[],
+): number {
+  switch (purpose) {
+    case 'DREAM_HELPER':
+    case 'LIQUIDITY':
+    case 'VALUE_EXCHANGE':
+      return 1;
+    case 'STOCK_PACKAGE':
+      return maxStockRequiredTradingLevel(botGives, availableStocks);
+    default:
+      return 1;
+  }
+}
+
 export class DealGenerator {
   async maybeGenerate(input: {
     gameId: string;
     gameStep: number;
-    playerCharacter: Character;
+    playerCharacter: Character & { inventoryItems?: InventoryItem[] };
     npcCharacter: Character;
     availableStocks: GameStockListingWithCompany[];
     playerStocks: Array<{ ticker: string; shares: number; listingId: string }>;
     playerProperties?: PlayerPropertyRef[];
-  }): Promise<GeneratedDealOffer | null> {
+  }): Promise<GeneratedDealOffer> {
     const stockPriceByTicker = new Map(
-      input.availableStocks.map((s) => [s.company.ticker, s.currentPrice]),
+      input.availableStocks.map((listing) => [listing.company.ticker, listing.currentPrice]),
     );
 
     const ctx: DealGenContext = {
@@ -46,21 +67,23 @@ export class DealGenerator {
       playerCharacter: input.playerCharacter,
       npcCharacter: input.npcCharacter,
       availableStocks: input.availableStocks,
-      playerStocks: input.playerStocks.map((s) => ({
-        ...s,
-        currentPrice: stockPriceByTicker.get(s.ticker) ?? 0,
+      playerStocks: input.playerStocks.map((stock) => ({
+        ...stock,
+        currentPrice: stockPriceByTicker.get(stock.ticker) ?? 0,
       })),
       playerProperties: input.playerProperties ?? [],
     };
 
-    for (let attempt = 0; attempt < 16; attempt++) {
-      const built = buildDealWithRetries(ctx, 1);
-      if (!built) continue;
+    let built: BuiltDeal | null = null;
 
-      const validationError = validateDeal({
-        purpose: built.purpose,
-        botGives: built.botGives,
-        playerGives: built.playerGives,
+    for (let attempt = 0; attempt < 24; attempt++) {
+      const candidate = buildDealWithRetries(ctx, 8);
+      if (!candidate) continue;
+
+      const validationError = validateDealForGeneration({
+        purpose: candidate.purpose,
+        botGives: candidate.botGives,
+        playerGives: candidate.playerGives,
         playerCharacter: ctx.playerCharacter,
         playerStocks: ctx.playerStocks,
         playerProperties: ctx.playerProperties,
@@ -68,11 +91,28 @@ export class DealGenerator {
       });
 
       if (validationError) continue;
-
-      return this.#finalizeDeal(ctx, built.purpose, built.botGives, built.playerGives);
+      built = candidate;
+      break;
     }
 
-    return null;
+    if (!built) {
+      built = buildGuaranteedDeal(ctx);
+    }
+
+    const shapeError = validateDealForGeneration({
+      purpose: built.purpose,
+      botGives: built.botGives,
+      playerGives: built.playerGives,
+      playerCharacter: ctx.playerCharacter,
+      playerStocks: ctx.playerStocks,
+      playerProperties: ctx.playerProperties,
+      availableStocks: ctx.availableStocks,
+    });
+    if (shapeError) {
+      built = buildGuaranteedDeal(ctx);
+    }
+
+    return this.#finalizeDeal(ctx, built.purpose, built.botGives, built.playerGives);
   }
 
   #finalizeDeal(
@@ -86,15 +126,19 @@ export class DealGenerator {
       ? 100
       : Math.round((benefitValue / playerGives.totalEstimatedValue) * 100);
 
-    const hasDreamProperty = purpose === 'DREAM_HELPER';
-    const propertyBonus = hasDreamProperty ? (1 + Math.random() * 2) : 0;
+    const dreamProperty = purpose === 'DREAM_HELPER' ? botGives.assets[0] : null;
+    const propertyBonus = dreamProperty && dreamProperty.estimatedValue > 20_000
+      ? (1 + Math.random() * 2)
+      : 0;
     const benefitClamped = Math.max(-100, Math.min(100, benefitPercent));
     const benefitFactor = Math.max(0, benefitClamped / 25);
-    const baseReq = 1 + Math.random() * 3;
+    const baseReq = purpose === 'LIQUIDITY'
+      ? 1 + Math.random() * 1.5
+      : 1 + Math.random() * 3;
     const rawReq = baseReq + benefitFactor + propertyBonus;
     const reqRep = clamp(Math.round(rawReq * 10) / 10, 1, 10);
 
-    const reqTrading = clamp(ctx.npcCharacter.tradingLevel, 1, 6);
+    const reqTrading = getRequiredTradingLevel(purpose, botGives, ctx.availableStocks);
     const repPenalty = benefitPercent < -20 ? 2.0 : benefitPercent < 0 ? 1.0 : 0.5;
 
     const expiresInTurns = 2 + randomInt(0, 2);

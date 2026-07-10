@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import type { Game } from '../../api/types'
 import { GameShell } from '../../components/game_ui/game_shell'
 import { useGameBackgroundMusic } from '../../hooks/use_game_background_music'
+import { gameAudio } from '../../lib/audio/game_audio'
 import { useGameSettingsStore } from '../../stores/game_settings.store'
 import { useGameStore } from '../../stores/game.store'
 import { BackgroundEffects } from './_components/layout/_background_effects'
@@ -25,17 +26,26 @@ import {
 } from './_model/_dashboard_tab_search'
 import type { dashboard_tab, news_item } from './_model/types'
 
+type DashboardLocationState = {
+  initialGame?: Game
+  showWelcomeNews?: boolean
+}
+
 export function GameDashboardPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
   const gameId = searchParams.get('id')
-  const initialGame = (location.state as { initialGame?: Game } | null)?.initialGame
+  const locationState = location.state as DashboardLocationState | null
+  const initialGame = locationState?.initialGame
+  const showWelcomeNews = locationState?.showWelcomeNews ?? false
 
   const { dynamicBackground, colorTheme, sidebarCollapsed } = useGameSettingsStore()
   const loading = useGameStore((state) => state.loading)
+  const news = useGameStore((state) => state.news)
   const init = useGameStore((state) => state.init)
   const reset = useGameStore((state) => state.reset)
+  const welcomeHandledRef = useRef(false)
 
   const dashboardTheme = useDashboardTheme()
 
@@ -98,6 +108,30 @@ export function GameDashboardPage() {
   }, [searchParams, activeTab, setSearchParams])
 
   const closeNews = useCallback(() => setSelectedNews(null), [])
+
+  useEffect(() => {
+    if (!showWelcomeNews || loading || welcomeHandledRef.current) return
+
+    const welcomeNews = news.find((item) => item.kind === 'WELCOME')
+    if (!welcomeNews) return
+
+    welcomeHandledRef.current = true
+    gameAudio.playSfx('dealSuccess')
+    setSelectedNews(welcomeNews)
+
+    navigate(
+      { pathname: location.pathname, search: location.search },
+      { replace: true, state: { initialGame } },
+    )
+  }, [
+    showWelcomeNews,
+    loading,
+    news,
+    navigate,
+    location.pathname,
+    location.search,
+    initialGame,
+  ])
 
   useGameBackgroundMusic(!loading)
 

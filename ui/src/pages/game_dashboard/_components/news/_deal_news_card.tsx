@@ -1,5 +1,4 @@
 import type { news_item } from '../../_model/types'
-import { GameButton } from '../../../../components/game_ui/game_button'
 import type { GameDashboardThemeTokens } from '../shared'
 
 interface DealNewsCardProps {
@@ -12,17 +11,6 @@ export function DealNewsCard({ item }: DealNewsCardProps) {
     <div className="news-deal">
       <h4 className="news-deal__title">{item.title}</h4>
       <p className="news-deal__description">{item.body}</p>
-
-      <div className="news-deal__actions">
-        <GameButton
-          size="sm"
-          variant="muted"
-          disabled
-          onClick={(e) => e.stopPropagation()}
-        >
-          Раздел сделок скоро →
-        </GameButton>
-      </div>
     </div>
   )
 }

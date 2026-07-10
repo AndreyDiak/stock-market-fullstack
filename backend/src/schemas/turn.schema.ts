@@ -59,7 +59,7 @@ export const endTurnResponseSchema = z.object({
   insiderRolled: z.boolean(),
   news: z.array(generatedNewsItemSchema),
   otcDeal: otcDealSchema.optional(),
-  dealOffer: dealOfferSchema.optional(),
+  dealOffers: z.array(dealOfferSchema),
   propertyOffers: z.array(propertyOfferSchema),
   appliedPriceImpacts: z.array(appliedPriceImpactSchema).optional(),
   dividendPayouts: z.array(dividendPayoutEventSchema).optional(),

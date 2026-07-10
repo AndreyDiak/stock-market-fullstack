@@ -10,6 +10,7 @@ import {
   mapOtcDealToCard,
   upgradeCharacterSkill,
   type DealOfferPayload,
+  type EndTurnResponse,
 } from '../api/gameTurn';
 import {
   acceptNegotiatedPropertyOffer,
@@ -21,7 +22,7 @@ import {
   type PropertyOfferPaymentMode,
 } from '../api/propertyOffers';
 import { acceptOtcDeal as acceptOtcDealApi } from '../api/otcDeals';
-import { acceptDeal as acceptDealApi, rejectDeal as rejectDealApi } from '../api/deals';
+import { acceptDeal as acceptDealApi } from '../api/deals';
 import { payOffInstallment } from '../api/propertyLoans';
 import {
   buyStock as buyStockApi,
@@ -77,6 +78,12 @@ const EMPTY_BANK_SUMMARY: BankSummary = {
 
 let endingTurnInFlight = false;
 
+function resolveEndTurnDealOffers(result: EndTurnResponse): DealOfferPayload[] {
+  if (result.dealOffers?.length) return result.dealOffers;
+  const legacy = (result as EndTurnResponse & { dealOffer?: DealOfferPayload }).dealOffer;
+  return legacy ? [legacy] : [];
+}
+
 function appendNewsItem(state: { news: news_item[]; turn: number }, item: GeneratedNewsItem) {
   const freshNews = mapApiNewsList([item], state.turn);
   return {
@@ -125,7 +132,6 @@ interface GameState {
   removeOtcDeal: (id: string) => void;
   acceptOtcDeal: (deal: bot_deal) => Promise<void>;
   acceptDeal: (dealId: string) => Promise<void>;
-  rejectDeal: (dealId: string) => Promise<void>;
   acceptPropertyOffer: (
     offerId: string,
     paymentMode?: PropertyOfferPaymentMode,
@@ -167,7 +173,6 @@ function getInitialState(): Omit<
   | 'removeOtcDeal'
   | 'acceptOtcDeal'
   | 'acceptDeal'
-  | 'rejectDeal'
   | 'acceptPropertyOffer'
   | 'negotiatePropertyOffer'
   | 'acceptNegotiatedPropertyOffer'
@@ -231,6 +236,7 @@ function applyCharacterSkillsState(
   character: NonNullable<Game['character']>,
   characterSkills: CharacterSkillsState,
   news: news_item[] = [],
+  currentTurn = 1,
 ) {
   const snapshot = mapCharacterSnapshot(
     character,
@@ -240,6 +246,7 @@ function applyCharacterSkillsState(
     snapshot.inventoryItems,
     news,
     characterSkills.stats.bankBaseRatePercent,
+    currentTurn,
   );
 
   return {
@@ -280,7 +287,7 @@ export const useGameStore = create<GameState>((set, get) => {
       : EMPTY_CHARACTER_SKILLS_STATE,
     preserveMarket = false,
   ) => {
-    const applied = applyCharacterSkillsState(character, characterSkills, get().news);
+    const applied = applyCharacterSkillsState(character, characterSkills, get().news, step);
       set({
         turn: step,
         ...spreadCharacterBankState(applied),
@@ -456,6 +463,7 @@ export const useGameStore = create<GameState>((set, get) => {
           ? { skills: get().characterSkills, stats: get().characterStats }
           : EMPTY_CHARACTER_SKILLS_STATE,
         get().news,
+        get().turn,
       );
       const balanceDelta = result.balance - get().balance;
 
@@ -495,6 +503,7 @@ export const useGameStore = create<GameState>((set, get) => {
             ? { skills: get().characterSkills, stats: get().characterStats }
             : EMPTY_CHARACTER_SKILLS_STATE,
           newsForBank,
+          get().turn,
         );
         const balanceDelta = result.balance - result.previousBalance;
 
@@ -548,6 +557,7 @@ export const useGameStore = create<GameState>((set, get) => {
             ? { skills: get().characterSkills, stats: get().characterStats }
             : EMPTY_CHARACTER_SKILLS_STATE,
           newsForBank,
+          get().turn,
         );
         const balanceDelta = result.balance - result.previousBalance;
         const reputationChanged = result.reputation !== result.previousReputation;
@@ -593,6 +603,7 @@ export const useGameStore = create<GameState>((set, get) => {
           ? { skills: get().characterSkills, stats: get().characterStats }
           : EMPTY_CHARACTER_SKILLS_STATE,
         get().news,
+        get().turn,
       );
       const balanceDelta = result.balance - result.previousBalance;
 
@@ -614,16 +625,6 @@ export const useGameStore = create<GameState>((set, get) => {
       gameAudio.playSfx('operationCompleted');
     },
 
-    rejectDeal: async (dealId) => {
-      const { gameId } = get();
-      if (!gameId) {
-        throw new Error('Game is not loaded');
-      }
-
-      await rejectDealApi(gameId, dealId);
-      set((state) => ({ deals: state.deals.filter((d) => d.id !== dealId) }));
-    },
-
     acceptNegotiatedPropertyOffer: async (offerId, paymentMode = 'installment') => {
       const { gameId } = get();
       if (!gameId) {
@@ -643,6 +644,7 @@ export const useGameStore = create<GameState>((set, get) => {
             ? { skills: get().characterSkills, stats: get().characterStats }
             : EMPTY_CHARACTER_SKILLS_STATE,
           newsForBank,
+          get().turn,
         );
         const balanceDelta = result.balance - result.previousBalance;
 
@@ -696,7 +698,7 @@ export const useGameStore = create<GameState>((set, get) => {
         const result = await upgradeCharacterSkill(gameId, skillId);
         if (!result.game.character) return;
 
-        const applied = applyCharacterSkillsState(result.game.character, result.characterSkills, get().news);
+        const applied = applyCharacterSkillsState(result.game.character, result.characterSkills, get().news, get().turn);
         set({
           ...spreadCharacterBankState(applied),
           propertyOffers: applyBankingLevelToPropertyOffers(
@@ -746,6 +748,7 @@ export const useGameStore = create<GameState>((set, get) => {
             ? { skills: get().characterSkills, stats: get().characterStats }
             : EMPTY_CHARACTER_SKILLS_STATE,
           newsForBank,
+          get().turn,
         );
         const balanceDelta = result.balance - result.previousBalance;
 
@@ -812,7 +815,7 @@ export const useGameStore = create<GameState>((set, get) => {
 
       try {
         const result = await endGameTurn(gameId, stepAtClick);
-        const applied = applyCharacterSkillsState(result.character, result.characterSkills, get().news);
+        const applied = applyCharacterSkillsState(result.character, result.characterSkills, get().news, get().turn);
         const dividendTotal =
           result.dividendPayouts?.reduce((sum, payout) => sum + payout.totalPaid, 0) ?? 0;
         const netDelta = result.passiveIncome.netChange + dividendTotal;
@@ -852,9 +855,22 @@ export const useGameStore = create<GameState>((set, get) => {
           }));
         }
 
-        if (result.dealOffers.length > 0) {
-          set({ deals: result.dealOffers });
+        let dealOffers = resolveEndTurnDealOffers(result);
+
+        if (
+          dealOffers.length === 0
+          && result.news.some((item) => item.kind === 'DEAL_OFFER')
+          && gameId
+        ) {
+          try {
+            const dashboard = await fetchGameDashboard(gameId);
+            dealOffers = dashboard.dealOffers ?? [];
+          } catch {
+            // оставляем пустой список, если синхронизация не удалась
+          }
         }
+
+        set({ deals: dealOffers });
 
         set({ propertyOffers: result.propertyOffers });
         await get().loadExchangeData();

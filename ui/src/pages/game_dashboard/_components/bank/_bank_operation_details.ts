@@ -151,6 +151,30 @@ function findSellTurnAfterPurchase(
   return null
 }
 
+function findLastInstallmentTurn(
+  news: news_item[],
+  itemRef: string,
+  purchaseTurn: number,
+): number | null {
+  let lastTurn: number | null = null
+
+  for (const item of news) {
+    if (item.kind !== 'PROPERTY_INSTALLMENT') continue
+
+    const payload = item.payload as PropertyInstallmentPayload | undefined
+    if (payload?.assetId !== itemRef) continue
+
+    const step = resolve_published_step(item)
+    if (step == null || step < purchaseTurn) continue
+
+    if (lastTurn == null || step > lastTurn) {
+      lastTurn = step
+    }
+  }
+
+  return lastTurn
+}
+
 function resolveFinalPaymentTurn(
   itemRef: string,
   purchaseTurn: number,
@@ -169,7 +193,7 @@ function resolveFinalPaymentTurn(
   }
 
   if (inventoryItem?.isPaidOff) {
-    return purchaseTurn
+    return findLastInstallmentTurn(news, itemRef, purchaseTurn)
   }
 
   if (!inventoryItem) {
@@ -216,6 +240,7 @@ export function buildInventoryItemFinanceDetails(
   item: InventoryItemDto,
   news: news_item[],
   bankBaseRatePercent: number,
+  currentTurn = 1,
 ): PropertyOperationDetails {
   const lookup = buildPropertyPurchaseStepLookup(news)
   const purchaseTurn = resolvePropertyPurchaseStep(item.itemRef, item.purchasePrice, lookup)
@@ -239,7 +264,7 @@ export function buildInventoryItemFinanceDetails(
       item,
       consumePayoffTurn,
       news,
-    ),
+    ) ?? (item.isPaidOff && currentTurn > purchaseTurn ? currentTurn : null),
   }
 }
 

@@ -56,7 +56,7 @@ export interface DealBundle {
   totalEstimatedValue: number;
 }
 
-export type DealPurpose = 'VALUE_EXCHANGE' | 'LIQUIDITY' | 'DREAM_HELPER';
+export type DealPurpose = 'VALUE_EXCHANGE' | 'LIQUIDITY' | 'DREAM_HELPER' | 'STOCK_PACKAGE';
 
 export interface DealOfferPayload {
   id: string;
@@ -64,7 +64,7 @@ export interface DealOfferPayload {
   botName: string;
   botProfession: string;
   botAvatarSrc?: string;
-  purpose?: DealPurpose;
+  purpose: DealPurpose;
   botGives: DealBundle;
   playerGives: DealBundle;
   requiredReputation: number;

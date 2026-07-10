@@ -21,8 +21,6 @@ export class EconomyPhase implements TurnPhase {
     );
 
     for (const payment of state.passiveIncome.installmentPayments) {
-      if (!payment.paidOff) continue;
-
       const news = await this.#newsService.createPropertyInstallmentNews({
         gameId: context.gameId,
         gameStep: context.game.step,

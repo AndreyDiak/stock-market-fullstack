@@ -1,5 +1,5 @@
 import type { Character, InventoryItem, PrismaClient, PropertyOffer } from '@prisma/client';
-import { REAL_ESTATE } from '../../assets/real_estate.js';
+import { REAL_ESTATE, isMarketOfferAsset } from '../../assets/real_estate.js';
 import { NewsGenerationService } from '../news/news_generation.service.js';
 import { AppError } from '../../utils/errors.js';
 import { buildOfferParams, formatOfferNewsBody, getAssetName } from './_generator.js';
@@ -80,6 +80,12 @@ export class PropertyOffersService {
 
     const activeOffers = offers.filter((offer) => {
       if (offer.expiresAtTurn <= currentStep) return false;
+
+      const asset = REAL_ESTATE.find((entry) => entry.id === offer.assetId);
+      if (!isMarketOfferAsset(asset)) {
+        staleOfferIds.push(offer.id);
+        return false;
+      }
 
       if (offer.type === 'BUY') {
         if (!offer.inventoryItemId || !ownedIds.has(offer.inventoryItemId)) {

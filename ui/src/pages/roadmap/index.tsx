@@ -1,92 +1,96 @@
-import type { CSSProperties } from 'react'
-import { motion } from 'framer-motion'
-import { useNavigate } from 'react-router-dom'
-import { GameButton } from '../../components/game_ui/game_button'
-import { GameShell } from '../../components/game_ui/game_shell'
-import { sessionCardVariants } from '../../components/game_ui/session_animations'
+import { motion } from "framer-motion";
+import type { CSSProperties } from "react";
+import { useNavigate } from "react-router-dom";
+import { GameButton } from "../../components/game_ui/game_button";
+import { GameShell } from "../../components/game_ui/game_shell";
+import { sessionCardVariants } from "../../components/game_ui/session_animations";
 
 interface Stage {
-  title: string
-  badge: string
-  badgeColor: string
-  content: React.ReactNode
+  title: string;
+  badge: string;
+  badgeColor: string;
+  content: React.ReactNode;
 }
 
 function Arrow() {
   return (
-    <svg width="32" height="24" viewBox="0 0 32 24" className="shrink-0 text-slate-600">
-      <line x1="0" y1="12" x2="25" y2="12" stroke="currentColor" strokeWidth="1.5" />
+    <svg
+      width="32"
+      height="24"
+      viewBox="0 0 32 24"
+      className="shrink-0 text-slate-600"
+    >
+      <line
+        x1="0"
+        y1="12"
+        x2="25"
+        y2="12"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
       <polygon points="22,5 32,12 22,19" fill="currentColor" />
     </svg>
-  )
+  );
 }
 
 const bullet = (text: string) => (
-  <li key={text} className="flex items-start gap-2 text-sm leading-relaxed text-slate-400">
+  <li
+    key={text}
+    className="flex items-start gap-2 text-sm leading-relaxed text-slate-400"
+  >
     <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500/60" />
     {text}
   </li>
-)
+);
 
 const stages: Stage[] = [
   {
-    title: 'MVP',
-    badge: 'Текущий этап',
-    badgeColor: 'bg-emerald-500/15 text-emerald-400',
+    title: "MVP",
+    badge: "Текущий этап",
+    badgeColor: "bg-emerald-500/15 text-emerald-400",
     content: (
-      <p className="text-sm leading-relaxed text-slate-400">
-        Базовая версия игры с основными механиками.
-      </p>
+      <p className="text-sm leading-relaxed text-slate-400">Сейчас мы тут :)</p>
     ),
   },
   {
-    title: 'Релиз 1.0',
-    badge: 'Запланировано',
-    badgeColor: 'bg-amber-500/15 text-amber-400',
+    title: "1.0",
+    badge: "Запланировано",
+    badgeColor: "bg-amber-500/15 text-amber-400",
     content: (
       <ul className="space-y-1">
-        {[
-          'Система достижений',
-          'Новая механика (казино)',
-          'Новые звуковые эффекты',
-          'Исправление ошибок',
-        ].map(bullet)}
+        {["Исправление ошибок", "Доработка механики сделок"].map(bullet)}
       </ul>
     ),
   },
   {
-    title: 'Релиз 1.2',
-    badge: 'Позже',
-    badgeColor: 'bg-sky-500/15 text-sky-400',
+    title: "1.1",
+    badge: "Позже",
+    badgeColor: "bg-sky-500/15 text-sky-400",
     content: (
-      <ul className="space-y-1">
-        {[
-          'IPO акций — первичное размещение на бирже',
-        ].map(bullet)}
-      </ul>
+      <ul className="space-y-1">{["IPO акций", "Новый раздел"].map(bullet)}</ul>
     ),
   },
   {
-    title: 'TBD',
-    badge: 'Позже',
-    badgeColor: 'bg-slate-500/15 text-slate-400',
+    title: "TBD",
+    badge: "Позже",
+    badgeColor: "bg-slate-500/15 text-slate-400",
     content: (
       <p className="text-sm leading-relaxed text-slate-500">
-        Следующие идеи и механики появятся позже.
+        Предлагайте свои идеи и механики в обратной связи!
       </p>
     ),
   },
-]
+];
 
-const WIDTH = 'max-w-5xl'
+const WIDTH = "max-w-5xl";
 
 const outerStyle: CSSProperties = {
-  borderRadius: '1.35rem',
-  background: 'linear-gradient(165deg, #3d4f63 0%, #1a2433 45%, #121a26 100%)',
-}
+  borderRadius: "1.35rem",
+  background: "linear-gradient(165deg, #3d4f63 0%, #1a2433 45%, #121a26 100%)",
+};
 
 export function RoadmapPage() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <GameShell>
@@ -97,7 +101,10 @@ export function RoadmapPage() {
           initial="hidden"
           animate="show"
         >
-          <div className={`relative w-full shadow-[0_12px_40px_rgba(0,0,0,0.45)]`} style={outerStyle}>
+          <div
+            className={`relative w-full shadow-[0_12px_40px_rgba(0,0,0,0.45)]`}
+            style={outerStyle}
+          >
             <div className="p-2.5">
               <div className="mb-2 flex items-center gap-1.5 px-1.5 pt-0.5">
                 <span className="h-2 w-2 rounded-full bg-red-400/70 shadow-[0_0_6px_rgba(248,113,113,0.5)]" />
@@ -133,10 +140,13 @@ export function RoadmapPage() {
                     {stages.reduce<React.ReactNode[]>((acc, s, i) => {
                       if (i > 0) {
                         acc.push(
-                          <div key={`arrow-${i}`} className="flex shrink-0 items-center px-2">
+                          <div
+                            key={`arrow-${i}`}
+                            className="flex shrink-0 items-center px-2"
+                          >
                             <Arrow />
-                          </div>
-                        )
+                          </div>,
+                        );
                       }
                       acc.push(
                         <div
@@ -154,9 +164,9 @@ export function RoadmapPage() {
                             </span>
                           </div>
                           {s.content}
-                        </div>
-                      )
-                      return acc
+                        </div>,
+                      );
+                      return acc;
                     }, [])}
                   </div>
                 </div>
@@ -168,7 +178,11 @@ export function RoadmapPage() {
             </div>
 
             <div className="border-t border-white/10 px-2.5 pb-2.5 pt-3">
-              <GameButton fullWidth variant="muted" onClick={() => navigate('/menu')}>
+              <GameButton
+                fullWidth
+                variant="muted"
+                onClick={() => navigate("/menu")}
+              >
                 Назад в меню
               </GameButton>
             </div>
@@ -176,5 +190,5 @@ export function RoadmapPage() {
         </motion.div>
       </div>
     </GameShell>
-  )
+  );
 }

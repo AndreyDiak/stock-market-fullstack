@@ -14,9 +14,3 @@ export async function acceptDeal(gameId: string, dealId: string) {
     .post(`saves/${gameId}/deals/accept`, { json: { dealId } })
     .json<AcceptDealResponse>();
 }
-
-export async function rejectDeal(gameId: string, dealId: string) {
-  return http
-    .post(`saves/${gameId}/deals/reject`, { json: { dealId } })
-    .json<{ success: boolean }>();
-}

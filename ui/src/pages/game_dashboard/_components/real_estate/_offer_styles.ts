@@ -9,7 +9,7 @@ export const PROFIT_GRADE_RANGES: Record<
   D: { min: 20, max: 30, banking: 3 },
   C: { min: 30, max: 40, banking: 4 },
   B: { min: 40, max: 50, banking: 5 },
-  A: { min: 50, max: 100, banking: 6 },
+  A: { min: 50, max: 60, banking: 6 },
 };
 
 const PROFIT_GRADES_BY_BANKING: profit_grade[] = ['F', 'E', 'D', 'C', 'B', 'A'];

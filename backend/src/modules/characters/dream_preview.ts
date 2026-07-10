@@ -60,8 +60,6 @@ const ITEM_LABELS: Record<string, string> = {
   expensive_painting: 'Картина',
 };
 
-const PREVIEW_MAX_VISIBLE = 4;
-
 function formatMoney(value: number): string {
   return value.toLocaleString('ru-RU');
 }
@@ -112,26 +110,6 @@ function buildRequirementsPreview(req: DreamStageRequirement): DreamRequirementP
   return items;
 }
 
-function limitRequirementsPreview(items: DreamRequirementPreview[]): DreamRequirementPreview[] {
-  if (items.length <= PREVIEW_MAX_VISIBLE) return items;
-
-  const properties = items.filter(
-    (item) => item.kind === 'property' || item.kind === 'no_installments',
-  );
-  const others = items.filter(
-    (item) => item.kind !== 'property' && item.kind !== 'no_installments',
-  );
-
-  const slots = PREVIEW_MAX_VISIBLE - 1;
-  const propertySlots = Math.min(properties.length, Math.max(1, Math.min(2, slots - 1)));
-  const otherSlots = slots - propertySlots;
-  const visible = [...others.slice(0, otherSlots), ...properties.slice(0, propertySlots)];
-  const overflow = items.length - visible.length;
-  const word = overflow === 1 ? 'условие' : 'условия';
-  visible.push({ kind: 'property', label: `+ ещё ${overflow} ${word}` });
-  return visible;
-}
-
 function buildPathHint(stages: DreamStageRequirement[]): string {
   const hints: string[] = [];
   const hasBalance = stages.some((s) => s.minBalance != null);
@@ -164,7 +142,7 @@ export function buildCharacterDreamPreview(
       order: index + 1,
       title: titles[index] ?? `Этап ${index + 1}`,
       description: stage.description,
-      requirementsPreview: limitRequirementsPreview(buildRequirementsPreview(stage)),
+      requirementsPreview: buildRequirementsPreview(stage),
       isFinal: index === dream.stages.length - 1,
     })),
   };

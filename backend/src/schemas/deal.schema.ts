@@ -37,6 +37,7 @@ export const dealPurposeSchema = z.enum([
   'VALUE_EXCHANGE',
   'LIQUIDITY',
   'DREAM_HELPER',
+  'STOCK_PACKAGE',
 ]);
 
 export const dealOfferSchema = z.object({
@@ -46,7 +47,7 @@ export const dealOfferSchema = z.object({
   botProfession: z.string(),
   botAvatarSrc: z.string().optional(),
 
-  purpose: dealPurposeSchema.optional(),
+  purpose: dealPurposeSchema.default('VALUE_EXCHANGE'),
   botGives: dealBundleSchema,
   playerGives: dealBundleSchema,
 

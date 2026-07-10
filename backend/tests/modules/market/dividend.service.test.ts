@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import {
   DIVIDEND_CYCLE_TURNS,
   DividendService,
+  calcDividendPerShare,
   calcProportionalDividend,
   rollDividendProfile,
 } from '../../../src/modules/market/dividend.service.js';
@@ -61,6 +62,12 @@ describe('dividend.service', () => {
 
     const never = rollDividendProfile('F', () => 0.99);
     expect(never.paysDividends).toBe(false);
+  });
+
+  it('calculates dividend per share from price and yield', () => {
+    expect(calcDividendPerShare(3, 4)).toBe(0.12);
+    expect(calcDividendPerShare(100, 5)).toBe(5);
+    expect(calcDividendPerShare(100, null)).toBeNull();
   });
 
   it('scales payout by turnsHeldInCycle / 10', () => {

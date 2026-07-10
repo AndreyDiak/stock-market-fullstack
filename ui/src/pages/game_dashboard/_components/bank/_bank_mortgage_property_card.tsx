@@ -22,6 +22,7 @@ export function BankMortgagePropertyCard({ loan }: { loan: ActiveLoan }) {
   const [detailsOpen, setDetailsOpen] = useState(false)
   const inventoryItems = useGameStore((state) => state.inventoryItems)
   const news = useGameStore((state) => state.news)
+  const turn = useGameStore((state) => state.turn)
   const bankBaseRatePercent = useGameStore((state) => state.characterStats.bankBaseRatePercent)
 
   const passiveIncome = parseCatalogPassiveIncome(loan.itemRef)
@@ -29,8 +30,8 @@ export function BankMortgagePropertyCard({ loan }: { loan: ActiveLoan }) {
 
   const propertyDetails = useMemo(() => {
     const inventoryItem = inventoryItems.find((item) => item.id === loan.id)
-    return mapMortgagePropertyDetails(loan, inventoryItem, news, bankBaseRatePercent)
-  }, [loan, inventoryItems, news, bankBaseRatePercent])
+    return mapMortgagePropertyDetails(loan, inventoryItem, news, bankBaseRatePercent, turn)
+  }, [loan, inventoryItems, news, bankBaseRatePercent, turn])
 
   const openDetails = () => {
     gameAudio.playSfx('buttonClick')

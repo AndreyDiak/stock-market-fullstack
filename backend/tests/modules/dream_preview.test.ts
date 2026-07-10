@@ -46,6 +46,10 @@ describe('buildCharacterDreamPreview', () => {
     const finalLabels = preview.stages[4]?.requirementsPreview.map((item) => item.label) ?? [];
     expect(finalLabels.some((label) => label.includes('Яхта'))).toBe(true);
     expect(finalLabels.some((label) => label.includes('Картина'))).toBe(true);
+    expect(finalLabels.some((label) => label.includes('Портфель'))).toBe(true);
+    expect(finalLabels.some((label) => label.includes('Репутация'))).toBe(true);
+    expect(finalLabels.some((label) => label.startsWith('+'))).toBe(false);
+    expect(finalLabels).toHaveLength(5);
   });
 
   it('uses dynamic stage count per profession', () => {

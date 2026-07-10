@@ -24,7 +24,12 @@ import { decaySectorMomentum, getSectorStatus } from './sector_momentum.engine.j
 import { NewsGenerationService } from '../news/news_generation.service.js';
 import { IPOManager } from './ipo.manager.js';
 import { buildWarmupHistoryRecords } from './sparkline_seed.js';
-import { DividendService, rollDividendProfile, type DividendPayoutEvent } from './dividend.service.js';
+import {
+  calcDividendPerShare,
+  DividendService,
+  rollDividendProfile,
+  type DividendPayoutEvent,
+} from './dividend.service.js';
 import { calcNetSellProceeds } from './sell_commission.js';
 import {
   resolveStockArchetype,
@@ -60,6 +65,7 @@ export interface StockListingDto {
   archetypeLabel: string | null;
   paysDividends: boolean;
   turnsUntilDividend: number | null;
+  dividendPerShare: number | null;
   history: PriceHistoryPointDto[];
 }
 
@@ -736,6 +742,9 @@ export class MarketService {
       archetypeLabel: archetype ? STOCK_ARCHETYPE_LABELS[archetype] : null,
       paysDividends: listing.paysDividends,
       turnsUntilDividend: listing.turnsUntilDividend,
+      dividendPerShare: listing.paysDividends
+        ? calcDividendPerShare(listing.currentPrice, listing.dividendYieldPct)
+        : null,
       history,
     };
   }

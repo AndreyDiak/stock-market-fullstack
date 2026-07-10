@@ -23,11 +23,11 @@ export interface DealBundle {
 
 export type DealOfferStatus = 'ACTIVE' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED' | 'NEGOTIATED';
 
-/** MVP: три понятных сценария без отдельных тяжёлых систем. */
 export type DealPurpose =
   | 'VALUE_EXCHANGE'
   | 'LIQUIDITY'
-  | 'DREAM_HELPER';
+  | 'DREAM_HELPER'
+  | 'STOCK_PACKAGE';
 
 export interface DealFairnessRange {
   minBenefitPercent: number;
@@ -44,7 +44,7 @@ export interface GeneratedDealOffer {
   botName: string;
   botProfession: string;
 
-  purpose?: DealPurpose;
+  purpose: DealPurpose;
   botGives: DealBundle;
   playerGives: DealBundle;
 

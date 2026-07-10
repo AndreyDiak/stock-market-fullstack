@@ -1202,6 +1202,160 @@
                 ],
                 "additionalProperties": false
               }
+            },
+            "dreamStages": {
+              "type": "object",
+              "properties": {
+                "dreamType": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "stages": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "description": {
+                        "type": "string"
+                      },
+                      "minBalance": {
+                        "type": "number"
+                      },
+                      "minPortfolioValue": {
+                        "type": "number"
+                      },
+                      "minPassiveIncome": {
+                        "type": "number"
+                      },
+                      "minReputation": {
+                        "type": "number"
+                      },
+                      "minProfessionLevel": {
+                        "type": "number"
+                      },
+                      "minTradingLevel": {
+                        "type": "number"
+                      },
+                      "minBankingLevel": {
+                        "type": "number"
+                      },
+                      "requiredItems": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "requireItemFullyOwned": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "noActiveInstallments": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "description"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "dreamType",
+                "title",
+                "description",
+                "stages"
+              ],
+              "additionalProperties": false
+            },
+            "dreamPreview": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "stageCount": {
+                  "type": "integer"
+                },
+                "pathHint": {
+                  "type": "string"
+                },
+                "stages": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "order": {
+                        "type": "integer"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "requirementsPreview": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "kind": {
+                              "type": "string",
+                              "enum": [
+                                "balance",
+                                "profession",
+                                "portfolio",
+                                "banking",
+                                "trading",
+                                "passive",
+                                "reputation",
+                                "property",
+                                "no_installments"
+                              ]
+                            },
+                            "label": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "kind",
+                            "label"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "isFinal": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "order",
+                      "title",
+                      "description",
+                      "requirementsPreview"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "title",
+                "description",
+                "stageCount",
+                "pathHint",
+                "stages"
+              ],
+              "additionalProperties": false
             }
           },
           "required": [
@@ -1210,7 +1364,9 @@
             "salary",
             "balance",
             "items",
-            "dreams"
+            "dreams",
+            "dreamStages",
+            "dreamPreview"
           ],
           "additionalProperties": false
         }
@@ -2141,13 +2297,12 @@
                     "INSIDER",
                     "RUMOR",
                     "OTC_DEAL",
+                    "DEAL_OFFER",
                     "PROPERTY_OFFER",
                     "PROPERTY_DEAL",
                     "PROPERTY_INSTALLMENT",
                     "STOCK_TRADE",
-                    "STOCK_DIVIDEND",
-                    "IPO_ANNOUNCE",
-                    "IPO_COMPLETE"
+                    "STOCK_DIVIDEND"
                   ]
                 },
                 "title": {
@@ -2259,6 +2414,209 @@
               "flavorText"
             ],
             "additionalProperties": false
+          },
+          "dealOffers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "botCharacterId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "botName": {
+                  "type": "string"
+                },
+                "botProfession": {
+                  "type": "string"
+                },
+                "botAvatarSrc": {
+                  "type": "string"
+                },
+                "purpose": {
+                  "type": "string",
+                  "enum": [
+                    "VALUE_EXCHANGE",
+                    "LIQUIDITY",
+                    "DREAM_HELPER",
+                    "STOCK_PACKAGE"
+                  ],
+                  "default": "VALUE_EXCHANGE"
+                },
+                "botGives": {
+                  "type": "object",
+                  "properties": {
+                    "assets": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "CASH",
+                              "STOCK",
+                              "PROPERTY"
+                            ]
+                          },
+                          "cashAmount": {
+                            "type": "number"
+                          },
+                          "stockListingId": {
+                            "type": "string"
+                          },
+                          "ticker": {
+                            "type": "string"
+                          },
+                          "companyName": {
+                            "type": "string"
+                          },
+                          "shares": {
+                            "type": "integer"
+                          },
+                          "propertyId": {
+                            "type": "string"
+                          },
+                          "propertyName": {
+                            "type": "string"
+                          },
+                          "estimatedValue": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "estimatedValue"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "totalEstimatedValue": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "assets",
+                    "totalEstimatedValue"
+                  ],
+                  "additionalProperties": false
+                },
+                "playerGives": {
+                  "type": "object",
+                  "properties": {
+                    "assets": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "CASH",
+                              "STOCK",
+                              "PROPERTY"
+                            ]
+                          },
+                          "cashAmount": {
+                            "type": "number"
+                          },
+                          "stockListingId": {
+                            "type": "string"
+                          },
+                          "ticker": {
+                            "type": "string"
+                          },
+                          "companyName": {
+                            "type": "string"
+                          },
+                          "shares": {
+                            "type": "integer"
+                          },
+                          "propertyId": {
+                            "type": "string"
+                          },
+                          "propertyName": {
+                            "type": "string"
+                          },
+                          "estimatedValue": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "estimatedValue"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "totalEstimatedValue": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "assets",
+                    "totalEstimatedValue"
+                  ],
+                  "additionalProperties": false
+                },
+                "requiredReputation": {
+                  "type": "number"
+                },
+                "requiredTradingLevel": {
+                  "type": "integer"
+                },
+                "reputationPenalty": {
+                  "type": "number"
+                },
+                "playerBenefitValue": {
+                  "type": "number"
+                },
+                "playerBenefitPercent": {
+                  "type": "number"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "ACTIVE",
+                    "ACCEPTED",
+                    "REJECTED",
+                    "EXPIRED",
+                    "NEGOTIATED"
+                  ]
+                },
+                "turnCreated": {
+                  "type": "integer"
+                },
+                "expiresTurn": {
+                  "type": "integer"
+                },
+                "expiresInTurns": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "id",
+                "botCharacterId",
+                "botName",
+                "botProfession",
+                "botGives",
+                "playerGives",
+                "requiredReputation",
+                "requiredTradingLevel",
+                "reputationPenalty",
+                "playerBenefitValue",
+                "playerBenefitPercent",
+                "status",
+                "turnCreated",
+                "expiresTurn",
+                "expiresInTurns"
+              ],
+              "additionalProperties": false
+            }
           },
           "propertyOffers": {
             "type": "array",
@@ -2713,6 +3071,9 @@
               "stats"
             ],
             "additionalProperties": false
+          },
+          "gameOver": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -2724,8 +3085,10 @@
           "insiderChancePercent",
           "insiderRolled",
           "news",
+          "dealOffers",
           "propertyOffers",
-          "characterSkills"
+          "characterSkills",
+          "gameOver"
         ],
         "additionalProperties": false
       },
@@ -2762,13 +3125,12 @@
                     "INSIDER",
                     "RUMOR",
                     "OTC_DEAL",
+                    "DEAL_OFFER",
                     "PROPERTY_OFFER",
                     "PROPERTY_DEAL",
                     "PROPERTY_INSTALLMENT",
                     "STOCK_TRADE",
-                    "STOCK_DIVIDEND",
-                    "IPO_ANNOUNCE",
-                    "IPO_COMPLETE"
+                    "STOCK_DIVIDEND"
                   ]
                 },
                 "title": {
@@ -3185,13 +3547,12 @@
                     "INSIDER",
                     "RUMOR",
                     "OTC_DEAL",
+                    "DEAL_OFFER",
                     "PROPERTY_OFFER",
                     "PROPERTY_DEAL",
                     "PROPERTY_INSTALLMENT",
                     "STOCK_TRADE",
-                    "STOCK_DIVIDEND",
-                    "IPO_ANNOUNCE",
-                    "IPO_COMPLETE"
+                    "STOCK_DIVIDEND"
                   ]
                 },
                 "title": {
@@ -3686,6 +4047,209 @@
               "additionalProperties": false
             }
           },
+          "dealOffers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "botCharacterId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "botName": {
+                  "type": "string"
+                },
+                "botProfession": {
+                  "type": "string"
+                },
+                "botAvatarSrc": {
+                  "type": "string"
+                },
+                "purpose": {
+                  "type": "string",
+                  "enum": [
+                    "VALUE_EXCHANGE",
+                    "LIQUIDITY",
+                    "DREAM_HELPER",
+                    "STOCK_PACKAGE"
+                  ],
+                  "default": "VALUE_EXCHANGE"
+                },
+                "botGives": {
+                  "type": "object",
+                  "properties": {
+                    "assets": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "CASH",
+                              "STOCK",
+                              "PROPERTY"
+                            ]
+                          },
+                          "cashAmount": {
+                            "type": "number"
+                          },
+                          "stockListingId": {
+                            "type": "string"
+                          },
+                          "ticker": {
+                            "type": "string"
+                          },
+                          "companyName": {
+                            "type": "string"
+                          },
+                          "shares": {
+                            "type": "integer"
+                          },
+                          "propertyId": {
+                            "type": "string"
+                          },
+                          "propertyName": {
+                            "type": "string"
+                          },
+                          "estimatedValue": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "estimatedValue"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "totalEstimatedValue": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "assets",
+                    "totalEstimatedValue"
+                  ],
+                  "additionalProperties": false
+                },
+                "playerGives": {
+                  "type": "object",
+                  "properties": {
+                    "assets": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "CASH",
+                              "STOCK",
+                              "PROPERTY"
+                            ]
+                          },
+                          "cashAmount": {
+                            "type": "number"
+                          },
+                          "stockListingId": {
+                            "type": "string"
+                          },
+                          "ticker": {
+                            "type": "string"
+                          },
+                          "companyName": {
+                            "type": "string"
+                          },
+                          "shares": {
+                            "type": "integer"
+                          },
+                          "propertyId": {
+                            "type": "string"
+                          },
+                          "propertyName": {
+                            "type": "string"
+                          },
+                          "estimatedValue": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "estimatedValue"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "totalEstimatedValue": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "assets",
+                    "totalEstimatedValue"
+                  ],
+                  "additionalProperties": false
+                },
+                "requiredReputation": {
+                  "type": "number"
+                },
+                "requiredTradingLevel": {
+                  "type": "integer"
+                },
+                "reputationPenalty": {
+                  "type": "number"
+                },
+                "playerBenefitValue": {
+                  "type": "number"
+                },
+                "playerBenefitPercent": {
+                  "type": "number"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "ACTIVE",
+                    "ACCEPTED",
+                    "REJECTED",
+                    "EXPIRED",
+                    "NEGOTIATED"
+                  ]
+                },
+                "turnCreated": {
+                  "type": "integer"
+                },
+                "expiresTurn": {
+                  "type": "integer"
+                },
+                "expiresInTurns": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "id",
+                "botCharacterId",
+                "botName",
+                "botProfession",
+                "botGives",
+                "playerGives",
+                "requiredReputation",
+                "requiredTradingLevel",
+                "reputationPenalty",
+                "playerBenefitValue",
+                "playerBenefitPercent",
+                "status",
+                "turnCreated",
+                "expiresTurn",
+                "expiresInTurns"
+              ],
+              "additionalProperties": false
+            }
+          },
           "stocks": {
             "type": "array",
             "items": {
@@ -3775,6 +4339,12 @@
                     }
                   ]
                 },
+                "dividendPerShare": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
                 "history": {
                   "type": "array",
                   "items": {
@@ -3813,6 +4383,7 @@
                 "archetypeLabel",
                 "paysDividends",
                 "turnsUntilDividend",
+                "dividendPerShare",
                 "history"
               ],
               "additionalProperties": false
@@ -4011,7 +4582,8 @@
           "news",
           "nextTurnForecast",
           "characterSkills",
-          "propertyOffers"
+          "propertyOffers",
+          "dealOffers"
         ],
         "additionalProperties": false
       },
@@ -4421,13 +4993,12 @@
                   "INSIDER",
                   "RUMOR",
                   "OTC_DEAL",
+                  "DEAL_OFFER",
                   "PROPERTY_OFFER",
                   "PROPERTY_DEAL",
                   "PROPERTY_INSTALLMENT",
                   "STOCK_TRADE",
-                  "STOCK_DIVIDEND",
-                  "IPO_ANNOUNCE",
-                  "IPO_COMPLETE"
+                  "STOCK_DIVIDEND"
                 ]
               },
               "title": {
@@ -4958,13 +5529,12 @@
                       "INSIDER",
                       "RUMOR",
                       "OTC_DEAL",
+                      "DEAL_OFFER",
                       "PROPERTY_OFFER",
                       "PROPERTY_DEAL",
                       "PROPERTY_INSTALLMENT",
                       "STOCK_TRADE",
-                      "STOCK_DIVIDEND",
-                      "IPO_ANNOUNCE",
-                      "IPO_COMPLETE"
+                      "STOCK_DIVIDEND"
                     ]
                   },
                   "title": {
@@ -5445,13 +6015,12 @@
                   "INSIDER",
                   "RUMOR",
                   "OTC_DEAL",
+                  "DEAL_OFFER",
                   "PROPERTY_OFFER",
                   "PROPERTY_DEAL",
                   "PROPERTY_INSTALLMENT",
                   "STOCK_TRADE",
-                  "STOCK_DIVIDEND",
-                  "IPO_ANNOUNCE",
-                  "IPO_COMPLETE"
+                  "STOCK_DIVIDEND"
                 ]
               },
               "title": {
@@ -5743,13 +6312,12 @@
                   "INSIDER",
                   "RUMOR",
                   "OTC_DEAL",
+                  "DEAL_OFFER",
                   "PROPERTY_OFFER",
                   "PROPERTY_DEAL",
                   "PROPERTY_INSTALLMENT",
                   "STOCK_TRADE",
-                  "STOCK_DIVIDEND",
-                  "IPO_ANNOUNCE",
-                  "IPO_COMPLETE"
+                  "STOCK_DIVIDEND"
                 ]
               },
               "title": {
@@ -5885,6 +6453,513 @@
         ],
         "additionalProperties": false
       },
+      "DealOffer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "botCharacterId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "botName": {
+            "type": "string"
+          },
+          "botProfession": {
+            "type": "string"
+          },
+          "botAvatarSrc": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string",
+            "enum": [
+              "VALUE_EXCHANGE",
+              "LIQUIDITY",
+              "DREAM_HELPER",
+              "STOCK_PACKAGE"
+            ],
+            "default": "VALUE_EXCHANGE"
+          },
+          "botGives": {
+            "type": "object",
+            "properties": {
+              "assets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "CASH",
+                        "STOCK",
+                        "PROPERTY"
+                      ]
+                    },
+                    "cashAmount": {
+                      "type": "number"
+                    },
+                    "stockListingId": {
+                      "type": "string"
+                    },
+                    "ticker": {
+                      "type": "string"
+                    },
+                    "companyName": {
+                      "type": "string"
+                    },
+                    "shares": {
+                      "type": "integer"
+                    },
+                    "propertyId": {
+                      "type": "string"
+                    },
+                    "propertyName": {
+                      "type": "string"
+                    },
+                    "estimatedValue": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "estimatedValue"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "totalEstimatedValue": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "assets",
+              "totalEstimatedValue"
+            ],
+            "additionalProperties": false
+          },
+          "playerGives": {
+            "type": "object",
+            "properties": {
+              "assets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "CASH",
+                        "STOCK",
+                        "PROPERTY"
+                      ]
+                    },
+                    "cashAmount": {
+                      "type": "number"
+                    },
+                    "stockListingId": {
+                      "type": "string"
+                    },
+                    "ticker": {
+                      "type": "string"
+                    },
+                    "companyName": {
+                      "type": "string"
+                    },
+                    "shares": {
+                      "type": "integer"
+                    },
+                    "propertyId": {
+                      "type": "string"
+                    },
+                    "propertyName": {
+                      "type": "string"
+                    },
+                    "estimatedValue": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "estimatedValue"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "totalEstimatedValue": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "assets",
+              "totalEstimatedValue"
+            ],
+            "additionalProperties": false
+          },
+          "requiredReputation": {
+            "type": "number"
+          },
+          "requiredTradingLevel": {
+            "type": "integer"
+          },
+          "reputationPenalty": {
+            "type": "number"
+          },
+          "playerBenefitValue": {
+            "type": "number"
+          },
+          "playerBenefitPercent": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "ACCEPTED",
+              "REJECTED",
+              "EXPIRED",
+              "NEGOTIATED"
+            ]
+          },
+          "turnCreated": {
+            "type": "integer"
+          },
+          "expiresTurn": {
+            "type": "integer"
+          },
+          "expiresInTurns": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "botCharacterId",
+          "botName",
+          "botProfession",
+          "botGives",
+          "playerGives",
+          "requiredReputation",
+          "requiredTradingLevel",
+          "reputationPenalty",
+          "playerBenefitValue",
+          "playerBenefitPercent",
+          "status",
+          "turnCreated",
+          "expiresTurn",
+          "expiresInTurns"
+        ],
+        "additionalProperties": false
+      },
+      "AcceptDealBody": {
+        "type": "object",
+        "properties": {
+          "dealId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "dealId"
+        ],
+        "additionalProperties": false
+      },
+      "AcceptDealResponse": {
+        "type": "object",
+        "properties": {
+          "balance": {
+            "type": "number"
+          },
+          "character": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "gameId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "name": {
+                "type": "string"
+              },
+              "balance": {
+                "type": "number"
+              },
+              "profession": {
+                "type": "string",
+                "enum": [
+                  "DOCTOR",
+                  "DEVELOPER",
+                  "FINANCIER",
+                  "FARMER",
+                  "ENGINEER",
+                  "STREET_CLEANER"
+                ]
+              },
+              "professionLevel": {
+                "type": "integer"
+              },
+              "salary": {
+                "type": "number"
+              },
+              "reputation": {
+                "type": "number"
+              },
+              "tradingLevel": {
+                "type": "integer"
+              },
+              "bankingLevel": {
+                "type": "integer"
+              },
+              "propertySlotLevel": {
+                "type": "integer"
+              },
+              "isNpc": {
+                "type": "boolean"
+              },
+              "dreamItemRefs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "totalEarned": {
+                "type": "number"
+              },
+              "totalSpent": {
+                "type": "number"
+              },
+              "totalTrades": {
+                "type": "integer"
+              },
+              "successfulTrades": {
+                "type": "integer"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "inventoryItems": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "characterId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "itemRef": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "purchasePrice": {
+                      "type": "number"
+                    },
+                    "downPaymentAmount": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "isInstallment": {
+                      "type": "boolean"
+                    },
+                    "monthlyPayment": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "installmentsTotal": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "installmentsPaid": {
+                      "type": "integer"
+                    },
+                    "installmentPrepay": {
+                      "type": "number",
+                      "default": 0
+                    },
+                    "special": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "isPaidOff": {
+                      "type": "boolean"
+                    },
+                    "purchasedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "characterId",
+                    "itemRef",
+                    "name",
+                    "purchasePrice",
+                    "downPaymentAmount",
+                    "isInstallment",
+                    "monthlyPayment",
+                    "installmentsTotal",
+                    "installmentsPaid",
+                    "special",
+                    "isPaidOff",
+                    "purchasedAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id",
+              "gameId",
+              "name",
+              "balance",
+              "profession",
+              "professionLevel",
+              "salary",
+              "reputation",
+              "tradingLevel",
+              "bankingLevel",
+              "propertySlotLevel",
+              "isNpc",
+              "dreamItemRefs",
+              "totalEarned",
+              "totalSpent",
+              "totalTrades",
+              "successfulTrades",
+              "createdAt",
+              "updatedAt"
+            ],
+            "additionalProperties": false
+          },
+          "news": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "WELCOME",
+                  "MARKET",
+                  "INSIDER",
+                  "RUMOR",
+                  "OTC_DEAL",
+                  "DEAL_OFFER",
+                  "PROPERTY_OFFER",
+                  "PROPERTY_DEAL",
+                  "PROPERTY_INSTALLMENT",
+                  "STOCK_TRADE",
+                  "STOCK_DIVIDEND"
+                ]
+              },
+              "title": {
+                "type": "string"
+              },
+              "body": {
+                "type": "string"
+              },
+              "excerpt": {
+                "type": "string"
+              },
+              "sentiment": {
+                "type": "string",
+                "enum": [
+                  "POSITIVE",
+                  "NEGATIVE",
+                  "NEUTRAL"
+                ]
+              },
+              "impact": {
+                "type": "number"
+              },
+              "sector": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "companyId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "ticker": {
+                "type": "string"
+              },
+              "hot": {
+                "type": "boolean"
+              },
+              "publishedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "publishedStep": {
+                "type": "integer",
+                "exclusiveMinimum": 0
+              },
+              "payload": {}
+            },
+            "required": [
+              "id",
+              "kind",
+              "title",
+              "body",
+              "excerpt",
+              "sentiment",
+              "impact",
+              "publishedAt"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "balance",
+          "character",
+          "news"
+        ],
+        "additionalProperties": false
+      },
       "StockListing": {
         "type": "object",
         "properties": {
@@ -5972,6 +7047,12 @@
               }
             ]
           },
+          "dividendPerShare": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
           "history": {
             "type": "array",
             "items": {
@@ -6010,6 +7091,7 @@
           "archetypeLabel",
           "paysDividends",
           "turnsUntilDividend",
+          "dividendPerShare",
           "history"
         ],
         "additionalProperties": false
@@ -6106,6 +7188,12 @@
                     }
                   ]
                 },
+                "dividendPerShare": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
                 "history": {
                   "type": "array",
                   "items": {
@@ -6144,6 +7232,7 @@
                 "archetypeLabel",
                 "paysDividends",
                 "turnsUntilDividend",
+                "dividendPerShare",
                 "history"
               ],
               "additionalProperties": false
@@ -6245,6 +7334,12 @@
                   }
                 ]
               },
+              "dividendPerShare": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
               "history": {
                 "type": "array",
                 "items": {
@@ -6283,6 +7378,7 @@
               "archetypeLabel",
               "paysDividends",
               "turnsUntilDividend",
+              "dividendPerShare",
               "history"
             ],
             "additionalProperties": false
@@ -6437,13 +7533,12 @@
                   "INSIDER",
                   "RUMOR",
                   "OTC_DEAL",
+                  "DEAL_OFFER",
                   "PROPERTY_OFFER",
                   "PROPERTY_DEAL",
                   "PROPERTY_INSTALLMENT",
                   "STOCK_TRADE",
-                  "STOCK_DIVIDEND",
-                  "IPO_ANNOUNCE",
-                  "IPO_COMPLETE"
+                  "STOCK_DIVIDEND"
                 ]
               },
               "title": {
@@ -6600,95 +7695,6 @@
               "additionalProperties": false
             }
           },
-          "news": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "format": "uuid"
-              },
-              "kind": {
-                "type": "string",
-                "enum": [
-                  "WELCOME",
-                  "MARKET",
-                  "INSIDER",
-                  "RUMOR",
-                  "OTC_DEAL",
-                  "PROPERTY_OFFER",
-                  "PROPERTY_DEAL",
-                  "PROPERTY_INSTALLMENT",
-                  "STOCK_TRADE",
-                  "STOCK_DIVIDEND",
-                  "IPO_ANNOUNCE",
-                  "IPO_COMPLETE"
-                ]
-              },
-              "title": {
-                "type": "string"
-              },
-              "body": {
-                "type": "string"
-              },
-              "excerpt": {
-                "type": "string"
-              },
-              "sentiment": {
-                "type": "string",
-                "enum": [
-                  "POSITIVE",
-                  "NEGATIVE",
-                  "NEUTRAL"
-                ]
-              },
-              "impact": {
-                "type": "number"
-              },
-              "sector": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "companyId": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "format": "uuid"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "ticker": {
-                "type": "string"
-              },
-              "hot": {
-                "type": "boolean"
-              },
-              "publishedAt": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "publishedStep": {
-                "type": "integer",
-                "exclusiveMinimum": 0
-              },
-              "payload": {}
-            },
-            "required": [
-              "id",
-              "kind",
-              "title",
-              "body",
-              "excerpt",
-              "sentiment",
-              "impact",
-              "publishedAt"
-            ],
-            "additionalProperties": false
-          },
           "gross": {
             "type": "number"
           },
@@ -6705,11 +7711,85 @@
         "required": [
           "balance",
           "portfolio",
-          "news",
           "gross",
           "commissionPercent",
           "commissionAmount",
           "net"
+        ],
+        "additionalProperties": false
+      },
+      "StockTradeListResponse": {
+        "type": "object",
+        "properties": {
+          "trades": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "ticker": {
+                  "type": "string"
+                },
+                "companyName": {
+                  "type": "string"
+                },
+                "sector": {
+                  "type": "string"
+                },
+                "operationType": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "integer"
+                },
+                "price": {
+                  "type": "number"
+                },
+                "total": {
+                  "type": "number"
+                },
+                "netTotal": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "commission": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "turn": {
+                  "type": "integer"
+                },
+                "createdAt": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "ticker",
+                "companyName",
+                "sector",
+                "operationType",
+                "quantity",
+                "price",
+                "total",
+                "netTotal",
+                "commission",
+                "turn",
+                "createdAt"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "trades"
         ],
         "additionalProperties": false
       },
@@ -7155,6 +8235,204 @@
         "required": [
           "login",
           "password"
+        ],
+        "additionalProperties": false
+      },
+      "CreateFeedbackBody": {
+        "type": "object",
+        "properties": {
+          "saveId": {
+            "type": "string"
+          },
+          "messageType": {
+            "type": "string",
+            "enum": [
+              "error",
+              "suggestion",
+              "feedback",
+              "other"
+            ]
+          },
+          "comment": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "saveId",
+          "messageType",
+          "comment"
+        ],
+        "additionalProperties": false
+      },
+      "CreateFeedbackResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "createdAt"
+        ],
+        "additionalProperties": false
+      },
+      "Dream": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "dreamType": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "currentStage": {
+            "type": "integer"
+          },
+          "stages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "stageIndex": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "LOCKED",
+                    "ACTIVE",
+                    "READY_TO_COMPLETE",
+                    "COMPLETED"
+                  ]
+                },
+                "requirement": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "minBalance": {
+                      "type": "number"
+                    },
+                    "minPortfolioValue": {
+                      "type": "number"
+                    },
+                    "minPassiveIncome": {
+                      "type": "number"
+                    },
+                    "minReputation": {
+                      "type": "number"
+                    },
+                    "minProfessionLevel": {
+                      "type": "number"
+                    },
+                    "minTradingLevel": {
+                      "type": "number"
+                    },
+                    "minBankingLevel": {
+                      "type": "number"
+                    },
+                    "requiredItems": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "requireItemFullyOwned": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "noActiveInstallments": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "description"
+                  ],
+                  "additionalProperties": false
+                },
+                "completedAt": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "completedTurn": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "stageIndex",
+                "status",
+                "requirement",
+                "completedAt",
+                "completedTurn"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "id",
+          "dreamType",
+          "title",
+          "description",
+          "currentStage",
+          "stages"
+        ],
+        "additionalProperties": false
+      },
+      "CompleteStageBody": {
+        "type": "object",
+        "properties": {
+          "dreamId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "dreamId"
+        ],
+        "additionalProperties": false
+      },
+      "FulfillDreamBody": {
+        "type": "object",
+        "properties": {
+          "dreamId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "dreamId"
         ],
         "additionalProperties": false
       }
@@ -8857,6 +10135,100 @@
         }
       }
     },
+    "/saves/{id}/deals/accept": {
+      "post": {
+        "tags": [
+          "game"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptDealBody"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptDealResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/saves/{id}/news": {
       "get": {
         "tags": [
@@ -8970,6 +10342,287 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NextTurnForecastResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/dream": {
+      "get": {
+        "tags": [
+          "game"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dream"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/dream/complete-stage": {
+      "post": {
+        "tags": [
+          "game"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteStageBody"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dream"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saves/{id}/dream/fulfill": {
+      "post": {
+        "tags": [
+          "game"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FulfillDreamBody"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    }
+                  }
                 }
               }
             }
@@ -9620,6 +11273,91 @@
         }
       }
     },
+    "/saves/{id}/stocks/trades": {
+      "get": {
+        "tags": [
+          "market"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockTradeListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/saves/{id}/portfolio": {
       "get": {
         "tags": [
@@ -10099,6 +11837,89 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/IpoSubscribeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/feedback": {
+      "post": {
+        "tags": [
+          "feedback"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFeedbackBody"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateFeedbackResponse"
                 }
               }
             }

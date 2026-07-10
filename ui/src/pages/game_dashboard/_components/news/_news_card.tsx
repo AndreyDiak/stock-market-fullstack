@@ -1,4 +1,5 @@
 import type { news_item } from '../../_model/types'
+import { gameAudio } from '../../../../lib/audio/game_audio'
 import {
   format_insider_relevance_label,
   get_insider_turns_left,
@@ -186,17 +187,22 @@ export function NewsCard({
     return <div id={`news-card-${item.id}`} className={cardClass}>{body}</div>
   }
 
+  const handleSelect = () => {
+    gameAudio.playSfx('buttonClick')
+    onSelect?.(item)
+  }
+
   return (
     <div
       id={`news-card-${item.id}`}
       role="button"
       tabIndex={0}
       className={cardClass}
-      onClick={() => onSelect?.(item)}
+      onClick={handleSelect}
       onKeyDown={(event) => {
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault()
-          onSelect?.(item)
+          handleSelect()
         }
       }}
     >

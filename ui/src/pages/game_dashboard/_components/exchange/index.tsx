@@ -167,6 +167,13 @@ export function ExchangeTable() {
             onChange={(tab) => { gameAudio.playSfx('buttonClick'); setActiveTab(tab); }}
             portfolioCount={portfolio.length}
           />
+          {activeTab === 'market' ? (
+            <ExchangeStockFilters
+              filters={filters}
+              onChange={setFilters}
+              sectors={sectors}
+            />
+          ) : null}
         </div>
 
         <ExchangeMarketSpotlight
@@ -178,17 +185,10 @@ export function ExchangeTable() {
 
         {activeTab === 'market' ? (
           <>
-            <ExchangeStockFilters
-              filters={filters}
-              onChange={setFilters}
-              sectors={sectors}
-              matchedCount={filteredListings.length}
-              totalCount={listingGroups.catalog.length}
-            />
             {filteredListings.length === 0 ? (
               <div className="exchange-empty">
                 <p className="exchange-empty__title">Ничего не найдено</p>
-                <p className="exchange-empty__text">Измените фильтры или очистите поиск</p>
+                <p className="exchange-empty__text">Выберите другой сектор</p>
               </div>
             ) : (
               <motion.div

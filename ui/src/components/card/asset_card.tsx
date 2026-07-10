@@ -1,16 +1,17 @@
-import { MoneyValue } from '../money/money_value'
-import { AssetImageFrame } from '../../shared/components'
+import { AssetImageFrame } from "../../shared/components";
+import { MoneyValue } from "../money/money_value";
 
 interface AssetCardProps {
-  name: string
-  image?: string
-  price?: number
-  badge?: string
-  empty?: boolean
-  variant?: 'default' | 'dream' | 'thumb'
+  name: string;
+  image?: string;
+  price?: number;
+  badge?: string;
+  empty?: boolean;
+  variant?: "default" | "dream" | "thumb";
 }
 
-const textShadow = '[text-shadow:0_1px_4px_rgba(0,0,0,0.95),0_0_12px_rgba(0,0,0,0.6)]'
+const textShadow =
+  "[text-shadow:0_1px_4px_rgba(0,0,0,0.95),0_0_12px_rgba(0,0,0,0.6)]";
 
 export function AssetCard({
   name,
@@ -18,15 +19,15 @@ export function AssetCard({
   price,
   badge,
   empty = false,
-  variant = 'default',
+  variant = "default",
 }: AssetCardProps) {
-  const isDream = variant === 'dream'
-  const isThumb = variant === 'thumb'
+  const isDream = variant === "dream";
+  const isThumb = variant === "thumb";
 
   if (empty) {
     return (
       <div className="aspect-square rounded-2xl border-2 border-dashed border-emerald-400/20 bg-slate-800/40" />
-    )
+    );
   }
 
   if (isThumb) {
@@ -40,7 +41,7 @@ export function AssetCard({
           className="absolute inset-0 rounded-2xl"
         />
       </article>
-    )
+    );
   }
 
   return (
@@ -59,7 +60,7 @@ export function AssetCard({
         {badge && (
           <span
             className={`text-[10px] font-semibold uppercase tracking-[0.18em] ${
-              isDream ? `text-white ${textShadow}` : 'text-slate-400'
+              isDream ? `text-white ${textShadow}` : "text-slate-400"
             }`}
           >
             {badge}
@@ -67,7 +68,7 @@ export function AssetCard({
         )}
         <p
           className={`truncate text-sm font-bold ${
-            isDream ? `text-white ${textShadow}` : 'text-white'
+            isDream ? `text-white ${textShadow}` : "text-white"
           }`}
         >
           {name}
@@ -76,10 +77,10 @@ export function AssetCard({
           <MoneyValue
             amount={price}
             size="sm"
-            tone={isDream ? 'overlay' : 'default'}
+            tone={isDream ? "overlay" : "default"}
           />
         )}
       </div>
     </article>
-  )
+  );
 }

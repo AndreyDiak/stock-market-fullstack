@@ -90,16 +90,6 @@ export class DealService {
     };
   }
 
-  async reject(
-    gameId: string,
-    deal: GeneratedDealOffer,
-  ) {
-    await this.#prisma.dealOffer.updateMany({
-      where: { id: deal.id, gameId },
-      data: { status: 'REJECTED' },
-    });
-  }
-
   #validatePlayerCanGive(character: CharacterWithInventory, playerGives: DealBundle) {
     for (const asset of playerGives.assets) {
       switch (asset.type) {

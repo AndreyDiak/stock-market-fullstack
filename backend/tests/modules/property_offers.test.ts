@@ -8,8 +8,10 @@ import {
   gradeFromPercent,
   isProfitableForPlayer,
   requiredBankingLevel,
+  randomPercentInGrade,
 } from '../../src/modules/property_offers/_profit.js';
 import { buildOfferParams } from '../../src/modules/property_offers/_generator.js';
+import { REAL_ESTATE } from '../../src/assets/real_estate.js';
 import {
   getNextCycleCategory,
   kindToNewsCategory,
@@ -33,7 +35,7 @@ describe('property offer negotiate slider', () => {
   it('maps sell markup adjustment to D20 target', () => {
     expect(calcNegotiateTarget(-15)).toBe(5);
     expect(calcNegotiateTarget(50)).toBe(19);
-    expect(calcNegotiateTarget(15)).toBe(12);
+    expect(calcNegotiateTarget(15)).toBe(11);
   });
 
   it('calculates purchase success chance from reputation', () => {
@@ -43,7 +45,7 @@ describe('property offer negotiate slider', () => {
 
   it('calculates sell success chance from reputation', () => {
     expect(calcNegotiateSuccessChance(-15, 3)).toBeGreaterThan(80);
-    expect(calcNegotiateSuccessChance(50, 3)).toBeLessThan(20);
+    expect(calcNegotiateSuccessChance(50, 3)).toBe(25);
   });
 
   it('calculates proposed price by offer type', () => {
@@ -67,6 +69,14 @@ describe('property offer profit', () => {
     expect(requiredBankingLevel('F')).toBe(1);
     expect(requiredBankingLevel('C')).toBe(4);
     expect(requiredBankingLevel('A')).toBe(6);
+  });
+
+  it('limits grade A discount to 50-60%', () => {
+    for (let i = 0; i < 200; i++) {
+      const percent = randomPercentInGrade('A', Math.random);
+      expect(percent).toBeGreaterThanOrEqual(50);
+      expect(percent).toBeLessThanOrEqual(60);
+    }
   });
 
   it('calculates profitable BUY offer', () => {
@@ -136,6 +146,70 @@ describe('property offer profit', () => {
     expect(blockedByInventory?.inventoryItemId).not.toBe('inv-apartment-1');
   });
 
+  it('does not offer deal-only luxury assets on the property market', () => {
+    const dealOnlyIds = REAL_ESTATE.filter((asset) => asset.dealOnly).map((asset) => asset.id);
+    expect(dealOnlyIds.length).toBeGreaterThan(0);
+    expect(dealOnlyIds).toContain('penthouse');
+    expect(dealOnlyIds).toContain('sport_car');
+
+    for (let i = 0; i < 500; i++) {
+      const params = buildOfferParams({
+        gameId: 'game-1',
+        gameStep: 5,
+        inventoryItems: [],
+        random: Math.random,
+      });
+      if (!params) continue;
+      expect(dealOnlyIds).not.toContain(params.assetId);
+    }
+  });
+
+  it('does not generate BUY offer for deal-only luxury in player inventory', () => {
+    const luxuryItem = {
+      id: 'inv-car-wash',
+      itemRef: 'car_wash',
+      name: 'Автомойка',
+      purchasePrice: 150_000,
+      isInstallment: false,
+      isPaidOff: true,
+    } as InventoryItem;
+
+    for (let i = 0; i < 100; i++) {
+      const params = buildOfferParams({
+        gameId: 'game-1',
+        gameStep: 5,
+        inventoryItems: [luxuryItem],
+        random: () => 0.5,
+      });
+      if (!params) continue;
+      expect(params.assetId).not.toBe('car_wash');
+      expect(params.inventoryItemId).not.toBe('inv-car-wash');
+    }
+  });
+
+  it('does not generate BUY offer for deal-only sport car in player inventory', () => {
+    const luxuryItem = {
+      id: 'inv-sport-car',
+      itemRef: 'sport_car',
+      name: 'Спорткар',
+      purchasePrice: 180_000,
+      isInstallment: false,
+      isPaidOff: true,
+    } as InventoryItem;
+
+    for (let i = 0; i < 100; i++) {
+      const params = buildOfferParams({
+        gameId: 'game-1',
+        gameStep: 5,
+        inventoryItems: [luxuryItem],
+        random: () => 0.5,
+      });
+      if (!params) continue;
+      expect(params.assetId).not.toBe('sport_car');
+      expect(params.inventoryItemId).not.toBe('inv-sport-car');
+    }
+  });
+
   it('generates forced grade offers for starter deals', () => {
     const fOffer = buildOfferParams({
       gameId: 'g1',
@@ -179,9 +253,9 @@ describe('news cycle', () => {
 
   it('picks next turn content from last news kind', () => {
     expect(pickNextContentType(null)).toBe('stock');
-    expect(pickNextContentType('MARKET')).toBe('otc');
-    expect(pickNextContentType('RUMOR')).toBe('otc');
-    expect(pickNextContentType('INSIDER')).toBe('otc');
+    expect(pickNextContentType('MARKET')).toBe('deal');
+    expect(pickNextContentType('RUMOR')).toBe('deal');
+    expect(pickNextContentType('INSIDER')).toBe('deal');
     expect(pickNextContentType('OTC_DEAL')).toBe('property');
     expect(pickNextContentType('PROPERTY_OFFER')).toBe('stock');
   });

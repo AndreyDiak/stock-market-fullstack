@@ -4,11 +4,15 @@ import { useGameStore } from '../../../../stores/game.store'
 import { GameModal } from '../../../../components/game_ui/floating'
 import { GameButton } from '../../../../components/game_ui/game_button'
 import { MoneyValue } from '../../../../components/money/money_value'
-import { format_turn_step_label } from '../../_model/utils'
 import { PairList, PairListGroup, PairListRow } from './_bank_pair_list'
 import { BankPropertyModalHeader } from './_bank_property_modal_header'
 import type { PropertyOperation } from './_bank_operation_history'
 import { StatusBadge } from '../shared'
+import {
+  buildInstallmentPaymentHistory,
+  resolveDownPaymentLabel,
+} from './_bank_installment_payment_history'
+import { calcInstallmentTotalOwed, resolveDownPaymentAmount } from '../real_estate/_installment_purchase'
 
 interface InstallmentPaymentHistoryModalProps {
   operation: PropertyOperation
@@ -20,6 +24,8 @@ export function InstallmentPaymentHistoryModal({
   onClose,
 }: InstallmentPaymentHistoryModalProps) {
   const inventoryItems = useGameStore((state) => state.inventoryItems)
+  const currentTurn = useGameStore((state) => state.turn)
+  const news = useGameStore((state) => state.news)
 
   const inventoryItem = useMemo(
     () =>
@@ -33,16 +39,47 @@ export function InstallmentPaymentHistoryModal({
   const installmentsPaid = inventoryItem?.installmentsPaid ?? 0
   const purchaseTurn = operation.details?.purchaseTurn
   const firstPayment = operation.details?.firstPayment ?? 0
+  const downPayment = inventoryItem ? resolveDownPaymentAmount(inventoryItem) : firstPayment
+  const totalOwed = inventoryItem ? calcInstallmentTotalOwed(inventoryItem) : undefined
 
-  const payments = useMemo(() => {
-    if (!purchaseTurn || monthlyPayment <= 0 || installmentsPaid <= 0) return []
+  const payments = useMemo(
+    () =>
+      buildInstallmentPaymentHistory({
+        itemRef: operation.itemRef,
+        purchaseTurn,
+        monthlyPayment,
+        installmentsPaid,
+        finalPaymentTurn: operation.details?.finalPaymentTurn,
+        currentTurn,
+        news,
+        isPaidOff: inventoryItem?.isPaidOff ?? false,
+        downPayment,
+        totalOwed,
+      }),
+    [
+      operation.itemRef,
+      purchaseTurn,
+      monthlyPayment,
+      installmentsPaid,
+      operation.details?.finalPaymentTurn,
+      currentTurn,
+      news,
+      inventoryItem?.isPaidOff,
+      downPayment,
+      totalOwed,
+    ],
+  )
 
-    const list: Array<{ turn: number; amount: number }> = []
-    for (let i = 1; i <= installmentsPaid; i++) {
-      list.push({ turn: purchaseTurn + i, amount: monthlyPayment })
-    }
-    return list
-  }, [purchaseTurn, monthlyPayment, installmentsPaid])
+  const downPaymentLabel = useMemo(
+    () =>
+      resolveDownPaymentLabel({
+        itemRef: operation.itemRef,
+        purchasePrice: operation.price,
+        purchaseTurn,
+        news,
+      }),
+    [operation.itemRef, operation.price, purchaseTurn, news],
+  )
 
   const hasAnyPayments = firstPayment > 0 || payments.length > 0
 
@@ -74,9 +111,9 @@ export function InstallmentPaymentHistoryModal({
           ) : (
             <div className="max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-transparent">
               <PairList>
-                {firstPayment > 0 && purchaseTurn ? (
+                {firstPayment > 0 ? (
                   <PairListGroup>
-                    <PairListRow label={`Первоначальный взнос · ${format_turn_step_label(purchaseTurn)}`}>
+                    <PairListRow label={downPaymentLabel}>
                       <MoneyValue amount={firstPayment} size="sm" color="red" prefix="−" className="inline-flex" />
                     </PairListRow>
                   </PairListGroup>
@@ -84,9 +121,9 @@ export function InstallmentPaymentHistoryModal({
 
                 {payments.length > 0 ? (
                   <PairListGroup>
-                    {payments.map((p) => (
-                      <PairListRow key={p.turn} label={format_turn_step_label(p.turn)}>
-                        <MoneyValue amount={p.amount} size="sm" color="red" prefix="−" className="inline-flex" />
+                    {payments.map((payment) => (
+                      <PairListRow key={payment.id} label={payment.label}>
+                        <MoneyValue amount={payment.amount} size="sm" color="red" prefix="−" className="inline-flex" />
                       </PairListRow>
                     ))}
                   </PairListGroup>

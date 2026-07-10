@@ -1,0 +1,5 @@
+-- CreateEnum
+CREATE TYPE "DealPurpose" AS ENUM ('VALUE_EXCHANGE', 'LIQUIDITY', 'DREAM_HELPER', 'STOCK_PACKAGE');
+
+-- AlterTable
+ALTER TABLE "deal_offers" ADD COLUMN "purpose" "DealPurpose" NOT NULL DEFAULT 'VALUE_EXCHANGE';

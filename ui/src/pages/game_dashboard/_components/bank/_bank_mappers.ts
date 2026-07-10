@@ -81,6 +81,7 @@ function mapPaidProperty(
   item: InventoryItemDto,
   news: news_item[],
   bankBaseRatePercent: number,
+  currentTurn = 1,
 ): PaidProperty {
   const wasInstallment = item.isInstallment
   const totalPaid = wasInstallment ? calcInstallmentTotalOwed(item) : item.purchasePrice
@@ -102,7 +103,7 @@ function mapPaidProperty(
     passiveIncome,
     description: catalog?.description ?? null,
     purchaseTurn,
-    details: buildInventoryItemFinanceDetails(item, news, bankBaseRatePercent),
+    details: buildInventoryItemFinanceDetails(item, news, bankBaseRatePercent, currentTurn),
   }
 }
 
@@ -111,6 +112,7 @@ export function mapMortgagePropertyDetails(
   inventoryItem: InventoryItemDto | undefined,
   news: news_item[],
   bankBaseRatePercent: number,
+  currentTurn = 1,
 ): MortgagePropertyDetails {
   const catalog = REAL_ESTATE_CATALOG.find((entry) => entry.id === loan.itemRef)
   const passiveIncome = parseCatalogPassiveIncome(loan.itemRef)
@@ -127,7 +129,7 @@ export function mapMortgagePropertyDetails(
     passiveIncome,
     purchaseTurn,
     details: inventoryItem
-      ? buildInventoryItemFinanceDetails(inventoryItem, news, bankBaseRatePercent)
+      ? buildInventoryItemFinanceDetails(inventoryItem, news, bankBaseRatePercent, currentTurn)
       : null,
   }
 }
@@ -136,6 +138,7 @@ export function mapInventoryToBankState(
   items: InventoryItemDto[],
   news: news_item[] = [],
   bankBaseRatePercent = 0,
+  currentTurn = 1,
 ): {
   activeLoans: ActiveLoan[]
   paidProperties: PaidProperty[]
@@ -144,7 +147,7 @@ export function mapInventoryToBankState(
   const activeLoans = items.filter(hasActiveInstallmentDebt).map(mapActiveLoan)
   const paidProperties = items
     .filter((item) => item.isPaidOff && !hasActiveInstallmentDebt(item))
-    .map((item) => mapPaidProperty(item, news, bankBaseRatePercent))
+    .map((item) => mapPaidProperty(item, news, bankBaseRatePercent, currentTurn))
 
   const totalDebt = activeLoans.reduce((sum, loan) => sum + loan.remainingAmount, 0)
   const paymentPerTurn = activeLoans.reduce((sum, loan) => sum + loan.paymentPerTurn, 0)

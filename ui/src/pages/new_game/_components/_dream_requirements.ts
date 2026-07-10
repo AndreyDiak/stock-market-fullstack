@@ -21,7 +21,6 @@ const ITEM_LABELS: Record<string, string> = {
   expensive_painting: 'Картина',
 }
 
-const PREVIEW_MAX_VISIBLE = 4
 
 function formatMoney(value: number): string {
   return value.toLocaleString('ru-RU')
@@ -73,33 +72,4 @@ export function buildDreamRequirementsPreview(
   }
 
   return items
-}
-
-export function limitDreamRequirementsPreview(
-  items: CharacterDreamPreviewRequirement[],
-): CharacterDreamPreviewRequirement[] {
-  if (items.length <= PREVIEW_MAX_VISIBLE) return items
-
-  const properties = items.filter(
-    (item) => item.kind === 'property' || item.kind === 'no_installments',
-  )
-  const others = items.filter(
-    (item) => item.kind !== 'property' && item.kind !== 'no_installments',
-  )
-
-  const slots = PREVIEW_MAX_VISIBLE - 1
-  const propertySlots = Math.min(properties.length, Math.max(1, Math.min(2, slots - 1)))
-  const otherSlots = slots - propertySlots
-  const visible = [...others.slice(0, otherSlots), ...properties.slice(0, propertySlots)]
-  const overflow = items.length - visible.length
-  const word = overflow === 1 ? 'условие' : 'условия'
-  visible.push({ kind: 'property', label: `+ ещё ${overflow} ${word}` })
-  return visible
-}
-
-export function isOverflowRequirementPreview(
-  requirement: CharacterDreamPreviewRequirement | string,
-): boolean {
-  const label = typeof requirement === 'string' ? requirement : requirement.label
-  return label.startsWith('+')
 }
