@@ -7,8 +7,9 @@ export type dashboard_tab =
   | 'character'
   | 'bank'
   | 'exchange'
-  | 'otc'
+  | 'deals'
   | 'real-estate'
+  | 'dream'
   | 'news'
   | 'settings'
 
@@ -17,6 +18,7 @@ export interface portfolio_row {
   name: string
   qty: number
   price: number
+  purchasePrice: number
   changePct: number
   paysDividends?: boolean
   turnsUntilDividend?: number | null

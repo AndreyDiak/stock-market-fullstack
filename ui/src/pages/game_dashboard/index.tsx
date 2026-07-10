@@ -12,6 +12,8 @@ import { Header } from './_components/layout/_header'
 import { LeftSidebar } from './_components/layout/_left_sidebar'
 import { RightPanel } from './_components/layout/_right_panel'
 import { ExitGameModal } from './_components/layout/_exit_game_modal'
+import { GameOverModal } from './_components/layout/_game_over_modal'
+
 import { NewsNewspaperModal } from './_components/news/_news_newspaper_modal'
 import { useDashboardTheme } from './_model/use_dashboard_theme'
 import { DashboardUiProvider } from './_model/dashboard_ui_context'
@@ -145,6 +147,8 @@ export function GameDashboardPage() {
           onCancel={() => setExitModalOpen(false)}
           onConfirm={() => navigate('/slots')}
         />
+
+        <GameOverModal />
       </GameShell>
     </DashboardUiProvider>
   )

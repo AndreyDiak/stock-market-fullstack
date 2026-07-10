@@ -4,6 +4,7 @@ import type { news_item, portfolio_row } from '../../_model/types'
 import { formatSectorLabel } from './_stock_grade_config'
 import { getSectorIcon } from './_sector_icons'
 import { find_latest_market_news, format_change } from '../../_model/utils'
+import { MoneyValue } from '../../../../components/money/money_value'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const SECTOR_COLORS: Record<string, string> = {
@@ -64,13 +65,6 @@ interface AnalyticsTabProps {
   openExchangeTab: (listingId?: string) => void
 }
 
-function formatMoney(value: number): string {
-  const abs = Math.abs(value)
-  if (abs >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`
-  if (abs >= 1_000) return `${(value / 1_000).toFixed(0)}K`
-  return value.toFixed(0)
-}
-
 function SectorAccordion({
   sector,
   portfolioRows,
@@ -127,7 +121,7 @@ function SectorAccordion({
         <Icon className="analytics-tab__sector-icon" aria-hidden />
         <span className="analytics-tab__sector-label">{formatSectorLabel(sector)}</span>
         <span className="analytics-tab__sector-meta">
-          {count} {(count === 1 ? 'акция' : count >= 2 && count <= 4 ? 'акции' : 'акций')} · {formatMoney(totalValue)} ₽ · {avgChange >= 0 ? '+' : ''}{avgChange.toFixed(1)}%
+          {count} {(count === 1 ? 'акция' : count >= 2 && count <= 4 ? 'акции' : 'акций')} · <MoneyValue amount={totalValue} size="xs" color="muted" className="inline-flex" /> · {avgChange >= 0 ? '+' : ''}{avgChange.toFixed(1)}%
         </span>
         {hasNewsPressure ? (
           <span className="analytics-tab__sector-chip analytics-tab__sector-chip--news">Новости</span>
@@ -178,9 +172,15 @@ function SectorAccordion({
                       </td>
                       <td className="analytics-tab__sector-table-name">{row.name}</td>
                       <td className="analytics-tab__sector-table-num">{row.qty}</td>
-                      <td className="analytics-tab__sector-table-num">{row.price.toFixed(0)}</td>
-                      <td className="analytics-tab__sector-table-num">{currentPrice.toFixed(0)}</td>
-                      <td className="analytics-tab__sector-table-num">{formatMoney(cost)}</td>
+                      <td className="analytics-tab__sector-table-num">
+                        <MoneyValue amount={row.price} size="xs" color="muted" className="inline-flex" />
+                      </td>
+                      <td className="analytics-tab__sector-table-num">
+                        <MoneyValue amount={currentPrice} size="xs" color="muted" className="inline-flex" />
+                      </td>
+                      <td className="analytics-tab__sector-table-num">
+                        <MoneyValue amount={cost} size="xs" color="white" className="inline-flex" />
+                      </td>
                       <td className={`analytics-tab__sector-table-pct ${changePct >= 0 ? 'analytics-tab__sector-table-pct--up' : 'analytics-tab__sector-table-pct--down'}`}>
                         {format_change(changePct)}
                       </td>

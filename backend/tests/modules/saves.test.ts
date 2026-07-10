@@ -54,7 +54,7 @@ describe('Saves module', () => {
     expect(body.slot).toBe(1);
     expect(body.character.name).toBe('Алекс');
     expect(body.character.profession).toBe('DEVELOPER');
-    expect(body.character.dreamItemRefs).toEqual(['penthouse', 'sport_car']);
+    expect(body.character.dreamItemRefs).toEqual(['trip', 'penthouse']);
   });
 
   it('POST /saves returns 409 for duplicate slot', async () => {

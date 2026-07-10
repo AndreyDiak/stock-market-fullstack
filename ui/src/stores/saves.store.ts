@@ -11,6 +11,7 @@ interface SlotInfo {
   profession?: string
   balance?: number
   day?: number
+  status?: string
 }
 
 interface SavesState {
@@ -44,6 +45,7 @@ export const useSavesStore = create<SavesState>((set, get) => ({
             profession: game.character?.profession,
             balance: game.character?.balance,
             day: game.step ?? 1,
+            status: game.status,
           }
         }
         return { slot, filled: false }

@@ -33,7 +33,7 @@ function parsePassiveIncome(special: string | null | undefined) {
   return match ? Number(match[1]) : 0
 }
 
-function calcPaybackPct(item: InventoryItemDto): number {
+export function calcPaybackPct(item: InventoryItemDto): number {
   if (item.isPaidOff || !item.isInstallment) {
     return 100
   }
@@ -68,7 +68,7 @@ function hasActiveInstallmentDebt(item: InventoryItemDto): boolean {
 
 function mapPropertyItem(item: InventoryItemDto): PropertyItem {
   const catalog = REAL_ESTATE_CATALOG.find((entry) => entry.id === item.itemRef)
-  const special = item.special ?? catalog?.special
+  const special = catalog?.special ?? item.special
   const monthlyPayment = item.monthlyPayment ?? catalog?.monthlyPayment ?? 0
   const paybackPct = calcPaybackPct(item)
   const isOwned =
@@ -114,6 +114,7 @@ export function mapCharacterToProfile(character: GameCharacter): CharacterProfil
     salary: character.salary,
     reputation: roundReputation(character.reputation),
     tradingLevel: character.tradingLevel,
+    bankingLevel: character.bankingLevel,
     dreams: character.dreamItemRefs.map((itemRef) => {
       const catalog = REAL_ESTATE_CATALOG.find((entry) => entry.id === itemRef)
       return {

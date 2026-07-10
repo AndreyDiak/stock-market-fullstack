@@ -3,6 +3,7 @@ import type {
   GeneratedOtcDeal,
   PersistedNewsItem,
 } from '../news/types.js';
+import type { GeneratedDealOffer } from '../deals/deal.types.js';
 import type { DividendPayoutEvent } from '../market/dividend.service.js';
 import type { PropertyOfferDto } from '../property_offers/_types.js';
 import type { CharacterDto } from '../../schemas/character.schema.js';
@@ -31,6 +32,7 @@ export interface TurnState {
   insiderRolled: boolean;
   news: PersistedNewsItem[];
   otcDeal?: GeneratedOtcDeal;
+  dealOffer?: GeneratedDealOffer;
   propertyOffersCreated?: boolean;
   dividendPayouts?: DividendPayoutEvent[];
 }
@@ -53,9 +55,11 @@ export interface EndTurnResult {
   insiderRolled: boolean;
   news: PersistedNewsItem[];
   otcDeal?: GeneratedOtcDeal;
+  dealOffers: GeneratedDealOffer[];
   propertyOffers: PropertyOfferDto[];
   characterSkills: CharacterSkillsState;
   dividendPayouts?: DividendPayoutEvent[];
+  gameOver: boolean;
 }
 
 export interface TurnPhase {

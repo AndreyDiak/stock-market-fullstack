@@ -6,7 +6,6 @@ import type { PortfolioRow, StockListing } from '../../../../api/stocks';
 import { StockSparkline } from './_stock_sparkline';
 import { getHistoryWindowMeta, getSparklineDisplayHistory, resolveListingHistory } from './_stock_sparkline_utils';
 import { StockChangeBadge } from './_stock_change_badge';
-import { format_change } from '../../_model/utils';
 import { gameAudio } from '../../../../lib/audio/game_audio';
 
 export function StockSellModal({
@@ -49,9 +48,7 @@ export function StockSellModal({
     [gross, commissionPercent],
   );
   const net = useMemo(() => Number((gross - commissionAmount).toFixed(2)), [gross, commissionAmount]);
-
-  const profitPerShare = currentPrice - (row?.price ?? 0);
-  const totalProfit = profitPerShare * quantity;
+  const netProfit = useMemo(() => Number((net - (row?.price ?? 0) * quantity).toFixed(2)), [net, row?.price, quantity]);
 
   const handleQuantityChange = (value: number) => {
     gameAudio.playSfx('buttonClick');
@@ -202,13 +199,7 @@ export function StockSellModal({
           </div>
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-400">Прибыль с продажи</span>
-            <span
-              className={`text-sm font-bold font-mono ${
-                totalProfit >= 0 ? 'text-emerald-400' : 'text-rose-400'
-              }`}
-            >
-              {format_change(row.changePct)}
-            </span>
+            <MoneyValue amount={Math.abs(netProfit)} size="sm" color={netProfit >= 0 ? 'emerald' : 'red'} prefix={netProfit >= 0 ? '+' : '−'} />
           </div>
           <div className="flex items-center justify-between border-t border-slate-700/30 pt-1 font-medium text-white">
             <span>На баланс</span>

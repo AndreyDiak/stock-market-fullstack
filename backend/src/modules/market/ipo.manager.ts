@@ -3,7 +3,6 @@ import { COMPANIES } from '../../assets/companies.js';
 import { STOCK_GRADE_CONFIG, randomPriceInGradeRange } from '../../assets/stock_grade.js';
 import { AppError } from '../../utils/errors.js';
 import { ensureCompanyByTicker } from './company_catalog.js';
-import { NewsGenerationService } from '../news/news_generation.service.js';
 import { buildWarmupHistoryRecords } from './sparkline_seed.js';
 
 function targetGradeForTurn(turn: number): StockGrade {
@@ -14,11 +13,9 @@ function targetGradeForTurn(turn: number): StockGrade {
 
 export class IPOManager {
   readonly #prisma: PrismaClient;
-  readonly #newsService: NewsGenerationService;
 
   constructor(prisma: PrismaClient) {
     this.#prisma = prisma;
-    this.#newsService = new NewsGenerationService(prisma);
   }
 
   async processTurn(gameId: string, turn: number): Promise<void> {
@@ -86,15 +83,6 @@ export class IPOManager {
         ipoAtTurn: input.ipoAtTurn,
       },
       include: { company: true },
-    });
-
-    await this.#newsService.createIpoAnnounceNews({
-      gameId: input.gameId,
-      gameStep: input.announcedAtTurn,
-      ticker: company.ticker,
-      companyName: company.name,
-      ipoPrice,
-      ipoAtTurn: input.ipoAtTurn,
     });
 
     return ipo;
@@ -221,14 +209,6 @@ export class IPOManager {
         where: { id: ipoId },
         data: { isCompleted: true },
       });
-    });
-
-    await this.#newsService.createIpoCompleteNews({
-      gameId: ipo.gameId,
-      gameStep: ipo.ipoAtTurn,
-      ticker: ipo.company.ticker,
-      companyName: ipo.company.name,
-      ipoPrice: ipo.ipoPrice,
     });
 
     return this.#prisma.iPO.findUniqueOrThrow({

@@ -44,6 +44,7 @@ interface SlotCardProps {
   profession?: string
   balance?: number
   day?: number
+  isPlayable?: boolean
   onLoad?: () => void
   onNewGame?: () => void
   onDelete?: () => void
@@ -83,6 +84,7 @@ export function SlotCard({
   profession,
   balance,
   day,
+  isPlayable = true,
   onLoad,
   onNewGame,
   onDelete,
@@ -231,9 +233,17 @@ export function SlotCard({
       </div>
 
       <div className="px-2.5 pb-2.5">
-        <GameButton fullWidth onClick={onLoad}>
-          Загрузить
-        </GameButton>
+        {isPlayable ? (
+          <GameButton fullWidth onClick={onLoad}>
+            Загрузить
+          </GameButton>
+        ) : (
+          <div className="flex items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-500/5 px-3 py-2.5">
+            <span className="text-xs font-semibold uppercase tracking-wider text-red-400/80">
+              Игра завершена
+            </span>
+          </div>
+        )}
       </div>
     </motion.div>
   )

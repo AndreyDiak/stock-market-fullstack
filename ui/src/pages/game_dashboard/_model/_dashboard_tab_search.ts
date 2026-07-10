@@ -6,8 +6,9 @@ const DASHBOARD_TABS: dashboard_tab[] = [
   'character',
   'bank',
   'exchange',
-  'otc',
+  'deals',
   'real-estate',
+  'dream',
   'news',
   'settings',
 ]

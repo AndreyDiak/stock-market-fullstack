@@ -15,7 +15,7 @@ export interface DividendPayoutEvent {
 
 export interface GeneratedNewsItem {
   id: string;
-  kind: 'WELCOME' | 'MARKET' | 'INSIDER' | 'RUMOR' | 'OTC_DEAL' | 'PROPERTY_OFFER' | 'PROPERTY_DEAL' | 'PROPERTY_INSTALLMENT' | 'STOCK_TRADE' | 'STOCK_DIVIDEND' | 'IPO_ANNOUNCE' | 'IPO_COMPLETE';
+  kind: 'WELCOME' | 'MARKET' | 'INSIDER' | 'RUMOR' | 'OTC_DEAL' | 'DEAL_OFFER' | 'PROPERTY_OFFER' | 'PROPERTY_DEAL' | 'PROPERTY_INSTALLMENT' | 'STOCK_TRADE' | 'STOCK_DIVIDEND';
   title: string;
   body: string;
   excerpt: string;
@@ -39,6 +39,45 @@ export interface OtcDealPayload {
   flavorText: string;
 }
 
+export interface DealAsset {
+  type: 'CASH' | 'STOCK' | 'PROPERTY';
+  cashAmount?: number;
+  stockListingId?: string;
+  ticker?: string;
+  companyName?: string;
+  shares?: number;
+  propertyId?: string;
+  propertyName?: string;
+  estimatedValue: number;
+}
+
+export interface DealBundle {
+  assets: DealAsset[];
+  totalEstimatedValue: number;
+}
+
+export type DealPurpose = 'VALUE_EXCHANGE' | 'LIQUIDITY' | 'DREAM_HELPER';
+
+export interface DealOfferPayload {
+  id: string;
+  botCharacterId: string;
+  botName: string;
+  botProfession: string;
+  botAvatarSrc?: string;
+  purpose?: DealPurpose;
+  botGives: DealBundle;
+  playerGives: DealBundle;
+  requiredReputation: number;
+  requiredTradingLevel: number;
+  reputationPenalty: number;
+  playerBenefitValue: number;
+  playerBenefitPercent: number;
+  status: 'ACTIVE' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED' | 'NEGOTIATED';
+  turnCreated: number;
+  expiresTurn: number;
+  expiresInTurns: number;
+}
+
 export interface EndTurnResponse {
   step: number;
   balance: number;
@@ -56,9 +95,11 @@ export interface EndTurnResponse {
   insiderRolled: boolean;
   news: GeneratedNewsItem[];
   otcDeal?: OtcDealPayload;
+  dealOffers: DealOfferPayload[];
   propertyOffers: PropertyOffer[];
   characterSkills: CharacterSkillsState;
   dividendPayouts?: DividendPayoutEvent[];
+  gameOver: boolean;
 }
 
 export interface GameDashboardResponse {
@@ -67,6 +108,7 @@ export interface GameDashboardResponse {
   nextTurnForecast: NextTurnForecast;
   characterSkills: CharacterSkillsState;
   propertyOffers: PropertyOffer[];
+  dealOffers: DealOfferPayload[];
   stocks?: StockListing[];
   portfolio?: PortfolioRow[];
   marketSentiment?: MarketSentiment;

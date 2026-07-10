@@ -59,6 +59,7 @@ export const NEWS_CATEGORY_CONFIG: Record<
 export function getNewsCategory(kind?: GeneratedNewsItem['kind']): NewsCategory {
   switch (kind) {
     case 'OTC_DEAL':
+    case 'DEAL_OFFER':
       return 'deal';
     case 'PROPERTY_OFFER':
     case 'PROPERTY_DEAL':

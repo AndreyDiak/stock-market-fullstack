@@ -28,28 +28,33 @@ export function buildOfferParams(input: {
   forceHot?: boolean;
   forcedGrade?: ProfitGrade;
   excludeAssetIds?: string[];
+  excludeInventoryItemIds?: string[];
 }): GeneratedOfferParams | null {
   const random = input.random ?? Math.random;
-  const exclude = new Set(input.excludeAssetIds ?? []);
+  const excludeAssets = new Set(input.excludeAssetIds ?? []);
+  const excludeInventoryItems = new Set(input.excludeInventoryItemIds ?? []);
 
   let type: PropertyOfferType = random() > 0.45 ? 'SELL' : 'BUY';
   let assetId: string;
   let inventoryItemId: string | null = null;
 
   const tradableOwned = input.inventoryItems.filter(isTradableInventoryItem);
+  const sellableOwned = tradableOwned.filter(
+    (item) => !excludeAssets.has(item.itemRef) && !excludeInventoryItems.has(item.id),
+  );
 
   if (type === 'BUY') {
-    if (tradableOwned.length === 0) {
+    if (sellableOwned.length === 0) {
       type = 'SELL';
     } else {
-      const item = pickRandom(tradableOwned, random);
+      const item = pickRandom(sellableOwned, random);
       inventoryItemId = item.id;
       assetId = item.itemRef;
     }
   }
 
   if (type === 'SELL') {
-    const pool = TRADABLE_ASSETS.filter((asset) => !exclude.has(asset.id));
+    const pool = TRADABLE_ASSETS.filter((asset) => !excludeAssets.has(asset.id));
     if (pool.length === 0) return null;
     assetId = pickRandom(pool, random).id;
   } else {

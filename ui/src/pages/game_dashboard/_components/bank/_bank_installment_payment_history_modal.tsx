@@ -72,25 +72,27 @@ export function InstallmentPaymentHistoryModal({
           {!hasAnyPayments ? (
             <p className="bank-history__empty">Нет данных о платежах</p>
           ) : (
-            <PairList>
-              {firstPayment > 0 && purchaseTurn ? (
-                <PairListGroup>
-                  <PairListRow label={`Первоначальный взнос · ${format_turn_step_label(purchaseTurn)}`}>
-                    <MoneyValue amount={firstPayment} size="sm" color="red" prefix="−" className="inline-flex" />
-                  </PairListRow>
-                </PairListGroup>
-              ) : null}
-
-              {payments.length > 0 ? (
-                <PairListGroup>
-                  {payments.map((p) => (
-                    <PairListRow key={p.turn} label={format_turn_step_label(p.turn)}>
-                      <MoneyValue amount={p.amount} size="sm" color="red" prefix="−" className="inline-flex" />
+            <div className="max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-transparent">
+              <PairList>
+                {firstPayment > 0 && purchaseTurn ? (
+                  <PairListGroup>
+                    <PairListRow label={`Первоначальный взнос · ${format_turn_step_label(purchaseTurn)}`}>
+                      <MoneyValue amount={firstPayment} size="sm" color="red" prefix="−" className="inline-flex" />
                     </PairListRow>
-                  ))}
-                </PairListGroup>
-              ) : null}
-            </PairList>
+                  </PairListGroup>
+                ) : null}
+
+                {payments.length > 0 ? (
+                  <PairListGroup>
+                    {payments.map((p) => (
+                      <PairListRow key={p.turn} label={format_turn_step_label(p.turn)}>
+                        <MoneyValue amount={p.amount} size="sm" color="red" prefix="−" className="inline-flex" />
+                      </PairListRow>
+                    ))}
+                  </PairListGroup>
+                ) : null}
+              </PairList>
+            </div>
           )}
         </section>
 

@@ -89,8 +89,9 @@ export function SlotsPage() {
                 profession={data?.profession}
                 balance={data?.balance}
                 day={data?.day}
+                isPlayable={data?.status !== 'COMPLETED'}
                 onLoad={() => {
-                  if (data?.id) navigate(`/game?id=${data.id}`)
+                  if (data?.id && data?.status !== 'COMPLETED') navigate(`/game?id=${data.id}`)
                 }}
                 onNewGame={() => navigate(`/new-game?slot=${n}`)}
                 onDelete={() => {

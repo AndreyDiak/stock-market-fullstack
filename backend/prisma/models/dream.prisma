@@ -1,0 +1,27 @@
+model Dream {
+  id          String  @id @default(uuid())
+  characterId String  @unique
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  dreamType   String
+  currentStage Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  stages DreamStage[]
+
+  @@map("dreams")
+}
+
+model DreamStage {
+  id        String  @id @default(uuid())
+  dreamId   String
+  dream     Dream   @relation(fields: [dreamId], references: [id], onDelete: Cascade)
+  stageIndex Int
+  status    String  @default("LOCKED")
+  completedAt DateTime?
+  completedTurn Int?
+
+  @@unique([dreamId, stageIndex])
+  @@map("dream_stages")
+}

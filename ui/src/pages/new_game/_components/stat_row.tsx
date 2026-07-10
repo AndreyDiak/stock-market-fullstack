@@ -17,8 +17,8 @@ export function StatRow({
 }: StatRowProps) {
   return (
     <div
-      className={`flex items-center justify-between gap-4 ${
-        bordered ? 'border-t border-white/10 pt-4' : ''
+      className={`flex items-center justify-between gap-3 ${
+        bordered ? 'border-t border-white/10 pt-2.5' : ''
       }`}
     >
       <span className="text-sm font-medium text-slate-400">{label}</span>

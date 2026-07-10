@@ -429,6 +429,59 @@ export class NewsGenerationService {
     });
   }
 
+  async createDealNews(input: {
+    gameId: string;
+    gameStep: number;
+    deal: import('../deals/deal.types.js').GeneratedDealOffer;
+  }) {
+    const { deal } = input;
+    const botGivesDesc = deal.botGives.assets
+      .map((a) => {
+        if (a.type === 'CASH') return `${a.cashAmount?.toLocaleString('ru-RU')} ден.`;
+        if (a.type === 'STOCK') return `${a.shares} акций ${a.ticker}`;
+        if (a.type === 'PROPERTY') return a.propertyName;
+        return '';
+      })
+      .filter(Boolean)
+      .join(', ');
+
+    const playerGivesDesc = deal.playerGives.assets
+      .map((a) => {
+        if (a.type === 'CASH') return `${a.cashAmount?.toLocaleString('ru-RU')} ден.`;
+        if (a.type === 'STOCK') return `${a.shares} акций ${a.ticker}`;
+        if (a.type === 'PROPERTY') return a.propertyName;
+        return '';
+      })
+      .filter(Boolean)
+      .join(', ');
+
+    const benefitLabel =
+      deal.playerBenefitPercent >= 0
+        ? `Выгода: +${deal.playerBenefitPercent}%`
+        : `Убыток: ${deal.playerBenefitPercent}%`;
+
+    const title = `Сделка: ${deal.botName} предлагает обмен`;
+    const body = `${deal.botName} предлагает: ${botGivesDesc} в обмен на ${playerGivesDesc}. ${benefitLabel}.`;
+
+    return this.#persistNews({
+      gameId: input.gameId,
+      gameStep: input.gameStep,
+      kind: 'DEAL_OFFER',
+      title,
+      body,
+      sentiment: deal.playerBenefitPercent >= 0 ? 'POSITIVE' : 'NEGATIVE',
+      impact: 0,
+      payload: {
+        dealId: deal.id,
+        botName: deal.botName,
+        botGives: deal.botGives,
+        playerGives: deal.playerGives,
+        playerBenefitPercent: deal.playerBenefitPercent,
+        playerBenefitValue: deal.playerBenefitValue,
+      },
+    });
+  }
+
   async createStockDividendNews(input: {
     gameId: string;
     gameStep: number;
@@ -444,56 +497,6 @@ export class NewsGenerationService {
       sentiment: 'POSITIVE',
       impact: 0,
       ticker: input.ticker,
-    });
-  }
-
-  async createIpoAnnounceNews(input: {
-    gameId: string;
-    gameStep: number;
-    ticker: string;
-    companyName: string;
-    ipoPrice: number;
-    ipoAtTurn: number;
-  }) {
-    const priceLabel = input.ipoPrice.toLocaleString('ru-RU');
-    return this.#persistNews({
-      gameId: input.gameId,
-      gameStep: input.gameStep,
-      kind: 'IPO_ANNOUNCE',
-      title: `IPO: ${input.ticker}`,
-      body: `${input.companyName} (${input.ticker}) готовится к размещению по ${priceLabel} за акцию. Подписка открыта до хода ${input.ipoAtTurn}.`,
-      sentiment: 'POSITIVE',
-      impact: 0.4,
-      ticker: input.ticker,
-      payload: {
-        ticker: input.ticker,
-        ipoPrice: input.ipoPrice,
-        ipoAtTurn: input.ipoAtTurn,
-      },
-    });
-  }
-
-  async createIpoCompleteNews(input: {
-    gameId: string;
-    gameStep: number;
-    ticker: string;
-    companyName: string;
-    ipoPrice: number;
-  }) {
-    const priceLabel = input.ipoPrice.toLocaleString('ru-RU');
-    return this.#persistNews({
-      gameId: input.gameId,
-      gameStep: input.gameStep,
-      kind: 'IPO_COMPLETE',
-      title: `IPO завершено: ${input.ticker}`,
-      body: `${input.companyName} (${input.ticker}) вышла на биржу по цене ${priceLabel}. Акции доступны для торговли.`,
-      sentiment: 'POSITIVE',
-      impact: 0.3,
-      ticker: input.ticker,
-      payload: {
-        ticker: input.ticker,
-        ipoPrice: input.ipoPrice,
-      },
     });
   }
 

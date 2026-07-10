@@ -98,7 +98,22 @@ export class PropertyOffersService {
       });
     }
 
-    return activeOffers.map((offer) => this.serializeOffer(offer, bankingLevel, currentStep));
+    const seenAssetIds = new Set<string>();
+    const seenInventoryItemIds = new Set<string>();
+    const dedupedOffers = [...activeOffers]
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .filter((offer) => {
+        if (offer.inventoryItemId) {
+          if (seenInventoryItemIds.has(offer.inventoryItemId)) return false;
+          seenInventoryItemIds.add(offer.inventoryItemId);
+        }
+        if (seenAssetIds.has(offer.assetId)) return false;
+        seenAssetIds.add(offer.assetId);
+        return true;
+      })
+      .sort((a, b) => a.expiresAtTurn - b.expiresAtTurn || b.createdAt.getTime() - a.createdAt.getTime());
+
+    return dedupedOffers.map((offer) => this.serializeOffer(offer, bankingLevel, currentStep));
   }
 
   async expireOffers(gameId: string, currentStep: number): Promise<void> {
@@ -120,10 +135,24 @@ export class PropertyOffersService {
     withNews = false,
   ): Promise<PropertyOffer[]> {
     const created: PropertyOffer[] = [];
+    const usedAssetIds: string[] = [];
+    const usedInventoryItemIds: string[] = [];
+    const existing = await this.#getActiveOfferExclusions(gameId, gameStep);
+    usedAssetIds.push(...existing.assetIds);
+    usedInventoryItemIds.push(...existing.inventoryItemIds);
 
     for (let i = 0; i < count; i++) {
-      const params = buildOfferParams({ gameId, gameStep, inventoryItems });
+      const params = buildOfferParams({
+        gameId,
+        gameStep,
+        inventoryItems,
+        excludeAssetIds: usedAssetIds,
+        excludeInventoryItemIds: usedInventoryItemIds,
+      });
       if (!params) continue;
+
+      usedAssetIds.push(params.assetId);
+      if (params.inventoryItemId) usedInventoryItemIds.push(params.inventoryItemId);
 
       const offer = await this.#prisma.propertyOffer.create({
         data: {
@@ -165,7 +194,9 @@ export class PropertyOffersService {
   ): Promise<PropertyOffer[]> {
     const starterGrades = ['F', 'E'] as const;
     const created: PropertyOffer[] = [];
-    const usedAssetIds: string[] = [];
+    const existing = await this.#getActiveOfferExclusions(gameId, gameStep);
+    const usedAssetIds: string[] = [...existing.assetIds];
+    const usedInventoryItemIds: string[] = [...existing.inventoryItemIds];
 
     for (const grade of starterGrades) {
       const params = buildOfferParams({
@@ -174,10 +205,12 @@ export class PropertyOffersService {
         inventoryItems,
         forcedGrade: grade,
         excludeAssetIds: usedAssetIds,
+        excludeInventoryItemIds: usedInventoryItemIds,
       });
       if (!params) continue;
 
       usedAssetIds.push(params.assetId);
+      if (params.inventoryItemId) usedInventoryItemIds.push(params.inventoryItemId);
 
       const offer = await this.#prisma.propertyOffer.create({
         data: {
@@ -202,13 +235,48 @@ export class PropertyOffersService {
     return created;
   }
 
+  async #getActiveOfferExclusions(
+    gameId: string,
+    currentStep: number,
+  ): Promise<{ assetIds: string[]; inventoryItemIds: string[] }> {
+    const activeOffers = await this.#prisma.propertyOffer.findMany({
+      where: {
+        gameId,
+        isActive: true,
+        expiresAtTurn: { gt: currentStep },
+      },
+      select: { assetId: true, inventoryItemId: true },
+    });
+
+    const assetIds = new Set<string>();
+    const inventoryItemIds = new Set<string>();
+
+    for (const offer of activeOffers) {
+      assetIds.add(offer.assetId);
+      if (offer.inventoryItemId) inventoryItemIds.add(offer.inventoryItemId);
+    }
+
+    return {
+      assetIds: [...assetIds],
+      inventoryItemIds: [...inventoryItemIds],
+    };
+  }
+
   async createWithNews(
     gameId: string,
     gameStep: number,
     inventoryItems: InventoryItem[],
   ): Promise<{ offer: PropertyOffer; news: PersistedNewsItem } | null> {
+    const exclusions = await this.#getActiveOfferExclusions(gameId, gameStep);
+
     for (let attempt = 0; attempt < 10; attempt++) {
-      const params = buildOfferParams({ gameId, gameStep, inventoryItems });
+      const params = buildOfferParams({
+        gameId,
+        gameStep,
+        inventoryItems,
+        excludeAssetIds: exclusions.assetIds,
+        excludeInventoryItemIds: exclusions.inventoryItemIds,
+      });
       if (!params) continue;
 
       const offer = await this.#prisma.propertyOffer.create({

@@ -17,13 +17,12 @@ const KIND_LABELS: Record<NonNullable<news_item['kind']>, string> = {
   INSIDER: 'Инсайд',
   RUMOR: 'Слухи',
   OTC_DEAL: 'Внебиржа',
+  DEAL_OFFER: 'Сделка',
   PROPERTY_OFFER: 'Недвижимость',
   PROPERTY_DEAL: 'Сделка',
   PROPERTY_INSTALLMENT: 'Ипотека',
   STOCK_TRADE: 'Биржа',
   STOCK_DIVIDEND: 'Дивиденды',
-  IPO_ANNOUNCE: 'IPO',
-  IPO_COMPLETE: 'IPO',
 }
 
 function formatIssueDate(publishedAt: string) {

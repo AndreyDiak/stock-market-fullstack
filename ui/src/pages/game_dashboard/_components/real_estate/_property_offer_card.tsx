@@ -4,11 +4,11 @@ import type {
   NegotiatePropertyOfferResponse,
 } from "../../../../api/propertyOffers";
 import { MoneyValue } from "../../../../components/money/money_value";
-import { DealArrowIcon } from "../../../../shared/icons";
+import { CoinIcon, BankIcon, DealArrowIcon } from "../../../../shared/icons";
 import { AssetImageFrame } from "../../../../shared/components";
 import { useGameStore } from "../../../../stores/game.store";
 import type { PropertyOffer } from "../../_model/types";
-import { format_turns_left_label, format_turns_remaining_label } from "../../_model/utils";
+import { format_turns_left_label } from "../../_model/utils";
 import { AcceptDealModal } from "./_accept_deal_modal";
 import "./_asset_market_card.css";
 import { NegotiateModal } from "./_negotiate_modal";
@@ -30,6 +30,7 @@ import {
   hasInsufficientDownPayment,
   INSUFFICIENT_DOWN_PAYMENT_REASON,
 } from "./_accept_deal_utils";
+import { REAL_ESTATE_CATALOG } from "../../../../constants/realEstate";
 import { ProfitGradeBadge } from "./_profit_grade_badge";
 import {
   calcPurchaseProposedPrice,
@@ -165,6 +166,23 @@ export function PropertyOfferCard({
     [isPurchase, offer, inventoryItems],
   );
 
+  const catalogEntry = useMemo(
+    () => REAL_ESTATE_CATALOG.find((r) => r.id === offer.assetId),
+    [offer.assetId],
+  );
+
+  const passiveIncome = useMemo(() => {
+    if (!catalogEntry?.special) return 0
+    const match = catalogEntry.special.match(/(\d+)\/ход/)
+    return match ? Number(match[1]) : 0
+  }, [catalogEntry])
+
+  const maintenanceCost = useMemo(() => {
+    if (!catalogEntry?.special) return 0
+    const match = catalogEntry.special.match(/Обслуживание:\s*(\d+)\/ход/)
+    return match ? Number(match[1]) : 0
+  }, [catalogEntry])
+
   return (
     <>
       <article
@@ -219,6 +237,16 @@ export function PropertyOfferCard({
               ) : null}
             </div>
 
+            <span
+              className={`shrink-0 rounded-md border px-1.5 py-0.5 text-[11px] font-bold tracking-wide ${
+                isUrgent
+                  ? 'animate-pulse border-yellow-500/40 bg-yellow-500/15 text-yellow-200'
+                  : 'border-slate-600/50 bg-slate-700/50 text-slate-300'
+              }`}
+            >
+              {isUrgent ? 'Последний шанс' : format_turns_left_label(offer.expiresInTurns)}
+            </span>
+
             <ProfitGradeBadge grade={offer.profitGrade} embedded />
           </div>
 
@@ -265,6 +293,35 @@ export function PropertyOfferCard({
                   </span>
                 </div>
               </div>
+
+              {isPurchase && passiveIncome > 0 ? (
+                <div className="mt-2 space-y-1">
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <CoinIcon className="h-3.5 w-3.5 text-emerald-400" />
+                    <span className="text-slate-400">Пассивный доход</span>
+                    <span className="ml-auto font-bold text-emerald-400 tabular-nums">
+                      +{passiveIncome}/ход
+                    </span>
+                  </div>
+                  {maintenanceCost > 0 ? (
+                    <div className="flex items-center gap-1.5 text-xs">
+                      <BankIcon className="h-3.5 w-3.5 text-red-400" />
+                      <span className="text-slate-400">Обслуживание</span>
+                      <span className="ml-auto font-bold text-red-400 tabular-nums">
+                        −{maintenanceCost}/ход
+                      </span>
+                    </div>
+                  ) : null}
+                  {maintenanceCost > 0 ? (
+                    <div className="flex items-center gap-1.5 border-t border-slate-700/30 pt-1 text-xs">
+                      <span className="text-slate-500">Чистый доход</span>
+                      <span className="ml-auto font-bold text-emerald-400 tabular-nums">
+                        +{passiveIncome - maintenanceCost}/ход
+                      </span>
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
 
               {isPurchase && installmentPlan ? (
                 <div className="asset-market-card__stats asset-market-card__stats--purchase">
@@ -319,7 +376,7 @@ export function PropertyOfferCard({
                 </div>
               ) : sellEconomics ? (
                 <div className="asset-market-card__stats asset-market-card__stats--sell">
-                  <div className="asset-market-card__stats-row asset-market-card__stats-row--triple">
+                  <div className="asset-market-card__stats-row asset-market-card__stats-row--double">
                     <div className="asset-market-card__stat-cell">
                       <span className="asset-market-card__stat-label">Куплено за</span>
                       <MoneyValue
@@ -329,7 +386,7 @@ export function PropertyOfferCard({
                         className="asset-market-card__stat-value asset-market-card__money-nowrap"
                       />
                     </div>
-                    <div className="asset-market-card__stat-cell">
+                    <div className="asset-market-card__stat-cell asset-market-card__stat-cell--end">
                       <span className="asset-market-card__stat-label">Прибыль</span>
                       <MoneyValue
                         amount={Math.abs(sellEconomics.profit)}
@@ -345,34 +402,9 @@ export function PropertyOfferCard({
                         className="asset-market-card__stat-value asset-market-card__money-nowrap"
                       />
                     </div>
-                    <div className="asset-market-card__stat-cell asset-market-card__stat-cell--end">
-                      <span className="asset-market-card__stat-label">Срок</span>
-                      <span
-                        className={[
-                          "asset-market-card__stat-value",
-                          isUrgent ? "asset-market-card__stat-value--urgent" : "",
-                        ].join(" ")}
-                      >
-                        {format_turns_remaining_label(offer.expiresInTurns)}
-                      </span>
-                    </div>
                   </div>
                 </div>
-              ) : (
-                <div className="asset-market-card__stats asset-market-card__stats--single">
-                  <div className="asset-market-card__stat-cell">
-                    <span className="asset-market-card__stat-label">Срок</span>
-                    <span
-                      className={[
-                        "asset-market-card__stat-value",
-                        isUrgent ? "asset-market-card__stat-value--urgent" : "",
-                      ].join(" ")}
-                    >
-                      {format_turns_remaining_label(offer.expiresInTurns)}
-                    </span>
-                  </div>
-                </div>
-              )}
+              ) : null}
             </div>
           </div>
 

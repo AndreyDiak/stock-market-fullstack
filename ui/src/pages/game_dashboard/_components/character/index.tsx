@@ -34,6 +34,7 @@ export interface CharacterProfile {
   salary: number
   reputation: number
   tradingLevel: number
+  bankingLevel: number
   dreams: DreamProgress[]
 }
 

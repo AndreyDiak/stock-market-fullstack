@@ -12,8 +12,14 @@ export const NEGOTIATE_SLIDER_MAX_DISCOUNT_PERCENT = 50;
 export const NEGOTIATE_PURCHASE_DISCOUNT_MIN = 5;
 export const NEGOTIATE_PURCHASE_DISCOUNT_STEP = 5;
 
-/** Базовый порог скидки без прокачки курса трейдинга. */
-export const NEGOTIATE_BASE_MAX_DISCOUNT_PERCENT = 20;
+export const MAX_NEGOTIATION_DISCOUNT_BY_TRADING_LEVEL = {
+  1: 15,
+  2: 25,
+  3: 30,
+  4: 35,
+  5: 42,
+  6: 50,
+} as const;
 
 /** Название навыка, влияющего на лимит скидки при торге. */
 export const TRADING_SKILL_NAME = 'Курс трейдинга';
@@ -28,8 +34,8 @@ export const SUCCESS_CHANCE_LABEL_THRESHOLDS = [
 
 export function getMaxNegotiateDiscountPercent(tradingLevel: number): number {
   const safeLevel = Number.isFinite(tradingLevel) ? tradingLevel : 1;
-  const level = Math.max(1, Math.min(safeLevel, 6));
-  return NEGOTIATE_BASE_MAX_DISCOUNT_PERCENT + level * 5;
+  const level = Math.max(1, Math.min(safeLevel, 6)) as keyof typeof MAX_NEGOTIATION_DISCOUNT_BY_TRADING_LEVEL;
+  return MAX_NEGOTIATION_DISCOUNT_BY_TRADING_LEVEL[level];
 }
 
 export function snapPurchaseDiscountPercent(

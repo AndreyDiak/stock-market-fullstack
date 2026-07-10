@@ -3,15 +3,15 @@ import {
   buildCharacterStats,
   buildSkillCurrentInfographic,
   buildSkillUpgradePreview,
-  calcSkillPrice,
   getSkillLevelFromCharacter,
   getSkillLevelTooltip,
   getSkillSegmentDisplay,
+  getSkillUpgradeCost,
   type SkillInfographicChip,
   type SkillLevelTooltip,
   type SkillUpgradePreview,
 } from './_calculations.js';
-import { SKILL_DEFINITIONS } from './_definitions.js';
+import { SKILL_DEFINITIONS, type SkillId } from './_definitions.js';
 
 export interface CharacterSkillDto {
   id: string;
@@ -62,20 +62,17 @@ function buildLevelTooltips(
 }
 
 function canUpgradeSkill(
-  skillId: string,
+  skillId: SkillId,
   level: number,
   maxLevel: number,
   balance: number,
   propertySlotLevel: number,
+  baseSalary: number,
 ) {
   if (level >= maxLevel) return false;
 
-  const price = calcSkillPrice(
-    skillId,
-    level,
-    SKILL_DEFINITIONS.find((skill) => skill.id === skillId)?.basePrice ?? 0,
-  );
-  if (balance < price) return false;
+  const price = getSkillUpgradeCost(skillId, level, baseSalary);
+  if (price == null || balance < price) return false;
 
   if (skillId === 'property_slots' && propertySlotLevel >= 4) {
     return false;
@@ -89,10 +86,7 @@ export function buildCharacterSkillsState(character: Character): CharacterSkills
 
   const skills = SKILL_DEFINITIONS.map((definition) => {
     const level = getSkillLevelFromCharacter(character, definition.id);
-    const upgradePrice =
-      level >= definition.maxLevel
-        ? null
-        : calcSkillPrice(definition.id, level, definition.basePrice);
+    const upgradePrice = getSkillUpgradeCost(definition.id, level, character.salary);
     const upgradePreview = buildSkillUpgradePreview(
       definition.id,
       definition,
@@ -115,6 +109,7 @@ export function buildCharacterSkillsState(character: Character): CharacterSkills
         definition.maxLevel,
         character.balance,
         character.propertySlotLevel,
+        character.salary,
       ),
       infographic: buildSkillCurrentInfographic(definition.id, level, character.salary),
       upgradePreview,

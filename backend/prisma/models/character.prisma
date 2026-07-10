@@ -26,6 +26,7 @@ model Character {
   isNpc        Boolean @default(false)
 
   dreamItemRefs String[] @default([])
+  dream         Dream?
 
   totalEarned      Float @default(0)
   totalSpent       Float @default(0)

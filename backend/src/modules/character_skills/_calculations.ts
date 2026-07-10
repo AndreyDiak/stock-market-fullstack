@@ -1,14 +1,78 @@
 import type { Character } from '@prisma/client';
 import { getMaxNegotiateDiscountPercent } from '../property_offers/_negotiate_discount.js';
 import { calcSellCommissionPercent } from '../market/sell_commission.js';
-import { TRADING_GRADES } from './_definitions.js';
+import { TRADING_GRADES, getSkillDefinition, type SkillId } from './_definitions.js';
+import { SKILL_PRICING, type PricedSkillId } from './_pricing.js';
 
 export function getSkillUpgradeTier(_skillId: string, level: number) {
   return Math.max(0, level - 1);
 }
 
-export function calcSkillPrice(skillId: string, level: number, basePrice: number) {
-  return Math.round(basePrice * (1 + getSkillUpgradeTier(skillId, level) * 0.35));
+export const MIN_QUALIFICATION_UPGRADE_COST = 2500;
+
+export function roundTo100(value: number): number {
+  return Math.round(Math.round(value) / 100) * 100;
+}
+
+/** Base cost for the next qualification upgrade at currentLevel (payback ~12 turns). */
+export function calcQualificationBaseUpgradeCost(baseSalary: number): number {
+  return roundTo100(Math.max(MIN_QUALIFICATION_UPGRADE_COST, baseSalary * 1.2));
+}
+
+export function getQualificationUpgradeCost(params: {
+  baseSalary: number;
+  currentLevel: number;
+}): number {
+  const baseUpgradeCost = calcQualificationBaseUpgradeCost(params.baseSalary);
+  return roundTo100(baseUpgradeCost * (1 + (params.currentLevel - 1) * 0.35));
+}
+
+function calcLinearUpgradeCost(
+  pricing: { basePrice: number; growthPerLevel: number },
+  currentLevel: number,
+): number {
+  const targetLevel = currentLevel + 1;
+  return roundTo100(
+    pricing.basePrice * (1 + (targetLevel - 2) * pricing.growthPerLevel),
+  );
+}
+
+function calcExplicitUpgradeCost(
+  pricing: { pricesByTargetLevel: Record<number, number> },
+  currentLevel: number,
+  skillId: string,
+): number {
+  const targetLevel = currentLevel + 1;
+  const price = pricing.pricesByTargetLevel[targetLevel];
+
+  if (price == null) {
+    throw new Error(`No upgrade price for ${skillId} target level ${targetLevel}`);
+  }
+
+  return price;
+}
+
+export function getSkillUpgradeCost(
+  skillId: SkillId,
+  currentLevel: number,
+  baseSalary: number,
+): number | null {
+  const definition = getSkillDefinition(skillId);
+  if (!definition || currentLevel >= definition.maxLevel) {
+    return null;
+  }
+
+  if (skillId === 'qualification') {
+    return getQualificationUpgradeCost({ baseSalary, currentLevel });
+  }
+
+  const pricing = SKILL_PRICING[skillId as PricedSkillId];
+
+  if (pricing.type === 'explicit') {
+    return calcExplicitUpgradeCost(pricing, currentLevel, skillId);
+  }
+
+  return calcLinearUpgradeCost(pricing, currentLevel);
 }
 
 export function calcEffectiveSalary(baseSalary: number, qualificationLevel: number) {
@@ -113,15 +177,16 @@ export interface SkillUpgradePreview {
 }
 
 export function buildSkillUpgradePreview(
-  skillId: string,
-  definition: { name: string; tag: string; maxLevel: number; basePrice: number },
+  skillId: SkillId,
+  definition: { name: string; tag: string; maxLevel: number },
   level: number,
   baseSalary: number,
 ): SkillUpgradePreview | null {
   if (level >= definition.maxLevel) return null;
 
   const nextLevel = level + 1;
-  const price = calcSkillPrice(skillId, level, definition.basePrice);
+  const price = getSkillUpgradeCost(skillId, level, baseSalary);
+  if (price == null) return null;
   const benefits: SkillUpgradeBenefit[] = [];
 
   switch (skillId) {

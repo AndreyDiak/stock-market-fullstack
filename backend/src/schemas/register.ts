@@ -45,6 +45,8 @@ import {
   propertyOfferSchema,
 } from './property_offer.schema.js';
 import { acceptOtcDealBodySchema, acceptOtcDealResponseSchema } from './otc_deal.schema.js';
+import { acceptDealBodySchema, acceptDealResponseSchema, dealOfferSchema } from './deal.schema.js';
+import { dreamResponseSchema, completeStageBodySchema, fulfillDreamBodySchema } from './dream.schema.js';
 import { payOffInstallmentBodySchema, payOffInstallmentResponseSchema } from './property_loan.schema.js';
 import {
   createFeedbackBodySchema,
@@ -79,6 +81,9 @@ const schemaEntries = {
   AcceptOtcDealResponse: acceptOtcDealResponseSchema,
   PayOffInstallmentResponse: payOffInstallmentResponseSchema,
   PayOffInstallmentBody: payOffInstallmentBodySchema,
+  DealOffer: dealOfferSchema,
+  AcceptDealBody: acceptDealBodySchema,
+  AcceptDealResponse: acceptDealResponseSchema,
   StockListing: stockListingSchema,
   StockListResponse: stockListResponseSchema,
   StockDetailResponse: stockDetailResponseSchema,
@@ -103,6 +108,9 @@ const schemaEntries = {
   LoginBody: loginBodySchema,
   CreateFeedbackBody: createFeedbackBodySchema,
   CreateFeedbackResponse: createFeedbackResponseSchema,
+  Dream: dreamResponseSchema,
+  CompleteStageBody: completeStageBodySchema,
+  FulfillDreamBody: fulfillDreamBodySchema,
 } as const;
 
 export const fastifyDefMap = Object.fromEntries(

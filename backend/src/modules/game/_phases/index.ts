@@ -2,7 +2,7 @@ import type { PrismaClient } from '@prisma/client';
 import { NewsGenerationService } from '../../news/news_generation.service.js';
 import { PropertyOffersService } from '../../property_offers/property_offers.service.js';
 import { PassiveIncomeService } from '../_passive_income.service.js';
-import { OtcDealGenerator } from '../_generators/_otc_deal.generator.js';
+import { DealGenerator } from '../../deals/deal.generator.js';
 import { GamePipeline } from '../_pipeline.js';
 import { MarketService } from '../../market/market.service.js';
 import { AdvanceStepPhase } from './_advance_step.phase.js';
@@ -24,6 +24,6 @@ export function createGamePipeline(prisma: PrismaClient): GamePipeline {
     new AdvanceStepPhase(prisma),
     new MarketTurnPhase(marketService),
     new PropertyOffersExpiryPhase(propertyOffersService),
-    new TurnContentPhase(newsService, propertyOffersService, new OtcDealGenerator()),
+    new TurnContentPhase(prisma, newsService, propertyOffersService, new DealGenerator()),
   ]);
 }

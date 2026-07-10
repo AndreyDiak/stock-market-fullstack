@@ -295,12 +295,16 @@ export function ExchangeTable() {
                         <td className="px-4 py-3 text-right font-medium text-white">{row.qty}</td>
                         <td
                           className={`px-4 py-3 text-right font-bold ${
-                            row.changePct >= 0 ? 'text-emerald-400' : 'text-red-400'
+                            (row.pnl ?? 0) >= 0 ? 'text-emerald-400' : 'text-red-400'
                           }`}
                         >
                           <span className="inline-flex items-center justify-end gap-1">
-                            {format_change(row.changePct)}
-                            <TrendArrow up={row.changePct >= 0} />
+                            {format_change(
+                              row.pnl != null && row.purchasePrice > 0
+                                ? (row.pnl / (row.purchasePrice * row.qty)) * 100
+                                : 0,
+                            )}
+                            <TrendArrow up={(row.pnl ?? 0) >= 0} />
                           </span>
                         </td>
                         <td className="px-4 py-3">

@@ -3,6 +3,7 @@ import { gameSchema } from './game.schema.js';
 import { generatedNewsItemSchema, nextTurnForecastResponseSchema } from './turn.schema.js';
 import { characterSkillsStateSchema } from './character_skills.schema.js';
 import { propertyOfferSchema } from './property_offer.schema.js';
+import { dealOfferSchema } from './deal.schema.js';
 import {
   ipoSchema,
   marketSentimentSchema,
@@ -17,6 +18,7 @@ export const gameDashboardResponseSchema = z.object({
   nextTurnForecast: nextTurnForecastResponseSchema,
   characterSkills: characterSkillsStateSchema,
   propertyOffers: z.array(propertyOfferSchema),
+  dealOffers: z.array(dealOfferSchema),
   stocks: z.array(stockListingSchema).optional(),
   portfolio: z.array(portfolioRowSchema).optional(),
   marketSentiment: marketSentimentSchema.optional(),

@@ -5,7 +5,7 @@ import { ExitIcon, SettingsIcon } from '../../../../shared/icons'
 import { useGameSettingsStore } from '../../../../stores/game_settings.store'
 import { useGameStore } from '../../../../stores/game.store'
 import { useDashboardUi } from '../../_model/dashboard_ui_context'
-import { NAV_ITEMS, SIDEBAR_PRIMARY_ITEMS } from '../../_model/nav_items'
+import { NAV_ITEMS, SIDEBAR_BOTTOM_ITEMS, SIDEBAR_PRIMARY_ITEMS } from '../../_model/nav_items'
 import type { dashboard_tab, sidebar_nav_item } from '../../_model/types'
 import { has_active_insider_alert } from '../../_model/utils'
 import { useDashboardTheme } from '../../_model/use_dashboard_theme'
@@ -204,13 +204,20 @@ export function LeftSidebar() {
   const news = useGameStore((state) => state.news)
   const turn = useGameStore((state) => state.turn)
   const portfolio = useGameStore((state) => state.portfolio)
+  const dealCount = useGameStore((state) => state.deals.length)
   const propertyOfferCount = useGameStore((state) => state.propertyOffers.length)
   const activeLoanCount = useGameStore((state) => state.bankLoans.length)
-  const stockCount = useMemo(() => portfolio.filter((r) => r.qty > 0).length, [portfolio])
+  const stockCount = useMemo(() => (portfolio ?? []).filter((r) => r.qty > 0).length, [portfolio])
 
   const showNewsInsiderAlert = useMemo(
     () => has_active_insider_alert(news, turn),
     [news, turn],
+  )
+
+  const dream = useGameStore((state) => state.dream)
+  const dreamStageReady = useMemo(
+    () => dream?.stages.some((s) => s.status === 'READY_TO_COMPLETE') ?? false,
+    [dream],
   )
 
   const go = (tab: dashboard_tab) => () => setActiveTab(tab)
@@ -229,8 +236,7 @@ export function LeftSidebar() {
               collapsed={collapsed}
               active={activeTab === item.id}
               onSelect={go(item.id)}
-              badgeCount={item.id === 'bank' ? activeLoanCount : undefined}
-              badgeCountLabel={item.id === 'bank' ? 'активных кредитов' : undefined}
+              notify={item.id === 'news' && showNewsInsiderAlert && activeTab !== 'news'}
             />
           ))}
 
@@ -244,8 +250,22 @@ export function LeftSidebar() {
               collapsed={collapsed}
               active={activeTab === item.id}
               onSelect={go(item.id)}
-              notify={item.id === 'news' && showNewsInsiderAlert && activeTab !== 'news'}
-              badgeCount={item.id === 'exchange' ? stockCount : item.id === 'real-estate' ? propertyOfferCount : undefined}
+              badgeCount={item.id === 'bank' ? activeLoanCount : item.id === 'exchange' ? stockCount : item.id === 'deals' ? dealCount : item.id === 'real-estate' ? propertyOfferCount : undefined}
+              badgeCountLabel={item.id === 'bank' ? 'активных кредитов' : undefined}
+            />
+          ))}
+
+          <div className={`my-1 h-px ${theme.headerDivider}`} />
+
+          {SIDEBAR_BOTTOM_ITEMS.map((item) => (
+            <SidebarNavButton
+              key={item.id}
+              item={item}
+              theme={theme}
+              collapsed={collapsed}
+              active={activeTab === item.id}
+              onSelect={go(item.id)}
+              notify={item.id === 'dream' && dreamStageReady && activeTab !== 'dream'}
             />
           ))}
         </div>

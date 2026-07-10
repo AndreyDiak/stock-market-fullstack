@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import type { InventoryItem } from '@prisma/client';
 import {
   calcDownPaymentPercent,
   calcDownPaymentAmount,
@@ -103,6 +104,36 @@ describe('property offer profit', () => {
       expect(params.profitPercent).toBeGreaterThan(0);
     }
     expect(hotFound).toBe(true);
+  });
+
+  it('does not generate BUY offer for asset or inventory item already on market', () => {
+    const apartmentItem = {
+      id: 'inv-apartment-1',
+      itemRef: 'apartment',
+      name: 'Квартира',
+      purchasePrice: 80_000,
+      isInstallment: false,
+      isPaidOff: true,
+    } as InventoryItem;
+
+    const blockedByAsset = buildOfferParams({
+      gameId: 'g1',
+      gameStep: 5,
+      inventoryItems: [apartmentItem],
+      random: () => 0.5,
+      excludeAssetIds: ['apartment'],
+    });
+    expect(blockedByAsset?.type).not.toBe('BUY');
+    expect(blockedByAsset?.assetId).not.toBe('apartment');
+
+    const blockedByInventory = buildOfferParams({
+      gameId: 'g1',
+      gameStep: 5,
+      inventoryItems: [apartmentItem],
+      random: () => 0.5,
+      excludeInventoryItemIds: ['inv-apartment-1'],
+    });
+    expect(blockedByInventory?.inventoryItemId).not.toBe('inv-apartment-1');
   });
 
   it('generates forced grade offers for starter deals', () => {

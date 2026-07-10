@@ -1,6 +1,6 @@
 import type { Character, InventoryItem, PrismaClient } from '@prisma/client';
 import { AppError } from '../../utils/errors.js';
-import { calcSkillPrice, countUnlockedPropertySlots, getSkillLevelFromCharacter } from './_calculations.js';
+import { countUnlockedPropertySlots, getSkillLevelFromCharacter, getSkillUpgradeCost } from './_calculations.js';
 import { getSkillDefinition, SKILL_DEFINITIONS } from './_definitions.js';
 import {
   buildCharacterSkillsState,
@@ -59,7 +59,10 @@ export class CharacterSkillsService {
       throw new AppError(409, 'PROPERTY_SLOTS_MAXED', 'All property slots are unlocked');
     }
 
-    const price = calcSkillPrice(skillId, currentLevel, definition.basePrice);
+    const price = getSkillUpgradeCost(skillId, currentLevel, character.salary);
+    if (price == null) {
+      throw new AppError(409, 'SKILL_MAXED', 'Skill is already at maximum level');
+    }
     if (character.balance < price) {
       throw new AppError(400, 'INSUFFICIENT_FUNDS', 'Insufficient balance for skill upgrade');
     }

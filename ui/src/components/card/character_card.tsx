@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { gameAudio } from '../../lib/audio/game_audio'
 import { LockOutlineIcon } from '../../shared/icons'
 
 export const characterCardVariants = {
@@ -28,6 +29,11 @@ export function CharacterCard({
   locked = false,
   onClick,
 }: CharacterCardProps) {
+  const handleClick = () => {
+    gameAudio.playSfx('buttonClick')
+    onClick?.()
+  }
+
   if (locked) {
     return (
       <motion.div
@@ -76,7 +82,7 @@ export function CharacterCard({
     <motion.button
       type="button"
       variants={characterCardVariants}
-      onClick={onClick}
+      onClick={handleClick}
       whileHover={{ y: -3 }}
       whileTap={{ scale: 0.99 }}
       className={`group relative flex h-full min-h-0 flex-col p-2.5 text-left transition-shadow duration-300 ${

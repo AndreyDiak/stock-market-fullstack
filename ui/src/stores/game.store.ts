@@ -9,6 +9,7 @@ import {
   mapApiNewsToFeedItem,
   mapOtcDealToCard,
   upgradeCharacterSkill,
+  type DealOfferPayload,
 } from '../api/gameTurn';
 import {
   acceptNegotiatedPropertyOffer,
@@ -20,6 +21,7 @@ import {
   type PropertyOfferPaymentMode,
 } from '../api/propertyOffers';
 import { acceptOtcDeal as acceptOtcDealApi } from '../api/otcDeals';
+import { acceptDeal as acceptDealApi, rejectDeal as rejectDealApi } from '../api/deals';
 import { payOffInstallment } from '../api/propertyLoans';
 import {
   buyStock as buyStockApi,
@@ -31,6 +33,7 @@ import {
   type MarketSentiment,
   type StockListing,
 } from '../api/stocks';
+import { fetchDream, completeDreamStage as completeDreamStageApi, fulfillDream as fulfillDreamApi, type DreamResponse } from '../api/dreams';
 import type { GeneratedNewsItem } from '../api/gameTurn';
 import type { Game } from '../api/types';
 import type { ActiveLoan, BankSummary, PaidProperty } from '../pages/game_dashboard/_components/bank';
@@ -86,6 +89,8 @@ interface GameState {
   gameId: string | null;
   loading: boolean;
   endingTurn: boolean;
+  showEndTurnWarning: boolean;
+  showGameOver: boolean;
   upgradingSkill: boolean;
   turn: number;
   balance: number;
@@ -93,6 +98,7 @@ interface GameState {
   news: news_item[];
   enteringNewsIds: string[];
   otcDeals: bot_deal[];
+  deals: DealOfferPayload[];
   propertyOffers: PropertyOffer[];
   propertyOfferBusy: boolean;
   portfolio: portfolio_row[];
@@ -111,12 +117,15 @@ interface GameState {
   inventoryItems: InventoryItemDto[];
   nextTurnForecast: NextTurnForecast;
   creditRating: string;
+  dream: DreamResponse | null;
 
   reset: () => void;
   init: (gameId: string, initialGame?: Game) => Promise<void>;
   setBalance: (balance: number | ((current: number) => number)) => void;
   removeOtcDeal: (id: string) => void;
   acceptOtcDeal: (deal: bot_deal) => Promise<void>;
+  acceptDeal: (dealId: string) => Promise<void>;
+  rejectDeal: (dealId: string) => Promise<void>;
   acceptPropertyOffer: (
     offerId: string,
     paymentMode?: PropertyOfferPaymentMode,
@@ -132,6 +141,10 @@ interface GameState {
   declineNegotiatedPropertyOffer: (offerId: string) => Promise<void>;
   purchaseSkill: (skillId: string) => Promise<void>;
   payOffLoan: (loanId: string, payPercent: number) => Promise<void>;
+  prepareEndTurn: () => void;
+  confirmEndTurn: () => Promise<void>;
+  dismissEndTurnWarning: () => void;
+  dismissGameOver: () => void;
   endTurn: () => Promise<void>;
   loadNews: () => Promise<void>;
   loadExchangeData: () => Promise<void>;
@@ -141,6 +154,9 @@ interface GameState {
   subscribeToIpo: (ipoId: string, amount: number) => Promise<void>;
   clearEnteringNews: () => void;
   clearBalanceFx: () => void;
+  loadDream: () => Promise<void>;
+  completeDreamStage: () => Promise<void>;
+  fulfillDream: () => Promise<void>;
 }
 
 function getInitialState(): Omit<
@@ -150,6 +166,8 @@ function getInitialState(): Omit<
   | 'setBalance'
   | 'removeOtcDeal'
   | 'acceptOtcDeal'
+  | 'acceptDeal'
+  | 'rejectDeal'
   | 'acceptPropertyOffer'
   | 'negotiatePropertyOffer'
   | 'acceptNegotiatedPropertyOffer'
@@ -157,6 +175,10 @@ function getInitialState(): Omit<
   | 'purchaseSkill'
   | 'payOffLoan'
   | 'endTurn'
+  | 'prepareEndTurn'
+  | 'confirmEndTurn'
+  | 'dismissEndTurnWarning'
+  | 'dismissGameOver'
   | 'loadNews'
   | 'loadExchangeData'
   | 'fetchStockHistory'
@@ -165,11 +187,16 @@ function getInitialState(): Omit<
   | 'subscribeToIpo'
   | 'clearEnteringNews'
   | 'clearBalanceFx'
+  | 'loadDream'
+  | 'completeDreamStage'
+  | 'fulfillDream'
 > {
   return {
     gameId: null,
     loading: false,
     endingTurn: false,
+    showEndTurnWarning: false,
+    showGameOver: false,
     upgradingSkill: false,
     turn: 1,
     balance: 0,
@@ -177,6 +204,7 @@ function getInitialState(): Omit<
     news: [],
     enteringNewsIds: [],
     otcDeals: [],
+    deals: [],
     propertyOffers: [],
     propertyOfferBusy: false,
     portfolio: [],
@@ -195,6 +223,7 @@ function getInitialState(): Omit<
     inventoryItems: [],
     nextTurnForecast: EMPTY_FORECAST,
     creditRating: 'A+',
+    dream: null,
   };
 }
 
@@ -252,19 +281,20 @@ export const useGameStore = create<GameState>((set, get) => {
     preserveMarket = false,
   ) => {
     const applied = applyCharacterSkillsState(character, characterSkills, get().news);
-    set({
-      turn: step,
-      ...spreadCharacterBankState(applied),
-      ...(preserveMarket
-        ? {}
-        : {
-            portfolio: [],
-            stockListings: [],
-            marketSentiment: null,
-            ipos: [],
-          }),
-      otcDeals: [],
-    });
+      set({
+        turn: step,
+        ...spreadCharacterBankState(applied),
+        ...(preserveMarket
+          ? {}
+          : {
+              portfolio: [],
+              stockListings: [],
+              marketSentiment: null,
+              ipos: [],
+            }),
+        otcDeals: [],
+        deals: [],
+      });
     return applied;
   };
 
@@ -275,6 +305,7 @@ export const useGameStore = create<GameState>((set, get) => {
     forecast: NextTurnForecast,
     characterSkills: CharacterSkillsState,
     propertyOffers: PropertyOffer[] = [],
+    dealOffers: DealOfferPayload[] = [],
     stocks: StockListing[] = [],
     portfolio: portfolio_row[] = [],
     marketSentiment: MarketSentiment | null = null,
@@ -296,6 +327,7 @@ export const useGameStore = create<GameState>((set, get) => {
         propertyOffers,
         getPlayerBankingLevel(characterSkills.skills),
       ),
+      deals: dealOffers,
       stockListings: stocks,
       portfolio,
       marketSentiment,
@@ -315,6 +347,7 @@ export const useGameStore = create<GameState>((set, get) => {
         dashboard.nextTurnForecast,
         dashboard.characterSkills,
         dashboard.propertyOffers,
+        dashboard.dealOffers,
         dashboard.stocks ?? [],
         (dashboard.portfolio ?? []).map(mapApiPortfolioRow),
         dashboard.marketSentiment ?? null,
@@ -547,6 +580,50 @@ export const useGameStore = create<GameState>((set, get) => {
       }
     },
 
+    acceptDeal: async (dealId) => {
+      const { gameId } = get();
+      if (!gameId) {
+        throw new Error('Game is not loaded');
+      }
+
+      const result = await acceptDealApi(gameId, dealId);
+      const applied = applyCharacterSkillsState(
+        result.character,
+        get().characterSkills.length > 0
+          ? { skills: get().characterSkills, stats: get().characterStats }
+          : EMPTY_CHARACTER_SKILLS_STATE,
+        get().news,
+      );
+      const balanceDelta = result.balance - result.previousBalance;
+
+      set((state) => ({
+        deals: state.deals.filter((d) => d.id !== dealId),
+        balance: result.balance,
+        characterProfile: applied.characterProfile,
+        propertySlots: applied.propertySlots,
+        inventoryItems: applied.inventoryItems,
+        bankLoans: applied.bankLoans,
+        bankPaidProperties: applied.bankPaidProperties,
+        bankSummary: applied.bankSummary,
+        balanceFx:
+          balanceDelta !== 0
+            ? { delta: balanceDelta, id: Date.now() }
+            : state.balanceFx,
+        ...appendNewsItem(state, result.news),
+      }));
+      gameAudio.playSfx('operationCompleted');
+    },
+
+    rejectDeal: async (dealId) => {
+      const { gameId } = get();
+      if (!gameId) {
+        throw new Error('Game is not loaded');
+      }
+
+      await rejectDealApi(gameId, dealId);
+      set((state) => ({ deals: state.deals.filter((d) => d.id !== dealId) }));
+    },
+
     acceptNegotiatedPropertyOffer: async (offerId, paymentMode = 'installment') => {
       const { gameId } = get();
       if (!gameId) {
@@ -699,6 +776,30 @@ export const useGameStore = create<GameState>((set, get) => {
       }
     },
 
+    prepareEndTurn: () => {
+      const { balance, nextTurnForecast } = get();
+      const netChange = nextTurnForecast.netChange;
+      if (balance + netChange < 0) {
+        set({ showEndTurnWarning: true });
+        gameAudio.playSfx('dealFail');
+      } else {
+        void get().endTurn();
+      }
+    },
+
+    confirmEndTurn: async () => {
+      set({ showEndTurnWarning: false });
+      await get().endTurn();
+    },
+
+    dismissEndTurnWarning: () => {
+      set({ showEndTurnWarning: false });
+    },
+
+    dismissGameOver: () => {
+      set({ showGameOver: false, gameId: null });
+    },
+
     endTurn: async () => {
       if (endingTurnInFlight) return;
 
@@ -751,8 +852,16 @@ export const useGameStore = create<GameState>((set, get) => {
           }));
         }
 
+        if (result.dealOffers.length > 0) {
+          set({ deals: result.dealOffers });
+        }
+
         set({ propertyOffers: result.propertyOffers });
         await get().loadExchangeData();
+
+        if (result.gameOver) {
+          set({ showGameOver: true });
+        }
       } catch {
         if (gameId) {
           try {
@@ -765,6 +874,7 @@ export const useGameStore = create<GameState>((set, get) => {
                 dashboard.nextTurnForecast,
                 dashboard.characterSkills,
                 dashboard.propertyOffers,
+                dashboard.dealOffers,
                 dashboard.stocks ?? [],
                 (dashboard.portfolio ?? []).map(mapApiPortfolioRow),
                 dashboard.marketSentiment ?? null,
@@ -870,5 +980,37 @@ export const useGameStore = create<GameState>((set, get) => {
     clearEnteringNews: () => set({ enteringNewsIds: [] }),
 
     clearBalanceFx: () => set({ balanceFx: null }),
+
+    loadDream: async () => {
+      const { gameId, dream: prevDream } = get();
+      if (!gameId) return;
+      try {
+        const dream = await fetchDream(gameId);
+        set({ dream });
+        const prevReady = prevDream?.stages.some((s) => s.status === 'READY_TO_COMPLETE');
+        const nowReady = dream?.stages.some((s) => s.status === 'READY_TO_COMPLETE');
+        if (!prevReady && nowReady) {
+          gameAudio.playSfx('goodNews');
+        }
+      } catch (e) {
+        set({ dream: null });
+      }
+    },
+
+    completeDreamStage: async () => {
+      const { gameId, dream } = get();
+      if (!gameId || !dream) return;
+      const updated = await completeDreamStageApi(gameId, dream.id);
+      set({ dream: updated });
+      gameAudio.playSfx('operationCompleted');
+    },
+
+    fulfillDream: async () => {
+      const { gameId, dream } = get();
+      if (!gameId || !dream) return;
+      await fulfillDreamApi(gameId, dream.id);
+      set({ dream: null });
+      gameAudio.playSfx('goodNews');
+    },
   };
 });

@@ -7,5 +7,6 @@ export const EMPTY_CHARACTER_PROFILE: CharacterProfile = {
   salary: 0,
   reputation: 3,
   tradingLevel: 1,
+  bankingLevel: 1,
   dreams: [],
 }

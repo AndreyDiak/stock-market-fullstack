@@ -73,6 +73,7 @@ export function mapApiPortfolioRow(row: PortfolioRow): portfolio_row {
     name: row.name,
     qty: row.qty,
     price: row.price,
+    purchasePrice: row.purchasePrice,
     changePct: row.changePct,
     paysDividends: row.paysDividends,
     turnsUntilDividend: row.turnsUntilDividend,

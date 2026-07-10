@@ -4,6 +4,7 @@ import { characterSkillsStateSchema } from './character_skills.schema.js';
 import { nextTurnForecastResponseSchema } from './forecast.schema.js';
 import { propertyOfferSchema } from './property_offer.schema.js';
 import { generatedNewsItemSchema } from './news.schema.js';
+import { dealOfferSchema } from './deal.schema.js';
 
 export { generatedNewsItemSchema, gameNewsResponseSchema } from './news.schema.js';
 
@@ -58,10 +59,12 @@ export const endTurnResponseSchema = z.object({
   insiderRolled: z.boolean(),
   news: z.array(generatedNewsItemSchema),
   otcDeal: otcDealSchema.optional(),
+  dealOffer: dealOfferSchema.optional(),
   propertyOffers: z.array(propertyOfferSchema),
   appliedPriceImpacts: z.array(appliedPriceImpactSchema).optional(),
   dividendPayouts: z.array(dividendPayoutEventSchema).optional(),
   characterSkills: characterSkillsStateSchema,
+  gameOver: z.boolean(),
 });
 
 export type { NextTurnForecastResponse } from './forecast.schema.js';

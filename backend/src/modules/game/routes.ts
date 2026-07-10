@@ -7,7 +7,10 @@ import { GameService } from './_service.js';
 import { upgradeSkillParamsSchema } from '../../schemas/character_skills.schema.js';
 import { negotiatePropertyOfferBodySchema, acceptPropertyOfferBodySchema } from '../../schemas/property_offer.schema.js';
 import { acceptOtcDealBodySchema } from '../../schemas/otc_deal.schema.js';
+import { acceptDealBodySchema, acceptDealResponseSchema } from '../../schemas/deal.schema.js';
 import { payOffInstallmentBodySchema } from '../../schemas/property_loan.schema.js';
+import { completeStageBodySchema, fulfillDreamBodySchema } from '../../schemas/dream.schema.js';
+import { DreamService } from '../dreams/dream.service.js';
 
 export async function gameRoutes(fastify: FastifyInstance) {
   const gameService = new GameService(fastify.prisma);
@@ -249,6 +252,62 @@ export async function gameRoutes(fastify: FastifyInstance) {
     },
   );
 
+  fastify.post(
+    '/saves/:id/deals/accept',
+    {
+      preHandler: authenticate,
+      schema: {
+        tags: ['game'],
+        security: [{ bearerAuth: [] }],
+        params: {
+          type: 'object',
+          required: ['id'],
+          properties: { id: { type: 'string', format: 'uuid' } },
+        },
+        body: { $ref: 'AcceptDealBody#' },
+        response: {
+          200: { $ref: 'AcceptDealResponse#' },
+          ...errorResponses,
+        },
+      },
+    },
+    async (request) => {
+      const { id } = saveIdParamSchema.parse(request.params);
+      const { dealId } = acceptDealBodySchema.parse(request.body);
+      return gameService.acceptDeal(request.user.sub, id, dealId);
+    },
+  );
+
+  fastify.post(
+    '/saves/:id/deals/reject',
+    {
+      preHandler: authenticate,
+      schema: {
+        tags: ['game'],
+        security: [{ bearerAuth: [] }],
+        params: {
+          type: 'object',
+          required: ['id'],
+          properties: { id: { type: 'string', format: 'uuid' } },
+        },
+        body: { $ref: 'AcceptDealBody#' },
+        response: {
+          200: {
+            type: 'object',
+            required: ['success'],
+            properties: { success: { type: 'boolean' } },
+          },
+          ...errorResponses,
+        },
+      },
+    },
+    async (request) => {
+      const { id } = saveIdParamSchema.parse(request.params);
+      const { dealId } = acceptDealBodySchema.parse(request.body);
+      return gameService.rejectDeal(request.user.sub, id, dealId);
+    },
+  );
+
   fastify.get(
     '/saves/:id/news',
     {
@@ -294,6 +353,90 @@ export async function gameRoutes(fastify: FastifyInstance) {
     async (request) => {
       const { id } = saveIdParamSchema.parse(request.params);
       return gameService.getNextTurnForecast(request.user.sub, id);
+    },
+  );
+
+  fastify.get(
+    '/saves/:id/dream',
+    {
+      preHandler: authenticate,
+      schema: {
+        tags: ['game'],
+        security: [{ bearerAuth: [] }],
+        params: {
+          type: 'object',
+          required: ['id'],
+          properties: { id: { type: 'string', format: 'uuid' } },
+        },
+        response: {
+          200: { $ref: 'Dream#' },
+          ...errorResponses,
+        },
+      },
+    },
+    async (request) => {
+      const { id } = saveIdParamSchema.parse(request.params);
+      const dreamService = new DreamService(fastify.prisma);
+      return dreamService.getDreamForGame(request.user.sub, id);
+    },
+  );
+
+  fastify.post(
+    '/saves/:id/dream/complete-stage',
+    {
+      preHandler: authenticate,
+      schema: {
+        tags: ['game'],
+        security: [{ bearerAuth: [] }],
+        params: {
+          type: 'object',
+          required: ['id'],
+          properties: { id: { type: 'string', format: 'uuid' } },
+        },
+        body: { $ref: 'CompleteStageBody#' },
+        response: {
+          200: { $ref: 'Dream#' },
+          ...errorResponses,
+        },
+      },
+    },
+    async (request) => {
+      const { id } = saveIdParamSchema.parse(request.params);
+      const { dreamId } = completeStageBodySchema.parse(request.body);
+      const dreamService = new DreamService(fastify.prisma);
+      return dreamService.completeStageForGame(request.user.sub, id, dreamId);
+    },
+  );
+
+  fastify.post(
+    '/saves/:id/dream/fulfill',
+    {
+      preHandler: authenticate,
+      schema: {
+        tags: ['game'],
+        security: [{ bearerAuth: [] }],
+        params: {
+          type: 'object',
+          required: ['id'],
+          properties: { id: { type: 'string', format: 'uuid' } },
+        },
+        body: { $ref: 'FulfillDreamBody#' },
+        response: {
+          200: {
+            type: 'object',
+            required: ['success'],
+            properties: { success: { type: 'boolean' } },
+          },
+          ...errorResponses,
+        },
+      },
+    },
+    async (request) => {
+      const { id } = saveIdParamSchema.parse(request.params);
+      const { dreamId } = fulfillDreamBodySchema.parse(request.body);
+      const dreamService = new DreamService(fastify.prisma);
+      await dreamService.fulfillDreamForGame(request.user.sub, id, dreamId);
+      return { success: true };
     },
   );
 

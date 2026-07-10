@@ -13,8 +13,6 @@ export const newsKindSchema = z.enum([
   'PROPERTY_INSTALLMENT',
   'STOCK_TRADE',
   'STOCK_DIVIDEND',
-  'IPO_ANNOUNCE',
-  'IPO_COMPLETE',
 ]);
 
 export const generatedNewsItemSchema = z.object({

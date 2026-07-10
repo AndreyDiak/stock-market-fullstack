@@ -1,20 +1,20 @@
-import { useState } from 'react'
+import { useState } from "react";
 
-import { GameModal } from '../../../../components/game_ui/floating'
-import { GameButton } from '../../../../components/game_ui/game_button'
-import { MoneyValue } from '../../../../components/money/money_value'
-import { format_turn_step_label } from '../../_model/utils'
-import { StatusBadge } from '../shared'
-import type { PropertyOperation } from './_bank_operation_history'
-import { PairList, PairListGroup, PairListRow } from './_bank_pair_list'
-import { buildPropertyFinanceSummary } from './_bank_property_finance_summary'
-import { BankPropertyFinanceSummaryBlock } from './_bank_property_finance_summary_block'
-import { BankPropertyModalHeader } from './_bank_property_modal_header'
-import { InstallmentPaymentHistoryModal } from './_bank_installment_payment_history_modal'
-import './_bank_operation_history_modal.css'
+import { GameModal } from "../../../../components/game_ui/floating";
+import { GameButton } from "../../../../components/game_ui/game_button";
+import { MoneyValue } from "../../../../components/money/money_value";
+import { format_turn_step_label } from "../../_model/utils";
+import { StatusBadge } from "../shared";
+import { InstallmentPaymentHistoryModal } from "./_bank_installment_payment_history_modal";
+import type { PropertyOperation } from "./_bank_operation_history";
+import "./_bank_operation_history_modal.css";
+import { PairList, PairListGroup, PairListRow } from "./_bank_pair_list";
+import { buildPropertyFinanceSummary } from "./_bank_property_finance_summary";
+import { BankPropertyFinanceSummaryBlock } from "./_bank_property_finance_summary_block";
+import { BankPropertyModalHeader } from "./_bank_property_modal_header";
 
 function SellFinanceSummary({ operation }: { operation: PropertyOperation }) {
-  const purchasePrice = operation.priceDiff?.referencePrice ?? null
+  const purchasePrice = operation.priceDiff?.referencePrice ?? null;
 
   return (
     <section className="bank-finance-summary">
@@ -23,22 +23,33 @@ function SellFinanceSummary({ operation }: { operation: PropertyOperation }) {
         {purchasePrice != null ? (
           <PairListGroup>
             <PairListRow label="Цена покупки">
-              <MoneyValue amount={purchasePrice} size="sm" className="inline-flex" />
+              <MoneyValue
+                amount={purchasePrice}
+                size="sm"
+                className="inline-flex"
+              />
             </PairListRow>
             <PairListRow label="Цена продажи">
-              <MoneyValue amount={operation.price} size="sm" color="amber" className="inline-flex" />
+              <MoneyValue
+                amount={operation.price}
+                size="sm"
+                color="amber"
+                className="inline-flex"
+              />
             </PairListRow>
             {operation.priceDiff ? (
               <PairListRow
                 label={
-                  operation.priceDiff.amount >= 0 ? 'Прибыль к покупке' : 'Убыток к покупке'
+                  operation.priceDiff.amount >= 0
+                    ? "Прибыль к покупке"
+                    : "Убыток к покупке"
                 }
               >
                 <MoneyValue
                   amount={Math.abs(operation.priceDiff.amount)}
                   size="sm"
-                  color={operation.priceDiff.amount >= 0 ? 'emerald' : 'red'}
-                  prefix={operation.priceDiff.amount >= 0 ? '+' : '−'}
+                  color={operation.priceDiff.amount >= 0 ? "emerald" : "red"}
+                  prefix={operation.priceDiff.amount >= 0 ? "+" : "−"}
                   className="inline-flex"
                 />
               </PairListRow>
@@ -47,7 +58,12 @@ function SellFinanceSummary({ operation }: { operation: PropertyOperation }) {
         ) : (
           <PairListGroup>
             <PairListRow label="Цена продажи">
-              <MoneyValue amount={operation.price} size="sm" color="amber" className="inline-flex" />
+              <MoneyValue
+                amount={operation.price}
+                size="sm"
+                color="amber"
+                className="inline-flex"
+              />
             </PairListRow>
           </PairListGroup>
         )}
@@ -59,22 +75,22 @@ function SellFinanceSummary({ operation }: { operation: PropertyOperation }) {
         </PairListGroup>
       </PairList>
     </section>
-  )
+  );
 }
 
 export function BankOperationHistoryModal({
   operation,
   onClose,
 }: {
-  operation: PropertyOperation | null
-  onClose: () => void
+  operation: PropertyOperation | null;
+  onClose: () => void;
 }) {
-  const [showPaymentHistory, setShowPaymentHistory] = useState(false)
+  const [showPaymentHistory, setShowPaymentHistory] = useState(false);
 
-  if (!operation) return null
+  if (!operation) return null;
 
-  const isBuy = operation.type === 'buy'
-  const wasInstallment = operation.paymentLabel === 'В кредит'
+  const isBuy = operation.type === "buy";
+  const wasInstallment = operation.paymentLabel === "В кредит";
 
   const buySummary = isBuy
     ? buildPropertyFinanceSummary({
@@ -87,7 +103,7 @@ export function BankOperationHistoryModal({
         details: operation.details,
         wasInstallment,
       })
-    : null
+    : null;
 
   return (
     <GameModal
@@ -103,11 +119,13 @@ export function BankOperationHistoryModal({
           name={operation.itemName}
           badges={
             <>
-              <StatusBadge tone={isBuy ? 'sky' : 'amber'}>
-                {isBuy ? 'Покупка' : 'Продажа'}
+              <StatusBadge tone={isBuy ? "sky" : "amber"}>
+                {isBuy ? "Покупка" : "Продажа"}
               </StatusBadge>
               {operation.paymentLabel ? (
-                <span className="bank-operation-modal__payment-chip">{operation.paymentLabel}</span>
+                <span className="bank-operation-modal__payment-chip">
+                  {operation.paymentLabel}
+                </span>
               ) : null}
             </>
           }
@@ -122,10 +140,16 @@ export function BankOperationHistoryModal({
         <footer className="bank-operation-modal__footer">
           <div className="flex w-full items-center justify-between gap-2">
             {wasInstallment ? (
-              <GameButton variant="teal" size="sm" onClick={() => setShowPaymentHistory(true)}>
+              <GameButton
+                variant="muted"
+                size="sm"
+                onClick={() => setShowPaymentHistory(true)}
+              >
                 История платежей
               </GameButton>
-            ) : <span />}
+            ) : (
+              <span />
+            )}
             <GameButton variant="muted" size="sm" onClick={onClose}>
               Закрыть
             </GameButton>
@@ -140,5 +164,5 @@ export function BankOperationHistoryModal({
         ) : null}
       </div>
     </GameModal>
-  )
+  );
 }

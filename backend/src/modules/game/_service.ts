@@ -2,6 +2,7 @@ import type { PrismaClient } from '@prisma/client';
 import { NewsGenerationService } from '../news/news_generation.service.js';
 import { PropertyOffersService } from '../property_offers/property_offers.service.js';
 import { OtcDealsService } from '../otc_deals/otc_deals.service.js';
+import { DealService } from '../deals/deal.service.js';
 import { AppError } from '../../utils/errors.js';
 import { CharacterSkillsService } from '../character_skills/character_skills.service.js';
 import { serializeCharacter, serializeGame } from '../saves/game_serializer.js';
@@ -35,6 +36,7 @@ export class GameService {
   readonly #newsService: NewsGenerationService;
   readonly #propertyOffersService: PropertyOffersService;
   readonly #otcDealsService: OtcDealsService;
+  readonly #dealService: DealService;
   readonly #passiveIncomeService: PassiveIncomeService;
   readonly #savesService: SavesService;
   readonly #marketService: MarketService;
@@ -47,6 +49,7 @@ export class GameService {
     this.#newsService = new NewsGenerationService(prisma);
     this.#propertyOffersService = new PropertyOffersService(prisma);
     this.#otcDealsService = new OtcDealsService(prisma);
+    this.#dealService = new DealService(prisma);
     this.#passiveIncomeService = new PassiveIncomeService(prisma);
     this.#savesService = new SavesService(prisma);
     this.#marketService = new MarketService(prisma);
@@ -98,6 +101,23 @@ export class GameService {
     }
 
     const character = context.game.character;
+
+    const dividendTotal = state.dividendPayouts?.reduce((s, p) => s + p.totalPaid, 0) ?? 0;
+    const actualNetChange = state.passiveIncome.netChange + dividendTotal;
+    const newBalance = character.balance + actualNetChange;
+
+    character.balance = newBalance;
+
+    if (newBalance < 0) {
+      await this.#prisma.game.update({
+        where: { id: saveId },
+        data: {
+          status: 'COMPLETED',
+          completedAt: new Date(),
+        },
+      });
+    }
+
     const baseForecast = this.#passiveIncomeService.buildForecast(
       character,
       context.game.step,
@@ -114,10 +134,11 @@ export class GameService {
       context.game.step,
       character.inventoryItems,
     );
+    const dealOffers = await this.#listActiveDeals(saveId, context.game.step);
 
     return {
       step: context.game.step,
-      balance: character.balance,
+      balance: newBalance,
       character: serializeCharacter(character),
       nextTurnForecast,
       passiveIncome: state.passiveIncome,
@@ -125,9 +146,11 @@ export class GameService {
       insiderRolled: state.insiderRolled,
       news: state.news,
       otcDeal: state.otcDeal,
+      dealOffers,
       propertyOffers,
       characterSkills: this.#characterSkillsService.buildState(character),
       dividendPayouts: state.dividendPayouts,
+      gameOver: newBalance < 0,
     };
   }
 
@@ -191,6 +214,109 @@ export class GameService {
       character: serializeCharacter(result.character),
       news: result.news,
     };
+  }
+
+  async acceptDeal(
+    userId: string,
+    saveId: string,
+    dealId: string,
+  ) {
+    const game = await this.#loadGame(userId, saveId);
+
+    const dealRow = await this.#prisma.dealOffer.findFirst({
+      where: { id: dealId, gameId: saveId, status: 'ACTIVE' },
+    });
+
+    if (!dealRow) {
+      throw new AppError(404, 'DEAL_NOT_FOUND', 'Deal offer not found or not active');
+    }
+
+    if (dealRow.expiresTurn < game.step) {
+      await this.#prisma.dealOffer.update({
+        where: { id: dealId },
+        data: { status: 'EXPIRED' },
+      });
+      throw new AppError(410, 'DEAL_EXPIRED', 'Deal offer has expired');
+    }
+
+    const deal = {
+      id: dealRow.id,
+      botCharacterId: dealRow.botCharacterId,
+      botName: '',
+      botProfession: '',
+      botGives: dealRow.botGives as unknown as import('../deals/deal.types.js').DealBundle,
+      playerGives: dealRow.playerGives as unknown as import('../deals/deal.types.js').DealBundle,
+      requiredReputation: dealRow.requiredReputation,
+      requiredTradingLevel: dealRow.requiredTradingLevel,
+      reputationPenalty: dealRow.reputationPenalty,
+      playerBenefitValue: dealRow.playerBenefitValue,
+      playerBenefitPercent: dealRow.playerBenefitPercent,
+      status: dealRow.status as import('../deals/deal.types.js').DealOfferStatus,
+      turnCreated: dealRow.turnCreated,
+      expiresTurn: dealRow.expiresTurn,
+      expiresInTurns: Math.max(0, dealRow.expiresTurn - game.step),
+    };
+
+    const botChar = await this.#prisma.character.findUnique({
+      where: { id: dealRow.botCharacterId },
+    });
+
+    if (botChar) {
+      deal.botName = botChar.name;
+      deal.botProfession = botChar.profession;
+    }
+
+    const result = await this.#dealService.accept(
+      saveId,
+      game.step,
+      game.character,
+      deal,
+    );
+
+    return {
+      balance: result.balance,
+      previousBalance: result.previousBalance,
+      character: serializeCharacter(result.character),
+      news: result.news,
+    };
+  }
+
+  async rejectDeal(
+    userId: string,
+    saveId: string,
+    dealId: string,
+  ) {
+    const game = await this.#loadGame(userId, saveId);
+
+    const dealRow = await this.#prisma.dealOffer.findFirst({
+      where: { id: dealId, gameId: saveId, status: 'ACTIVE' },
+    });
+
+    if (!dealRow) {
+      throw new AppError(404, 'DEAL_NOT_FOUND', 'Deal offer not found or not active');
+    }
+
+    const deal = {
+      id: dealRow.id,
+      botCharacterId: dealRow.botCharacterId,
+      botName: '',
+      botProfession: '',
+      botGives: dealRow.botGives as unknown as import('../deals/deal.types.js').DealBundle,
+      playerGives: dealRow.playerGives as unknown as import('../deals/deal.types.js').DealBundle,
+      requiredReputation: dealRow.requiredReputation,
+      requiredTradingLevel: dealRow.requiredTradingLevel,
+      reputationPenalty: dealRow.reputationPenalty,
+      playerBenefitValue: dealRow.playerBenefitValue,
+      playerBenefitPercent: dealRow.playerBenefitPercent,
+      status: dealRow.status as import('../deals/deal.types.js').DealOfferStatus,
+      turnCreated: dealRow.turnCreated,
+      expiresTurn: dealRow.expiresTurn,
+      expiresInTurns: Math.max(0, dealRow.expiresTurn - game.step),
+    };
+
+    await this.#dealService.reject(saveId, deal);
+
+    return { success: true };
   }
 
   async negotiatePropertyOffer(
@@ -300,6 +426,7 @@ export class GameService {
       game.step,
       game.character.inventoryItems,
     );
+    const dealOffers = await this.#listActiveDeals(saveId, game.step);
 
     return {
       step: game.step,
@@ -314,8 +441,10 @@ export class GameService {
       insiderChancePercent: 0,
       insiderRolled: false,
       news,
+      dealOffers,
       propertyOffers,
       characterSkills: this.#characterSkillsService.buildState(game.character),
+      gameOver: false,
     };
   }
 
@@ -357,6 +486,7 @@ export class GameService {
       bootstrapped.step,
       inventoryItems,
     );
+    const dealOffers = await this.#listActiveDeals(saveId, bootstrapped.step);
     const marketData = await this.#marketService.getDashboardMarketData(saveId, character);
     const ipos = await this.#marketService.ipo.listActive(saveId);
 
@@ -366,6 +496,7 @@ export class GameService {
       nextTurnForecast,
       characterSkills: this.#characterSkillsService.buildState(character),
       propertyOffers,
+      dealOffers,
       stocks: marketData.stocks,
       portfolio: marketData.portfolio,
       marketSentiment: marketData.marketSentiment,
@@ -471,6 +602,42 @@ export class GameService {
   ) {
     const baseForecast = this.#passiveIncomeService.buildForecast(character, step, gameId);
     return this.#marketService.enrichForecastWithDividends(baseForecast, gameId, character.id);
+  }
+
+  async #listActiveDeals(saveId: string, currentStep: number) {
+    const activeRows = await this.#prisma.dealOffer.findMany({
+      where: { gameId: saveId, status: 'ACTIVE', expiresTurn: { gte: currentStep } },
+    });
+
+    if (activeRows.length === 0) return [];
+
+    const botIds = [...new Set(activeRows.map((r) => r.botCharacterId))];
+    const bots = await this.#prisma.character.findMany({
+      where: { id: { in: botIds } },
+      select: { id: true, name: true, profession: true },
+    });
+    const botMap = new Map(bots.map((b) => [b.id, b]));
+
+    return activeRows.map((row) => {
+      const bot = botMap.get(row.botCharacterId);
+      return {
+        id: row.id,
+        botCharacterId: row.botCharacterId,
+        botName: bot?.name ?? '',
+        botProfession: bot?.profession ?? '',
+        botGives: row.botGives as unknown as import('../deals/deal.types.js').DealBundle,
+        playerGives: row.playerGives as unknown as import('../deals/deal.types.js').DealBundle,
+        requiredReputation: row.requiredReputation,
+        requiredTradingLevel: row.requiredTradingLevel,
+        reputationPenalty: row.reputationPenalty,
+        playerBenefitValue: row.playerBenefitValue,
+        playerBenefitPercent: row.playerBenefitPercent,
+        status: row.status as import('../deals/deal.types.js').DealOfferStatus,
+        turnCreated: row.turnCreated,
+        expiresTurn: row.expiresTurn,
+        expiresInTurns: Math.max(0, row.expiresTurn - currentStep),
+      };
+    });
   }
 
   async #assertGameAccess(userId: string, saveId: string) {

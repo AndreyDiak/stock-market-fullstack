@@ -25,6 +25,7 @@ model Game {
   character      Character?
   news           News[]
   propertyOffers PropertyOffer[]
+  dealOffers     DealOffer[]
 
   scheduledPriceImpacts ScheduledPriceImpact[]
   gameStockListings     GameStockListing[]

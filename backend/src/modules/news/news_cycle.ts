@@ -4,17 +4,18 @@ export type NewsCycleCategory = 'stock' | 'deal' | 'realty';
 
 export const NEWS_CYCLE_ORDER: NewsCycleCategory[] = ['stock', 'deal', 'realty'];
 
-export type TurnContentType = 'stock' | 'otc' | 'property';
+export type TurnContentType = 'stock' | 'deal' | 'property';
 
 const CATEGORY_TO_CONTENT: Record<NewsCycleCategory, TurnContentType> = {
   stock: 'stock',
-  deal: 'otc',
+  deal: 'deal',
   realty: 'property',
 };
 
 export function kindToNewsCategory(kind: GeneratedNewsKind): NewsCycleCategory {
   switch (kind) {
     case 'OTC_DEAL':
+    case 'DEAL_OFFER':
       return 'deal';
     case 'PROPERTY_OFFER':
     case 'PROPERTY_DEAL':

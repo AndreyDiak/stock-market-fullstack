@@ -1,11 +1,9 @@
 import type { news_item } from '../../_model/types'
 import { useGameStore } from '../../../../stores/game.store'
-import { useDashboardUi } from '../../_model/dashboard_ui_context'
 import { AssetImageFrame } from '../../../../shared/components'
 import { getNewsPropertyAlt, getNewsPropertyImage } from './_news_asset_image'
 import { formatMoney } from '../../../../components/money/money_value'
 import { PROFIT_GRADE_STYLES } from '../real_estate/_offer_styles'
-import { GameButton } from '../../../../components/game_ui/game_button'
 import type { GameDashboardThemeTokens } from '../shared'
 
 const DEAL_TYPE_LABELS: Record<string, string> = {
@@ -20,7 +18,6 @@ interface RealtyNewsCardProps {
 
 export function RealtyNewsCard({ item }: RealtyNewsCardProps) {
   const propertyOffers = useGameStore((state) => state.propertyOffers)
-  const { openRealEstateTab } = useDashboardUi()
   const image = getNewsPropertyImage(item, propertyOffers)
   const alt = getNewsPropertyAlt(item, propertyOffers) ?? 'Недвижимость'
 
@@ -78,19 +75,6 @@ export function RealtyNewsCard({ item }: RealtyNewsCardProps) {
             Нужно: Банковское дело {offer.requiredBankingLevel}
           </p>
         ) : null}
-
-        <div className="news-realty__actions">
-          {payload?.offerId ? (
-            <GameButton size="sm" variant="emerald" onClick={(e) => { e.stopPropagation(); openRealEstateTab(payload.offerId) }}>
-              Открыть объект
-            </GameButton>
-          ) : null}
-          {payload?.assetId ? (
-            <GameButton size="sm" variant="teal" onClick={(e) => { e.stopPropagation(); openRealEstateTab() }}>
-              Перейти на рынок
-            </GameButton>
-          ) : null}
-        </div>
       </div>
     </div>
   )

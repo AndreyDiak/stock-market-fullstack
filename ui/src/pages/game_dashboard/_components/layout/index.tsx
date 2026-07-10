@@ -2,7 +2,8 @@ import { useDashboardUi } from '../../_model/dashboard_ui_context'
 import { useDashboardTheme } from '../../_model/use_dashboard_theme'
 import { ExchangeTable } from '../exchange'
 import { NewsPanel } from '../news'
-import { OtcDealsPanel } from '../otc'
+import { DealsPanel } from '../deals'
+import { DreamPanel } from '../dreams'
 import { BankView } from '../bank'
 import { CharacterProfilePanel } from '../character'
 import { GameSettingsPanel } from '../settings'
@@ -21,7 +22,8 @@ export function CenterPanel() {
       {activeTab === 'bank' && <BankView />}
       {activeTab === 'exchange' && <ExchangeTable />}
       {activeTab === 'news' && <NewsPanel />}
-      {activeTab === 'otc' && <OtcDealsPanel />}
+      {activeTab === 'dream' && <DreamPanel />}
+      {activeTab === 'deals' && <DealsPanel />}
       {activeTab === 'real-estate' && <RealEstatePanel />}
     </section>
   )

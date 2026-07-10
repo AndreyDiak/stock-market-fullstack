@@ -96,10 +96,19 @@ export function calcSellCommissionPercent(tradingLevel: number): number {
   return 10 - (level - 1)
 }
 
-/** Макс. скидка при торге по имуществу для уровня курса трейдинга (F→25% … A→50%). */
+/** Макс. скидка при торге по имуществу для уровня курса трейдинга (F→15% … A→50%). */
+const MAX_NEGOTIATION_DISCOUNT_BY_TRADING_LEVEL = {
+  1: 15,
+  2: 25,
+  3: 30,
+  4: 35,
+  5: 42,
+  6: 50,
+} as const
+
 export function getMaxNegotiateDiscountPercent(tradingLevel: number): number {
-  const level = Math.max(1, Math.min(tradingLevel, 6))
-  return 20 + level * 5
+  const level = Math.max(1, Math.min(tradingLevel, 6)) as keyof typeof MAX_NEGOTIATION_DISCOUNT_BY_TRADING_LEVEL
+  return MAX_NEGOTIATION_DISCOUNT_BY_TRADING_LEVEL[level]
 }
 
 export function getTradingGradeFromLevel(tradingLevel: number): string {
