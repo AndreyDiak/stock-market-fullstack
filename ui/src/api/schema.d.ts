@@ -103,6 +103,174 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RegisterBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AuthTokenResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["LoginBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AuthTokenResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/refresh": {
         parameters: {
             query?: never;
@@ -446,7 +614,7 @@ export interface paths {
         };
         trace?: never;
     };
-    "/games": {
+    "/saves": {
         parameters: {
             query?: never;
             header?: never;
@@ -594,7 +762,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/games/{id}": {
+    "/saves/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -812,6 +980,2371 @@ export interface paths {
         };
         trace?: never;
     };
+    "/saves/{id}/end-turn": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["EndTurnBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["EndTurnResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/skills/{skillId}/upgrade": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    skillId: "qualification" | "banking" | "trading" | "property_slots";
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UpgradeSkillResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GameDashboardResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/property-offers/{offerId}/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    offerId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AcceptPropertyOfferBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AcceptPropertyOfferResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/property-offers/{offerId}/negotiate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    offerId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["NegotiatePropertyOfferBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["NegotiatePropertyOfferResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/property-offers/{offerId}/negotiate/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    offerId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AcceptPropertyOfferBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AcceptPropertyOfferResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/property-offers/{offerId}/negotiate/decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    offerId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            propertyOffers: components["schemas"]["PropertyOffer"][];
+                        };
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/otc-deals/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AcceptOtcDealBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AcceptOtcDealResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/deals/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AcceptDealBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AcceptDealResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/news": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GameNewsResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/next-turn-forecast": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["NextTurnForecastResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/dream": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Dream"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/dream/complete-stage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["CompleteStageBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Dream"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/dream/fulfill": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["FulfillDreamBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            success: boolean;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/inventory/{itemId}/pay-off-installment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    itemId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["PayOffInstallmentBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PayOffInstallmentResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/stocks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["StockListResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/stocks/{listingId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    listingId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["StockDetailResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/stocks/{listingId}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    limit?: number;
+                };
+                header?: never;
+                path: {
+                    id: string;
+                    listingId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["StockHistoryResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/stocks/{listingId}/buy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    listingId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["BuyStockBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BuyStockResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/stocks/{listingId}/sell": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    listingId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["SellStockBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SellStockResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/stocks/trades": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["StockTradeListResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/portfolio": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PortfolioResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/market/sentiment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MarketSentiment"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/market/sectors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            sectors?: components["schemas"]["SectorMomentum"][];
+                        };
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/ipo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["IpoListResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/ipo/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["IpoListResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/saves/{id}/ipo/{ipoId}/subscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    ipoId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["IpoSubscribeBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["IpoSubscribeResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["CreateFeedbackBody"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CreateFeedbackResponse"];
+                    };
+                };
+                /** @description Default Response */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Default Response */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -873,6 +3406,8 @@ export interface components {
             salary: number;
             reputation: number;
             tradingLevel: number;
+            bankingLevel: number;
+            propertySlotLevel: number;
             isNpc: boolean;
             dreamItemRefs: string[];
             totalEarned: number;
@@ -883,6 +3418,227 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+            inventoryItems?: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                characterId: string;
+                itemRef: string;
+                name: string;
+                purchasePrice: number;
+                downPaymentAmount: number | null;
+                isInstallment: boolean;
+                monthlyPayment: number | null;
+                installmentsTotal: number | null;
+                installmentsPaid: number;
+                /** @default 0 */
+                installmentPrepay: number;
+                special: string | null;
+                isPaidOff: boolean;
+                /** Format: date-time */
+                purchasedAt: string;
+            }[];
+        };
+        CharacterSkillsState: {
+            skills: {
+                id: string;
+                name: string;
+                tag: string;
+                description: string;
+                effectLabel: string;
+                level: number;
+                maxLevel: number;
+                upgradePrice: number | null;
+                canUpgrade: boolean;
+                infographic: {
+                    id: string;
+                    label: string;
+                    value?: string;
+                    moneyAmount?: number;
+                    /** @enum {string} */
+                    tone?: "emerald" | "amber";
+                }[];
+                upgradePreview: {
+                    skillName: string;
+                    tag: string;
+                    currentLevel: number;
+                    nextLevel: number;
+                    maxLevel: number;
+                    price: number;
+                    benefits: {
+                        id: string;
+                        /** @enum {string} */
+                        kind: "compare" | "text" | "bonus";
+                        label: string;
+                        from?: string;
+                        to?: string;
+                        suffix?: string;
+                        /** @enum {string} */
+                        fromTone?: "muted" | "emerald" | "amber";
+                        /** @enum {string} */
+                        toTone?: "emerald" | "amber";
+                        text?: string;
+                        highlight?: string;
+                    }[];
+                } | null;
+                segmentDisplay: {
+                    filled: number;
+                    total: number;
+                };
+                levelTooltips: {
+                    title: string;
+                    lines: string[];
+                }[];
+            }[];
+            stats: {
+                effectiveSalary: number;
+                workLevel: number;
+                insiderChancePercent: number;
+                bankBaseRatePercent: number;
+                tradingGrade: string;
+                sellCommissionPercent: number;
+                propertySlotsUnlocked: number;
+                salaryBonus: number;
+                qualificationBonusPercent: number;
+            };
+        };
+        UpgradeSkillResponse: {
+            game: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                userId: string;
+                name: string;
+                slot: number;
+                /** @enum {string} */
+                status: "ACTIVE" | "INACTIVE" | "PAUSED" | "COMPLETED";
+                step: number;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date-time */
+                updatedAt: string;
+                startedAt: string | null;
+                completedAt: string | null;
+                totalPlayTime: number;
+                character: {
+                    /** Format: uuid */
+                    id: string;
+                    gameId: string | null;
+                    name: string;
+                    balance: number;
+                    /** @enum {string} */
+                    profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
+                    professionLevel: number;
+                    salary: number;
+                    reputation: number;
+                    tradingLevel: number;
+                    bankingLevel: number;
+                    propertySlotLevel: number;
+                    isNpc: boolean;
+                    dreamItemRefs: string[];
+                    totalEarned: number;
+                    totalSpent: number;
+                    totalTrades: number;
+                    successfulTrades: number;
+                    /** Format: date-time */
+                    createdAt: string;
+                    /** Format: date-time */
+                    updatedAt: string;
+                    inventoryItems?: {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        characterId: string;
+                        itemRef: string;
+                        name: string;
+                        purchasePrice: number;
+                        downPaymentAmount: number | null;
+                        isInstallment: boolean;
+                        monthlyPayment: number | null;
+                        installmentsTotal: number | null;
+                        installmentsPaid: number;
+                        /** @default 0 */
+                        installmentPrepay: number;
+                        special: string | null;
+                        isPaidOff: boolean;
+                        /** Format: date-time */
+                        purchasedAt: string;
+                    }[];
+                } | null;
+            };
+            characterSkills: {
+                skills: {
+                    id: string;
+                    name: string;
+                    tag: string;
+                    description: string;
+                    effectLabel: string;
+                    level: number;
+                    maxLevel: number;
+                    upgradePrice: number | null;
+                    canUpgrade: boolean;
+                    infographic: {
+                        id: string;
+                        label: string;
+                        value?: string;
+                        moneyAmount?: number;
+                        /** @enum {string} */
+                        tone?: "emerald" | "amber";
+                    }[];
+                    upgradePreview: {
+                        skillName: string;
+                        tag: string;
+                        currentLevel: number;
+                        nextLevel: number;
+                        maxLevel: number;
+                        price: number;
+                        benefits: {
+                            id: string;
+                            /** @enum {string} */
+                            kind: "compare" | "text" | "bonus";
+                            label: string;
+                            from?: string;
+                            to?: string;
+                            suffix?: string;
+                            /** @enum {string} */
+                            fromTone?: "muted" | "emerald" | "amber";
+                            /** @enum {string} */
+                            toTone?: "emerald" | "amber";
+                            text?: string;
+                            highlight?: string;
+                        }[];
+                    } | null;
+                    segmentDisplay: {
+                        filled: number;
+                        total: number;
+                    };
+                    levelTooltips: {
+                        title: string;
+                        lines: string[];
+                    }[];
+                }[];
+                stats: {
+                    effectiveSalary: number;
+                    workLevel: number;
+                    insiderChancePercent: number;
+                    bankBaseRatePercent: number;
+                    tradingGrade: string;
+                    sellCommissionPercent: number;
+                    propertySlotsUnlocked: number;
+                    salaryBonus: number;
+                    qualificationBonusPercent: number;
+                };
+            };
+            nextTurnForecast: {
+                lines: {
+                    id: string;
+                    label: string;
+                    amount: number;
+                }[];
+                incomeTotal: number;
+                expenseTotal: number;
+                netChange: number;
+            };
         };
         CharacterRoster: {
             /** @enum {string} */
@@ -904,6 +3660,41 @@ export interface components {
                 description: string;
                 basePrice: number;
             }[];
+            dreamStages: {
+                dreamType: string;
+                title: string;
+                description: string;
+                stages: {
+                    description: string;
+                    minBalance?: number;
+                    minPortfolioValue?: number;
+                    minPassiveIncome?: number;
+                    minReputation?: number;
+                    minProfessionLevel?: number;
+                    minTradingLevel?: number;
+                    minBankingLevel?: number;
+                    requiredItems?: string[];
+                    requireItemFullyOwned?: string[];
+                    noActiveInstallments?: boolean;
+                }[];
+            };
+            dreamPreview: {
+                title: string;
+                description: string;
+                stageCount: number;
+                pathHint: string;
+                stages: {
+                    order: number;
+                    title: string;
+                    description: string;
+                    requirementsPreview: {
+                        /** @enum {string} */
+                        kind: "balance" | "profession" | "portfolio" | "banking" | "trading" | "passive" | "reputation" | "property" | "no_installments";
+                        label: string;
+                    }[];
+                    isFinal?: boolean;
+                }[];
+            };
         }[];
         Game: {
             /** Format: uuid */
@@ -934,6 +3725,8 @@ export interface components {
                 salary: number;
                 reputation: number;
                 tradingLevel: number;
+                bankingLevel: number;
+                propertySlotLevel: number;
                 isNpc: boolean;
                 dreamItemRefs: string[];
                 totalEarned: number;
@@ -944,6 +3737,26 @@ export interface components {
                 createdAt: string;
                 /** Format: date-time */
                 updatedAt: string;
+                inventoryItems?: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    characterId: string;
+                    itemRef: string;
+                    name: string;
+                    purchasePrice: number;
+                    downPaymentAmount: number | null;
+                    isInstallment: boolean;
+                    monthlyPayment: number | null;
+                    installmentsTotal: number | null;
+                    installmentsPaid: number;
+                    /** @default 0 */
+                    installmentPrepay: number;
+                    special: string | null;
+                    isPaidOff: boolean;
+                    /** Format: date-time */
+                    purchasedAt: string;
+                }[];
             } | null;
         };
         GameList: {
@@ -975,6 +3788,8 @@ export interface components {
                 salary: number;
                 reputation: number;
                 tradingLevel: number;
+                bankingLevel: number;
+                propertySlotLevel: number;
                 isNpc: boolean;
                 dreamItemRefs: string[];
                 totalEarned: number;
@@ -985,6 +3800,26 @@ export interface components {
                 createdAt: string;
                 /** Format: date-time */
                 updatedAt: string;
+                inventoryItems?: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    characterId: string;
+                    itemRef: string;
+                    name: string;
+                    purchasePrice: number;
+                    downPaymentAmount: number | null;
+                    isInstallment: boolean;
+                    monthlyPayment: number | null;
+                    installmentsTotal: number | null;
+                    installmentsPaid: number;
+                    /** @default 0 */
+                    installmentPrepay: number;
+                    special: string | null;
+                    isPaidOff: boolean;
+                    /** Format: date-time */
+                    purchasedAt: string;
+                }[];
             } | null;
         }[];
         CreateGameBody: {
@@ -1000,6 +3835,1393 @@ export interface components {
         };
         DeleteGameResponse: {
             success: boolean;
+        };
+        EndTurnResponse: {
+            step: number;
+            balance: number;
+            character: {
+                /** Format: uuid */
+                id: string;
+                gameId: string | null;
+                name: string;
+                balance: number;
+                /** @enum {string} */
+                profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
+                professionLevel: number;
+                salary: number;
+                reputation: number;
+                tradingLevel: number;
+                bankingLevel: number;
+                propertySlotLevel: number;
+                isNpc: boolean;
+                dreamItemRefs: string[];
+                totalEarned: number;
+                totalSpent: number;
+                totalTrades: number;
+                successfulTrades: number;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date-time */
+                updatedAt: string;
+                inventoryItems?: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    characterId: string;
+                    itemRef: string;
+                    name: string;
+                    purchasePrice: number;
+                    downPaymentAmount: number | null;
+                    isInstallment: boolean;
+                    monthlyPayment: number | null;
+                    installmentsTotal: number | null;
+                    installmentsPaid: number;
+                    /** @default 0 */
+                    installmentPrepay: number;
+                    special: string | null;
+                    isPaidOff: boolean;
+                    /** Format: date-time */
+                    purchasedAt: string;
+                }[];
+            };
+            nextTurnForecast: {
+                lines: {
+                    id: string;
+                    label: string;
+                    amount: number;
+                }[];
+                incomeTotal: number;
+                expenseTotal: number;
+                netChange: number;
+            };
+            passiveIncome: {
+                salary: number;
+                livingExpense: number;
+                installmentTotal: number;
+                passiveIncome: number;
+                itemsPaidOff: string[];
+                netChange: number;
+            };
+            insiderChancePercent: number;
+            insiderRolled: boolean;
+            news: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "DEAL_OFFER" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND";
+                title: string;
+                body: string;
+                excerpt: string;
+                /** @enum {string} */
+                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+                impact: number;
+                sector?: string | null;
+                companyId?: string | null;
+                ticker?: string;
+                hot?: boolean;
+                /** Format: date-time */
+                publishedAt: string;
+                publishedStep?: number;
+                payload?: unknown;
+            }[];
+            otcDeal?: {
+                botName: string;
+                ticker: string;
+                companyName: string;
+                /** @enum {string} */
+                side: "buy" | "sell";
+                qty: number;
+                price: number;
+                turnsLeft: number;
+                flavorText: string;
+            };
+            dealOffers: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                botCharacterId: string;
+                botName: string;
+                botProfession: string;
+                botAvatarSrc?: string;
+                /**
+                 * @default VALUE_EXCHANGE
+                 * @enum {string}
+                 */
+                purpose: "VALUE_EXCHANGE" | "LIQUIDITY" | "DREAM_HELPER" | "STOCK_PACKAGE";
+                botGives: {
+                    assets: {
+                        /** @enum {string} */
+                        type: "CASH" | "STOCK" | "PROPERTY";
+                        cashAmount?: number;
+                        stockListingId?: string;
+                        ticker?: string;
+                        companyName?: string;
+                        shares?: number;
+                        propertyId?: string;
+                        propertyName?: string;
+                        estimatedValue: number;
+                    }[];
+                    totalEstimatedValue: number;
+                };
+                playerGives: {
+                    assets: {
+                        /** @enum {string} */
+                        type: "CASH" | "STOCK" | "PROPERTY";
+                        cashAmount?: number;
+                        stockListingId?: string;
+                        ticker?: string;
+                        companyName?: string;
+                        shares?: number;
+                        propertyId?: string;
+                        propertyName?: string;
+                        estimatedValue: number;
+                    }[];
+                    totalEstimatedValue: number;
+                };
+                requiredReputation: number;
+                requiredTradingLevel: number;
+                reputationPenalty: number;
+                playerBenefitValue: number;
+                playerBenefitPercent: number;
+                /** @enum {string} */
+                status: "ACTIVE" | "ACCEPTED" | "REJECTED" | "EXPIRED" | "NEGOTIATED";
+                turnCreated: number;
+                expiresTurn: number;
+                expiresInTurns: number;
+            }[];
+            propertyOffers: {
+                /** Format: uuid */
+                id: string;
+                assetId: string;
+                itemName: string;
+                inventoryItemId: string | null;
+                /** @enum {string} */
+                type: "BUY" | "SELL";
+                offerPrice: number;
+                marketPrice: number;
+                profitPercent: number;
+                /** @enum {string} */
+                profitGrade: "F" | "E" | "D" | "C" | "B" | "A";
+                requiredBankingLevel: number;
+                isHot: boolean;
+                expiresInTurns: number;
+                isLocked: boolean;
+                downPaymentPercent: number;
+                pendingNegotiatedPrice: number | null;
+                pendingNegotiatedPercent: number | null;
+            }[];
+            appliedPriceImpacts?: {
+                /** Format: uuid */
+                impactId: string;
+                ticker: string;
+                /** @enum {string} */
+                direction: "UP" | "DOWN";
+                movePercent: number;
+                previousPrice: number;
+                newPrice: number;
+                triggerAtStep: number;
+            }[];
+            dividendPayouts?: {
+                /** Format: uuid */
+                listingId: string;
+                ticker: string;
+                companyName: string;
+                totalPaid: number;
+            }[];
+            characterSkills: {
+                skills: {
+                    id: string;
+                    name: string;
+                    tag: string;
+                    description: string;
+                    effectLabel: string;
+                    level: number;
+                    maxLevel: number;
+                    upgradePrice: number | null;
+                    canUpgrade: boolean;
+                    infographic: {
+                        id: string;
+                        label: string;
+                        value?: string;
+                        moneyAmount?: number;
+                        /** @enum {string} */
+                        tone?: "emerald" | "amber";
+                    }[];
+                    upgradePreview: {
+                        skillName: string;
+                        tag: string;
+                        currentLevel: number;
+                        nextLevel: number;
+                        maxLevel: number;
+                        price: number;
+                        benefits: {
+                            id: string;
+                            /** @enum {string} */
+                            kind: "compare" | "text" | "bonus";
+                            label: string;
+                            from?: string;
+                            to?: string;
+                            suffix?: string;
+                            /** @enum {string} */
+                            fromTone?: "muted" | "emerald" | "amber";
+                            /** @enum {string} */
+                            toTone?: "emerald" | "amber";
+                            text?: string;
+                            highlight?: string;
+                        }[];
+                    } | null;
+                    segmentDisplay: {
+                        filled: number;
+                        total: number;
+                    };
+                    levelTooltips: {
+                        title: string;
+                        lines: string[];
+                    }[];
+                }[];
+                stats: {
+                    effectiveSalary: number;
+                    workLevel: number;
+                    insiderChancePercent: number;
+                    bankBaseRatePercent: number;
+                    tradingGrade: string;
+                    sellCommissionPercent: number;
+                    propertySlotsUnlocked: number;
+                    salaryBonus: number;
+                    qualificationBonusPercent: number;
+                };
+            };
+            gameOver: boolean;
+        };
+        EndTurnBody: {
+            expectedStep: number;
+        };
+        GameNewsResponse: {
+            news: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "DEAL_OFFER" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND";
+                title: string;
+                body: string;
+                excerpt: string;
+                /** @enum {string} */
+                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+                impact: number;
+                sector?: string | null;
+                companyId?: string | null;
+                ticker?: string;
+                hot?: boolean;
+                /** Format: date-time */
+                publishedAt: string;
+                publishedStep?: number;
+                payload?: unknown;
+            }[];
+        };
+        NextTurnForecastResponse: {
+            lines: {
+                id: string;
+                label: string;
+                amount: number;
+            }[];
+            incomeTotal: number;
+            expenseTotal: number;
+            netChange: number;
+        };
+        GameDashboardResponse: {
+            game: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                userId: string;
+                name: string;
+                slot: number;
+                /** @enum {string} */
+                status: "ACTIVE" | "INACTIVE" | "PAUSED" | "COMPLETED";
+                step: number;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date-time */
+                updatedAt: string;
+                startedAt: string | null;
+                completedAt: string | null;
+                totalPlayTime: number;
+                character: {
+                    /** Format: uuid */
+                    id: string;
+                    gameId: string | null;
+                    name: string;
+                    balance: number;
+                    /** @enum {string} */
+                    profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
+                    professionLevel: number;
+                    salary: number;
+                    reputation: number;
+                    tradingLevel: number;
+                    bankingLevel: number;
+                    propertySlotLevel: number;
+                    isNpc: boolean;
+                    dreamItemRefs: string[];
+                    totalEarned: number;
+                    totalSpent: number;
+                    totalTrades: number;
+                    successfulTrades: number;
+                    /** Format: date-time */
+                    createdAt: string;
+                    /** Format: date-time */
+                    updatedAt: string;
+                    inventoryItems?: {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        characterId: string;
+                        itemRef: string;
+                        name: string;
+                        purchasePrice: number;
+                        downPaymentAmount: number | null;
+                        isInstallment: boolean;
+                        monthlyPayment: number | null;
+                        installmentsTotal: number | null;
+                        installmentsPaid: number;
+                        /** @default 0 */
+                        installmentPrepay: number;
+                        special: string | null;
+                        isPaidOff: boolean;
+                        /** Format: date-time */
+                        purchasedAt: string;
+                    }[];
+                } | null;
+            };
+            news: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "DEAL_OFFER" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND";
+                title: string;
+                body: string;
+                excerpt: string;
+                /** @enum {string} */
+                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+                impact: number;
+                sector?: string | null;
+                companyId?: string | null;
+                ticker?: string;
+                hot?: boolean;
+                /** Format: date-time */
+                publishedAt: string;
+                publishedStep?: number;
+                payload?: unknown;
+            }[];
+            nextTurnForecast: {
+                lines: {
+                    id: string;
+                    label: string;
+                    amount: number;
+                }[];
+                incomeTotal: number;
+                expenseTotal: number;
+                netChange: number;
+            };
+            characterSkills: {
+                skills: {
+                    id: string;
+                    name: string;
+                    tag: string;
+                    description: string;
+                    effectLabel: string;
+                    level: number;
+                    maxLevel: number;
+                    upgradePrice: number | null;
+                    canUpgrade: boolean;
+                    infographic: {
+                        id: string;
+                        label: string;
+                        value?: string;
+                        moneyAmount?: number;
+                        /** @enum {string} */
+                        tone?: "emerald" | "amber";
+                    }[];
+                    upgradePreview: {
+                        skillName: string;
+                        tag: string;
+                        currentLevel: number;
+                        nextLevel: number;
+                        maxLevel: number;
+                        price: number;
+                        benefits: {
+                            id: string;
+                            /** @enum {string} */
+                            kind: "compare" | "text" | "bonus";
+                            label: string;
+                            from?: string;
+                            to?: string;
+                            suffix?: string;
+                            /** @enum {string} */
+                            fromTone?: "muted" | "emerald" | "amber";
+                            /** @enum {string} */
+                            toTone?: "emerald" | "amber";
+                            text?: string;
+                            highlight?: string;
+                        }[];
+                    } | null;
+                    segmentDisplay: {
+                        filled: number;
+                        total: number;
+                    };
+                    levelTooltips: {
+                        title: string;
+                        lines: string[];
+                    }[];
+                }[];
+                stats: {
+                    effectiveSalary: number;
+                    workLevel: number;
+                    insiderChancePercent: number;
+                    bankBaseRatePercent: number;
+                    tradingGrade: string;
+                    sellCommissionPercent: number;
+                    propertySlotsUnlocked: number;
+                    salaryBonus: number;
+                    qualificationBonusPercent: number;
+                };
+            };
+            propertyOffers: {
+                /** Format: uuid */
+                id: string;
+                assetId: string;
+                itemName: string;
+                inventoryItemId: string | null;
+                /** @enum {string} */
+                type: "BUY" | "SELL";
+                offerPrice: number;
+                marketPrice: number;
+                profitPercent: number;
+                /** @enum {string} */
+                profitGrade: "F" | "E" | "D" | "C" | "B" | "A";
+                requiredBankingLevel: number;
+                isHot: boolean;
+                expiresInTurns: number;
+                isLocked: boolean;
+                downPaymentPercent: number;
+                pendingNegotiatedPrice: number | null;
+                pendingNegotiatedPercent: number | null;
+            }[];
+            dealOffers: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                botCharacterId: string;
+                botName: string;
+                botProfession: string;
+                botAvatarSrc?: string;
+                /**
+                 * @default VALUE_EXCHANGE
+                 * @enum {string}
+                 */
+                purpose: "VALUE_EXCHANGE" | "LIQUIDITY" | "DREAM_HELPER" | "STOCK_PACKAGE";
+                botGives: {
+                    assets: {
+                        /** @enum {string} */
+                        type: "CASH" | "STOCK" | "PROPERTY";
+                        cashAmount?: number;
+                        stockListingId?: string;
+                        ticker?: string;
+                        companyName?: string;
+                        shares?: number;
+                        propertyId?: string;
+                        propertyName?: string;
+                        estimatedValue: number;
+                    }[];
+                    totalEstimatedValue: number;
+                };
+                playerGives: {
+                    assets: {
+                        /** @enum {string} */
+                        type: "CASH" | "STOCK" | "PROPERTY";
+                        cashAmount?: number;
+                        stockListingId?: string;
+                        ticker?: string;
+                        companyName?: string;
+                        shares?: number;
+                        propertyId?: string;
+                        propertyName?: string;
+                        estimatedValue: number;
+                    }[];
+                    totalEstimatedValue: number;
+                };
+                requiredReputation: number;
+                requiredTradingLevel: number;
+                reputationPenalty: number;
+                playerBenefitValue: number;
+                playerBenefitPercent: number;
+                /** @enum {string} */
+                status: "ACTIVE" | "ACCEPTED" | "REJECTED" | "EXPIRED" | "NEGOTIATED";
+                turnCreated: number;
+                expiresTurn: number;
+                expiresInTurns: number;
+            }[];
+            stocks?: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                companyId: string;
+                ticker: string;
+                name: string;
+                sector: string;
+                /** @enum {string} */
+                grade: "F" | "E" | "D" | "C" | "B" | "A";
+                currentPrice: number;
+                previousPrice: number;
+                dayChange: number;
+                availableOnExchange: boolean;
+                isLocked: boolean;
+                hasInsiderPressure: boolean;
+                hasNewsPressure: boolean;
+                archetype: ("growth" | "dividend" | "speculative" | "defensive") | null;
+                archetypeLabel: string | null;
+                paysDividends: boolean;
+                turnsUntilDividend: number | null;
+                dividendPerShare: number | null;
+                history: {
+                    turn: number;
+                    price: number;
+                }[];
+            }[];
+            portfolio?: {
+                ticker: string;
+                name: string;
+                qty: number;
+                price: number;
+                purchasePrice: number;
+                changePct: number;
+                pnl: number;
+                listingId: string;
+                paysDividends: boolean;
+                turnsUntilDividend: number | null;
+                turnsHeldInCycle: number;
+            }[];
+            marketSentiment?: {
+                value: number;
+                /** @enum {string} */
+                indicator: "bearish" | "neutral" | "bullish";
+            };
+            sectorMomentum?: {
+                sector: string;
+                value: number;
+                duration: number;
+                /** @enum {string} */
+                trend: "rising" | "falling" | "neutral";
+            }[];
+            ipos?: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                companyId: string;
+                ticker: string;
+                companyName: string;
+                /** @enum {string} */
+                targetGrade: "F" | "E" | "D" | "C" | "B" | "A";
+                ipoPrice: number;
+                ipoShares: number;
+                announcedAtTurn: number;
+                ipoAtTurn: number;
+                minSubscription: number;
+                maxSubscription: number;
+                isCompleted: boolean;
+                totalSubscribed?: number;
+            }[];
+        };
+        AcceptPropertyOfferResponse: {
+            balance: number;
+            previousBalance: number;
+            previousReputation: number;
+            reputation: number;
+            profitAmount: number;
+            installmentBreakdown: {
+                paidTotal: number;
+                remainingTotal: number;
+                saleProceeds: number;
+                purchasePrice: number;
+                priceDelta: number;
+                netProfit: number;
+            } | null;
+            deal: {
+                assetId: string;
+                itemName: string;
+                /** @enum {string} */
+                type: "BUY" | "SELL";
+                price: number;
+                /** @enum {string} */
+                action: "purchased" | "sold";
+            };
+            character: {
+                /** Format: uuid */
+                id: string;
+                gameId: string | null;
+                name: string;
+                balance: number;
+                /** @enum {string} */
+                profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
+                professionLevel: number;
+                salary: number;
+                reputation: number;
+                tradingLevel: number;
+                bankingLevel: number;
+                propertySlotLevel: number;
+                isNpc: boolean;
+                dreamItemRefs: string[];
+                totalEarned: number;
+                totalSpent: number;
+                totalTrades: number;
+                successfulTrades: number;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date-time */
+                updatedAt: string;
+                inventoryItems?: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    characterId: string;
+                    itemRef: string;
+                    name: string;
+                    purchasePrice: number;
+                    downPaymentAmount: number | null;
+                    isInstallment: boolean;
+                    monthlyPayment: number | null;
+                    installmentsTotal: number | null;
+                    installmentsPaid: number;
+                    /** @default 0 */
+                    installmentPrepay: number;
+                    special: string | null;
+                    isPaidOff: boolean;
+                    /** Format: date-time */
+                    purchasedAt: string;
+                }[];
+            };
+            propertyOffers: {
+                /** Format: uuid */
+                id: string;
+                assetId: string;
+                itemName: string;
+                inventoryItemId: string | null;
+                /** @enum {string} */
+                type: "BUY" | "SELL";
+                offerPrice: number;
+                marketPrice: number;
+                profitPercent: number;
+                /** @enum {string} */
+                profitGrade: "F" | "E" | "D" | "C" | "B" | "A";
+                requiredBankingLevel: number;
+                isHot: boolean;
+                expiresInTurns: number;
+                isLocked: boolean;
+                downPaymentPercent: number;
+                pendingNegotiatedPrice: number | null;
+                pendingNegotiatedPercent: number | null;
+            }[];
+            news: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "DEAL_OFFER" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND";
+                title: string;
+                body: string;
+                excerpt: string;
+                /** @enum {string} */
+                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+                impact: number;
+                sector?: string | null;
+                companyId?: string | null;
+                ticker?: string;
+                hot?: boolean;
+                /** Format: date-time */
+                publishedAt: string;
+                publishedStep?: number;
+                payload?: unknown;
+            };
+            nextTurnForecast: {
+                lines: {
+                    id: string;
+                    label: string;
+                    amount: number;
+                }[];
+                incomeTotal: number;
+                expenseTotal: number;
+                netChange: number;
+            };
+        };
+        NegotiatePropertyOfferBody: {
+            adjustmentPercent: number;
+        };
+        NegotiatePropertyOfferResponse: {
+            success: boolean;
+            d20: number;
+            roll: number;
+            target: number;
+            negotiatedPrice: number | null;
+            deal: {
+                assetId: string;
+                itemName: string;
+                /** @enum {string} */
+                type: "BUY" | "SELL";
+                price: number;
+                /** @enum {string} */
+                action: "purchased" | "sold";
+            } | null;
+            previousReputation: number;
+            reputation: number;
+            previousBalance: number;
+            balance: number;
+            propertyOffers: {
+                /** Format: uuid */
+                id: string;
+                assetId: string;
+                itemName: string;
+                inventoryItemId: string | null;
+                /** @enum {string} */
+                type: "BUY" | "SELL";
+                offerPrice: number;
+                marketPrice: number;
+                profitPercent: number;
+                /** @enum {string} */
+                profitGrade: "F" | "E" | "D" | "C" | "B" | "A";
+                requiredBankingLevel: number;
+                isHot: boolean;
+                expiresInTurns: number;
+                isLocked: boolean;
+                downPaymentPercent: number;
+                pendingNegotiatedPrice: number | null;
+                pendingNegotiatedPercent: number | null;
+            }[];
+            character: {
+                /** Format: uuid */
+                id: string;
+                gameId: string | null;
+                name: string;
+                balance: number;
+                /** @enum {string} */
+                profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
+                professionLevel: number;
+                salary: number;
+                reputation: number;
+                tradingLevel: number;
+                bankingLevel: number;
+                propertySlotLevel: number;
+                isNpc: boolean;
+                dreamItemRefs: string[];
+                totalEarned: number;
+                totalSpent: number;
+                totalTrades: number;
+                successfulTrades: number;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date-time */
+                updatedAt: string;
+                inventoryItems?: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    characterId: string;
+                    itemRef: string;
+                    name: string;
+                    purchasePrice: number;
+                    downPaymentAmount: number | null;
+                    isInstallment: boolean;
+                    monthlyPayment: number | null;
+                    installmentsTotal: number | null;
+                    installmentsPaid: number;
+                    /** @default 0 */
+                    installmentPrepay: number;
+                    special: string | null;
+                    isPaidOff: boolean;
+                    /** Format: date-time */
+                    purchasedAt: string;
+                }[];
+            };
+            news: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "DEAL_OFFER" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND";
+                title: string;
+                body: string;
+                excerpt: string;
+                /** @enum {string} */
+                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+                impact: number;
+                sector?: string | null;
+                companyId?: string | null;
+                ticker?: string;
+                hot?: boolean;
+                /** Format: date-time */
+                publishedAt: string;
+                publishedStep?: number;
+                payload?: unknown;
+            } | null;
+        };
+        /** @enum {string} */
+        PropertyOfferPaymentMode: "full" | "installment";
+        AcceptPropertyOfferBody: {
+            /**
+             * @default installment
+             * @enum {string}
+             */
+            paymentMode: "full" | "installment";
+        };
+        PropertyOffer: {
+            /** Format: uuid */
+            id: string;
+            assetId: string;
+            itemName: string;
+            inventoryItemId: string | null;
+            /** @enum {string} */
+            type: "BUY" | "SELL";
+            offerPrice: number;
+            marketPrice: number;
+            profitPercent: number;
+            /** @enum {string} */
+            profitGrade: "F" | "E" | "D" | "C" | "B" | "A";
+            requiredBankingLevel: number;
+            isHot: boolean;
+            expiresInTurns: number;
+            isLocked: boolean;
+            downPaymentPercent: number;
+            pendingNegotiatedPrice: number | null;
+            pendingNegotiatedPercent: number | null;
+        };
+        AcceptOtcDealBody: {
+            deal: {
+                botName: string;
+                ticker: string;
+                companyName: string;
+                /** @enum {string} */
+                side: "buy" | "sell";
+                qty: number;
+                price: number;
+                turnsLeft: number;
+                flavorText: string;
+            };
+        };
+        AcceptOtcDealResponse: {
+            balance: number;
+            character: {
+                /** Format: uuid */
+                id: string;
+                gameId: string | null;
+                name: string;
+                balance: number;
+                /** @enum {string} */
+                profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
+                professionLevel: number;
+                salary: number;
+                reputation: number;
+                tradingLevel: number;
+                bankingLevel: number;
+                propertySlotLevel: number;
+                isNpc: boolean;
+                dreamItemRefs: string[];
+                totalEarned: number;
+                totalSpent: number;
+                totalTrades: number;
+                successfulTrades: number;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date-time */
+                updatedAt: string;
+                inventoryItems?: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    characterId: string;
+                    itemRef: string;
+                    name: string;
+                    purchasePrice: number;
+                    downPaymentAmount: number | null;
+                    isInstallment: boolean;
+                    monthlyPayment: number | null;
+                    installmentsTotal: number | null;
+                    installmentsPaid: number;
+                    /** @default 0 */
+                    installmentPrepay: number;
+                    special: string | null;
+                    isPaidOff: boolean;
+                    /** Format: date-time */
+                    purchasedAt: string;
+                }[];
+            };
+            news: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "DEAL_OFFER" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND";
+                title: string;
+                body: string;
+                excerpt: string;
+                /** @enum {string} */
+                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+                impact: number;
+                sector?: string | null;
+                companyId?: string | null;
+                ticker?: string;
+                hot?: boolean;
+                /** Format: date-time */
+                publishedAt: string;
+                publishedStep?: number;
+                payload?: unknown;
+            };
+        };
+        PayOffInstallmentResponse: {
+            balance: number;
+            previousBalance: number;
+            character: {
+                /** Format: uuid */
+                id: string;
+                gameId: string | null;
+                name: string;
+                balance: number;
+                /** @enum {string} */
+                profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
+                professionLevel: number;
+                salary: number;
+                reputation: number;
+                tradingLevel: number;
+                bankingLevel: number;
+                propertySlotLevel: number;
+                isNpc: boolean;
+                dreamItemRefs: string[];
+                totalEarned: number;
+                totalSpent: number;
+                totalTrades: number;
+                successfulTrades: number;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date-time */
+                updatedAt: string;
+                inventoryItems?: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    characterId: string;
+                    itemRef: string;
+                    name: string;
+                    purchasePrice: number;
+                    downPaymentAmount: number | null;
+                    isInstallment: boolean;
+                    monthlyPayment: number | null;
+                    installmentsTotal: number | null;
+                    installmentsPaid: number;
+                    /** @default 0 */
+                    installmentPrepay: number;
+                    special: string | null;
+                    isPaidOff: boolean;
+                    /** Format: date-time */
+                    purchasedAt: string;
+                }[];
+            };
+            news: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "DEAL_OFFER" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND";
+                title: string;
+                body: string;
+                excerpt: string;
+                /** @enum {string} */
+                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+                impact: number;
+                sector?: string | null;
+                companyId?: string | null;
+                ticker?: string;
+                hot?: boolean;
+                /** Format: date-time */
+                publishedAt: string;
+                publishedStep?: number;
+                payload?: unknown;
+            };
+            nextTurnForecast: {
+                lines: {
+                    id: string;
+                    label: string;
+                    amount: number;
+                }[];
+                incomeTotal: number;
+                expenseTotal: number;
+                netChange: number;
+            };
+        };
+        PayOffInstallmentBody: {
+            payPercent: number;
+        };
+        DealOffer: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            botCharacterId: string;
+            botName: string;
+            botProfession: string;
+            botAvatarSrc?: string;
+            /**
+             * @default VALUE_EXCHANGE
+             * @enum {string}
+             */
+            purpose: "VALUE_EXCHANGE" | "LIQUIDITY" | "DREAM_HELPER" | "STOCK_PACKAGE";
+            botGives: {
+                assets: {
+                    /** @enum {string} */
+                    type: "CASH" | "STOCK" | "PROPERTY";
+                    cashAmount?: number;
+                    stockListingId?: string;
+                    ticker?: string;
+                    companyName?: string;
+                    shares?: number;
+                    propertyId?: string;
+                    propertyName?: string;
+                    estimatedValue: number;
+                }[];
+                totalEstimatedValue: number;
+            };
+            playerGives: {
+                assets: {
+                    /** @enum {string} */
+                    type: "CASH" | "STOCK" | "PROPERTY";
+                    cashAmount?: number;
+                    stockListingId?: string;
+                    ticker?: string;
+                    companyName?: string;
+                    shares?: number;
+                    propertyId?: string;
+                    propertyName?: string;
+                    estimatedValue: number;
+                }[];
+                totalEstimatedValue: number;
+            };
+            requiredReputation: number;
+            requiredTradingLevel: number;
+            reputationPenalty: number;
+            playerBenefitValue: number;
+            playerBenefitPercent: number;
+            /** @enum {string} */
+            status: "ACTIVE" | "ACCEPTED" | "REJECTED" | "EXPIRED" | "NEGOTIATED";
+            turnCreated: number;
+            expiresTurn: number;
+            expiresInTurns: number;
+        };
+        AcceptDealBody: {
+            /** Format: uuid */
+            dealId: string;
+        };
+        AcceptDealResponse: {
+            balance: number;
+            character: {
+                /** Format: uuid */
+                id: string;
+                gameId: string | null;
+                name: string;
+                balance: number;
+                /** @enum {string} */
+                profession: "DOCTOR" | "DEVELOPER" | "FINANCIER" | "FARMER" | "ENGINEER" | "STREET_CLEANER";
+                professionLevel: number;
+                salary: number;
+                reputation: number;
+                tradingLevel: number;
+                bankingLevel: number;
+                propertySlotLevel: number;
+                isNpc: boolean;
+                dreamItemRefs: string[];
+                totalEarned: number;
+                totalSpent: number;
+                totalTrades: number;
+                successfulTrades: number;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date-time */
+                updatedAt: string;
+                inventoryItems?: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    characterId: string;
+                    itemRef: string;
+                    name: string;
+                    purchasePrice: number;
+                    downPaymentAmount: number | null;
+                    isInstallment: boolean;
+                    monthlyPayment: number | null;
+                    installmentsTotal: number | null;
+                    installmentsPaid: number;
+                    /** @default 0 */
+                    installmentPrepay: number;
+                    special: string | null;
+                    isPaidOff: boolean;
+                    /** Format: date-time */
+                    purchasedAt: string;
+                }[];
+            };
+            news: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "DEAL_OFFER" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND";
+                title: string;
+                body: string;
+                excerpt: string;
+                /** @enum {string} */
+                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+                impact: number;
+                sector?: string | null;
+                companyId?: string | null;
+                ticker?: string;
+                hot?: boolean;
+                /** Format: date-time */
+                publishedAt: string;
+                publishedStep?: number;
+                payload?: unknown;
+            };
+        };
+        StockListing: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            companyId: string;
+            ticker: string;
+            name: string;
+            sector: string;
+            /** @enum {string} */
+            grade: "F" | "E" | "D" | "C" | "B" | "A";
+            currentPrice: number;
+            previousPrice: number;
+            dayChange: number;
+            availableOnExchange: boolean;
+            isLocked: boolean;
+            hasInsiderPressure: boolean;
+            hasNewsPressure: boolean;
+            archetype: ("growth" | "dividend" | "speculative" | "defensive") | null;
+            archetypeLabel: string | null;
+            paysDividends: boolean;
+            turnsUntilDividend: number | null;
+            dividendPerShare: number | null;
+            history: {
+                turn: number;
+                price: number;
+            }[];
+        };
+        StockListResponse: {
+            stocks: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                companyId: string;
+                ticker: string;
+                name: string;
+                sector: string;
+                /** @enum {string} */
+                grade: "F" | "E" | "D" | "C" | "B" | "A";
+                currentPrice: number;
+                previousPrice: number;
+                dayChange: number;
+                availableOnExchange: boolean;
+                isLocked: boolean;
+                hasInsiderPressure: boolean;
+                hasNewsPressure: boolean;
+                archetype: ("growth" | "dividend" | "speculative" | "defensive") | null;
+                archetypeLabel: string | null;
+                paysDividends: boolean;
+                turnsUntilDividend: number | null;
+                dividendPerShare: number | null;
+                history: {
+                    turn: number;
+                    price: number;
+                }[];
+            }[];
+        };
+        StockDetailResponse: {
+            listing: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                companyId: string;
+                ticker: string;
+                name: string;
+                sector: string;
+                /** @enum {string} */
+                grade: "F" | "E" | "D" | "C" | "B" | "A";
+                currentPrice: number;
+                previousPrice: number;
+                dayChange: number;
+                availableOnExchange: boolean;
+                isLocked: boolean;
+                hasInsiderPressure: boolean;
+                hasNewsPressure: boolean;
+                archetype: ("growth" | "dividend" | "speculative" | "defensive") | null;
+                archetypeLabel: string | null;
+                paysDividends: boolean;
+                turnsUntilDividend: number | null;
+                dividendPerShare: number | null;
+                history: {
+                    turn: number;
+                    price: number;
+                }[];
+            };
+            history: {
+                turn: number;
+                price: number;
+            }[];
+        };
+        StockHistoryResponse: {
+            history: {
+                turn: number;
+                price: number;
+            }[];
+        };
+        BuyStockBody: {
+            quantity: number;
+        };
+        BuyStockResponse: {
+            balance: number;
+            portfolio: {
+                ticker: string;
+                name: string;
+                qty: number;
+                price: number;
+                purchasePrice: number;
+                changePct: number;
+                pnl: number;
+                listingId: string;
+                paysDividends: boolean;
+                turnsUntilDividend: number | null;
+                turnsHeldInCycle: number;
+            }[];
+            news: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "WELCOME" | "MARKET" | "INSIDER" | "RUMOR" | "OTC_DEAL" | "DEAL_OFFER" | "PROPERTY_OFFER" | "PROPERTY_DEAL" | "PROPERTY_INSTALLMENT" | "STOCK_TRADE" | "STOCK_DIVIDEND";
+                title: string;
+                body: string;
+                excerpt: string;
+                /** @enum {string} */
+                sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+                impact: number;
+                sector?: string | null;
+                companyId?: string | null;
+                ticker?: string;
+                hot?: boolean;
+                /** Format: date-time */
+                publishedAt: string;
+                publishedStep?: number;
+                payload?: unknown;
+            };
+        };
+        SellStockBody: {
+            quantity: number;
+        };
+        SellStockResponse: {
+            balance: number;
+            portfolio: {
+                ticker: string;
+                name: string;
+                qty: number;
+                price: number;
+                purchasePrice: number;
+                changePct: number;
+                pnl: number;
+                listingId: string;
+                paysDividends: boolean;
+                turnsUntilDividend: number | null;
+                turnsHeldInCycle: number;
+            }[];
+            gross: number;
+            commissionPercent: number;
+            commissionAmount: number;
+            net: number;
+        };
+        StockTradeListResponse: {
+            trades: {
+                /** Format: uuid */
+                id: string;
+                ticker: string;
+                companyName: string;
+                sector: string;
+                operationType: string;
+                quantity: number;
+                price: number;
+                total: number;
+                netTotal: number | null;
+                commission: number | null;
+                turn: number;
+                createdAt: string;
+            }[];
+        };
+        PortfolioResponse: {
+            portfolio: {
+                ticker: string;
+                name: string;
+                qty: number;
+                price: number;
+                purchasePrice: number;
+                changePct: number;
+                pnl: number;
+                listingId: string;
+                paysDividends: boolean;
+                turnsUntilDividend: number | null;
+                turnsHeldInCycle: number;
+            }[];
+        };
+        MarketSentiment: {
+            value: number;
+            /** @enum {string} */
+            indicator: "bearish" | "neutral" | "bullish";
+        };
+        SectorMomentum: {
+            sector: string;
+            value: number;
+            duration: number;
+            /** @enum {string} */
+            trend: "rising" | "falling" | "neutral";
+        };
+        IpoListResponse: {
+            ipos: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                companyId: string;
+                ticker: string;
+                companyName: string;
+                /** @enum {string} */
+                targetGrade: "F" | "E" | "D" | "C" | "B" | "A";
+                ipoPrice: number;
+                ipoShares: number;
+                announcedAtTurn: number;
+                ipoAtTurn: number;
+                minSubscription: number;
+                maxSubscription: number;
+                isCompleted: boolean;
+                totalSubscribed?: number;
+            }[];
+        };
+        IpoSubscribeBody: {
+            amount: number;
+        };
+        IpoSubscribeResponse: {
+            ipos: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                companyId: string;
+                ticker: string;
+                companyName: string;
+                /** @enum {string} */
+                targetGrade: "F" | "E" | "D" | "C" | "B" | "A";
+                ipoPrice: number;
+                ipoShares: number;
+                announcedAtTurn: number;
+                ipoAtTurn: number;
+                minSubscription: number;
+                maxSubscription: number;
+                isCompleted: boolean;
+                totalSubscribed?: number;
+            }[];
         };
         User: {
             /** Format: uuid */
@@ -1024,6 +5246,67 @@ export interface components {
         };
         LogoutResponse: {
             success: boolean;
+        };
+        AuthTokenResponse: {
+            accessToken: string;
+        };
+        RegisterBody: {
+            username: string;
+            /** Format: email */
+            email: string;
+            password: string;
+        };
+        LoginBody: {
+            login: string;
+            password: string;
+        };
+        CreateFeedbackBody: {
+            saveId: string;
+            /** @enum {string} */
+            messageType: "error" | "suggestion" | "feedback" | "other";
+            comment: string;
+        };
+        CreateFeedbackResponse: {
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        Dream: {
+            /** Format: uuid */
+            id: string;
+            dreamType: string;
+            title: string;
+            description: string;
+            currentStage: number;
+            stages: {
+                stageIndex: number;
+                /** @enum {string} */
+                status: "LOCKED" | "ACTIVE" | "READY_TO_COMPLETE" | "COMPLETED";
+                requirement: {
+                    description: string;
+                    minBalance?: number;
+                    minPortfolioValue?: number;
+                    minPassiveIncome?: number;
+                    minReputation?: number;
+                    minProfessionLevel?: number;
+                    minTradingLevel?: number;
+                    minBankingLevel?: number;
+                    requiredItems?: string[];
+                    requireItemFullyOwned?: string[];
+                    noActiveInstallments?: boolean;
+                };
+                completedAt: string | null;
+                completedTurn: number | null;
+            }[];
+        };
+        CompleteStageBody: {
+            /** Format: uuid */
+            dreamId: string;
+        };
+        FulfillDreamBody: {
+            /** Format: uuid */
+            dreamId: string;
         };
     };
     responses: never;

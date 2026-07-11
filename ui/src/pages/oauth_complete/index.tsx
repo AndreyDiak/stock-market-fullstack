@@ -32,7 +32,12 @@ export function OAuthCompletePage() {
       return
     }
 
-    navigate(`/?error=${error ?? 'authentication_failed'}`, { replace: true })
+    if (error) {
+      navigate(`/?error=${encodeURIComponent(error)}`, { replace: true })
+      return
+    }
+
+    navigate('/?error=authentication_failed', { replace: true })
   }, [searchParams, setToken, navigate])
 
   return (

@@ -1,8 +1,21 @@
 import { http } from '../lib/http';
+import type { NextTurnForecast } from '../pages/game_dashboard/_components/sidebar/_next_turn_forecast';
+import type { CharacterSkillsState } from '../pages/game_dashboard/_components/character/_character_skills';
+import type { PropertyOffer } from '../pages/game_dashboard/_model/types';
+import type { IpoListing, MarketSentiment, PortfolioRow, StockListing } from './stocks';
+import { format_news_age_label, resolve_published_step } from '../pages/game_dashboard/_model/utils';
+import type { Game } from './types';
+
+export interface DividendPayoutEvent {
+  listingId: string;
+  ticker: string;
+  companyName: string;
+  totalPaid: number;
+}
 
 export interface GeneratedNewsItem {
   id: string;
-  kind: 'MARKET' | 'INSIDER' | 'RUMOR' | 'OTC_DEAL' | 'PROPERTY_OFFER';
+  kind: 'WELCOME' | 'MARKET' | 'INSIDER' | 'RUMOR' | 'OTC_DEAL' | 'DEAL_OFFER' | 'PROPERTY_OFFER' | 'PROPERTY_DEAL' | 'PROPERTY_INSTALLMENT' | 'STOCK_TRADE' | 'STOCK_DIVIDEND';
   title: string;
   body: string;
   excerpt: string;
@@ -11,6 +24,7 @@ export interface GeneratedNewsItem {
   ticker?: string;
   hot?: boolean;
   publishedAt: string;
+  publishedStep?: number;
   payload?: unknown;
 }
 
@@ -25,11 +39,53 @@ export interface OtcDealPayload {
   flavorText: string;
 }
 
+export interface DealAsset {
+  type: 'CASH' | 'STOCK' | 'PROPERTY';
+  cashAmount?: number;
+  stockListingId?: string;
+  ticker?: string;
+  companyName?: string;
+  shares?: number;
+  propertyId?: string;
+  propertyName?: string;
+  estimatedValue: number;
+}
+
+export interface DealBundle {
+  assets: DealAsset[];
+  totalEstimatedValue: number;
+}
+
+export type DealPurpose = 'VALUE_EXCHANGE' | 'LIQUIDITY' | 'DREAM_HELPER' | 'STOCK_PACKAGE';
+
+export interface DealOfferPayload {
+  id: string;
+  botCharacterId: string;
+  botName: string;
+  botProfession: string;
+  botAvatarSrc?: string;
+  purpose: DealPurpose;
+  botGives: DealBundle;
+  playerGives: DealBundle;
+  requiredReputation: number;
+  requiredTradingLevel: number;
+  reputationPenalty: number;
+  playerBenefitValue: number;
+  playerBenefitPercent: number;
+  status: 'ACTIVE' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED' | 'NEGOTIATED';
+  turnCreated: number;
+  expiresTurn: number;
+  expiresInTurns: number;
+}
+
 export interface EndTurnResponse {
   step: number;
   balance: number;
+  character: NonNullable<Game['character']>;
+  nextTurnForecast: NextTurnForecast;
   passiveIncome: {
     salary: number;
+    livingExpense: number;
     installmentTotal: number;
     passiveIncome: number;
     itemsPaidOff: string[];
@@ -39,18 +95,122 @@ export interface EndTurnResponse {
   insiderRolled: boolean;
   news: GeneratedNewsItem[];
   otcDeal?: OtcDealPayload;
-  propertyOffer?: unknown;
+  dealOffers: DealOfferPayload[];
+  propertyOffers: PropertyOffer[];
+  characterSkills: CharacterSkillsState;
+  dividendPayouts?: DividendPayoutEvent[];
+  gameOver: boolean;
 }
 
-export async function endGameTurn(gameId: string) {
-  return http.post(`games/${gameId}/end-turn`).json<EndTurnResponse>();
+export interface GameDashboardResponse {
+  game: NonNullable<Game>;
+  news: GeneratedNewsItem[];
+  nextTurnForecast: NextTurnForecast;
+  characterSkills: CharacterSkillsState;
+  propertyOffers: PropertyOffer[];
+  dealOffers: DealOfferPayload[];
+  stocks?: StockListing[];
+  portfolio?: PortfolioRow[];
+  marketSentiment?: MarketSentiment;
+  sectorMomentum?: unknown[];
+  ipos?: IpoListing[];
+}
+
+export async function fetchGameDashboard(gameId: string) {
+  return http.get(`saves/${gameId}/dashboard`).json<GameDashboardResponse>();
+}
+
+const inflightEndTurns = new Map<string, Promise<EndTurnResponse>>();
+
+export function endGameTurn(gameId: string, expectedStep: number) {
+  const inflight = inflightEndTurns.get(gameId);
+  if (inflight) return inflight;
+
+  const request = http
+    .post(`saves/${gameId}/end-turn`, { json: { expectedStep } })
+    .json<EndTurnResponse>()
+    .finally(() => {
+      if (inflightEndTurns.get(gameId) === request) {
+        inflightEndTurns.delete(gameId);
+      }
+    });
+
+  inflightEndTurns.set(gameId, request);
+  return request;
 }
 
 export async function fetchGameNews(gameId: string) {
-  return http.get(`games/${gameId}/news`).json<{ news: GeneratedNewsItem[] }>();
+  return http.get(`saves/${gameId}/news`).json<{ news: GeneratedNewsItem[] }>();
 }
 
-export function mapApiNewsToFeedItem(item: GeneratedNewsItem, index: number) {
+export async function fetchNextTurnForecast(gameId: string) {
+  return http.get(`saves/${gameId}/next-turn-forecast`).json<NextTurnForecast>();
+}
+
+export async function fetchGame(gameId: string) {
+  return http.get(`saves/${gameId}`).json<Game>();
+}
+
+export interface UpgradeSkillResponse {
+  game: NonNullable<Game>;
+  characterSkills: CharacterSkillsState;
+  nextTurnForecast: NextTurnForecast;
+}
+
+export async function upgradeCharacterSkill(gameId: string, skillId: string) {
+  return http
+    .post(`saves/${gameId}/skills/${skillId}/upgrade`)
+    .json<UpgradeSkillResponse>();
+}
+
+export interface InsiderNewsPayload {
+  turnsUntilImpact?: number
+  expectedMovePercent?: number
+  scheduledImpact?: {
+    turnsUntilImpact: number
+    triggerAtStep: number
+    direction: 'UP' | 'DOWN'
+    movePercent: number
+    scheduledImpactId?: string
+  }
+}
+
+function sanitizeNewsPayload(payload: unknown): unknown {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    return payload
+  }
+
+  const record = { ...(payload as Record<string, unknown>) }
+  delete record.affectedSectors
+  delete record.primarySector
+  delete record.marketImpact
+  delete record.sentimentScore
+  delete record.templateId
+  return record
+}
+
+function extractVisibleSectors(payload: unknown): string[] | undefined {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return undefined
+  const sectors = (payload as Record<string, unknown>).visibleSectors
+  if (Array.isArray(sectors) && sectors.every((s) => typeof s === 'string')) {
+    return sectors as string[]
+  }
+  return undefined
+}
+
+function simplifyMultiSectorBody(
+  body: string,
+  sectors: string[],
+): string {
+  if (sectors.length < 2) return body
+  return 'Заметна активность в нескольких секторах экономики. Рыночные условия создают предпосылки для изменения стоимости широкого круга бумаг.'
+}
+
+export function mapApiNewsToFeedItem(
+  item: GeneratedNewsItem,
+  _index: number,
+  currentStep?: number,
+) {
   const sentiment =
     item.sentiment === 'POSITIVE'
       ? 'positive'
@@ -58,15 +218,45 @@ export function mapApiNewsToFeedItem(item: GeneratedNewsItem, index: number) {
         ? 'negative'
         : 'neutral';
 
+  const payload = item.payload as (InsiderNewsPayload & { newsLevel?: number }) | undefined
+  const publishedStep = resolve_published_step(item)
+  const triggerAtStep = payload?.scheduledImpact?.triggerAtStep
+  const turnsLeft =
+    triggerAtStep != null && currentStep != null
+      ? Math.max(0, triggerAtStep - currentStep)
+      : undefined
+
+  const visibleSectors = extractVisibleSectors(item.payload)
+
   return {
     id: item.id,
     title: item.title,
+    body: simplifyMultiSectorBody(item.body, visibleSectors ?? []),
     excerpt: item.excerpt || item.body,
-    timeLabel: index === 0 ? 'только что' : 'в этом ходу',
+    timeLabel:
+      currentStep != null
+        ? format_news_age_label(publishedStep, currentStep)
+        : '—',
     kind: item.kind,
     hot: item.hot ?? item.kind === 'INSIDER',
     sentiment: sentiment as 'positive' | 'negative' | 'neutral',
+    ticker: item.ticker,
+    publishedAt: item.publishedAt,
+    publishedStep,
+    payload: sanitizeNewsPayload(item.payload),
+    turnsLeft: turnsLeft && turnsLeft > 0 ? turnsLeft : undefined,
+    newsLevel: payload?.newsLevel,
+    visibleSectors,
   };
+}
+
+export function mapApiNewsList(items: GeneratedNewsItem[], currentStep: number) {
+  return [...items]
+    .sort(
+      (a, b) =>
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
+    )
+    .map((item, index) => mapApiNewsToFeedItem(item, index, currentStep))
 }
 
 export function mapOtcDealToCard(deal: OtcDealPayload, id: string) {

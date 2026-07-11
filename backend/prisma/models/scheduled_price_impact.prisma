@@ -1,0 +1,35 @@
+enum PriceDirection {
+  UP
+  DOWN
+}
+
+enum ScheduledPriceImpactStatus {
+  PENDING
+  APPLIED
+  CANCELLED
+}
+
+/// Отложенное влияние на цену акции (создаётся инсайдерскими новостями).
+model ScheduledPriceImpact {
+  id            String                     @id @default(uuid())
+  gameId        String
+  companyId     String
+  newsId        String?
+
+  direction     PriceDirection
+  movePercent   Float
+  createdAtStep Int
+  triggerAtStep Int
+
+  status        ScheduledPriceImpactStatus @default(PENDING)
+  appliedAtStep Int?
+  createdAt     DateTime                   @default(now())
+
+  game    Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  company Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  news    News?    @relation(fields: [newsId], references: [id], onDelete: SetNull)
+
+  @@map("scheduled_price_impacts")
+  @@index([gameId, status, triggerAtStep])
+  @@index([companyId])
+}

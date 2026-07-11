@@ -3,8 +3,12 @@ import { zodToOpenApiSchema } from './utils.js';
 import { errorResponseSchema } from './error.schema.js';
 import { characterSchema } from './character.schema.js';
 import {
+  characterSkillsStateSchema,
+  upgradeSkillResponseSchema,
+} from './character_skills.schema.js';
+import {
   characterRosterSchema,
-} from './character-roster.schema.js';
+} from './character_roster.schema.js';
 import {
   createGameBodySchema,
   deleteGameResponseSchema,
@@ -12,22 +16,101 @@ import {
   gameSchema,
   updateGameBodySchema,
 } from './game.schema.js';
+import { endTurnBodySchema, endTurnResponseSchema, nextTurnForecastResponseSchema } from './turn.schema.js';
+import { gameNewsResponseSchema } from './news.schema.js';
+import { gameDashboardResponseSchema } from './dashboard.schema.js';
+import {
+  buyStockBodySchema,
+  buyStockResponseSchema,
+  sellStockBodySchema,
+  sellStockResponseSchema,
+  stockTradeListResponseSchema,
+  ipoListResponseSchema,
+  ipoSubscribeBodySchema,
+  ipoSubscribeResponseSchema,
+  portfolioResponseSchema,
+  stockDetailResponseSchema,
+  stockHistoryResponseSchema,
+  stockListingSchema,
+  stockListResponseSchema,
+  marketSentimentSchema,
+  sectorMomentumSchema,
+} from './stock.schema.js';
+import {
+  acceptPropertyOfferResponseSchema,
+  negotiatePropertyOfferBodySchema,
+  negotiatePropertyOfferResponseSchema,
+  propertyOfferPaymentModeSchema,
+  acceptPropertyOfferBodySchema,
+  propertyOfferSchema,
+} from './property_offer.schema.js';
+import { acceptOtcDealBodySchema, acceptOtcDealResponseSchema } from './otc_deal.schema.js';
+import { acceptDealBodySchema, acceptDealResponseSchema, dealOfferSchema } from './deal.schema.js';
+import { dreamResponseSchema, completeStageBodySchema, fulfillDreamBodySchema } from './dream.schema.js';
+import { payOffInstallmentBodySchema, payOffInstallmentResponseSchema } from './property_loan.schema.js';
+import {
+  createFeedbackBodySchema,
+  createFeedbackResponseSchema,
+} from './feedback.schema.js';
 import { updateUserBodySchema, userSchema } from './user.schema.js';
-import { logoutResponseSchema, refreshTokenResponseSchema } from './auth.schema.js';
+import { logoutResponseSchema, refreshTokenResponseSchema, authTokenResponseSchema, registerBodySchema, loginBodySchema } from './auth.schema.js';
 
 const schemaEntries = {
   ErrorResponse: errorResponseSchema,
   Character: characterSchema,
+  CharacterSkillsState: characterSkillsStateSchema,
+  UpgradeSkillResponse: upgradeSkillResponseSchema,
   CharacterRoster: characterRosterSchema,
   Game: gameSchema,
   GameList: gameListSchema,
   CreateGameBody: createGameBodySchema,
   UpdateGameBody: updateGameBodySchema,
   DeleteGameResponse: deleteGameResponseSchema,
+  EndTurnResponse: endTurnResponseSchema,
+  EndTurnBody: endTurnBodySchema,
+  GameNewsResponse: gameNewsResponseSchema,
+  NextTurnForecastResponse: nextTurnForecastResponseSchema,
+  GameDashboardResponse: gameDashboardResponseSchema,
+  AcceptPropertyOfferResponse: acceptPropertyOfferResponseSchema,
+  NegotiatePropertyOfferBody: negotiatePropertyOfferBodySchema,
+  NegotiatePropertyOfferResponse: negotiatePropertyOfferResponseSchema,
+  PropertyOfferPaymentMode: propertyOfferPaymentModeSchema,
+  AcceptPropertyOfferBody: acceptPropertyOfferBodySchema,
+  PropertyOffer: propertyOfferSchema,
+  AcceptOtcDealBody: acceptOtcDealBodySchema,
+  AcceptOtcDealResponse: acceptOtcDealResponseSchema,
+  PayOffInstallmentResponse: payOffInstallmentResponseSchema,
+  PayOffInstallmentBody: payOffInstallmentBodySchema,
+  DealOffer: dealOfferSchema,
+  AcceptDealBody: acceptDealBodySchema,
+  AcceptDealResponse: acceptDealResponseSchema,
+  StockListing: stockListingSchema,
+  StockListResponse: stockListResponseSchema,
+  StockDetailResponse: stockDetailResponseSchema,
+  StockHistoryResponse: stockHistoryResponseSchema,
+  BuyStockBody: buyStockBodySchema,
+  BuyStockResponse: buyStockResponseSchema,
+  SellStockBody: sellStockBodySchema,
+  SellStockResponse: sellStockResponseSchema,
+  StockTradeListResponse: stockTradeListResponseSchema,
+  PortfolioResponse: portfolioResponseSchema,
+  MarketSentiment: marketSentimentSchema,
+  SectorMomentum: sectorMomentumSchema,
+  IpoListResponse: ipoListResponseSchema,
+  IpoSubscribeBody: ipoSubscribeBodySchema,
+  IpoSubscribeResponse: ipoSubscribeResponseSchema,
   User: userSchema,
   UpdateUserBody: updateUserBodySchema,
   RefreshTokenResponse: refreshTokenResponseSchema,
   LogoutResponse: logoutResponseSchema,
+  AuthTokenResponse: authTokenResponseSchema,
+  RegisterBody: registerBodySchema,
+  LoginBody: loginBodySchema,
+  CreateFeedbackBody: createFeedbackBodySchema,
+  CreateFeedbackResponse: createFeedbackResponseSchema,
+  Dream: dreamResponseSchema,
+  CompleteStageBody: completeStageBodySchema,
+  FulfillDreamBody: fulfillDreamBodySchema,
 } as const;
 
 export const fastifyDefMap = Object.fromEntries(

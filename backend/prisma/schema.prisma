@@ -7,11 +7,11 @@ datasource db {
 }
 
 enum MarketSector {
-  HEALTHCARE
-  TECHNOLOGY
-  FINANCE
-  AGRICULTURE
-  ENERGY
+  HEALTHCARE // Icon heart
+  TECHNOLOGY // Icon cpu
+  FINANCE // Icon report-money
+  AGRICULTURE // Icon leaf
+  ENERGY // Icon bolt
 }
 
 enum Sentiment {

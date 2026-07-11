@@ -1,0 +1,193 @@
+export interface RealEstateData {
+  id: string;
+  name: string;
+  description: string;
+  basePrice: number;
+  monthlyPayment: number;
+  installmentMonths: number;
+  isTradable: boolean;
+  /** Только через сделки (DREAM_HELPER), не на рынке недвижимости. */
+  dealOnly?: boolean;
+  special?: string;
+}
+
+export function isMarketOfferAsset(asset: RealEstateData | undefined): boolean {
+  return !!asset?.isTradable && !asset.dealOnly;
+}
+
+export function isLuxuryAsset(asset: RealEstateData | undefined): boolean {
+  return !!asset?.dealOnly;
+}
+
+export function getMarketOfferAssets(): RealEstateData[] {
+  return REAL_ESTATE.filter(isMarketOfferAsset);
+}
+
+export function getLuxuryAssets(): RealEstateData[] {
+  return REAL_ESTATE.filter(isLuxuryAsset);
+}
+
+export const REAL_ESTATE: RealEstateData[] = [
+  // ========== ГАРАЖИ ==========
+  {
+    id: 'old_garage',
+    name: 'Старый гараж',
+    description: 'Ржавые ворота, протекающая крыша. Но зато СВОЙ и почти даром.',
+    basePrice: 1500,
+    monthlyPayment: 80,
+    installmentMonths: 20,
+    isTradable: true,
+  },
+  {
+    id: 'garage',
+    name: 'Гараж',
+    description: 'Кирпичный гараж на окраине. Вмещает одну машину и гору хлама.',
+    basePrice: 5000,
+    monthlyPayment: 250,
+    installmentMonths: 24,
+    isTradable: true,
+  },
+
+  // ========== ПАРКОВКА ==========
+  {
+    id: 'parking_spot',
+    name: 'Парковочное место',
+    description: 'Место в подземном паркинге. Больше никаких штрафов за неправильную парковку.',
+    basePrice: 8000,
+    monthlyPayment: 300,
+    installmentMonths: 30,
+    isTradable: true,
+  },
+
+  // ========== ДОМА ==========
+  {
+    id: 'apartment',
+    name: 'Квартира',
+    description: 'Двухкомнатная квартира в спальном районе. Свои углы лучше, чем аренда.',
+    basePrice: 80000,
+    monthlyPayment: 1500,
+    installmentMonths: 60,
+    isTradable: true,
+  },
+  {
+    id: 'country_house',
+    name: 'Дача',
+    description: 'Домик за городом с участком. Идеально для шашлыков и побега от цивилизации.',
+    basePrice: 25000,
+    monthlyPayment: 600,
+    installmentMonths: 48,
+    isTradable: true,
+  },
+  {
+    id: 'penthouse',
+    name: 'Пентхаус',
+    description: 'Роскошный пентхаус в центре. Панорамные окна, терраса, вид на город.',
+    basePrice: 500000,
+    monthlyPayment: 8000,
+    installmentMonths: 84,
+    isTradable: true,
+    dealOnly: true,
+  },
+
+  // ========== КОММЕРЧЕСКАЯ ==========
+  {
+    id: 'warehouse',
+    name: 'Склад',
+    description: 'Промышленный склад на окраине. Можно сдавать или перестроить.',
+    basePrice: 120000,
+    monthlyPayment: 2000,
+    installmentMonths: 72,
+    isTradable: true,
+    special: 'Приносит пассивный доход 600/ход',
+  },
+  {
+    id: 'trade_pavilion',
+    name: 'Торговый павильон',
+    description: 'Небольшой коммерческий объект, который можно сдавать или использовать как источник стабильного дохода.',
+    basePrice: 80000,
+    monthlyPayment: 1500,
+    installmentMonths: 60,
+    isTradable: true,
+    special: 'Приносит пассивный доход 400/ход',
+  },
+  {
+    id: 'car_wash',
+    name: 'Автомойка',
+    description: 'Городской бизнес-актив со стабильным доходом.',
+    basePrice: 150000,
+    monthlyPayment: 3000,
+    installmentMonths: 72,
+    isTradable: true,
+    special: 'Приносит пассивный доход 750/ход',
+    dealOnly: true,
+  },
+
+  // ========== РОСКОШЬ / МЕЧТЫ ==========
+  {
+    id: 'car',
+    name: 'Автомобиль',
+    description: 'Надёжный седан — свобода передвижения и статус на районе.',
+    basePrice: 35000,
+    monthlyPayment: 700,
+    installmentMonths: 60,
+    isTradable: true,
+  },
+  {
+    id: 'sport_car',
+    name: 'Спорткар',
+    description: 'Мощный двигатель, кожаный салон. Мечта о скорости и престиже.',
+    basePrice: 180000,
+    monthlyPayment: 3500,
+    installmentMonths: 72,
+    isTradable: true,
+    dealOnly: true,
+  },
+  {
+    id: 'yacht',
+    name: 'Яхта',
+    description: 'Парусная яхта для круизов. Вершина финансового успеха.',
+    basePrice: 800000,
+    monthlyPayment: 12000,
+    installmentMonths: 96,
+    isTradable: true,
+    dealOnly: true,
+  },
+  {
+    id: 'tractor',
+    name: 'Трактор',
+    description: 'Новый трактор для поля. Расширяет возможности хозяйства.',
+    basePrice: 45000,
+    monthlyPayment: 900,
+    installmentMonths: 60,
+    isTradable: true,
+    dealOnly: true,
+  },
+  {
+    id: 'combine_harvester',
+    name: 'Комбайн',
+    description: 'Крупная уборочная техника для большого хозяйства.',
+    basePrice: 180000,
+    monthlyPayment: 3500,
+    installmentMonths: 72,
+    isTradable: true,
+    dealOnly: true,
+  },
+  {
+    id: 'trip',
+    name: 'Кругосветное путешествие',
+    description: 'Кругосветка мечты. Разовая покупка — воспоминания на всю жизнь.',
+    basePrice: 25000,
+    monthlyPayment: 0,
+    installmentMonths: 1,
+    isTradable: false,
+  },
+  {
+    id: 'expensive_painting',
+    name: 'Дорогая картина',
+    description: 'Коллекционный шедевр — символ статуса и вкуса.',
+    basePrice: 160000,
+    monthlyPayment: 0,
+    installmentMonths: 1,
+    isTradable: false,
+  },
+];

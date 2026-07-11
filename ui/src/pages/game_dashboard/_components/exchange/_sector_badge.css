@@ -1,0 +1,38 @@
+.sector-badge {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.45rem;
+  cursor: help;
+  outline: none;
+  filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.12));
+  transition:
+    transform 0.15s ease,
+    filter 0.15s ease;
+}
+
+.sector-badge:hover,
+.sector-badge:focus-visible {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.22));
+}
+
+.sector-badge__icon {
+  display: block;
+}
+
+.sector-badge__tooltip {
+  z-index: 80;
+  max-width: 12rem;
+  border-radius: 0.55rem;
+  border: 1px solid rgba(125, 211, 252, 0.28);
+  background: rgba(2, 8, 23, 0.96);
+  padding: 0.35rem 0.55rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: rgba(226, 232, 240, 0.96);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}

@@ -1,12 +1,19 @@
 model PriceHistory {
-  id        String   @id @default(uuid())
-  companyId String
-  price     Float
-  timestamp DateTime @default(now())
+  id              String   @id @default(uuid())
+  companyId       String
+  gameId          String?
+  stockListingId  String?
+  turn            Int?
+  price           Float
+  timestamp       DateTime @default(now())
 
-  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company      Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  game         Game?             @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  stockListing GameStockListing? @relation(fields: [stockListingId], references: [id], onDelete: Cascade)
 
   @@map("price_history")
   @@index([companyId])
   @@index([companyId, timestamp])
+  @@index([gameId])
+  @@index([stockListingId, turn])
 }

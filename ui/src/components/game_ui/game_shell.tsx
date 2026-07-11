@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { GameColorTheme } from "../../stores/game_settings.store";
-import { NewGameAtmosphere } from "../new_game_atmosphere";
+import { NewGameAtmosphere } from "./new_game_atmosphere";
 
 interface GameShellProps {
   children: ReactNode;

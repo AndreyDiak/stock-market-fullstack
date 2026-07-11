@@ -3,7 +3,7 @@ import jwt from '@fastify/jwt';
 import fastifyOauth2 from '@fastify/oauth2';
 import fp from 'fastify-plugin';
 import { env } from '../config/env.js';
-import { createOAuthStateHandlers } from '../modules/auth/oauth-state.js';
+import { createOAuthStateHandlers } from '../modules/auth/oauth_state.js';
 
 export interface JwtPayload {
   sub: string;

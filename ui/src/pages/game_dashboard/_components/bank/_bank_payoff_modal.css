@@ -1,0 +1,159 @@
+.bank-payoff-modal__shell {
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid rgba(52, 211, 153, 0.18);
+  background: linear-gradient(165deg, #1e293b 0%, #0f172a 100%);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
+}
+
+.bank-payoff-modal__header {
+  padding: 1rem 1.25rem 0.75rem;
+}
+
+.bank-payoff-modal__eyebrow {
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(52, 211, 153, 0.95);
+}
+
+.bank-payoff-modal__title {
+  margin-top: 0.25rem;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #f8fafc;
+}
+
+.bank-payoff-modal__subtitle {
+  margin-top: 0.35rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: rgba(148, 163, 184, 0.92);
+}
+
+.bank-payoff-modal__asset {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 1.25rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(15, 23, 42, 0.45);
+  padding: 0.65rem;
+}
+
+.bank-payoff-modal__asset-image-wrap {
+  height: 3.5rem;
+  width: 3.5rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: rgba(2, 6, 23, 0.65);
+}
+
+.bank-payoff-modal__asset-image {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.bank-payoff-modal__asset-placeholder {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.bank-payoff-modal__asset-meta {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.bank-payoff-modal__asset-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.bank-payoff-modal__asset-debt {
+  font-size: 0.75rem;
+  color: rgba(148, 163, 184, 0.92);
+}
+
+.bank-payoff-modal__full-option {
+  display: flex;
+  width: calc(100% - 2.5rem);
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0 1.25rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(52, 211, 153, 0.22);
+  background: rgba(16, 185, 129, 0.06);
+  padding: 0.75rem 0.85rem;
+  text-align: left;
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bank-payoff-modal__full-option--active {
+  border-color: rgba(52, 211, 153, 0.45);
+  background: rgba(16, 185, 129, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(52, 211, 153, 0.12);
+}
+
+.bank-payoff-modal__full-option-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ecfdf5;
+}
+
+.bank-payoff-modal__slider-panel {
+  margin: 0 1.25rem 0.75rem;
+}
+
+.bank-payoff-modal__summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0 1.25rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(2, 6, 23, 0.35);
+  padding: 0.75rem;
+}
+
+.bank-payoff-modal__summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  color: rgba(203, 213, 225, 0.92);
+}
+
+.bank-payoff-modal__summary-note {
+  margin-top: 0.15rem;
+  font-size: 0.6875rem;
+  color: rgba(148, 163, 184, 0.88);
+}
+
+.bank-payoff-modal__alert {
+  margin: 0 1.25rem 0.75rem;
+  border-radius: 0.65rem;
+  border: 1px solid rgba(244, 63, 94, 0.28);
+  background: rgba(244, 63, 94, 0.1);
+  padding: 0.55rem 0.7rem;
+  font-size: 0.8125rem;
+  color: #fecdd3;
+}
+
+.bank-payoff-modal__footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem;
+  padding: 0 1.25rem 1.25rem;
+}

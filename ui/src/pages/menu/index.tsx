@@ -4,11 +4,11 @@ import { useNavigate } from 'react-router-dom'
 import { GameButton } from '../../components/game_ui/game_button'
 import { GameShell } from '../../components/game_ui/game_shell'
 import { SessionCard } from '../../components/game_ui/session_card'
-import { http } from '../../lib/http'
+import { authHttp } from '../../lib/auth-http'
 import { useAuthStore } from '../../stores/auth.store'
 import { useUsersStore } from '../../stores/users.store'
-import { ProfilePanel } from './_profile_panel'
-import { menuContainerVariants, menuItemVariants, titleVariants } from './model/animation'
+import { ProfilePanel } from './_components/_profile_panel'
+import { menuContainerVariants, menuItemVariants, titleVariants } from './_model/animation'
 
 export function MenuPage() {
   const navigate = useNavigate()
@@ -21,7 +21,7 @@ export function MenuPage() {
 
   async function handleLogout() {
     try {
-      await http.post('auth/logout')
+      await authHttp.post('auth/logout')
     } catch {
       // ignore
     }
@@ -74,6 +74,18 @@ export function MenuPage() {
               <motion.div variants={menuItemVariants}>
                 <GameButton fullWidth size="lg" variant="muted" onClick={() => navigate('/settings')}>
                   Настройки
+                </GameButton>
+              </motion.div>
+
+              <motion.div variants={menuItemVariants}>
+                <GameButton fullWidth size="lg" variant="muted" onClick={() => navigate('/roadmap')}>
+                  Дорожная карта
+                </GameButton>
+              </motion.div>
+
+              <motion.div variants={menuItemVariants}>
+                <GameButton fullWidth size="lg" variant="emerald" onClick={() => navigate('/feedback')}>
+                  Обратная связь
                 </GameButton>
               </motion.div>
 

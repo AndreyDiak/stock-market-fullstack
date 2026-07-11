@@ -18,6 +18,59 @@ export interface CharacterItem {
   installmentsPaid: number
 }
 
+export interface DreamStageRequirement {
+  description: string
+  minBalance?: number
+  minPortfolioValue?: number
+  minPassiveIncome?: number
+  minReputation?: number
+  minProfessionLevel?: number
+  minTradingLevel?: number
+  minBankingLevel?: number
+  requiredItems?: string[]
+  requireItemFullyOwned?: string[]
+  noActiveInstallments?: boolean
+}
+
+export type DreamRequirementPreviewKind =
+  | 'balance'
+  | 'profession'
+  | 'portfolio'
+  | 'banking'
+  | 'trading'
+  | 'passive'
+  | 'reputation'
+  | 'property'
+  | 'no_installments'
+
+export interface CharacterDreamPreviewRequirement {
+  kind: DreamRequirementPreviewKind
+  label: string
+}
+
+export interface CharacterDreamPreviewStage {
+  order: number
+  title: string
+  description: string
+  requirementsPreview: CharacterDreamPreviewRequirement[]
+  isFinal?: boolean
+}
+
+export interface CharacterDreamPreview {
+  title: string
+  description: string
+  stageCount: number
+  pathHint: string
+  stages: CharacterDreamPreviewStage[]
+}
+
+export interface CharacterDreamStages {
+  dreamType: string
+  title: string
+  description: string
+  stages: DreamStageRequirement[]
+}
+
 export interface CharacterRosterItem {
   profession: CreateGameBody['profession']
   name: string
@@ -25,6 +78,8 @@ export interface CharacterRosterItem {
   balance: number
   items: CharacterItem[]
   dreams: CharacterDream[]
+  dreamStages?: CharacterDreamStages
+  dreamPreview?: CharacterDreamPreview
 }
 
 interface CharactersState {
@@ -43,7 +98,13 @@ export const useCharactersStore = create<CharactersState>((set) => ({
     set({ loading: true, error: null })
     try {
       const characters: CharacterRosterItem[] = await http.get('characters').json()
-      set({ characters, loading: false })
+      set({
+        characters: characters.map((character) => ({
+          ...character,
+          items: character.items.slice(0, 1),
+        })),
+        loading: false,
+      })
     } catch {
       set({ loading: false, error: 'Не удалось загрузить персонажей' })
     }

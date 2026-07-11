@@ -1,0 +1,89 @@
+enum StockGrade {
+  F
+  E
+  D
+  C
+  B
+  A
+}
+
+enum SectorTrend {
+  rising
+  falling
+  neutral
+}
+
+/// Биржевая бумага в рамках конкретной игры.
+model GameStockListing {
+  id                   String     @id @default(uuid())
+  gameId               String
+  companyId            String
+  grade                StockGrade @default(F)
+  currentPrice         Float
+  previousPrice        Float      @default(0)
+  dayChange            Float      @default(0)
+  availableOnExchange  Boolean    @default(true)
+  paysDividends        Boolean    @default(false)
+  dividendInterval     Int?
+  dividendYieldPct     Float?
+  turnsUntilDividend   Int?
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+
+  game         Game           @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  company      Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  priceHistory PriceHistory[]
+  newsPressures NewsPressure[]
+
+  @@unique([gameId, companyId])
+  @@map("game_stock_listings")
+  @@index([gameId])
+  @@index([companyId])
+}
+
+model NewsPressure {
+  id              String   @id @default(uuid())
+  gameId          String
+  newsId          String?
+  stockListingId  String
+  impact          Float
+  remainingTurns  Int
+  decayRate       Float    @default(0.2)
+  createdAt       DateTime @default(now())
+
+  game         Game             @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  news         News?            @relation(fields: [newsId], references: [id], onDelete: SetNull)
+  stockListing GameStockListing @relation(fields: [stockListingId], references: [id], onDelete: Cascade)
+
+  @@map("news_pressures")
+  @@index([gameId, stockListingId])
+  @@index([stockListingId])
+}
+
+model MarketSentiment {
+  id        String   @id @default(uuid())
+  gameId    String   @unique
+  value     Float    @default(0)
+  updatedAt DateTime @updatedAt
+
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@map("market_sentiments")
+}
+
+model SectorMomentum {
+  id        String       @id @default(uuid())
+  gameId    String
+  sector    MarketSector
+  value     Float        @default(0)
+  duration  Int          @default(0)
+  trend     SectorTrend  @default(neutral)
+  catalyst  String?
+  updatedAt DateTime     @updatedAt
+
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@unique([gameId, sector])
+  @@map("sector_momentums")
+  @@index([gameId])
+}

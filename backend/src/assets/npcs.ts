@@ -9,6 +9,7 @@ export interface NpcSeed {
   name: string;
   profession: Profession;
   professionLevel: number;
+  tradingLevel: number;
   salary: number;
   balance: number;
   items: NpcItemSeed[];
@@ -19,61 +20,61 @@ export const NPCS: NpcSeed[] = [
   {
     name: 'Иваныч',
     profession: Profession.STREET_CLEANER,
-    professionLevel: 2,
+    professionLevel: 1,
+    tradingLevel: 1,
     salary: 1600,
-    balance: 6000,
+    balance: 7500,
     items: [{ itemRef: 'old_garage', installmentsPaid: 5 }],
-    dreams: ['car', 'garage'],
+    dreams: ['trade_pavilion', 'car_wash'],
   },
   {
     name: 'Петрович',
     profession: Profession.FARMER,
-    professionLevel: 2,
+    professionLevel: 1,
+    tradingLevel: 1,
     salary: 2400,
-    balance: 10500,
+    balance: 12000,
     items: [{ itemRef: 'garage', installmentsPaid: 6 }],
-    dreams: ['tractor', 'country_house'],
+    dreams: ['tractor', 'combine_harvester'],
   },
   {
     name: 'Сергей',
     profession: Profession.ENGINEER,
-    professionLevel: 2,
+    professionLevel: 1,
+    tradingLevel: 2,
     salary: 4000,
-    balance: 17000,
-    items: [
-      { itemRef: 'garage', installmentsPaid: 6 },
-      { itemRef: 'parking_spot', installmentsPaid: 8 },
-    ],
+    balance: 18000,
+    items: [{ itemRef: 'garage', installmentsPaid: 6 }],
     dreams: ['sport_car', 'country_house'],
   },
   {
     name: 'Алекс',
     profession: Profession.DEVELOPER,
     professionLevel: 3,
+    tradingLevel: 4,
     salary: 9000,
-    balance: 50000,
+    balance: 42000,
     items: [{ itemRef: 'apartment', installmentsPaid: 15 }],
-    dreams: ['penthouse', 'sport_car'],
+    dreams: ['trip', 'penthouse'],
   },
   {
     name: 'Марк',
     profession: Profession.FINANCIER,
-    professionLevel: 3,
+    professionLevel: 1,
+    tradingLevel: 3,
     salary: 10500,
-    balance: 65000,
-    items: [
-      { itemRef: 'apartment', installmentsPaid: 15 },
-      { itemRef: 'parking_spot', installmentsPaid: 8 },
-    ],
-    dreams: ['yacht', 'penthouse', 'sport_car'],
+    balance: 56000,
+    items: [{ itemRef: 'apartment', installmentsPaid: 15 }],
+    dreams: ['yacht', 'expensive_painting'],
   },
   {
     name: 'Борис',
     profession: Profession.DOCTOR,
-    professionLevel: 3,
+    professionLevel: 1,
+    tradingLevel: 2,
     salary: 12000,
-    balance: 75000,
+    balance: 62000,
     items: [{ itemRef: 'apartment', installmentsPaid: 15 }],
-    dreams: ['trip', 'sport_car'],
+    dreams: ['penthouse', 'apartment'],
   },
 ];

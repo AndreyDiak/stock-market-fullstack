@@ -1,0 +1,38 @@
+{
+  "version": "7.1",
+  "steps": [
+    {
+      "tag": "CreateTable",
+      "model": "Dream",
+      "table": "dreams",
+      "columns": [
+        { "name": "id", "type": "Text", "default": null, "autoincrement": false },
+        { "name": "characterId", "type": "Text", "default": null, "autoincrement": false },
+        { "name": "dreamType", "type": "Text", "default": null, "autoincrement": false },
+        { "name": "currentStage", "type": "Int", "default": 0, "autoincrement": false },
+        { "name": "createdAt", "type": "DateTime", "default": "now()", "autoincrement": false },
+        { "name": "updatedAt", "type": "DateTime", "default": "now()", "autoincrement": false }
+      ],
+      "constraints": {
+        "primaryKey": { "columns": ["id"] },
+        "unique": [{ "columns": ["characterId"] }]
+      }
+    },
+    {
+      "tag": "CreateTable",
+      "model": "DreamStage",
+      "table": "dream_stages",
+      "columns": [
+        { "name": "id", "type": "Text", "default": null, "autoincrement": false },
+        { "name": "dreamId", "type": "Text", "default": null, "autoincrement": false },
+        { "name": "stageIndex", "type": "Int", "default": null, "autoincrement": false },
+        { "name": "status", "type": "Text", "default": "\"LOCKED\"", "autoincrement": false },
+        { "name": "completedAt", "type": "DateTime", "default": null, "autoincrement": false }
+      ],
+      "constraints": {
+        "primaryKey": { "columns": ["id"] },
+        "unique": [{ "columns": ["dreamId", "stageIndex"] }]
+      }
+    }
+  ]
+}

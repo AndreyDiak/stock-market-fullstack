@@ -22,7 +22,19 @@ model Game {
   completedAt   DateTime?
   totalPlayTime Int       @default(0)
 
-  character Character?
+  character      Character?
+  news           News[]
+  propertyOffers PropertyOffer[]
+  dealOffers     DealOffer[]
+
+  scheduledPriceImpacts ScheduledPriceImpact[]
+  gameStockListings     GameStockListing[]
+  priceHistory          PriceHistory[]
+  newsPressures         NewsPressure[]
+  marketSentiment       MarketSentiment?
+  sectorMomentums       SectorMomentum[]
+  portfolioStocks       Stock[]
+  ipos                  IPO[]
 
   @@unique([userId, slot])
   @@map("games")

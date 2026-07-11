@@ -1,0 +1,35 @@
+enum DealPurpose {
+  VALUE_EXCHANGE
+  LIQUIDITY
+  DREAM_HELPER
+  STOCK_PACKAGE
+}
+
+model DealOffer {
+  id             String @id @default(uuid())
+  gameId         String
+  game           Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  botCharacterId String
+
+  purpose        DealPurpose @default(VALUE_EXCHANGE)
+
+  botGives       Json
+  playerGives    Json
+
+  requiredReputation     Float  @default(0)
+  requiredTradingLevel   Int    @default(1)
+  reputationPenalty      Float  @default(1.0)
+
+  playerBenefitValue   Float  @default(0)
+  playerBenefitPercent Float  @default(0)
+
+  status       String @default("ACTIVE")
+  turnCreated  Int    @default(1)
+  expiresTurn  Int
+
+  createdAt    DateTime @default(now())
+
+  @@index([gameId, status])
+  @@map("deal_offers")
+}

@@ -18,13 +18,17 @@
     "vite": "^8.0.12"
   },
   "dependencies": {
+    "@floating-ui/react": "^0.27.19",
+    "@tabler/icons-react": "^3.44.0",
     "@tailwindcss/vite": "^4.3.1",
     "framer-motion": "^12.41.0",
     "ky": "^2.0.2",
     "react": "^19.2.7",
+    "react-3d-dice": "^0.1.0",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.0",
     "tailwindcss": "^4.3.1",
+    "three": "^0.185.0",
     "zustand": "^5.0.14"
   }
 }

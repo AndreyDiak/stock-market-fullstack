@@ -2,7 +2,7 @@
 import { PrismaClient, Profession } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { NPCS } from '../src/assets/npcs.js';
-import { REAL_ESTATE } from '../src/assets/realEstate.js';
+import { REAL_ESTATE } from '../src/assets/real_estate.js';
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL! }),

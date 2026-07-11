@@ -3,10 +3,10 @@ import { AuthService } from './auth.service.js';
 import { env } from '../../config/env.js';
 import { AppError } from '../../utils/errors.js';
 import { errorResponses } from '../../schemas/register.js';
-import { fetchGoogleProfile, fetchYandexProfile, buildYandexAuthorizeUrl } from './oauth-providers.js';
-import { createOAuthState } from './oauth-state.js';
+import { fetchGoogleProfile, fetchYandexProfile, buildYandexAuthorizeUrl } from './oauth_providers.js';
+import { createOAuthState } from './oauth_state.js';
 import type { OAuthProfile } from './auth.service.js';
-
+import { loginBodySchema, registerBodySchema } from './auth.schema.js';
 const REFRESH_COOKIE_NAME = 'refreshToken';
 
 function getRefreshCookieOptions(expiresAt: Date) {
@@ -39,6 +39,11 @@ function redirectOAuthError(reply: FastifyReply, error: string) {
   return reply.redirect(`${env.CORS_ORIGIN}/auth/complete?error=${encodeURIComponent(error)}`);
 }
 
+function sendAuthTokens(reply: FastifyReply, tokens: Awaited<ReturnType<AuthService['issueTokens']>>) {
+  reply.setCookie(REFRESH_COOKIE_NAME, tokens.refreshToken, getRefreshCookieOptions(tokens.expiresAt));
+  return { accessToken: tokens.accessToken };
+}
+
 export async function authRoutes(fastify: FastifyInstance) {
   const authService = new AuthService(fastify.prisma, fastify);
 
@@ -51,15 +56,17 @@ export async function authRoutes(fastify: FastifyInstance) {
     const query = request.query as { error?: string };
 
     if (query.error) {
+      fastify.log.warn({ error: query.error }, 'Yandex OAuth denied by user');
       return redirectOAuthError(reply, query.error);
     }
 
     try {
       const { token } = await fastify.yandexOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
       const profile = await fetchYandexProfile(token.access_token as string);
+      fastify.log.info({ email: profile.email }, 'Yandex OAuth login succeeded');
       return completeOAuthLogin(authService, reply, profile);
     } catch (error) {
-      fastify.log.error(error);
+      fastify.log.error(error, 'Yandex OAuth callback failed');
       return redirectOAuthError(reply, 'authentication_failed');
     }
   });
@@ -82,6 +89,44 @@ export async function authRoutes(fastify: FastifyInstance) {
       }
     });
   }
+
+  fastify.post(
+    '/auth/register',
+    {
+      schema: {
+        tags: ['auth'],
+        body: { $ref: 'RegisterBody#' },
+        response: {
+          200: { $ref: 'AuthTokenResponse#' },
+          ...errorResponses,
+        },
+      },
+    },
+    async (request, reply) => {
+      const body = registerBodySchema.parse(request.body);
+      const tokens = await authService.registerWithPassword(body);
+      return sendAuthTokens(reply, tokens);
+    },
+  );
+
+  fastify.post(
+    '/auth/login',
+    {
+      schema: {
+        tags: ['auth'],
+        body: { $ref: 'LoginBody#' },
+        response: {
+          200: { $ref: 'AuthTokenResponse#' },
+          ...errorResponses,
+        },
+      },
+    },
+    async (request, reply) => {
+      const body = loginBodySchema.parse(request.body);
+      const tokens = await authService.loginWithPassword(body);
+      return sendAuthTokens(reply, tokens);
+    },
+  );
 
   fastify.post(
     '/auth/refresh',

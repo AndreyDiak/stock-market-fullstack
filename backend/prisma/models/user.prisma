@@ -1,10 +1,12 @@
 model User {
-  id          String  @id @default(uuid())
-  email       String  @unique
-  googleId    String? @unique
-  yandexId    String? @unique
-  displayName String
-  avatarUrl   String?
+  id           String  @id @default(uuid())
+  email        String  @unique
+  username     String? @unique
+  passwordHash String? @map("password_hash")
+  googleId     String? @unique
+  yandexId     String? @unique
+  displayName  String
+  avatarUrl    String?
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

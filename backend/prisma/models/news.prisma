@@ -9,10 +9,19 @@ model News {
   publishedAt DateTime     @default(now())
   expiresAt   DateTime
 
+  gameId      String?
+  kind        String   @default("MARKET")
+  payload     Json?
+
   company Company? @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  game    Game?    @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  scheduledPriceImpacts ScheduledPriceImpact[]
+  newsPressures         NewsPressure[]
 
   @@map("news")
   @@index([companyId])
   @@index([sector])
   @@index([expiresAt])
+  @@index([gameId])
 }

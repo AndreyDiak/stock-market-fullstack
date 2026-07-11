@@ -8,3 +8,11 @@ export const PROFESSION_LABELS: Record<CreateGameBody['profession'], string> = {
   FINANCIER: 'Финансист',
   DOCTOR: 'Врач',
 }
+
+export const PROFESSION_INSIDER_SECTOR: Partial<Record<CreateGameBody['profession'], string>> = {
+  DOCTOR: 'HEALTHCARE',
+  DEVELOPER: 'TECHNOLOGY',
+  ENGINEER: 'ENERGY',
+  FINANCIER: 'FINANCE',
+  FARMER: 'AGRICULTURE',
+}

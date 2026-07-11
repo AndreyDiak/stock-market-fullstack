@@ -1,4 +1,4 @@
-/** Sync with backend/src/assets/realEstate.ts */
+/** Sync with backend/src/assets/real_estate.ts */
 export interface RealEstateItem {
   id: string
   name: string
@@ -7,7 +7,17 @@ export interface RealEstateItem {
   monthlyPayment: number
   installmentMonths: number
   isTradable: boolean
+  /** Только через сделки (DREAM_HELPER), не на рынке недвижимости. */
+  dealOnly?: boolean
   special?: string
+}
+
+export function isMarketOfferAsset(asset: RealEstateItem | undefined): boolean {
+  return !!asset?.isTradable && !asset.dealOnly
+}
+
+export function isLuxuryAsset(asset: RealEstateItem | undefined): boolean {
+  return !!asset?.dealOnly
 }
 
 export const REAL_ESTATE_CATALOG: RealEstateItem[] = [
@@ -64,16 +74,38 @@ export const REAL_ESTATE_CATALOG: RealEstateItem[] = [
     monthlyPayment: 8000,
     installmentMonths: 84,
     isTradable: true,
+    dealOnly: true,
   },
   {
     id: 'warehouse',
     name: 'Склад',
     description: 'Промышленный склад на окраине. Можно сдавать или перестроить.',
-    basePrice: 60000,
-    monthlyPayment: 1000,
+    basePrice: 120000,
+    monthlyPayment: 2000,
     installmentMonths: 72,
     isTradable: true,
+    special: 'Приносит пассивный доход 600/ход',
+  },
+  {
+    id: 'trade_pavilion',
+    name: 'Торговый павильон',
+    description: 'Небольшой коммерческий объект, который можно сдавать или использовать как источник стабильного дохода.',
+    basePrice: 80000,
+    monthlyPayment: 1500,
+    installmentMonths: 60,
+    isTradable: true,
     special: 'Приносит пассивный доход 400/ход',
+  },
+  {
+    id: 'car_wash',
+    name: 'Автомойка',
+    description: 'Городской бизнес-актив со стабильным доходом.',
+    basePrice: 150000,
+    monthlyPayment: 3000,
+    installmentMonths: 72,
+    isTradable: true,
+    special: 'Приносит пассивный доход 750/ход',
+    dealOnly: true,
   },
   {
     id: 'car',
@@ -92,6 +124,7 @@ export const REAL_ESTATE_CATALOG: RealEstateItem[] = [
     monthlyPayment: 3500,
     installmentMonths: 72,
     isTradable: true,
+    dealOnly: true,
   },
   {
     id: 'yacht',
@@ -101,6 +134,7 @@ export const REAL_ESTATE_CATALOG: RealEstateItem[] = [
     monthlyPayment: 12000,
     installmentMonths: 96,
     isTradable: true,
+    dealOnly: true,
   },
   {
     id: 'tractor',
@@ -110,12 +144,32 @@ export const REAL_ESTATE_CATALOG: RealEstateItem[] = [
     monthlyPayment: 900,
     installmentMonths: 60,
     isTradable: true,
+    dealOnly: true,
+  },
+  {
+    id: 'combine_harvester',
+    name: 'Комбайн',
+    description: 'Крупная уборочная техника для большого хозяйства.',
+    basePrice: 180000,
+    monthlyPayment: 3500,
+    installmentMonths: 72,
+    isTradable: true,
+    dealOnly: true,
   },
   {
     id: 'trip',
-    name: 'Путешествие',
+    name: 'Кругосветное путешествие',
     description: 'Кругосветка мечты. Разовая покупка — воспоминания на всю жизнь.',
     basePrice: 25000,
+    monthlyPayment: 0,
+    installmentMonths: 1,
+    isTradable: false,
+  },
+  {
+    id: 'expensive_painting',
+    name: 'Дорогая картина',
+    description: 'Коллекционный шедевр — символ статуса и вкуса.',
+    basePrice: 160000,
     monthlyPayment: 0,
     installmentMonths: 1,
     isTradable: false,

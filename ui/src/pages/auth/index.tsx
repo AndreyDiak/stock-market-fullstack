@@ -4,12 +4,12 @@ import { getApiErrorMessage, loginWithPassword, registerWithPassword } from '../
 import { GameShell } from '../../components/game_ui/game_shell'
 import { isOAuthMessage } from '../../constants/oauth'
 import { useAuthStore } from '../../stores/auth.store'
-import { AuthCard } from './_auth_card'
-import { AuthFormsPanel } from './_auth_forms_panel'
-import { AuthModeTabs } from './_auth_mode_tabs'
-import { YandexAuthButton } from './_yandex_auth_button'
-import { ERROR_MESSAGES, POPUP_FEATURES, YANDEX_AUTH_URL } from './model/constants'
-import type { AuthMode } from './model/types'
+import { AuthCard } from './_components/_auth_card'
+import { AuthFormsPanel } from './_components/_auth_forms_panel'
+import { AuthModeTabs } from './_components/_auth_mode_tabs'
+import { YandexAuthButton } from './_components/_yandex_auth_button'
+import { ERROR_MESSAGES, POPUP_FEATURES, YANDEX_AUTH_URL } from './_model/constants'
+import type { AuthMode } from './_model/types'
 
 export function AuthPage() {
   const navigate = useNavigate()
@@ -35,6 +35,7 @@ export function AuthPage() {
       setIsWaitingOAuth(false)
 
       if (event.data.accessToken) {
+        setFormError(null)
         setToken(event.data.accessToken)
         navigate('/menu')
         return
@@ -57,11 +58,20 @@ export function AuthPage() {
 
     const popup = window.open(YANDEX_AUTH_URL, 'yandex-oauth', POPUP_FEATURES)
     if (!popup) {
-      setSearchParams({ error: 'popup_blocked' }, { replace: true })
+      window.location.href = YANDEX_AUTH_URL
       return
     }
 
     setIsWaitingOAuth(true)
+
+    const poll = window.setInterval(() => {
+      if (!popup.closed) return
+      window.clearInterval(poll)
+      setIsWaitingOAuth(false)
+      if (!useAuthStore.getState().isAuthenticated) {
+        setFormError('Окно входа закрыто до завершения. Попробуйте снова.')
+      }
+    }, 500)
   }
 
   async function handleLogin(login: string, password: string) {

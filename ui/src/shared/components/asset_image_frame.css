@@ -1,0 +1,126 @@
+.asset-image-frame {
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, #0c1824 0%, #0a1f1a 48%, #071510 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -8px 16px rgba(0, 0, 0, 0.32);
+}
+
+.asset-image-frame:not(.asset-image-frame--decorated) {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+.asset-image-frame--loan {
+  width: 5.75rem;
+  height: 5.25rem;
+}
+
+.asset-image-frame--paid {
+  width: 4.75rem;
+  height: 4.25rem;
+}
+
+.asset-image-frame--history {
+  width: 5.25rem;
+  height: 4.75rem;
+}
+
+.asset-image-frame--fill {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+}
+
+@media (min-width: 640px) {
+  .asset-image-frame--loan {
+    width: 6.75rem;
+    height: 6rem;
+  }
+
+  .asset-image-frame--paid {
+    width: 5.5rem;
+    height: 4.875rem;
+  }
+
+  .asset-image-frame--history {
+    width: 6rem;
+    height: 5.25rem;
+  }
+}
+
+.asset-image-frame__glow {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 95%, rgba(77, 196, 141, 0.18), transparent 68%);
+}
+
+.asset-image-frame__floor {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  z-index: 2;
+  width: 62%;
+  height: 10%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.5) 0%, transparent 72%);
+  pointer-events: none;
+}
+
+.asset-image-frame__image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.asset-image-frame--decorated .asset-image-frame__image {
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.5));
+}
+
+.asset-image-frame__vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 58%, transparent 42%, rgba(0, 0, 0, 0.22) 100%);
+}
+
+.asset-image-frame__fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+  text-align: center;
+  font-size: 0.5625rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #64748b;
+  background: linear-gradient(180deg, #0c1824 0%, #071510 100%);
+}
+
+.asset-image-frame__children {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.asset-image-frame__children > * {
+  pointer-events: auto;
+}

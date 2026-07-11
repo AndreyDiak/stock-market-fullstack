@@ -7,7 +7,10 @@ import { SlotsPage } from './pages/slots'
 import { NewGamePage } from './pages/new_game'
 import { GameDashboardPage } from './pages/game_dashboard'
 import { SettingsPage } from './pages/settings'
+import { RoadmapPage } from './pages/roadmap'
+import { FeedbackPage } from './pages/feedback'
 import { registerHttpUnauthorizedMiddleware } from './lib/http-middleware.ts'
+import { tryRefreshAccessToken, isAccessTokenExpired } from './lib/auth-refresh.ts'
 import { useAuthStore } from './stores/auth.store.ts'
 import { useUsersStore } from './stores/users.store.ts'
 
@@ -28,6 +31,16 @@ export function App() {
       }
     })
 
+    const { isAuthenticated, accessToken } = useAuthStore.getState()
+    if (isAuthenticated && accessToken && isAccessTokenExpired(accessToken)) {
+      void tryRefreshAccessToken().then((ok) => {
+        if (!ok) {
+          logout()
+          clearProfile()
+        }
+      })
+    }
+
     return () => registerHttpUnauthorizedMiddleware(null)
   }, [navigate, logout, clearProfile])
 
@@ -37,6 +50,8 @@ export function App() {
       <Route path="/auth/complete" element={<OAuthCompletePage />} />
       <Route path="/menu" element={<MenuPage />} />
       <Route path="/settings" element={<SettingsPage />} />
+      <Route path="/roadmap" element={<RoadmapPage />} />
+      <Route path="/feedback" element={<FeedbackPage />} />
       <Route path="/slots" element={<SlotsPage />} />
       <Route path="/new-game" element={<NewGamePage />} />
       <Route path="/game" element={<GameDashboardPage />} />

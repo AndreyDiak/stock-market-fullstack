@@ -2,13 +2,18 @@ model Stock {
   id            String   @id @default(uuid())
   companyId     String
   ownerId       String
-  purchasePrice Float
-  quantity      Int      @default(1)
-  purchasedAt   DateTime @default(now())
+  gameId        String?
+  purchasePrice       Float
+  quantity            Int      @default(1)
+  turnsHeldInCycle    Int      @default(0)
+  purchasedAt         DateTime @default(now())
 
   company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  game    Game?   @relation(fields: [gameId], references: [id], onDelete: Cascade)
 
   @@map("stocks")
   @@index([companyId])
   @@index([ownerId])
+  @@index([gameId])
+  @@index([ownerId, companyId, gameId])
 }

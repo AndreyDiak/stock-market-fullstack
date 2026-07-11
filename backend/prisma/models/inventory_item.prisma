@@ -4,10 +4,12 @@ model InventoryItem {
   itemRef           String
   name              String
   purchasePrice     Float
+  downPaymentAmount Float?
   isInstallment     Boolean  @default(false)
   monthlyPayment    Float?
   installmentsTotal Int?
   installmentsPaid  Int      @default(0)
+  installmentPrepay Float    @default(0)
   special           String?
   purchasedAt       DateTime @default(now())
   isPaidOff         Boolean  @default(false)

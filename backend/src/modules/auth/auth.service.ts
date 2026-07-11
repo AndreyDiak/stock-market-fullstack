@@ -3,6 +3,8 @@ import type { PrismaClient } from '@prisma/client';
 import type { FastifyInstance } from 'fastify';
 import { AppError } from '../../utils/errors.js';
 import { env } from '../../config/env.js';
+import { hashPassword, verifyPassword } from '../../utils/password.js';
+import type { LoginBody, RegisterBody } from './auth.schema.js';
 
 export type AuthProvider = 'yandex' | 'google';
 
@@ -43,20 +45,23 @@ function parseDurationToMs(duration: string): number {
 }
 
 export class AuthService {
-  constructor(
-    private prisma: PrismaClient,
-    private fastify: FastifyInstance,
-  ) {}
+  readonly #prisma: PrismaClient;
+  readonly #fastify: FastifyInstance;
+
+  constructor(prisma: PrismaClient, fastify: FastifyInstance) {
+    this.#prisma = prisma;
+    this.#fastify = fastify;
+  }
 
   async findOrCreateUser(profile: OAuthProfile) {
     const idField = PROVIDER_ID_FIELD[profile.provider];
 
-    const existingByProvider = await this.prisma.user.findFirst({
+    const existingByProvider = await this.#prisma.user.findFirst({
       where: { [idField]: profile.id },
     });
 
     if (existingByProvider) {
-      return this.prisma.user.update({
+      return this.#prisma.user.update({
         where: { id: existingByProvider.id },
         data: {
           email: profile.email,
@@ -67,12 +72,12 @@ export class AuthService {
       });
     }
 
-    const existingByEmail = await this.prisma.user.findUnique({
+    const existingByEmail = await this.#prisma.user.findUnique({
       where: { email: profile.email },
     });
 
     if (existingByEmail) {
-      return this.prisma.user.update({
+      return this.#prisma.user.update({
         where: { id: existingByEmail.id },
         data: {
           [idField]: profile.id,
@@ -83,7 +88,7 @@ export class AuthService {
       });
     }
 
-    return this.prisma.user.create({
+    return this.#prisma.user.create({
       data: {
         email: profile.email,
         displayName: profile.name,
@@ -94,12 +99,12 @@ export class AuthService {
   }
 
   async issueTokens(userId: string, email: string) {
-    const accessToken = this.fastify.jwt.sign({ sub: userId, email });
+    const accessToken = this.#fastify.jwt.sign({ sub: userId, email });
 
     const refreshToken = randomBytes(64).toString('hex');
     const expiresAt = new Date(Date.now() + parseDurationToMs(env.JWT_REFRESH_EXPIRES_IN));
 
-    await this.prisma.refreshToken.create({
+    await this.#prisma.refreshToken.create({
       data: {
         token: refreshToken,
         userId,
@@ -111,7 +116,7 @@ export class AuthService {
   }
 
   async refreshAccessToken(refreshToken: string) {
-    const storedToken = await this.prisma.refreshToken.findUnique({
+    const storedToken = await this.#prisma.refreshToken.findUnique({
       where: { token: refreshToken },
       include: { user: true },
     });
@@ -128,7 +133,7 @@ export class AuthService {
       throw new AppError(401, 'EXPIRED_REFRESH_TOKEN', 'Refresh token has expired');
     }
 
-    await this.prisma.refreshToken.update({
+    await this.#prisma.refreshToken.update({
       where: { id: storedToken.id },
       data: { revokedAt: new Date() },
     });
@@ -137,7 +142,7 @@ export class AuthService {
   }
 
   async revokeRefreshToken(refreshToken: string) {
-    const storedToken = await this.prisma.refreshToken.findUnique({
+    const storedToken = await this.#prisma.refreshToken.findUnique({
       where: { token: refreshToken },
     });
 
@@ -145,9 +150,63 @@ export class AuthService {
       return;
     }
 
-    await this.prisma.refreshToken.update({
+    await this.#prisma.refreshToken.update({
       where: { id: storedToken.id },
       data: { revokedAt: new Date() },
     });
+  }
+
+  async registerWithPassword(body: RegisterBody) {
+    const username = body.username.toLowerCase();
+    const email = body.email.toLowerCase();
+
+    const existingUsername = await this.#prisma.user.findUnique({ where: { username } });
+    if (existingUsername) {
+      throw new AppError(409, 'USERNAME_TAKEN', 'Этот логин уже занят');
+    }
+
+    const existingEmail = await this.#prisma.user.findUnique({ where: { email } });
+    if (existingEmail) {
+      throw new AppError(409, 'EMAIL_TAKEN', 'Этот email уже зарегистрирован');
+    }
+
+    const passwordHash = await hashPassword(body.password);
+
+    const user = await this.#prisma.user.create({
+      data: {
+        username,
+        email,
+        passwordHash,
+        displayName: body.username,
+      },
+    });
+
+    return this.issueTokens(user.id, user.email);
+  }
+
+  async loginWithPassword(body: LoginBody) {
+    const login = body.login.trim().toLowerCase();
+
+    const user = await this.#prisma.user.findFirst({
+      where: {
+        OR: [{ username: login }, { email: login }],
+      },
+    });
+
+    if (!user?.passwordHash) {
+      throw new AppError(401, 'INVALID_CREDENTIALS', 'Неверный логин или пароль');
+    }
+
+    const valid = await verifyPassword(body.password, user.passwordHash);
+    if (!valid) {
+      throw new AppError(401, 'INVALID_CREDENTIALS', 'Неверный логин или пароль');
+    }
+
+    await this.#prisma.user.update({
+      where: { id: user.id },
+      data: { lastLoginAt: new Date() },
+    });
+
+    return this.issueTokens(user.id, user.email);
   }
 }
