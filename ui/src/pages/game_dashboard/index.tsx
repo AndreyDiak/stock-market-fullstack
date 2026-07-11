@@ -6,6 +6,7 @@ import { useGameBackgroundMusic } from '../../hooks/use_game_background_music'
 import { gameAudio } from '../../lib/audio/game_audio'
 import { useGameSettingsStore } from '../../stores/game_settings.store'
 import { useGameStore } from '../../stores/game.store'
+import { useTutorialStore } from '../../stores/tutorial.store'
 import { BackgroundEffects } from './_components/layout/_background_effects'
 import './_components/shared/_dashboard_tokens.css'
 import { CenterPanel } from './_components/layout'
@@ -14,6 +15,7 @@ import { LeftSidebar } from './_components/layout/_left_sidebar'
 import { RightPanel } from './_components/layout/_right_panel'
 import { ExitGameModal } from './_components/layout/_exit_game_modal'
 import { GameOverModal } from './_components/layout/_game_over_modal'
+import { FirstRunOnboardingModal } from '../../components/onboarding/FirstRunOnboardingModal'
 
 import { NewsNewspaperModal } from './_components/news/_news_newspaper_modal'
 import { useDashboardTheme } from './_model/use_dashboard_theme'
@@ -47,6 +49,23 @@ export function GameDashboardPage() {
   const reset = useGameStore((state) => state.reset)
   const welcomeHandledRef = useRef(false)
 
+  const { hasCompletedOnboarding, openOnboarding } = useTutorialStore()
+  const [onboardingInitialized, setOnboardingInitialized] = useState(false)
+
+  // Initialize onboarding check after game loads
+  useEffect(() => {
+    if (!loading && !onboardingInitialized && gameId) {
+      setOnboardingInitialized(true)
+      if (!hasCompletedOnboarding) {
+        // Small delay to ensure dashboard is fully rendered
+        const timer = setTimeout(() => {
+          openOnboarding()
+        }, 300)
+        return () => clearTimeout(timer)
+      }
+    }
+  }, [loading, onboardingInitialized, gameId, hasCompletedOnboarding, openOnboarding])
+
   const dashboardTheme = useDashboardTheme()
 
   const activeTab = parseDashboardTab(searchParams)
@@ -77,6 +96,9 @@ export function GameDashboardPage() {
       openExchangeTab: (listingId?: string) => {
         setActiveTab('exchange')
         setHighlightStockListingId(listingId ?? null)
+      },
+      openGuideSection: (_key: string) => {
+        setActiveTab('guide')
       },
       highlightPropertyOfferId,
       clearHighlightPropertyOffer: () => setHighlightPropertyOfferId(null),
@@ -183,6 +205,11 @@ export function GameDashboardPage() {
         />
 
         <GameOverModal />
+
+        <FirstRunOnboardingModal
+          isOpen={!hasCompletedOnboarding && onboardingInitialized}
+          onClose={() => {}}
+        />
       </GameShell>
     </DashboardUiProvider>
   )

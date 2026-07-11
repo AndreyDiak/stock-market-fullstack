@@ -1,3 +1,4 @@
+import type { PrismaClient } from '@prisma/client';
 import type { MarketService } from '../../market/market.service.js';
 import type { TurnContext, TurnPhase, TurnState } from '../_types.js';
 
@@ -5,9 +6,11 @@ import type { TurnContext, TurnPhase, TurnState } from '../_types.js';
 export class MarketTurnPhase implements TurnPhase {
   readonly id = 'market-turn';
   readonly #marketService: MarketService;
+  readonly #prisma: PrismaClient;
 
-  constructor(marketService: MarketService) {
+  constructor(marketService: MarketService, prisma: PrismaClient) {
     this.#marketService = marketService;
+    this.#prisma = prisma;
   }
 
   async execute(context: TurnContext, state: TurnState): Promise<void> {
@@ -23,6 +26,10 @@ export class MarketTurnPhase implements TurnPhase {
     const dividendTotal = result.dividendPayouts.reduce((sum, payout) => sum + payout.totalPaid, 0);
     if (dividendTotal > 0) {
       context.game.character.balance += dividendTotal;
+      await this.#prisma.character.update({
+        where: { id: context.game.character.id },
+        data: { balance: { increment: dividendTotal } },
+      });
     }
   }
 }

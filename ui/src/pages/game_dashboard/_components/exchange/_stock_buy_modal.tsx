@@ -42,7 +42,7 @@ export function StockBuyModal({
 
         {listing.isLocked && gradeConfig ? (
           <p className="mt-4 rounded-xl border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-sm text-amber-200">
-            Требуется банковский уровень {gradeConfig.minBankingLevel}
+            Требуется уровень трейдинга {gradeConfig.minTradingLevel}
             {gradeConfig.minReputation > 0 ? ` и репутация ${gradeConfig.minReputation}` : ''}.
           </p>
         ) : null}

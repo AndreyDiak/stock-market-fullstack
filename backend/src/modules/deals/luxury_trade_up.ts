@@ -3,13 +3,28 @@ import type { PlayerPropertyRef } from './deal.types.js';
 
 /** Явные цепочки апгрейда: роскошь ← более дешёвая недвижимость. */
 export const LUXURY_TRADE_UP_PREREQUISITES: Record<string, string> = {
-  combine_harvester: 'tractor',
-  sport_car: 'car',
-  yacht: 'sport_car',
-  car_wash: 'trade_pavilion',
   penthouse: 'apartment',
+  yacht: 'boat',
+  sport_car: 'car',
+  trip: 'hiking_ticket',
+  combine_harvester: 'tractor',
+  expensive_painting: 'collectible_card',
+  car_wash: 'trade_pavilion',
   apartment: 'country_house',
   warehouse: 'trade_pavilion',
+};
+
+/**
+ * Строгий mapping trade-up сделок для premium предметов мечты.
+ * Для каждого target обязательен ровно один requiredBaseItem.
+ */
+export const DREAM_TRADE_UP_MAP: Record<string, string> = {
+  penthouse: 'apartment',
+  yacht: 'boat',
+  sport_car: 'car',
+  trip: 'hiking_ticket',
+  combine_harvester: 'tractor',
+  expensive_painting: 'collectible_card',
 };
 
 export function getLuxuryPrerequisite(luxuryPropertyId: string): string | null {
@@ -28,9 +43,25 @@ function findTradableProperty(propertyId: string): RealEstateData | null {
   return property;
 }
 
-/** Подбирает более дешёвую недвижимость, которую бот может запросить у игрока в сделке. */
+/**
+ * Подбирает более дешёвую недвижимость, которую бот может запросить у игрока в сделке.
+ * Для premium предметов из DREAM_TRADE_UP_MAP — строго только указанный prerequisite.
+ * Для остальных — эвристика с fallback.
+ */
 export function pickCheaperPropertyForLuxuryDeal(ctx: CheaperPropertyPickContext): RealEstateData | null {
   const { luxury } = ctx;
+
+  const requiredBaseId = DREAM_TRADE_UP_MAP[luxury.id];
+  if (requiredBaseId) {
+    const prerequisite = findTradableProperty(requiredBaseId);
+    if (!prerequisite) return null;
+
+    const ownsBase = ctx.ownedProperties.some((p) => p.propertyId === requiredBaseId);
+    if (!ownsBase) return null;
+
+    return prerequisite;
+  }
+
   const minCollateral = Math.max(1_500, Math.round(luxury.basePrice * 0.08));
   const maxCollateral = Math.round(luxury.basePrice * 0.6);
 

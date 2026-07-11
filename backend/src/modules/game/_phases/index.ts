@@ -22,7 +22,7 @@ export function createGamePipeline(prisma: PrismaClient): GamePipeline {
   return new GamePipeline([
     new EconomyPhase(new PassiveIncomeService(prisma), newsService),
     new AdvanceStepPhase(prisma),
-    new MarketTurnPhase(marketService),
+    new MarketTurnPhase(marketService, prisma),
     new PropertyOffersExpiryPhase(propertyOffersService),
     new TurnContentPhase(prisma, newsService, propertyOffersService, new DealGenerator()),
   ]);

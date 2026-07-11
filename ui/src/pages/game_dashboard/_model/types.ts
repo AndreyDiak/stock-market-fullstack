@@ -12,6 +12,7 @@ export type dashboard_tab =
   | 'dream'
   | 'news'
   | 'settings'
+  | 'guide'
 
 export interface portfolio_row {
   ticker: string

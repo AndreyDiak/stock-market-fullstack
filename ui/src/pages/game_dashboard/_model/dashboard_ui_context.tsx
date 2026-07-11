@@ -9,6 +9,7 @@ export interface DashboardUiContextValue {
   openNewsTab: () => void
   openRealEstateTab: (offerId?: string) => void
   openExchangeTab: (listingId?: string) => void
+  openGuideSection: (key: string) => void
   highlightPropertyOfferId: string | null
   clearHighlightPropertyOffer: () => void
   highlightStockListingId: string | null

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { MoneyValue } from '../../../../components/money/money_value';
 import type { StockListing } from '../../../../api/stocks';
 import { ProfitGradeBadge } from '../real_estate/_profit_grade_badge';
-import { formatBankingRequiredLabel } from '../real_estate/_offer_styles';
+import { formatTradingRequiredLabel } from '../real_estate/_offer_styles';
 import { STOCK_GRADE_CONFIG } from './_stock_grade_config';
 import { SectorBadge } from './_sector_badge';
 import { DividendBadge } from './_dividend_badge';
@@ -16,7 +16,7 @@ import './_exchange.css';
 
 function getLockLabel(listing: StockListing) {
   if (!listing.availableOnExchange) return 'Только через IPO';
-  return formatBankingRequiredLabel(STOCK_GRADE_CONFIG[listing.grade].minBankingLevel);
+  return formatTradingRequiredLabel(STOCK_GRADE_CONFIG[listing.grade].minTradingLevel);
 }
 
 export function StockCard({

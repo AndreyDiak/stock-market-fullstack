@@ -357,8 +357,8 @@ export class MarketService {
       throw new AppError(400, 'STOCK_LOCKED', 'This stock is not available on the exchange');
     }
 
-    if (character.bankingLevel < gradeConfig.minBankingLevel) {
-      throw new AppError(400, 'BANKING_LEVEL_TOO_LOW', 'Banking level too low for this stock');
+    if (character.tradingLevel < gradeConfig.minTradingLevel) {
+      throw new AppError(400, 'TRADING_LEVEL_TOO_LOW', 'Trading level too low for this stock');
     }
 
     if (character.reputation < gradeConfig.minReputation) {

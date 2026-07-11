@@ -5,7 +5,7 @@ export interface StockGradeConfig {
   newsReactivity: number;
   priceRange: [number, number];
   availableOnExchange: boolean;
-  minBankingLevel: number;
+  minTradingLevel: number;
   minReputation: number;
   requiresInsiderAccess: boolean;
   dividendChance: number;
@@ -19,7 +19,7 @@ export const STOCK_GRADE_CONFIG: Record<StockGrade, StockGradeConfig> = {
     newsReactivity: 2.5,
     priceRange: [1, 30],
     availableOnExchange: true,
-    minBankingLevel: 1,
+    minTradingLevel: 1,
     minReputation: 0,
     requiresInsiderAccess: false,
     dividendChance: 0.01,
@@ -31,7 +31,7 @@ export const STOCK_GRADE_CONFIG: Record<StockGrade, StockGradeConfig> = {
     newsReactivity: 2.0,
     priceRange: [20, 150],
     availableOnExchange: true,
-    minBankingLevel: 2,
+    minTradingLevel: 2,
     minReputation: 0,
     requiresInsiderAccess: false,
     dividendChance: 0.03,
@@ -43,7 +43,7 @@ export const STOCK_GRADE_CONFIG: Record<StockGrade, StockGradeConfig> = {
     newsReactivity: 1.5,
     priceRange: [100, 600],
     availableOnExchange: true,
-    minBankingLevel: 3,
+    minTradingLevel: 3,
     minReputation: 0,
     requiresInsiderAccess: false,
     dividendChance: 0.08,
@@ -55,7 +55,7 @@ export const STOCK_GRADE_CONFIG: Record<StockGrade, StockGradeConfig> = {
     newsReactivity: 1.0,
     priceRange: [400, 2000],
     availableOnExchange: true,
-    minBankingLevel: 5,
+    minTradingLevel: 4,
     minReputation: 1,
     requiresInsiderAccess: false,
     dividendChance: 0.12,
@@ -67,7 +67,7 @@ export const STOCK_GRADE_CONFIG: Record<StockGrade, StockGradeConfig> = {
     newsReactivity: 0.7,
     priceRange: [1500, 8000],
     availableOnExchange: false,
-    minBankingLevel: 7,
+    minTradingLevel: 5,
     minReputation: 3,
     requiresInsiderAccess: false,
     dividendChance: 0.2,
@@ -79,7 +79,7 @@ export const STOCK_GRADE_CONFIG: Record<StockGrade, StockGradeConfig> = {
     newsReactivity: 0.4,
     priceRange: [5000, 50000],
     availableOnExchange: false,
-    minBankingLevel: 9,
+    minTradingLevel: 6,
     minReputation: 5,
     requiresInsiderAccess: true,
     dividendChance: 0.3,

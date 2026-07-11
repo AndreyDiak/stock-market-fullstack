@@ -11,7 +11,6 @@ import { format_change, format_turns_left_label } from '../../_model/utils';
 import { SectorBadge } from './_sector_badge';
 import { ProfitGradeBadge } from '../real_estate/_profit_grade_badge';
 import { STOCK_GRADE_CONFIG, formatSectorLabel } from './_stock_grade_config';
-import { formatBankingRequiredLabel } from '../real_estate/_offer_styles';
 import { gameAudio } from '../../../../lib/audio/game_audio';
 import { calcFullDividendPayout } from './_dividend_utils';
 
@@ -278,18 +277,18 @@ export function StockChartModal({
 
               {locked ? (
                 <div className="space-y-2">
-                  {!listing.availableOnExchange ? (
-                    <p className="rounded-lg border border-slate-600/30 bg-slate-800/40 px-3 py-2 text-xs text-slate-300">
-                      Акция торгуется только через IPO.
-                    </p>
-                  ) : gradeConfig ? (
-                    <p className="rounded-lg border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
-                      {formatBankingRequiredLabel(gradeConfig.minBankingLevel)}
-                      {gradeConfig.minReputation > 0
-                        ? ` и репутация ${gradeConfig.minReputation}`
-                        : ''}.
-                    </p>
-                  ) : null}
+{!listing.availableOnExchange ? (
+                      <p className="rounded-lg border border-slate-600/30 bg-slate-800/40 px-3 py-2 text-xs text-slate-300">
+                        Акция торгуется только через IPO.
+                      </p>
+                    ) : gradeConfig ? (
+                      <p className="rounded-lg border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
+                        Требуется уровень трейдинга {gradeConfig.minTradingLevel}
+                        {gradeConfig.minReputation > 0
+                          ? ` и репутация ${gradeConfig.minReputation}`
+                          : ''}.
+                      </p>
+                    ) : null}
                 </div>
               ) : (
                 <>

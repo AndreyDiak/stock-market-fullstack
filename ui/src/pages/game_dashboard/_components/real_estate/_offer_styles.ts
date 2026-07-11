@@ -83,6 +83,12 @@ export function formatBankingRequiredLabel(requiredBankingLevel: number) {
   return `Нужен уровень банковского дела ${grade}`;
 }
 
+export function formatTradingRequiredLabel(requiredTradingLevel: number) {
+  const grades = ['F', 'E', 'D', 'C', 'B', 'A'];
+  const grade = grades[Math.max(0, Math.min(requiredTradingLevel - 1, grades.length - 1))] ?? 'F';
+  return `Требуется уровень трейдинга ${grade}`;
+}
+
 export type AssetDealType = 'buy' | 'sell';
 
 export function getPlayerDealType(offerType: 'BUY' | 'SELL'): AssetDealType {

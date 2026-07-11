@@ -15,9 +15,12 @@ const ITEM_LABELS: Record<string, string> = {
   tractor: 'Трактор',
   combine_harvester: 'Комбайн',
   yacht: 'Яхта',
+  boat: 'Лодка',
   trade_pavilion: 'Торговый павильон',
   car_wash: 'Автомойка',
   trip: 'Кругосветка',
+  hiking_ticket: 'Билет в поход',
+  collectible_card: 'Коллекционная карточка',
   expensive_painting: 'Картина',
 }
 

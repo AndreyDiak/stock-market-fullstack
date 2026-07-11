@@ -192,11 +192,9 @@ function getDreamItemIds(ctx: DealBuildContext): Set<string> {
 
 function getDreamLuxuryTargets(ctx: DealBuildContext): RealEstateData[] {
   const ownedIds = new Set(ctx.playerProperties.map((property) => property.propertyId));
-  const dreamItemIds = getDreamItemIds(ctx);
 
   return REAL_ESTATE.filter(
     (property) => isLuxuryAsset(property)
-      && dreamItemIds.has(property.id)
       && !ownedIds.has(property.id),
   );
 }
@@ -265,40 +263,45 @@ function buildLuxuryPlayerBundle(
   targetValue: number,
 ): DealBundle | null {
   const exchangeStocks = getBotOfferStocks(ctx);
-  if (exchangeStocks.length === 0) return null;
 
   const assets: DealAsset[] = [];
   let budget = targetValue;
-  const minStockValue = Math.max(500, Math.round(targetValue * DREAM_HELPER_STOCK_SHARE.min));
 
   const cheaperProperty = pickCheaperPropertyForLuxuryDeal({
     luxury,
     dreamItemIds: getDreamItemIds(ctx),
     ownedProperties: ctx.playerProperties,
   });
+
   if (cheaperProperty) {
     const maxPropertyValue = Math.round(targetValue * 0.6);
     if (
       cheaperProperty.basePrice <= maxPropertyValue
-      && cheaperProperty.basePrice <= budget - minStockValue - DREAM_HELPER_MIN_CASH
+      && cheaperProperty.basePrice <= budget - DREAM_HELPER_MIN_CASH
     ) {
       assets.push(propertyAsset(cheaperProperty.id, cheaperProperty.name, cheaperProperty.basePrice));
       budget -= cheaperProperty.basePrice;
     }
   }
 
-  const maxStockValue = Math.max(minStockValue, budget - DREAM_HELPER_MIN_CASH);
-  const stockTarget = clamp(
-    Math.round(targetValue * randomFloat(DREAM_HELPER_STOCK_SHARE.min, DREAM_HELPER_STOCK_SHARE.max)),
-    minStockValue,
-    maxStockValue,
-  );
+  if (exchangeStocks.length > 0) {
+    const minStockValue = Math.max(500, Math.round(targetValue * DREAM_HELPER_STOCK_SHARE.min));
+    const maxStockValue = Math.max(minStockValue, budget - DREAM_HELPER_MIN_CASH);
+    const stockTarget = clamp(
+      Math.round(targetValue * randomFloat(DREAM_HELPER_STOCK_SHARE.min, DREAM_HELPER_STOCK_SHARE.max)),
+      minStockValue,
+      maxStockValue,
+    );
 
-  const stockAssets = buildAspirationalStockAssets(ctx, stockTarget, exchangeStocks);
-  if (!stockAssets || stockAssets.length === 0) return null;
+    const stockAssets = buildAspirationalStockAssets(ctx, stockTarget, exchangeStocks);
+    if (stockAssets && stockAssets.length > 0) {
+      assets.push(...stockAssets);
+      budget -= stockAssets.reduce((sum, asset) => sum + asset.estimatedValue, 0);
+    }
+  }
 
-  assets.push(...stockAssets);
-  budget -= stockAssets.reduce((sum, asset) => sum + asset.estimatedValue, 0);
+  if (budget < DREAM_HELPER_MIN_CASH) return null;
+
   assets.push(cashAsset(Math.max(DREAM_HELPER_MIN_CASH, budget)));
 
   const bundle = buildBundle(assets);

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { useMemo } from 'react'
 import { gameAudio } from '../../../../lib/audio/game_audio'
-import { ExitIcon, SettingsIcon } from '../../../../shared/icons'
+import { ExitIcon, HelpIcon, SettingsIcon } from '../../../../shared/icons'
 import { useGameSettingsStore } from '../../../../stores/game_settings.store'
 import { useGameStore } from '../../../../stores/game.store'
 import { useDashboardUi } from '../../_model/dashboard_ui_context'
@@ -279,6 +279,14 @@ export function LeftSidebar() {
             />
             <div className={`h-px ${theme.headerDivider}`} aria-hidden />
           </div>
+          <SidebarFooterButton
+            label="Руководство"
+            icon={<HelpIcon className="h-6 w-6" />}
+            theme={theme}
+            collapsed={collapsed}
+            active={activeTab === 'guide'}
+            onClick={go('guide')}
+          />
           <SidebarFooterButton
             label="Настройки"
             icon={<SettingsIcon className="h-6 w-6" />}

@@ -103,8 +103,8 @@ export class GameService {
     const character = context.game.character;
 
     const dividendTotal = state.dividendPayouts?.reduce((s, p) => s + p.totalPaid, 0) ?? 0;
-    const actualNetChange = state.passiveIncome.netChange + dividendTotal;
-    const newBalance = character.balance + actualNetChange;
+
+    const newBalance = character.balance;
 
     character.balance = newBalance;
 

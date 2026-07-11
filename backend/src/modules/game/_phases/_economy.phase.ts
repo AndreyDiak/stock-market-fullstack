@@ -21,17 +21,19 @@ export class EconomyPhase implements TurnPhase {
     );
 
     for (const payment of state.passiveIncome.installmentPayments) {
-      const news = await this.#newsService.createPropertyInstallmentNews({
-        gameId: context.gameId,
-        gameStep: context.game.step,
-        itemRef: payment.itemRef,
-        itemName: payment.itemName,
-        amount: payment.amount,
-        paidOff: payment.paidOff,
-        installmentsPaidAfter: payment.installmentsPaidAfter,
-        installmentsTotal: payment.installmentsTotal,
-      });
-      state.news.push(news);
+      if (payment.paidOff) {
+        const news = await this.#newsService.createPropertyInstallmentNews({
+          gameId: context.gameId,
+          gameStep: context.game.step,
+          itemRef: payment.itemRef,
+          itemName: payment.itemName,
+          amount: payment.amount,
+          paidOff: payment.paidOff,
+          installmentsPaidAfter: payment.installmentsPaidAfter,
+          installmentsTotal: payment.installmentsTotal,
+        });
+        state.news.push(news);
+      }
     }
   }
 }

@@ -133,3 +133,31 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Guide content scrollbar */
+.guide-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.guide-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.guide-content::-webkit-scrollbar-thumb {
+  background: var(--accent-progress, #34d399);
+  border-radius: 3px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.guide-content::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-positive, #22c55e);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* Firefox */
+.guide-content {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-progress, #34d399) transparent;
+}

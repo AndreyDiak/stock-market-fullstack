@@ -8,6 +8,7 @@ import { BankView } from '../bank'
 import { CharacterProfilePanel } from '../character'
 import { GameSettingsPanel } from '../settings'
 import { RealEstatePanel } from '../real_estate'
+import { PlayerGuidePage } from '../../../../components/player-guide/PlayerGuidePage'
 
 export function CenterPanel() {
   const theme = useDashboardTheme()
@@ -25,6 +26,7 @@ export function CenterPanel() {
       {activeTab === 'dream' && <DreamPanel />}
       {activeTab === 'deals' && <DealsPanel />}
       {activeTab === 'real-estate' && <RealEstatePanel />}
+      {activeTab === 'guide' && <PlayerGuidePage />}
     </section>
   )
 }

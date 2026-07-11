@@ -14,6 +14,9 @@ import imgTradePavilion from '../assets/realEstates/trade_pavilion.png'
 import imgTrip from '../assets/realEstates/trip.png'
 import imgWarehouse from '../assets/realEstates/warehouse.png'
 import imgYacht from '../assets/realEstates/yacht.png'
+import imgBoat from '../assets/realEstates/boat.png'
+import imgHikingTicket from '../assets/realEstates/hiking_ticket.png'
+import imgCollectibleCard from '../assets/realEstates/collectible_card.png'
 
 export const REAL_ESTATE_IMAGES: Record<string, string> = {
   old_garage: imgOldGarage,
@@ -32,6 +35,9 @@ export const REAL_ESTATE_IMAGES: Record<string, string> = {
   combine_harvester: imgHarvester,
   trip: imgTrip,
   expensive_painting: imgPainting,
+  boat: imgBoat,
+  hiking_ticket: imgHikingTicket,
+  collectible_card: imgCollectibleCard,
 }
 
 export function getRealEstateImage(itemRef: string): string | undefined {

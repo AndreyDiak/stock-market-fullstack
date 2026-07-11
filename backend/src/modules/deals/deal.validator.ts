@@ -216,9 +216,6 @@ function validatePurposeAssets(
       if (!playerGives.assets.some((asset) => asset.type === 'CASH')) {
         return 'DREAM_PLAYER_MUST_GIVE_CASH';
       }
-      if (!playerGives.assets.some((asset) => asset.type === 'STOCK')) {
-        return 'DREAM_PLAYER_MUST_GIVE_STOCK';
-      }
       if (playerGives.assets.filter((asset) => asset.type === 'PROPERTY').length > 1) {
         return 'DREAM_PLAYER_TOO_MANY_PROPERTIES';
       }

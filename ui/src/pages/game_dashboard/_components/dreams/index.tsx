@@ -14,6 +14,7 @@ import {
 import { getRequirementMetas, getActionsForRequirement, isAllMet, type PlayerState, type RequirementMeta } from './_helpers'
 import { calcPaybackPct } from '../../_model/game_mappers'
 import type { dashboard_tab } from '../../_model/types'
+import '../bank/_bank.css'
 
 /* ---------- icons ---------- */
 
@@ -143,7 +144,12 @@ function RequirementProgress({ meta }: { meta: RequirementMeta }) {
 
 function CompletedStageCard({ stage, index }: { stage: DreamStageResponse; index: number }) {
   return (
-    <div className="rounded-xl border border-emerald-500/15 bg-gradient-to-r from-emerald-500/5 to-black/[0.15] px-4 py-3 transition hover:border-emerald-500/25">
+    <motion.div
+      className="rounded-xl border border-emerald-500/15 bg-gradient-to-r from-emerald-500/5 to-black/[0.15] px-4 py-3 transition hover:border-emerald-500/25"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3, delay: 0.1 * index }}
+    >
       <div className="flex items-center gap-2">
         <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-emerald-400/70">
           Этап {index + 1}
@@ -160,7 +166,7 @@ function CompletedStageCard({ stage, index }: { stage: DreamStageResponse; index
       <p className="mt-0.5 text-xs text-slate-400 line-clamp-1">
         {stage.requirement.description}
       </p>
-    </div>
+    </motion.div>
   )
 }
 
@@ -189,7 +195,12 @@ function ActiveStageCard({
   const isReady = stage.status === 'READY_TO_COMPLETE'
 
   return (
-    <div className="rounded-xl border border-sky-500/25 bg-gradient-to-b from-sky-500/8 via-black/[0.15] to-black/[0.25] px-4 py-3.5 shadow-lg shadow-sky-500/5">
+    <motion.div
+      className="rounded-xl border border-sky-500/25 bg-gradient-to-b from-sky-500/8 via-black/[0.15] to-black/[0.25] px-4 py-3.5 shadow-lg shadow-sky-500/5"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+    >
       {/* header */}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
@@ -230,11 +241,37 @@ function ActiveStageCard({
       </p>
 
       {/* requirement blocks */}
-      <div className="mt-3 space-y-2">
+      <motion.div
+        className="mt-3 space-y-2"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.1,
+              delayChildren: 0.2,
+            },
+          },
+        }}
+      >
         {metas.map((m) => (
-          <RequirementProgress key={m.key} meta={m} />
+          <motion.div
+            key={m.key}
+            variants={{
+              hidden: { opacity: 0, y: 8 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: { duration: 0.3 },
+              },
+            }}
+          >
+            <RequirementProgress meta={m} />
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* cta actions */}
       {actions.length > 0 && !allMet && (
@@ -278,7 +315,7 @@ function ActiveStageCard({
           </GameButton>
         )}
       </div>
-    </div>
+    </motion.div>
   )
 }
 
@@ -286,14 +323,20 @@ function ActiveStageCard({
 
 function LockedStageCard({ stage, index }: { stage: DreamStageResponse; index: number }) {
   return (
-    <div className="rounded-xl border border-slate-700/30 bg-gradient-to-r from-black/[0.08] to-black/[0.15] px-4 py-3 opacity-60 transition hover:opacity-80">
+    <motion.div
+      className="rounded-xl border border-slate-700/30 bg-gradient-to-r from-black/[0.08] to-black/[0.15] px-4 py-3 opacity-60 transition hover:opacity-80"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 0.6, scale: 1 }}
+      transition={{ duration: 0.3, delay: 0.1 * index }}
+      whileHover={{ opacity: 0.8 }}
+    >
       <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-slate-500">
         Этап {index + 1}
       </p>
       <p className="mt-0.5 text-xs text-slate-600 line-clamp-1">
         {stage.requirement.description}
       </p>
-    </div>
+    </motion.div>
   )
 }
 
@@ -430,55 +473,100 @@ export function DreamPanel() {
 
   return (
     <div className="flex h-full flex-col gap-4 overflow-y-auto p-4 pb-6 md:p-5 md:pb-8">
-      {/* ===== Dream Summary ===== */}
-      <DashboardCard>
-        <div className="p-4">
-          <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-sky-400/70">
-                Мечта
-              </p>
-              <h2 className="mt-0.5 text-xl font-bold text-white">{dream.title}</h2>
-              <p className="mt-0.5 text-sm text-slate-400">{dream.description}</p>
-            </div>
-            <div className="shrink-0 text-right">
-              <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-slate-500">Этап</p>
-              <p className="text-lg font-black text-white">
-                {dream.currentStage + 1}
-                <span className="text-sm font-medium text-slate-500">/{stages.length}</span>
-              </p>
-            </div>
-          </div>
-
-          {/* progress bar */}
-          <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-slate-700/50">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-sky-500 to-emerald-400 transition-all duration-500"
-              style={{ width: `${(completedCount / stages.length) * 100}%` }}
-            />
-          </div>
-          <div className="mt-1 flex items-center justify-between text-[10px] text-slate-600">
-            <span>{completedCount} из {stages.length} завершено</span>
-            {activeStage && (
-              <span className="text-sky-400">
-                Следующий этап: {activeStage.requirement.description.slice(0, 30)}...
-              </span>
-            )}
-          </div>
-
-          {/* mini stat — only balance */}
-          <div className="mt-3 flex items-center gap-2 rounded-lg bg-slate-700/20 px-3 py-2">
-            <CoinIcon className="h-4 w-4 text-amber-400" />
-            <span className="text-[10px] font-medium uppercase tracking-wide text-slate-500">Баланс</span>
-            <span className="ml-auto text-sm font-bold text-white tabular-nums">
-              {balance.toLocaleString('ru-RU')}
-            </span>
-          </div>
+      {/* ===== Section Header ===== */}
+      <div className="bank-page-header">
+        <div className="bank-page-header__divider" aria-hidden />
+        <div className="bank-page-header__content">
+          <h2 className="bank-page-header__title">Мечта</h2>
         </div>
-      </DashboardCard>
+        <div className="bank-page-header__divider bank-page-header__divider--reverse" aria-hidden />
+      </div>
+
+      {/* ===== Dream Summary ===== */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+      >
+        <DashboardCard>
+          <div className="p-4">
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <h2 className="text-xl font-bold text-white">{dream.title}</h2>
+                <p className="mt-0.5 text-sm text-slate-400">{dream.description}</p>
+              </div>
+              <div className="shrink-0 text-right">
+                <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-slate-500">Этап</p>
+                <p className="text-lg font-black text-white">
+                  {dream.currentStage + 1}
+                  <span className="text-sm font-medium text-slate-500">/{stages.length}</span>
+                </p>
+              </div>
+            </div>
+
+            {/* green rectangles progress */}
+            <div className="mt-4 flex items-center justify-between gap-2">
+              {stages.map((stage, i) => {
+                const isCompleted = stage.status === 'COMPLETED'
+
+                return (
+                  <motion.div
+                    key={stage.stageIndex}
+                    className={`flex-1 h-3 rounded transition-all duration-300 ${
+                      isCompleted
+                        ? 'bg-emerald-500'
+                        : 'bg-slate-700/50'
+                    }`}
+                    initial={{ scaleX: 0, opacity: 0 }}
+                    animate={{ scaleX: 1, opacity: 1 }}
+                    transition={{ duration: 0.4, delay: 0.15 * i }}
+                    whileHover={{ scaleY: 1.8 }}
+                  />
+                )
+              })}
+            </div>
+            <div className="mt-2 flex items-center justify-between text-[10px] text-slate-500">
+              <span>{completedCount} из {stages.length} завершено</span>
+              {activeStage && (
+                <span className="text-emerald-400">
+                  Текущий: {activeStage.requirement.description.slice(0, 30)}...
+                </span>
+              )}
+            </div>
+
+            {/* mini stat — only balance */}
+            <motion.div
+              className="mt-3 flex items-center gap-2 rounded-lg bg-slate-700/20 px-3 py-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              <CoinIcon className="h-4 w-4 text-amber-400" />
+              <span className="text-[10px] font-medium uppercase tracking-wide text-slate-500">Баланс</span>
+              <span className="ml-auto text-sm font-bold text-white tabular-nums">
+                {balance.toLocaleString('ru-RU')}
+              </span>
+            </motion.div>
+          </div>
+        </DashboardCard>
+      </motion.div>
 
       {/* ===== Timeline + Stages ===== */}
-      <div className="flex flex-col gap-1">
+      <motion.div
+        className="flex flex-col gap-1"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.15,
+              delayChildren: 0.4,
+            },
+          },
+        }}
+      >
         {stages.map((stage, i) => {
           const metas = stage.status === 'ACTIVE' || stage.status === 'READY_TO_COMPLETE'
             ? getRequirementMetas(stage.requirement, playerState)
@@ -487,7 +575,18 @@ export function DreamPanel() {
           const isLast = i === stages.length - 1
 
           return (
-            <div key={stage.stageIndex} className="flex gap-3">
+            <motion.div
+              key={stage.stageIndex}
+              className="flex gap-3"
+              variants={{
+                hidden: { opacity: 0, x: -20 },
+                visible: {
+                  opacity: 1,
+                  x: 0,
+                  transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] },
+                },
+              }}
+            >
               {/* timeline marker */}
               <div className="flex shrink-0 flex-col items-center pt-1">
                 <StageMarker status={stage.status} connected={i > 0} />
@@ -513,10 +612,10 @@ export function DreamPanel() {
                   <LockedStageCard stage={stage} index={i} />
                 )}
               </div>
-            </div>
+            </motion.div>
           )
         })}
-      </div>
+      </motion.div>
     </div>
   )
 }

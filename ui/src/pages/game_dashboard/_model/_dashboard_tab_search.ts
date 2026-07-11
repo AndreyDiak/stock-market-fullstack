@@ -11,6 +11,7 @@ const DASHBOARD_TABS: dashboard_tab[] = [
   'dream',
   'news',
   'settings',
+  'guide',
 ]
 
 const DASHBOARD_TAB_SET = new Set<string>(DASHBOARD_TABS)

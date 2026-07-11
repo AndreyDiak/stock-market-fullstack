@@ -874,16 +874,21 @@ export class PropertyOffersService {
       });
     });
 
-    const news = await this.#newsService.createPropertyInstallmentNews({
-      gameId,
-      gameStep: game.step,
-      itemRef: item.itemRef,
-      itemName: item.name,
-      amount: applied.paymentAmount,
-      paidOff: applied.isPaidOff,
-      installmentsPaidAfter: applied.installmentsPaid,
-      installmentsTotal: item.installmentsTotal,
-    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let news: any = null;
+
+    if (applied.isPaidOff) {
+      news = await this.#newsService.createPropertyInstallmentNews({
+        gameId,
+        gameStep: game.step,
+        itemRef: item.itemRef,
+        itemName: item.name,
+        amount: applied.paymentAmount,
+        paidOff: applied.isPaidOff,
+        installmentsPaidAfter: applied.installmentsPaid,
+        installmentsTotal: item.installmentsTotal,
+      });
+    }
 
     const character = await this.#prisma.character.findUniqueOrThrow({
       where: { id: game.character.id },

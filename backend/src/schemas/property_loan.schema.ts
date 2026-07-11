@@ -13,6 +13,6 @@ export const payOffInstallmentResponseSchema = z.object({
   balance: z.number(),
   previousBalance: z.number(),
   character: characterSchema,
-  news: generatedNewsItemSchema,
+  news: generatedNewsItemSchema.nullable(),
   nextTurnForecast: nextTurnForecastResponseSchema,
 });
