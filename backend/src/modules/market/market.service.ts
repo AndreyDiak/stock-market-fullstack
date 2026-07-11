@@ -708,7 +708,7 @@ export class MarketService {
     history: PriceHistoryPointDto[] = [],
   ): StockListingDto {
     const gradeConfig = STOCK_GRADE_CONFIG[listing.grade];
-    const bankingLocked = character.bankingLevel < gradeConfig.minBankingLevel;
+    const tradingLocked = character.tradingLevel < gradeConfig.minTradingLevel;
     const reputationLocked = character.reputation < gradeConfig.minReputation;
     const exchangeLocked = !listing.availableOnExchange;
     const archetype = resolveStockArchetype({
@@ -735,7 +735,7 @@ export class MarketService {
       previousPrice: listing.previousPrice,
       dayChange: listing.dayChange,
       availableOnExchange: listing.availableOnExchange,
-      isLocked: exchangeLocked || bankingLocked || reputationLocked,
+      isLocked: exchangeLocked || tradingLocked || reputationLocked,
       hasInsiderPressure,
       hasNewsPressure,
       archetype,

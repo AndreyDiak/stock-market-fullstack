@@ -111,7 +111,7 @@ export class IPOManager {
   async subscribeToIPO(
     gameId: string,
     ipoId: string,
-    character: { id: string; balance: number; bankingLevel: number; reputation: number },
+    character: { id: string; balance: number; tradingLevel: number; reputation: number },
     amount: number,
   ) {
     if (!Number.isInteger(amount) || amount < 1) {
@@ -131,7 +131,7 @@ export class IPOManager {
     }
 
     const gradeConfig = STOCK_GRADE_CONFIG[ipo.targetGrade];
-    if (character.bankingLevel < gradeConfig.minBankingLevel) {
+    if (character.tradingLevel < gradeConfig.minTradingLevel) {
       throw new AppError(400, 'BANKING_LEVEL_TOO_LOW', 'Banking level too low for this IPO');
     }
 
