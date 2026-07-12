@@ -1,4 +1,6 @@
 any_ideas.md
+**/.env
+**/.env.*
 ui/node_modules
 backend/node_modules
 backend/dist
