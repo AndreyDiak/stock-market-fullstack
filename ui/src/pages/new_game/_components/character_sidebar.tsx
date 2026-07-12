@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { AssetCard } from "../../../components/card/asset_card";
 import { GameButton } from "../../../components/game_ui/game_button";
+import { gameAudio } from "../../../lib/audio/game_audio";
 import { getProfessionAvatar } from "../../../constants/professionImages";
 import type { CharacterRosterItem } from "../../../stores/characters.store";
 import { DreamPathPreview } from "./dream_path_preview";
@@ -15,6 +16,8 @@ interface CharacterSidebarProps {
   creating: boolean;
   onBack: () => void;
   onStart: () => void;
+  showOnboarding: boolean;
+  onToggleOnboarding: () => void;
 }
 
 const sidebarVariants = {
@@ -93,6 +96,8 @@ export function CharacterSidebar({
   creating,
   onBack,
   onStart,
+  showOnboarding,
+  onToggleOnboarding,
 }: CharacterSidebarProps) {
   const starterProperty = character.items[0];
 
@@ -235,9 +240,38 @@ export function CharacterSidebar({
               />
             </motion.div>
 
+            <motion.div
+              variants={blockVariants}
+              className="shrink-0"
+            >
+              <label className="flex cursor-pointer items-center gap-2.5 rounded-xl border border-emerald-400/10 bg-slate-800/40 px-3 py-2.5 transition hover:border-emerald-400/25 hover:bg-slate-800/60">
+                <div className="relative flex h-5 w-5 items-center justify-center">
+                    <input
+                    type="checkbox"
+                    checked={showOnboarding}
+                    onChange={() => {
+                      gameAudio.playSfx('buttonClick')
+                      onToggleOnboarding()
+                    }}
+                    className="peer sr-only"
+                  />
+                  <div className="h-5 w-5 rounded-md border border-slate-600 bg-slate-800 transition-colors peer-checked:border-emerald-400 peer-checked:bg-emerald-500 peer-focus-visible:ring-2 peer-focus-visible:ring-emerald-400/50" />
+                  <svg
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    className="absolute h-3.5 w-3.5 text-white opacity-0 transition-opacity peer-checked:opacity-100"
+                    aria-hidden
+                  >
+                    <path d="M13.78 4.22a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 01-1.06 0L2.22 9.78a.75.75 0 011.06-1.06L5.5 11.94l6.72-6.72a.75.75 0 011.06 0z" />
+                  </svg>
+                </div>
+                <span className="text-sm text-slate-300 select-none">Пройти стартовое обучение</span>
+              </label>
+            </motion.div>
+
             <motion.footer
               variants={blockVariants}
-              className="mt-auto grid w-full shrink-0 grid-cols-1 gap-3 border-t border-emerald-400/10 pt-4 sm:grid-cols-2"
+              className="mt-0 grid w-full shrink-0 grid-cols-1 gap-3 border-t border-emerald-400/10 pt-4 sm:grid-cols-2"
             >
               <GameButton fullWidth variant="muted" onClick={onBack}>
                 Назад

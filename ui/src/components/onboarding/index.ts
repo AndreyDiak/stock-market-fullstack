@@ -1,2 +1,3 @@
 export { FirstRunOnboardingModal } from './FirstRunOnboardingModal'
-export { ONBOARDING_STEPS, type OnboardingStep } from './onboardingData'
+export { ONBOARDING_SLIDES } from './onboardingSlides'
+export type { OnboardingSlide, ToneType } from './onboardingSlides'

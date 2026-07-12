@@ -285,20 +285,6 @@ export function DealCard({ deal, onAccept, disabled }: DealCardProps) {
           </div>
         </div>
 
-        {unfavorable && (
-          <div className="relative z-10 mx-3 mt-2 rounded-lg border border-slate-600/40 bg-slate-800/40 px-2.5 py-1.5 text-[11px] text-slate-300">
-            {isLiquidity
-              ? `Оценочный убыток: ${deal.playerBenefitPercent}%`
-              : `Оценочная выгода: ${deal.playerBenefitPercent}%`}
-          </div>
-        )}
-
-        {!unfavorable && deal.playerBenefitPercent > 0 && (
-          <div className="relative z-10 mx-3 mt-2 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1.5 text-[11px] text-emerald-200">
-            Выгода: +{deal.playerBenefitPercent}%
-          </div>
-        )}
-
         <div className="relative z-10 mt-3 grid grid-cols-1 gap-3 px-3 sm:grid-cols-[1fr_auto_1fr] sm:items-stretch sm:gap-2">
           <DealBundlePanel
             title="Вы отдаёте"

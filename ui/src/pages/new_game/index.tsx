@@ -9,6 +9,7 @@ import { PROFESSION_LABELS } from '../../constants/professions'
 import { getRealEstateImage } from '../../constants/realEstateImages'
 import { useCharactersStore, type CharacterRosterItem } from '../../stores/characters.store'
 import { useSavesStore } from '../../stores/saves.store'
+import { useTutorialStore } from '../../stores/tutorial.store'
 import {
   LOCKED_PLACEHOLDERS,
   calcNetMonthlyIncome,
@@ -23,6 +24,8 @@ export function NewGamePage() {
   const { characters, loading, error, loadCharacters } = useCharactersStore()
   const [selected, setSelected] = useState<CharacterRosterItem | null>(null)
   const [creating, setCreating] = useState(false)
+  const [showOnboarding, setShowOnboarding] = useState(true)
+  const { completeOnboarding, resetOnboarding } = useTutorialStore()
   const createGame = useSavesStore((s) => s.createGame)
 
   useEffect(() => {
@@ -108,8 +111,15 @@ export function NewGamePage() {
               getItemImage={getRealEstateImage}
               creating={creating}
               onBack={() => navigate('/slots')}
+              showOnboarding={showOnboarding}
+              onToggleOnboarding={() => setShowOnboarding((v) => !v)}
               onStart={async () => {
                 setCreating(true)
+                if (showOnboarding) {
+                  resetOnboarding()
+                } else {
+                  completeOnboarding()
+                }
                 const game = await createGame(slot, activeCharacter.name, activeCharacter.profession)
                 setCreating(false)
                 if (game?.id) {

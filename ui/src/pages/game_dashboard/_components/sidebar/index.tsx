@@ -1,10 +1,11 @@
+import { useMemo } from 'react'
 import { MoneyValue } from '../../../../components/money/money_value'
 import { useGameStore } from '../../../../stores/game.store'
-import { useDashboardTheme } from '../../_model/use_dashboard_theme'
-import type { TurnCashflowLine } from './_next_turn_forecast'
+import { useGameSettingsStore } from '../../../../stores/game_settings.store'
+import type { NextTurnForecast, TurnCashflowLine } from './_next_turn_forecast'
 import { EMPTY_NEXT_TURN_FORECAST } from './_next_turn_forecast'
 import type { GameDashboardThemeTokens } from '../shared'
-import { SidebarSection } from '../shared'
+import { getGameDashboardTheme, SidebarSection } from '../shared'
 
 function CashflowRow({
   line,
@@ -44,9 +45,18 @@ function CashflowRow({
   )
 }
 
-export function NextTurnForecastBlock() {
-  const theme = useDashboardTheme()
-  const forecast = useGameStore((state) => state.nextTurnForecast) ?? EMPTY_NEXT_TURN_FORECAST
+export function NextTurnForecastBlock({
+  forecast: forecastProp,
+  forceDark,
+}: {
+  forecast?: NextTurnForecast
+  forceDark?: boolean
+} = {}) {
+  const colorTheme = useGameSettingsStore((state) => state.colorTheme)
+  const effectiveColorTheme = forceDark ? 'dark' : colorTheme
+  const theme = useMemo(() => getGameDashboardTheme(effectiveColorTheme), [effectiveColorTheme])
+  const storeForecast = useGameStore((state) => state.nextTurnForecast)
+  const forecast = forecastProp ?? storeForecast ?? EMPTY_NEXT_TURN_FORECAST
   const hasLines = forecast.lines.length > 0
 
   return (
@@ -64,7 +74,7 @@ export function NextTurnForecastBlock() {
           Нет запланированных операций
         </p>
       ) : (
-        <article className="relative overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-inset)] px-4 pb-4 pt-3.5">
+        <article className="relative overflow-hidden rounded-xl border border-white/6 bg-slate-950/55 px-4 pb-4 pt-3.5">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-[repeating-linear-gradient(90deg,transparent,transparent_8px,rgba(148,163,184,0.06)_8px,rgba(148,163,184,0.06)_16px)]" />
 
           <div className="space-y-2 border-b border-dashed border-slate-600/35 pb-3">
@@ -73,8 +83,8 @@ export function NextTurnForecastBlock() {
             ))}
           </div>
 
-          <div className="mt-3 flex items-center justify-between gap-3 rounded-lg bg-[var(--surface-card)] px-2 py-1.5">
-            <span className="text-xs font-bold text-[var(--text-secondary)]">Итого</span>
+          <div className="mt-3 flex items-center justify-between gap-3 rounded-lg bg-slate-800/40 px-2 py-1.5">
+            <span className="text-xs font-bold text-slate-400">Итого</span>
             <MoneyValue
               amount={Math.abs(forecast.netChange)}
               size="sm"
