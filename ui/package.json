@@ -20,10 +20,13 @@
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.19",
+    "@rolldown/binding-linux-x64-gnu": "^1.0.3",
     "@tabler/icons-react": "^3.44.0",
+    "@tailwindcss/oxide-linux-x64-gnu": "^4.3.1",
     "@tailwindcss/vite": "^4.3.1",
     "framer-motion": "^12.41.0",
     "ky": "^2.0.2",
+    "lightningcss-linux-x64-gnu": "^1.32.0",
     "react": "^19.2.7",
     "react-3d-dice": "^0.1.0",
     "react-dom": "^19.2.7",
