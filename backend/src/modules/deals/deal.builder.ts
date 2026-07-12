@@ -24,7 +24,7 @@ import {
   hasMeaningfulPortfolio,
   isLowCash,
 } from './deal.validator.js';
-import { pickCheaperPropertyForLuxuryDeal } from './luxury_trade_up.js';
+import { pickCheaperPropertyForLuxuryDeal, DREAM_TRADE_UP_MAP } from './luxury_trade_up.js';
 
 export interface DealBuildContext {
   gameId: string;
@@ -274,13 +274,18 @@ function buildLuxuryPlayerBundle(
   });
 
   if (cheaperProperty) {
-    const maxPropertyValue = Math.round(targetValue * 0.6);
-    if (
-      cheaperProperty.basePrice <= maxPropertyValue
-      && cheaperProperty.basePrice <= budget - DREAM_HELPER_MIN_CASH
-    ) {
+    if (luxury.id in DREAM_TRADE_UP_MAP) {
       assets.push(propertyAsset(cheaperProperty.id, cheaperProperty.name, cheaperProperty.basePrice));
       budget -= cheaperProperty.basePrice;
+    } else {
+      const maxPropertyValue = Math.round(targetValue * 0.6);
+      if (
+        cheaperProperty.basePrice <= maxPropertyValue
+        && cheaperProperty.basePrice <= budget - DREAM_HELPER_MIN_CASH
+      ) {
+        assets.push(propertyAsset(cheaperProperty.id, cheaperProperty.name, cheaperProperty.basePrice));
+        budget -= cheaperProperty.basePrice;
+      }
     }
   }
 

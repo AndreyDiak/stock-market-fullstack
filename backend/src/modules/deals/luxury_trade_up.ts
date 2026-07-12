@@ -53,13 +53,7 @@ export function pickCheaperPropertyForLuxuryDeal(ctx: CheaperPropertyPickContext
 
   const requiredBaseId = DREAM_TRADE_UP_MAP[luxury.id];
   if (requiredBaseId) {
-    const prerequisite = findTradableProperty(requiredBaseId);
-    if (!prerequisite) return null;
-
-    const ownsBase = ctx.ownedProperties.some((p) => p.propertyId === requiredBaseId);
-    if (!ownsBase) return null;
-
-    return prerequisite;
+    return findTradableProperty(requiredBaseId);
   }
 
   const minCollateral = Math.max(1_500, Math.round(luxury.basePrice * 0.08));
