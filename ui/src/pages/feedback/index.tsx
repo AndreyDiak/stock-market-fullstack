@@ -10,7 +10,7 @@ import {
   sessionStaggerItemVariants,
 } from '../../components/game_ui/session_animations'
 import { SessionCard } from '../../components/game_ui/session_card'
-import { authHttp } from '../../lib/auth-http'
+import { http } from '../../lib/http'
 import { useSavesStore } from '../../stores/saves.store'
 
 type MessageType = 'error' | 'suggestion' | 'feedback' | 'other'
@@ -49,7 +49,7 @@ export function FeedbackPage() {
     if (!isValid || submitting) return
     setSubmitting(true)
     try {
-      await authHttp.post('feedback', {
+      await http.post('feedback', {
         json: {
           saveId,
           messageType,

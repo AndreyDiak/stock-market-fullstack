@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { gameAudio } from '../../../lib/audio/game_audio'
 import type { AuthMode } from '../_model/types'
 
 interface AuthModeTabsProps {
@@ -21,7 +22,7 @@ export function AuthModeTabs({ mode, onChange }: AuthModeTabsProps) {
 
       <button
         type="button"
-        onClick={() => onChange('login')}
+        onClick={() => { gameAudio.playSfx('buttonClick'); onChange('login') }}
         className={`relative z-10 rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${
           mode === 'login' ? 'text-emerald-300' : 'text-slate-500 hover:text-slate-300'
         }`}
@@ -30,7 +31,7 @@ export function AuthModeTabs({ mode, onChange }: AuthModeTabsProps) {
       </button>
       <button
         type="button"
-        onClick={() => onChange('register')}
+        onClick={() => { gameAudio.playSfx('buttonClick'); onChange('register') }}
         className={`relative z-10 rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${
           mode === 'register' ? 'text-emerald-300' : 'text-slate-500 hover:text-slate-300'
         }`}

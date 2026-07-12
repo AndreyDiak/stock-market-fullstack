@@ -1,3 +1,5 @@
+import { gameAudio } from '../../../lib/audio/game_audio'
+
 interface YandexAuthButtonProps {
   disabled?: boolean
   loading?: boolean
@@ -8,7 +10,7 @@ export function YandexAuthButton({ disabled, loading, onClick }: YandexAuthButto
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={() => { gameAudio.playSfx('buttonClick'); onClick() }}
       disabled={disabled || loading}
       className="flex w-full items-center justify-center gap-2.5 rounded-2xl border border-[#3a3a48] border-b-[#08080c] bg-gradient-to-b from-[#2e2e38] via-[#21212B] to-[#18181f] px-5 py-3.5 text-sm font-black tracking-wide text-white shadow-[0_6px_0_#08080c,0_10px_28px_rgba(0,0,0,0.45)] ring-1 ring-inset ring-white/10 transition hover:from-[#363642] hover:via-[#2c2c36] hover:to-[#1e1e26] hover:shadow-[0_6px_0_#08080c,0_12px_32px_rgba(0,0,0,0.5)] active:translate-y-1 active:border-b-[#08080c] active:shadow-[0_2px_0_#08080c,0_4px_14px_rgba(0,0,0,0.35)] disabled:cursor-not-allowed disabled:opacity-70 disabled:active:translate-y-0"
     >
