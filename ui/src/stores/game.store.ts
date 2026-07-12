@@ -752,8 +752,27 @@ export const useGameStore = create<GameState>((set, get) => {
         );
         const balanceDelta = result.balance - result.previousBalance;
 
+        const actualPayment = result.previousBalance - result.balance
+        const oldLoan = bankLoans.find((l) => l.id === loanId)
+        const patchedLoans = applied.bankLoans.map((l) =>
+          l.id === loanId && oldLoan
+            ? {
+                ...l,
+                remainingAmount: Math.max(0, oldLoan.remainingAmount - actualPayment),
+                paidAmount: oldLoan.paidAmount + actualPayment,
+                initialDebt: oldLoan.initialDebt,
+                remainingDebt: Math.max(0, oldLoan.remainingAmount - actualPayment),
+                paybackPct:
+                  oldLoan.initialDebt > 0
+                    ? Math.min(100, Math.round(((oldLoan.paidAmount + actualPayment) / oldLoan.initialDebt) * 100))
+                    : l.paybackPct,
+              }
+            : l,
+        )
+
         set((state) => ({
           ...spreadCharacterBankState(applied),
+          bankLoans: patchedLoans,
           balance: result.balance,
           balanceFx:
             balanceDelta !== 0

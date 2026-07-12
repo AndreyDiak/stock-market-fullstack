@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useCallback, useMemo, useState } from "react";
 import { GameButton } from "../../components/game_ui/game_button";
 import { NextTurnForecastBlock } from "../../pages/game_dashboard/_components/sidebar";
+
 import type {
   NextTurnForecast,
   TurnCashflowLine,
@@ -395,20 +396,19 @@ function DreamCardSlideContent({
       });
     }
 
-    if (req.requiredItems?.length) {
-      const owned = inventoryItems.filter(
-        (i) => !i.isInstallment || i.isPaidOff,
-      ).length;
-      const total = req.requiredItems.length;
-      const pct = Math.min(100, Math.round((owned / total) * 100));
+    for (const itemRef of req.requiredItems ?? []) {
+      const owned = inventoryItems.some(
+        (i) =>
+          i.itemRef === itemRef &&
+          (!i.isInstallment || i.isPaidOff),
+      );
+      const pct = owned ? 100 : 0;
       metas.push({
-        label:
-          formatReqItem(req.requiredItems[0]) +
-          (total > 1 ? ` +${total - 1}` : ""),
-        current: `${owned} / ${total}`,
-        target: `${total}`,
+        label: formatReqItem(itemRef),
+        current: owned ? "1" : "0",
+        target: "1",
         pct,
-        tone: pct >= 100 ? "safe" : "warning",
+        tone: owned ? "safe" : "warning",
       });
     }
 

@@ -152,7 +152,7 @@ export function getRequirementMetas(req: DreamStageRequirement, player: PlayerSt
   return metas
 }
 
-function formatReqItem(item: string): string {
+export function formatReqItem(item: string): string {
   const names: Record<string, string> = {
     warehouse: 'Склад',
     apartment: 'Квартира',
